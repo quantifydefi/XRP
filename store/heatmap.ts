@@ -1,4 +1,5 @@
 import { ActionTree, MutationTree } from 'vuex'
+import Web3 from 'web3'
 
 export const state = () => ({
   heatmapData: [] as object,
@@ -14,14 +15,16 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
     { commit },
     { display, exchange, numOfCoins }
   ): Promise<Array<Record<string, any>>> {
-    const { data } = await this.$axios.get(`/api/v1.0/heatmaps/config`, {
+    const { data } = await this.$axios.get(`/api/v1.0/heatmaps/uniswap`, {
       params: {
         display,
         exchange,
         num_of_coins: numOfCoins,
       },
     })
+    console.log(data)
     commit('SET_HEATMAP_DATA', data)
     return data
   },
 }
+

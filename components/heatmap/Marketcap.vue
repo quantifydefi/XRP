@@ -9,6 +9,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { heatmapDataInterface } from '~/types/heatmap'
 
+
 let am4core: any = null
 let am4charts: any = null
 let am4themesAnimated: any = null
@@ -74,8 +75,8 @@ export default class Marketcap extends Vue {
     this.chart.colors.step = 2
 
     /* Define data fields */
-    this.chart.dataFields.value = 'marketcap_index'
-    this.chart.dataFields.name = 'symbol_name'
+    this.chart.dataFields.value = 'liquidity_index'
+    this.chart.dataFields.name = 'symbol'
     this.chart.dataFields.color = 'color'
     this.chart.dataFields.children = 'children'
 
@@ -92,15 +93,16 @@ export default class Marketcap extends Vue {
     this.level1_bullet.locationX = 0.5
     const tileBody = this.tileBody
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.level1_bullet.label.adapter.add('text', (text: any, target: any) => {
       // TODO: Debug issues related to dataContext (used try catch block need better solution)
       try {
-        const key = target.dataItem.dataContext.dataContext.qc_key
+        const key = target.dataItem.dataContext.dataContext.symbol
         target.url = `/coins/${key}`
 
         let fontSize: any =
           (target.availableWidth /
-            (target.dataItem.dataContext.dataContext.qc_key.length * 0.83)) *
+            (target.dataItem.dataContext.dataContext.symbol.length * 0.83)) *
           0.75
         let fontSizeLev2: any =
           (target.availableWidth /

@@ -1,18 +1,20 @@
 /* eslint-disable camelcase */
 export interface heatmapDataInterface {
-  price30day: number
-  price_year_to_date: number
-  price1week: number
-  qma_score: number
-  rsi2h: number
-  marketcap: number
-  qc_key: string
+  id: string
+  liquidity: number
+  symbol: string
   price_usd: number
-  price24h: number
-  symbol_name: string
-  marketcap_index: number
-  price1year: number
-  price_btc: number
+  price1h: number
+  coin_name: string
+  liquidity_index: number
+  price_eth: number
   color?: string
-  price24hAbs?: number
+}
+
+export interface heatmapConfigInterface {
+  display: string
+  timeFrame: string
+  numOfCoins: number | string
+  exchange: string
+  grouped: boolean
 }
