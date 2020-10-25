@@ -23,6 +23,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Web3 from 'web3'
 import ERC20abi from '../ERC20abi.json'
 import UniswapV2Factory from '../UniswapV2Factory.json'
+import UniswapV2Pair from '../UniswapV2Pair.json'
 import { heatmapDataInterface } from '~/types/heatmap'
 import Marketcap from '~/components/heatmap/Marketcap.vue'
 
@@ -172,7 +173,7 @@ export default class Index extends Vue {
          * data[i].id Points to the individual address of the contract that has implemented ERC20 standard
          */
         const contract = new web3.eth.Contract(ERC20abi, data[i].id)
-        // console.log(data[i].id,account[0],contract.defaultAccount)
+        console.log(ERC20abi)
 
         /**
          * Invokes ERC20 balanceOf function at specified contract address(data[i].id)
@@ -215,7 +216,71 @@ export default class Index extends Vue {
     }
     console.log('testing', web3)
 
-    const contract = new web3.eth.Contract(UniswapV2Factory, "")
+    const latestBlock = await web3.eth.getBlock("latest")
+    if(latestBlock)
+    {
+      //console.log(UniswapV2Factory)
+      const startBlock = latestBlock['number'] - 5760
+      const factoryContract = new web3.eth.Contract(UniswapV2Factory, "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f")
+    const pairs = await factoryContract.getPastEvents("PairCreated",{fromBlock : startBlock})
+    if (pairs)
+    {
+      //console.log(pairs)
+      //console.log(UniswapV2Factory)
+      for (let ii = 0; ii < pairs.length; ii++)
+      {
+        let whereIsEth = 0
+        const replace = '0x000000000000000000000000'
+        const token0 = pairs[ii].raw.topics[1].replace(replace,'0x')
+        const token1 = pairs[ii].raw.topics[2].replace(replace,'0x')
+        if (token0 == "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
+        {
+        }
+    else if (token1 == "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
+        {
+            whereIsEth = 1
+        }
+    else
+        {
+          whereIsEth = 2
+        }
+        //console.log(token0,token1)
+        const pairId = await factoryContract.methods.getPair(token0,token1).call()
+        //console.log(UniswapV2Pair)
+        if (pairId)
+        {
+          const pairContract = new web3.eth.Contract(UniswapV2Pair['abi'], pairId)
+          const reserves = await pairContract.methods.getReserves().call()
+          if (reserves)
+          {
+            let price
+            let liquidity
+            //console.log(reserves)
+            if (whereIsEth == 0)
+            {
+              liquidity = reserves['reserve0'] / 10 ** 18
+              price = await pairContract.methods.getReserves().call()
+            }
+            if (whereIsEth == 1)
+            {
+              liquidity = reserves['reserve1'] / 10 ** 18
+              price = await pairContract.methods.getReserves().call()
+            }
+            if (liquidity >= 10)
+            {
+              console.log('pair id:', pairId, 'liquidity: ',liquidity,'price: ',price)
+
+            }
+          }
+
+
+        }
+      }
+    }
+    }
+
+
+
 
 
   }
