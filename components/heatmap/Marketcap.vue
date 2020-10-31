@@ -6,9 +6,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { heatmapDataInterface } from '~/types/heatmap'
+/* eslint-disable camelcase */
 
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 
 let am4core: any = null
 let am4charts: any = null
@@ -22,10 +22,11 @@ if (process.browser) {
 
 @Component({ name: 'Marketcap' })
 export default class Marketcap extends Vue {
-  @Prop({ default: '' }) tileBody!: string
-  @Prop({ default: '' }) tileTooltip!: string
-  @Prop({ default: 0 }) chartHeight!: number
-  @Prop({ default: () => [] }) data!: heatmapDataInterface
+  @Prop({ default: '' }) readonly tileBody!: string
+  @Prop({ default: '' }) readonly tileTooltip!: string
+  @Prop({ default: 'liquidity_index' }) readonly dataField!: string
+  @Prop({ default: 0 }) readonly chartHeight!: number
+  @Prop({ default: () => [] }) readonly data!: any
 
   $refs!: {
     chartdiv: any
@@ -33,24 +34,23 @@ export default class Marketcap extends Vue {
 
   $options: any
   chart: any = null
-  // eslint-disable-next-line camelcase
   level1_column: any
-  // eslint-disable-next-line camelcase
   level1_bullet: any
   level1: any
   loading: boolean = true
-  indicator: any = null
   $am4core: any
 
-  @Watch('data')
-  onPropertyChanged(value: Array<Record<any, any>>) {
-    this.chart.data = value
+  @Watch('dataField')
+  onDataFieldChanged() {
+    if (this.chart) {
+      this.chart.dispose()
+      this.renderChart()
+    }
   }
 
-  @Watch('tileBody')
-  onbodyChanged() {
-    this.chart.dispose()
-    this.renderChart()
+  @Watch('data')
+  onDataChanged() {
+    this.chart.data = this.data
   }
 
   mounted() {
@@ -75,7 +75,7 @@ export default class Marketcap extends Vue {
     this.chart.colors.step = 2
 
     /* Define data fields */
-    this.chart.dataFields.value = 'liquidity_index'
+    this.chart.dataFields.value = this.dataField
     this.chart.dataFields.name = 'symbol'
     this.chart.dataFields.color = 'color'
     this.chart.dataFields.children = 'children'
@@ -91,39 +91,37 @@ export default class Marketcap extends Vue {
     this.level1_bullet = this.level1.bullets.push(new am4charts.LabelBullet())
     this.level1_bullet.locationY = 0.5
     this.level1_bullet.locationX = 0.5
+    this.level1_bullet.label.fontWeight = 400
     const tileBody = this.tileBody
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.level1_bullet.label.adapter.add('text', (text: any, target: any) => {
-      // TODO: Debug issues related to dataContext (used try catch block need better solution)
-      try {
-        const key = target.dataItem.dataContext.dataContext.symbol
-        target.url = `/coins/${key}`
+      const key = target.dataItem.dataContext.dataContext.symbol
+      target.url = `/coins/${key}`
 
-        let fontSize: any =
-          (target.availableWidth /
-            (target.dataItem.dataContext.dataContext.symbol.length * 0.83)) *
-          0.75
-        let fontSizeLev2: any =
-          (target.availableWidth /
-            (target.dataItem.dataContext.dataContext.price_usd.toString()
-              .length *
-              0.83)) *
-          0.5
+      let fontSize: any =
+        (target.availableWidth /
+          (target.dataItem.dataContext.dataContext.symbol.length * 0.83)) *
+        0.75
+      let fontSizeLev2: any =
+        (target.availableWidth /
+          (target.dataItem.dataContext.dataContext.price_usd.toString().length *
+            0.83)) *
+        0.5
 
-        if (target.availableHeight < fontSize * 2) {
-          fontSize = target.availableHeight / 2.5
-          fontSizeLev2 = fontSize / 2.5
-        }
+      if (target.availableHeight < fontSize * 2) {
+        fontSize = target.availableHeight / 2.5
+        fontSizeLev2 = fontSize / 2.5
+      }
 
-        if (fontSizeLev2 > 20) {
-          fontSizeLev2 = 20
-        }
-        return tileBody
-          .replace('{fontSize}', fontSize)
-          .replace('{fontSizeLev2}', fontSizeLev2)
-      } catch {}
+      if (fontSizeLev2 > 20) {
+        fontSizeLev2 = 20
+      }
+      return tileBody
+        .replace('{fontSize}', fontSize)
+        .replace('{fontSizeLev2}', fontSizeLev2)
     })
+
     this.level1_bullet.label.fill = am4core.color('#fff')
     this.chart.events.on('ready', () => {
       this.loading = false

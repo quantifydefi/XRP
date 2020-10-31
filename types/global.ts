@@ -1,0 +1,3 @@
+export enum Events {
+  GLOBAL_NOTIFICATION = 'GLOBAL_NOTIFICATION',
+}

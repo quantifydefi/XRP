@@ -1,34 +1,15 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
+  <v-app :dark="true">
+    <v-app-bar
+      outlined
+      :clipped-left="clipped"
       fixed
       app
+      color="white"
+      elevation="1"
+      tile
     >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar flat tile outlined :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-fade-transition>
-        <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
-      </v-fade-transition>
+      <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-toolbar-title class="ml-1">Quantify Crypto</v-toolbar-title>
       </nuxt-link>
@@ -50,31 +31,38 @@
       </v-list>
     </v-navigation-drawer>
     <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>Quantify Crypto &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
+    <notification ref="notificationComponent" />
   </v-app>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { Events } from '~/types/global'
+import Notification from '~/components/common/Notification.vue'
+
 @Component({
   name: 'Default',
+  components: { Notification },
 })
 export default class Default extends Vue {
   clipped = false
   drawer = false
   fixed = false
-  items = [
-    {
-      icon: 'mdi-apps',
-      title: 'Heatmap',
-      to: '/',
-    },
-  ]
-
   miniVariant = false
   right = true
   rightDrawer = false
-  title = 'Vuetify.js'
+  $refs!: { notificationComponent: any }
+
+  mounted() {
+    // this.$vuetify.theme.dark = true
+
+    this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
+      try {
+        this.$refs.notificationComponent.openNotification(data.text)
+      } catch {}
+    })
+  }
 }
 </script>

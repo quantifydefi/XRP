@@ -16,27 +16,13 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
-  // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [],
 
-  // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
 
-  // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
-  buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
-    // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
-  ],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
 
-  // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
-    '@nuxtjs/pwa',
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-webfontloader'],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
@@ -45,14 +31,32 @@ export default {
     debug: false,
   },
 
+  webfontloader: {
+    google: {
+      families: ['Roboto:100,300,400,500,700,900&display=swap'],
+    },
+  },
+  pwa: {
+    manifest: {
+      name: 'Quantify Crypto',
+      description:
+        'Designed to Assist Cryptocurrency Traders with Superior Visual Displays',
+      short_name: 'Quantify Crypto',
+      lang: 'en',
+      display: 'standalone',
+      theme_color: '#1c31b5',
+      start_url: '/',
+    },
+  },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
+  loading: false,
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      light: true,
+      // light: true,
       themes: {
         light: {
-          primary: colors.blue.darken2,
+          primary: '#536af6',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,

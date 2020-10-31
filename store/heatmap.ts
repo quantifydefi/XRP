@@ -1,30 +1,43 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ActionTree, MutationTree } from 'vuex'
-import Web3 from 'web3'
+import { plainToClass } from 'class-transformer'
+import { HeatmapData } from '~/models/heatmap'
 
-export const state = () => ({
-  heatmapData: [] as object,
-})
+export const state = () => ({})
 export type HeatmapState = ReturnType<typeof state>
 
-export const mutations: MutationTree<HeatmapState> = {
-  SET_HEATMAP_DATA: (state, data: any) => (state.heatmapData = data),
-}
+export const mutations: MutationTree<HeatmapState> = {}
 
 export const actions: ActionTree<HeatmapState, HeatmapState> = {
-  async getHeatmapData(
-    { commit },
-    { display, exchange, numOfCoins }
-  ): Promise<Array<Record<string, any>>> {
+  async getHeatmapData({ commit }, { numOfCoins }): Promise<HeatmapData[]> {
     const { data } = await this.$axios.get(`/api/v1.0/heatmaps/uniswap`, {
-      params: {
-        display,
-        exchange,
-        num_of_coins: numOfCoins,
-      },
+      params: { num_of_coins: numOfCoins },
     })
-    console.log(data)
-    commit('SET_HEATMAP_DATA', data)
+    return plainToClass(HeatmapData, data as HeatmapData[])
+  },
+
+  async requestHeatmap({ commit }, { address }): Promise<string> {
+    const { data } = await this.$axios.post(
+      `/api/v1.0/heatmaps/ethereum-request`,
+      {
+        address,
+      }
+    )
     return data
   },
-}
 
+  async requestHeatmapStatus({ commit }, { jobId }): Promise<boolean> {
+    const { data } = await this.$axios.get(`/api/v1.0/heatmaps/status/${jobId}`)
+    return data
+  },
+
+  async ethereumHeatmap({ commit }, { address }): Promise<HeatmapData[]> {
+    const { data } = await this.$axios.post(
+      `/api/v1.0/heatmaps/ethereum-heatmap`,
+      {
+        address,
+      }
+    )
+    return plainToClass(HeatmapData, data as HeatmapData[])
+  },
+}

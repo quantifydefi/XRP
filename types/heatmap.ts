@@ -1,20 +1,35 @@
 /* eslint-disable camelcase */
-export interface heatmapDataInterface {
-  id: string
-  liquidity: number
-  symbol: string
-  price_usd: number
-  price1h: number
-  coin_name: string
-  liquidity_index: number
-  price_eth: number
-  color?: string
+
+export interface HeatmapDataInterface {
+  readonly id: string
+  readonly liquidity: number
+  readonly symbol: string
+  readonly price_usd: number
+  readonly price1h: number
+  readonly coin_name: string
+  readonly liquidity_index: number
+  readonly price_eth: number
+  readonly color?: string
+  readonly balance_usd?: number
+  readonly contract_balance?: number
 }
 
-export interface heatmapConfigInterface {
-  display: string
-  timeFrame: string
-  numOfCoins: number | string
-  exchange: string
-  grouped: boolean
+export interface DataValueOptionInterface {
+  title: string
+  dataField: string
+  tile: string
+  toolTip: string
+}
+export interface DataValueOptionsInterface {
+  liquidity: DataValueOptionInterface
+  balanceUsd: DataValueOptionInterface
+}
+
+export interface DataValueConfigInterface {
+  title: string
+  tooltip: string
+  options: DataValueOptionsInterface
+}
+export interface HeatmapConfigInterface {
+  dataValue: DataValueConfigInterface
 }
