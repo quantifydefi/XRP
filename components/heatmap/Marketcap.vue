@@ -96,8 +96,9 @@ export default class Marketcap extends Vue {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.level1_bullet.label.adapter.add('text', (text: any, target: any) => {
+      /*
       const key = target.dataItem.dataContext.dataContext.symbol
-      target.url = `/coins/${key}`
+      target.url = `/coins/${key}` */
 
       let fontSize: any =
         (target.availableWidth /

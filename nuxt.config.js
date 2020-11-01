@@ -1,4 +1,22 @@
 import colors from 'vuetify/es5/util/colors'
+// defiheatmap.com
+
+require('dotenv').config()
+
+const runEnv = process.env.RUN_ENV
+
+const config = {
+  development: {
+    BASE_URL: process.env.BASE_URL_DEV,
+    SERVER_HOST: process.env.SERVER_HOST_DEV,
+  },
+  production: {
+    BASE_URL: process.env.BASE_URL_PROD,
+    SERVER_HOST: process.env.SERVER_HOST_PROD,
+  },
+}
+
+console.log(config[runEnv])
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -26,7 +44,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://127.0.0.1:5000',
+    baseURL: config[runEnv].BASE_URL,
     withCredentials: true,
     debug: false,
   },
@@ -70,4 +88,6 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+
+  server: { port: 3000, host: config[runEnv].SERVER_HOST },
 }

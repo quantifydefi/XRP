@@ -10,7 +10,7 @@ export const mutations: MutationTree<HeatmapState> = {}
 
 export const actions: ActionTree<HeatmapState, HeatmapState> = {
   async getHeatmapData({ commit }, { numOfCoins }): Promise<HeatmapData[]> {
-    const { data } = await this.$axios.get(`/api/v1.0/heatmaps/uniswap`, {
+    const { data } = await this.$axios.get(`/api/v1.0/heatmaps/defi/uniswap`, {
       params: { num_of_coins: numOfCoins },
     })
     return plainToClass(HeatmapData, data as HeatmapData[])
@@ -18,7 +18,7 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
 
   async requestHeatmap({ commit }, { address }): Promise<string> {
     const { data } = await this.$axios.post(
-      `/api/v1.0/heatmaps/ethereum-request`,
+      `/api/v1.0/heatmaps/defi/ethereum-request`,
       {
         address,
       }
@@ -27,13 +27,15 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
   },
 
   async requestHeatmapStatus({ commit }, { jobId }): Promise<boolean> {
-    const { data } = await this.$axios.get(`/api/v1.0/heatmaps/status/${jobId}`)
+    const { data } = await this.$axios.get(
+      `/api/v1.0/heatmaps/defi/status/${jobId}`
+    )
     return data
   },
 
   async ethereumHeatmap({ commit }, { address }): Promise<HeatmapData[]> {
     const { data } = await this.$axios.post(
-      `/api/v1.0/heatmaps/ethereum-heatmap`,
+      `/api/v1.0/heatmaps/defi/ethereum-heatmap`,
       {
         address,
       }

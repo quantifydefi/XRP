@@ -11,7 +11,7 @@
     >
       <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
-        <v-toolbar-title class="ml-1">Quantify Crypto</v-toolbar-title>
+        <v-toolbar-title class="ml-1">Defi Heatmap</v-toolbar-title>
       </nuxt-link>
       <v-spacer />
     </v-app-bar>

@@ -47,6 +47,18 @@ declare global {
     MetamaskButton: () => import('~/components/heatmap/MetamaskButton.vue'),
     Marketcap,
   },
+  head(): object {
+    return {
+      title: 'Defi Heatmap',
+      meta: [
+        {
+          name: 'description',
+          hid: 'description',
+          content: 'Creating the Premiere UniSwap Interface',
+        },
+      ],
+    }
+  },
 })
 export default class Index extends Vue {
   @Ref('metaMaskComponent') readonly metaMaskComponent!: any
