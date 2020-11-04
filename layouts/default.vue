@@ -1,22 +1,24 @@
 <template>
   <v-app :dark="true">
-    <v-app-bar
-      outlined
-      :clipped-left="clipped"
-      fixed
-      app
-      color="white"
-      elevation="1"
-      tile
-    >
+    <v-app-bar app color="white" elevation="1" tile>
       <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
-        <v-toolbar-title class="ml-1">Defi Heatmap</v-toolbar-title>
+        <v-toolbar-title class="ml-1">DeFi Heatmap</v-toolbar-title>
       </nuxt-link>
       <v-spacer />
+
+      <v-btn text tile to="/">Home</v-btn>
+      <v-btn text tile to="/roadmap">Roadmap</v-btn>
+      <v-btn
+        text
+        tile
+        target="_blank"
+        href="https://quantifycrypto.com/terminal"
+        >Crypto</v-btn
+      >
     </v-app-bar>
-    <v-main>
-      <v-container>
+    <v-main class="grey lighten-5">
+      <v-container style="max-width: 3000px">
         <nuxt />
       </v-container>
     </v-main>
@@ -31,7 +33,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-footer :absolute="!fixed" app>
-      <span>Quantify Crypto &copy; {{ new Date().getFullYear() }}</span>
+      <span>Defi Heatmap &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
     <notification ref="notificationComponent" />
   </v-app>
