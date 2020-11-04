@@ -3,11 +3,12 @@
     <v-col cols="4" class="pt-2 pb-0 my-0">
       <v-text-field
         v-model="search"
-        class="py-0 px-0"
-        label="Search by Address"
+        class="py-0 pl-4"
+        label="Load Ethereum Address"
         clearable
         clear-icon="mdi-close"
         :loading="loading"
+        :disabled="loading"
         @click:append="processHeatmap"
         @keyup="isFromSearch = true"
         @click="isFromSearch = true"
@@ -15,23 +16,34 @@
       </v-text-field>
     </v-col>
     <v-col class="pt-2 pb-0 px-0">
-      <v-btn tile depressed :disabled="loading" @click="processHeatmap">
+      <v-btn
+        tile
+        depressed
+        :disabled="loading"
+        color="grey lighten-5"
+        @click="processHeatmap"
+      >
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-col>
     <v-col class="pt-2 pb-0 my-0">
       <div class="d-flex justify-end align-right">
         <client-only>
-          <v-menu v-if="isNumberOfCoinsActive" offset-y>
+          <v-menu offset-y>
             <template v-slot:activator="{ attrs, on }">
               <v-btn
+                color="grey lighten-5"
+                class="text-capitalize text-subtitle-2"
                 tile
                 depressed
-                :disabled="loading"
+                :disabled="loading || isEthereumActive"
                 v-bind="attrs"
                 v-on="on"
               >
-                Number Of Coins
+                Number Of Coins:
+                <span class="primary--text mx-1">
+                  {{ numberOfCoinsValues[numberOfCoinsModel] }}
+                </span>
                 <v-icon right> mdi-chevron-down </v-icon>
               </v-btn>
             </template>
@@ -54,37 +66,70 @@
             </v-list>
           </v-menu>
         </client-only>
-        <client-only>
-          <v-menu offset-y>
-            <template v-slot:activator="{ attrs, on }">
-              <v-btn
-                tile
-                depressed
-                :disabled="loading"
-                v-bind="attrs"
-                v-on="on"
-              >
-                Data Value
-                <v-icon right> mdi-chevron-down </v-icon>
-              </v-btn>
-            </template>
-            <v-list dense>
-              <v-list-item-group
-                v-model="dataValueModel"
-                color="primary"
-                @change="(v) => $emit('data-value-change', dataValues[v])"
-              >
-                <v-list-item v-for="item in dataValues" :key="item" link>
-                  <v-list-item-title v-text="item"></v-list-item-title>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-menu>
-        </client-only>
-        <v-btn tile depressed :disabled="loading" @click="initMetamask"
+        <div>
+          <v-btn
+            id="ButtonToggle"
+            tile
+            class="text-capitalize text-subtitle-2"
+            color="grey lighten-5"
+            depressed
+            :disabled="loading"
+            @click="toggleDataValue = !toggleDataValue"
+          >
+            Block Size:
+            <span class="primary--text mx-1"> {{ blockSizeModel.text }} </span>
+            <v-icon right> mdi-chevron-down </v-icon>
+          </v-btn>
+          <v-select
+            v-show="false"
+            v-model="blockSizeModel"
+            return-object
+            attach="#ButtonToggle"
+            dense
+            :items="blockSizeOptions"
+            item-text="text"
+            item-value="value"
+            :menu-props="{
+              flat: true,
+              tile: true,
+              value: toggleDataValue,
+              closeOnClick: true,
+              bottom: true,
+              'nudge-top': -40,
+            }"
+            @change="(v) => $emit('data-value-change', v.value)"
+          />
+        </div>
+
+        <v-btn
+          v-if="!isMetamaskActive"
+          tile
+          depressed
+          :disabled="loading"
+          color="grey lighten-5"
+          class="mr-4 text-capitalize text-subtitle-2"
+          @click="initMetamask"
           >Metamask
           <v-icon right> mdi-wallet-outline </v-icon>
         </v-btn>
+
+        <v-tooltip v-else bottom color="black">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              :disabled="loading"
+              tile
+              depressed
+              color="grey lighten-5"
+              class="mr-4"
+              v-on="on"
+              @click="exitMetamask"
+            >
+              <v-icon>mdi-exit-to-app</v-icon>
+            </v-btn>
+          </template>
+          <span>Exit from Metamask</span>
+        </v-tooltip>
       </div>
     </v-col>
   </v-row>
@@ -99,18 +144,20 @@ import { HeatmapData } from '~/models/heatmap'
 
 @Component({ name: 'MetamaskButton' })
 export default class MetamaskButton extends Vue {
-  @Prop({ default: () => [] }) readonly dataValues!: string[]
+  @Prop({ default: () => [] }) blockSizeOptions!: string[]
   @Prop({ default: () => [] }) readonly numberOfCoinsValues!: number[]
 
   private account: string | null = null
   private requestJobId: string | null = null
   private isHeatmapReedy: boolean = false
   private loading: boolean = false
-  private dataValueModel: number = 0
   private numberOfCoinsModel: number = 3
   private search: string = ''
   private isFromSearch: boolean = false
-  private isNumberOfCoinsActive: boolean = true
+  private isEthereumActive: boolean = false
+  private isMetamaskActive: boolean = false
+  private toggleDataValue: boolean = false
+  blockSizeModel = { value: 'liquidity_index', text: 'Liquidity' }
 
   @Watch('isHeatmapReedy')
   private async onHeatmapReadyChanged(value: boolean) {
@@ -118,11 +165,14 @@ export default class MetamaskButton extends Vue {
       const heatmapData: HeatmapData[] | null = await this.ethereumHeatmap()
       if (heatmapData) {
         if (heatmapData.length) {
-          /** changing Data Value to balance */
-          this.dataValueModel = 1
+          /** Emitting Ethereum Heatmap Data */
           this.$emit('heatmap-data', heatmapData)
+
+          /** changing Data Value to balance */
+          this.blockSizeModel = { value: 'balance_usd', text: 'Balance USD' }
+
           /** Disable Number of coins Button */
-          this.isNumberOfCoinsActive = false
+          this.isEthereumActive = true
         } else
           this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
             text: 'Invalid Address',
@@ -134,6 +184,7 @@ export default class MetamaskButton extends Vue {
   private async processHeatmap(): Promise<void> {
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
+    this.$emit('heatmap-loading')
     try {
       this.requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
         address: this.account,
@@ -216,6 +267,7 @@ export default class MetamaskButton extends Vue {
         })
         this.account = accounts[0]
         await this.processHeatmap()
+        this.isMetamaskActive = true
       }
     } catch (error) {
       this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
@@ -224,8 +276,16 @@ export default class MetamaskButton extends Vue {
     }
   }
 
-  private setDadaValue(listNumber: number) {
-    this.dataValueModel = listNumber
+  private exitMetamask() {
+    this.$emit('exit-metamask')
+    this.isMetamaskActive = false
+    this.isEthereumActive = false
+  }
+
+  private resetBlockSize() {
+    setTimeout(() => {
+      this.blockSizeModel = { value: 'liquidity_index', text: 'Liquidity' }
+    }, 100)
   }
 }
 </script>

@@ -81,7 +81,7 @@ export class DataValueConfig implements DataValueConfigInterface {
 
 export class HeatmapConfig implements HeatmapConfigInterface {
   @Type(() => DataValueConfig)
-  dataValue!: DataValueConfig
+  blockSize!: DataValueConfig
 
   numberOfCoins!: number[]
 }

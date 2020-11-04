@@ -31,5 +31,5 @@ export interface DataValueConfigInterface {
   options: DataValueOptionsInterface
 }
 export interface HeatmapConfigInterface {
-  dataValue: DataValueConfigInterface
+  blockSize: DataValueConfigInterface
 }

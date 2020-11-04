@@ -125,7 +125,7 @@ export default class Marketcap extends Vue {
 
     this.level1_bullet.label.fill = am4core.color('#fff')
     this.chart.events.on('ready', () => {
-      this.loading = false
+      this.$emit('heatmap-ready')
     })
   }
 }
