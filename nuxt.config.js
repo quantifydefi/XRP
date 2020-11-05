@@ -62,19 +62,14 @@ export default {
   pwa: {
     manifest: {
       name: 'Quantify Crypto',
-      description:
-        'Designed to Assist Cryptocurrency Traders with Superior Visual Displays',
-      short_name: 'Quantify Crypto',
+      description: 'Uniswap DEX NexGen Display  | DeFi Heatmap',
+      short_name: 'Quantify Crypto DeFi',
       lang: 'en',
       display: 'standalone',
       theme_color: '#1c31b5',
       start_url: '/',
     },
-
-    workbox: {
-      cacheAssets: false, // for /*
-      offline: false, // for /_nuxt/*
-    },
+    workbox: false,
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   loading: false,
