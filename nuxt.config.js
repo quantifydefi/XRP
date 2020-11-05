@@ -58,11 +58,7 @@ export default {
       theme_color: '#1c31b5',
       start_url: '/',
     },
-
-    workbox: {
-      cacheAssets: false, // for /*
-      offline: false, // for /_nuxt/*
-    },
+    workbox: false,
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   loading: false,
