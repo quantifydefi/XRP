@@ -17,13 +17,9 @@
       @data-value-change="changeDataValue($event)"
       @number-of-coins-change="changeNumberOfCoins"
       @exit-metamask="loadDefaultHeatmap"
-      @heatmap-loading="isHeatmapReady = false"
     />
     <v-col cols="12" class="px-0 py-0">
       <v-card tile outlined height="800">
-        <v-overlay :value="!isHeatmapReady" absolute>
-          <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
         <marketcap
           v-if="heatmapData.length"
           :data="heatmapData"
@@ -75,7 +71,6 @@ export default class Index extends Vue {
   @Ref('metaMaskComponent') readonly metaMaskComponent!: any
 
   private heatmapData: HeatmapData[] = []
-  private isHeatmapReady: boolean = false
   private heatmapConfig = plainToClass(HeatmapConfig, {
     blockSize: {
       title: 'Heatmap Data Value',
@@ -142,6 +137,7 @@ export default class Index extends Vue {
   /** Handler id Ethereum Heatmap Data ready. Apply tole and tooltip templates for Ethereum heatmap */
   private ethereumHeatmap(data: HeatmapData[]): void {
     this.heatmapData = data
+
     if (HeatmapData.hasUsdBalance(this.heatmapData)) {
       this.applyConfigs('balanceUsd')
     } else {

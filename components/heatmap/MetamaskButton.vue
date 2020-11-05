@@ -184,7 +184,6 @@ export default class MetamaskButton extends Vue {
   private async processHeatmap(): Promise<void> {
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
-    this.$emit('heatmap-loading')
     try {
       this.requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
         address: this.account,
