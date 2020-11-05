@@ -8,7 +8,7 @@ export class configBarMixin extends Vue {
   configOptions: object = {
     displays: [
       { text: 'Gainers and Losers', value: '24hour' },
-      { text: 'Market Cap', value: 'marketcap' }
+      { text: 'Market Cap', value: 'marketcap' },
     ],
     numOfCoins: [
       { text: '10', value: 10 },
@@ -18,7 +18,7 @@ export class configBarMixin extends Vue {
       { text: '100', value: 100 },
       { text: 'All Coins', value: 999 },
       { text: 'Favorite Coins', value: 'fav' },
-      { text: 'Metamask Wallet', value: 'wallet'}
+      { text: 'Metamask Wallet', value: 'wallet' },
     ],
 
     timeFrame: [
@@ -26,12 +26,12 @@ export class configBarMixin extends Vue {
       { text: 'Weekly', value: 'weekly' },
       { text: 'Monthly', value: 'monthly' },
       { text: 'Yearly', value: 'yearly' },
-      { text: 'Year To Date', value: 'ytd' }
+      { text: 'Year To Date', value: 'ytd' },
     ],
     exchanges: [
       { text: 'Binance', value: 'Binance' },
-      { text: 'All', value: 'All' }
-    ]
+      { text: 'All', value: 'All' },
+    ],
   }
 
   currentConfigs: heatmapConfigInterface = {
@@ -39,7 +39,7 @@ export class configBarMixin extends Vue {
     timeFrame: 'daily',
     numOfCoins: 50,
     exchange: 'All',
-    grouped: false
+    grouped: false,
   }
 
   deafoultNumOfCoisLanding: number = 20
