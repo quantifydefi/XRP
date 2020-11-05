@@ -1,6 +1,7 @@
 <template>
   <v-row justify="center">
     <v-col cols="8">
+      <h1 class="text-h3">Roadmap</h1>
       <client-only>
         <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
           <v-timeline-item
