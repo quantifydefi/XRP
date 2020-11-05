@@ -37,7 +37,15 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     'nuxt-webfontloader',
-    ['@nuxtjs/google-analytics', { ua: 'G-B05CGT9EY1' }],
+    [
+      '@nuxtjs/google-analytics',
+      {
+        ua: 'G-B05CGT9EY1',
+        debug: {
+          sendHitTask: process.env.RUN_ENV !== 'development',
+        },
+      },
+    ],
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
