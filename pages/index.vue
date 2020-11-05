@@ -1,5 +1,6 @@
 <template>
   <v-row>
+    <h1 class="text-h3">DeFi Heatmap</h1>
     <metamask-button
       ref="metaMaskComponent"
       :block-size-options="[
