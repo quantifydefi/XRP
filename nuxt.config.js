@@ -27,26 +27,13 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
-  plugins: [],
+  plugins: [{ src: '~plugins/ga.js', mode: 'client' }],
 
   components: true,
 
   buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
 
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-    'nuxt-webfontloader',
-    [
-      '@nuxtjs/google-analytics',
-      {
-        ua: 'G-B05CGT9EY1',
-        debug: {
-          sendHitTask: process.env.RUN_ENV !== 'development',
-        },
-      },
-    ],
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-webfontloader'],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
