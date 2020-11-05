@@ -50,9 +50,8 @@ export default {
   pwa: {
     manifest: {
       name: 'Quantify Crypto',
-      description:
-        'Designed to Assist Cryptocurrency Traders with Superior Visual Displays',
-      short_name: 'Quantify Crypto',
+      description: 'Uniswap DEX NexGen Display  | DeFi Heatmap',
+      short_name: 'Quantify Crypto DeFi',
       lang: 'en',
       display: 'standalone',
       theme_color: '#1c31b5',
