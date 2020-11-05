@@ -33,7 +33,12 @@ export default {
 
   buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
 
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-webfontloader'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/pwa',
+    'nuxt-webfontloader',
+    ['@nuxtjs/google-analytics', { ua: 'G-B05CGT9EY1' }],
+  ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
@@ -41,7 +46,6 @@ export default {
     withCredentials: true,
     debug: false,
   },
-
   webfontloader: {
     google: {
       families: ['Roboto:100,300,400,500,700,900&display=swap'],
