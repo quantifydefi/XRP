@@ -146,7 +146,7 @@ import { HeatmapData } from '~/models/heatmap'
 export default class MetamaskButton extends Vue {
   @Prop({ default: () => [] }) blockSizeOptions!: string[]
   @Prop({ default: () => [] }) readonly numberOfCoinsValues!: number[]
-
+  private $ga: any
   private account: string | null = null
   private requestJobId: string | null = null
   private isHeatmapReedy: boolean = false
@@ -184,6 +184,12 @@ export default class MetamaskButton extends Vue {
   private async processHeatmap(): Promise<void> {
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
+    this.$ga.event({
+      eventCategory: 'address-search',
+      eventAction: this.account,
+      eventLabel: 'label',
+      eventValue: 1,
+    })
     try {
       this.requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
         address: this.account,
@@ -267,6 +273,12 @@ export default class MetamaskButton extends Vue {
         this.account = accounts[0]
         await this.processHeatmap()
         this.isMetamaskActive = true
+        this.$ga.event({
+          eventCategory: 'metamask-connect',
+          eventAction: this.account,
+          eventLabel: 'label',
+          eventValue: 1,
+        })
       }
     } catch (error) {
       this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
