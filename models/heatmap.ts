@@ -16,12 +16,12 @@ export class HeatmapData implements HeatmapDataInterface {
   readonly liquidity_index!: number
   readonly price_eth!: number
   readonly price_usd!: number
-  readonly price1h!: number
+  readonly percent_change_1h!: number
   readonly balance_usd!: number
   readonly contract_balance!: number
 
   get color() {
-    const x = this.price1h
+    const x = this.percent_change_1h
     if (x * 100 > 0 && x * 100 <= 1) {
       return '#71c175'
     } else if (x * 100 > 1 && x * 100 <= 2.5) {

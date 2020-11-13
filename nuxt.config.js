@@ -10,6 +10,10 @@ const config = {
     BASE_URL: process.env.BASE_URL_DEV,
     SERVER_HOST: process.env.SERVER_HOST_DEV,
   },
+  staging: {
+    BASE_URL: process.env.BASE_URL_STAGING,
+    SERVER_HOST: process.env.SERVER_HOST_STAGING,
+  },
   production: {
     BASE_URL: process.env.BASE_URL_PROD,
     SERVER_HOST: process.env.SERVER_HOST_PROD,
@@ -76,6 +80,16 @@ export default {
     theme: {
       // light: true,
       themes: {
+        dark: {
+          primary: '#536af6',
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          info: colors.teal.lighten1,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent4,
+          success: colors.green.accent3,
+        },
+
         light: {
           primary: '#536af6',
           accent: colors.grey.darken3,

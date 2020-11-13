@@ -81,11 +81,11 @@ export default class Index extends Vue {
           title: 'Liquidity',
           tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]$ {price_usd}
-                  {price1h} %[/]`,
+                  {percent_change_1h} %[/]`,
 
           toolTip: `[bold]{coin_name}[/]
                     ---------------------
-                    1 Hour Change: {price1h}%
+                    1 Hour Change: {percent_change_1h}%
                     Liquidity: $ {liquidityTransformed} Million [font-size: {fontSize}px font-weight: 400;]`,
         },
 
@@ -95,7 +95,7 @@ export default class Index extends Vue {
           tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]
                   $ {price_usd}
-                  {price1h} %[/]`,
+                  {percent_change_1h} %[/]`,
 
           toolTip: `[bold]{coin_name}[/]
                     ---------------------
