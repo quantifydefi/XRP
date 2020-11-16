@@ -16,6 +16,7 @@
         href="https://quantifycrypto.com/terminal"
         >Crypto</v-btn
       >
+      <api-menu-header v-if="runEnv !== 'production'" />
     </v-app-bar>
     <v-main class="grey lighten-5">
       <v-container style="max-width: 3000px">
@@ -41,12 +42,13 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { Events } from '~/types/global'
-import Notification from '~/components/common/Notification.vue'
+import { Events } from '../types/global'
+import Notification from '../components/common/Notification.vue'
+import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 
 @Component({
   name: 'Default',
-  components: { Notification },
+  components: { ApiMenuHeader, Notification },
 })
 export default class Default extends Vue {
   clipped = false
@@ -56,7 +58,7 @@ export default class Default extends Vue {
   right = true
   rightDrawer = false
   $refs!: { notificationComponent: any }
-
+  runEnv = process.env.RUN_ENV
   mounted() {
     // this.$vuetify.theme.dark = true
 

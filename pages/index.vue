@@ -37,9 +37,9 @@
 <script lang="ts">
 import { Vue, Component, Ref } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
-import Marketcap from '~/components/heatmap/Marketcap.vue'
-import { HeatmapData, HeatmapConfig } from '~/models/heatmap'
-import { Events } from '~/types/global'
+import Marketcap from '../components/heatmap/Marketcap.vue'
+import { HeatmapData, HeatmapConfig } from '../models/heatmap'
+import { Events } from '../types/global'
 
 declare global {
   interface Window {
@@ -50,7 +50,7 @@ declare global {
 @Component({
   name: 'Index',
   components: {
-    MetamaskButton: () => import('~/components/heatmap/MetamaskButton.vue'),
+    MetamaskButton: () => import('../components/heatmap/MetamaskButton.vue'),
     Marketcap,
   },
   head(): object {

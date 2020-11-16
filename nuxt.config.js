@@ -125,5 +125,7 @@ export default {
     },
   },
 
+  env: { baseURL: config[runEnv].BASE_URL },
+
   server: { port: 3000, host: config[runEnv].SERVER_HOST },
 }
