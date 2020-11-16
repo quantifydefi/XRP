@@ -18,7 +18,7 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
 
   async requestHeatmap({ commit }, { address }): Promise<string> {
     const { data } = await this.$axios.post(
-      `/api//defi/heatmap/ethereum-request`,
+      `/api/defi/heatmap/ethereum-request`,
       {
         address,
       }
