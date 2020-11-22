@@ -25,7 +25,10 @@
 import { Vue, Component } from 'vue-property-decorator'
 @Component({ name: 'ApiMenuHeader' })
 export default class ApiMenuHeader extends Vue {
-  items = [{ title: 'DeFI Heatmap', href: '/api/defi/heatmap/docs' }]
+  items = [
+    { title: 'Heatmap', href: '/api/defi/heatmap/docs' },
+    { title: 'Common', href: '/api/defi/common/docs' },
+  ]
 }
 </script>
 

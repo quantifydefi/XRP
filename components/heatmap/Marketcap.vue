@@ -94,6 +94,7 @@ export default class Marketcap extends Vue {
     this.level1_bullet.label.fontWeight = 400
     const tileBody = this.tileBody
 
+    this.level1_bullet.label.url = '/token/{id}'
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.level1_bullet.label.adapter.add('text', (text: any, target: any) => {
       /*
@@ -122,7 +123,6 @@ export default class Marketcap extends Vue {
         .replace('{fontSize}', fontSize)
         .replace('{fontSizeLev2}', fontSizeLev2)
     })
-
     this.level1_bullet.label.fill = am4core.color('#fff')
     this.chart.events.on('ready', () => {
       this.$emit('heatmap-ready')

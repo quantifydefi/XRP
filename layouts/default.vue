@@ -16,7 +16,7 @@
         href="https://quantifycrypto.com/terminal"
         >Crypto</v-btn
       >
-      <api-menu-header v-if="runEnv !== 'production'" />
+      <api-menu-header />
     </v-app-bar>
     <v-main class="grey lighten-5">
       <v-container style="max-width: 3000px">
@@ -58,7 +58,7 @@ export default class Default extends Vue {
   right = true
   rightDrawer = false
   $refs!: { notificationComponent: any }
-  runEnv = process.env.RUN_ENV
+  // runEnv = process.env.RUN_ENV
   mounted() {
     // this.$vuetify.theme.dark = true
 
