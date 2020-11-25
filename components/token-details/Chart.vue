@@ -64,13 +64,8 @@ export default class Chart extends Vue {
     this.chart = am4core.create(this.$refs.chartDiv, am4charts.XYChart)
     this.chart.padding(0, 15, 0, 15)
     this.chart.colors.step = 3
-
     this.chart.data = this.chartData.reverse()
-    // the following line makes value axes to be arranged vertically.
     this.chart.leftAxesContainer.layout = 'vertical'
-
-    // uncomment this line if you want to change order of axes
-    // this.chart.bottomAxesContainer.reverseOrder = true
 
     const dateAxis = this.chart.xAxes.push(new am4charts.DateAxis())
     dateAxis.renderer.grid.template.location = 0
@@ -102,7 +97,10 @@ export default class Chart extends Vue {
     // series1.dataFields.valueYShow = 'changePercent'
     series1.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
                             ETH: {token_price}
-                            USD: {price_usd}`
+                            USD: {price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
+      '{}',
+      '$'
+    )
     series1.name = 'Token Price'
     series1.tooltip.getFillFromObject = false
     series1.tooltip.getStrokeFromObject = true
@@ -132,7 +130,7 @@ export default class Chart extends Vue {
     valueAxis.renderer.maxLabelPosition = 0.95
     valueAxis2.renderer.fontSize = '0.8em'
 
-    const volumeSeries = this.chart.series.push(new am4charts.ColumnSeries())
+    const volumeSeries = this.chart.series.push(new am4charts.LineSeries())
     volumeSeries.fillOpacity = 0.5
     volumeSeries.fill = series1.stroke
     volumeSeries.stroke = series1.stroke

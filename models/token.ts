@@ -7,12 +7,13 @@ export class Token implements TokenInterface {
   liquidity_provider_count!: number
   name!: string
   reserve_eth!: number
+  liquidity_usd_mil!: number
   reserve_index!: number
   symbol!: string
   token_price!: number
   tx_count!: number
   volume_usd!: number
-  ethereum_price_usd!: number
+  eth_price_usd!: number
   price_usd!: number
   percent_change_24h!: number
 
@@ -35,10 +36,6 @@ export class Token implements TokenInterface {
     } else if (x * 100 < -5) {
       return '#e60000'
     }
-  }
-
-  get totalLiquidityFormatted() {
-    return parseFloat((this.reserve_eth / 10 ** 3).toFixed(2))
   }
 
   get volumeUsdFormatted() {
@@ -66,6 +63,8 @@ export class ChartData implements ChartDataInterface {
   token_price!: number
   price_usd!: number
   liquidity_usd_mil!: number
+  eth_price_usd!: number
+
   get date() {
     return new Date(this.unix_time * 1000)
   }

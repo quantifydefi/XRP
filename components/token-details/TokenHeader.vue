@@ -15,13 +15,14 @@
       <span class="text-subtitle-1"
         >ETH
         <span class="text-caption ml-1">
-          ${{ tokenData.ethereum_price_usd }}/ETH</span
+          ${{ tokenData.eth_price_usd.toFixed(4) }}/ETH</span
         ></span
       ></span
     >
     <span class="text-h6" :style="{ color: tokenData.percent24hColor }"
       >{{ tokenData.percent_change_24h }}%</span
     >
+    <span class="text-caption">24h</span>
   </v-col>
 </template>
 <script lang="ts">

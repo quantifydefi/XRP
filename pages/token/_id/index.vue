@@ -9,9 +9,9 @@
         <v-col cols="2">
           <v-card class="mb-2" tile outlined>
             <v-card-text>
-              <div>Total Liquidity</div>
+              <div>Liquidity {{ tokenData.symbol }} - ETH</div>
               <p class="display-1 text--primary mb-0">
-                ${{ tokenData.totalLiquidityFormatted }}m
+                ${{ tokenData.liquidity_usd_mil }}m
               </p>
             </v-card-text>
           </v-card>
@@ -105,8 +105,6 @@ export default class Index extends Vue {
     defaultTimeRange: '1D',
     timeRange: ['1D', '7D', '1M', '3M', '6M', '1Y'],
   } as TokenChartConfig)
-
-  // private chartData
 
   get isDataReady() {
     return Object.keys(this.tokenData).length
