@@ -158,6 +158,10 @@ export default class Chart extends Vue {
     const sbSeries = scrollbarX.scrollbarChart.series.getIndex(0)
     sbSeries.dataFields.valueYShow = undefined
     this.chart.scrollbarX = scrollbarX
+
+    this.chart.events.on('ready', () => {
+      this.$emit('chart-ready')
+    })
   }
 
   beforeDestroy() {

@@ -6,6 +6,7 @@ export interface HeatmapDataInterface {
   readonly symbol: string
   readonly price_usd: number
   readonly percent_change_1h: number
+  readonly percent_change_24h: number
   readonly coin_name: string
   readonly liquidity_index: number
   readonly price_eth: number

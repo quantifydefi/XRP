@@ -7,7 +7,7 @@
 
       <v-row>
         <v-col cols="2">
-          <v-card class="mb-2" tile outlined>
+          <v-card class="mb-6" tile outlined>
             <v-card-text>
               <div>Liquidity {{ tokenData.symbol }} - ETH</div>
               <p class="display-1 text--primary mb-0">
@@ -16,7 +16,7 @@
             </v-card-text>
           </v-card>
 
-          <v-card class="mb-2" tile outlined>
+          <v-card class="mb-6" tile outlined>
             <v-card-text>
               <div>All time Volume in USD</div>
               <p class="display-1 text--primary mb-0">
@@ -25,7 +25,7 @@
             </v-card-text>
           </v-card>
 
-          <v-card class="mb-2" tile outlined>
+          <v-card class="mb-6" tile outlined>
             <v-card-text>
               <div>Transaction Count</div>
               <p class="display-1 text--primary mb-0">
@@ -33,7 +33,7 @@
               </p>
             </v-card-text>
           </v-card>
-          <v-card class="mb-2" tile outlined>
+          <v-card class="mb-6" tile outlined>
             <v-card-text>
               <div>Liquidity Provider Count</div>
               <p class="display-1 text--primary mb-0">
@@ -53,17 +53,20 @@
         </v-col>
 
         <v-col>
-          <v-card tile outlined>
-            <chart :chart-config="chartConfig" />
+          <v-card tile outlined height="100%">
+            <chart
+              :chart-config="chartConfig"
+              @chart-ready="isChartReady = true"
+            />
           </v-card>
         </v-col>
 
         <v-col cols="3">
-          <v-card class="mb-2" tile outlined>
+          <v-card class="mb-2" height="100%" tile outlined>
             <iframe
               id="myId"
               :src="`https://app.uniswap.org/#/swap?outputCurrency=${this.$route.params.id}`"
-              height="660px"
+              height="730px"
               width="100%"
               style="
                 border: 0;
@@ -77,6 +80,16 @@
         </v-col>
       </v-row>
     </v-col>
+
+    <v-overlay :opacity="1" color="grey lighten-5" :value="!isChartReady">
+      <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+      <v-progress-linear
+        color="primary"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-overlay>
   </v-row>
 </template>
 
@@ -100,6 +113,7 @@ import Chart from '~/components/token-details/Chart.vue'
 })
 export default class Index extends Vue {
   private tokenData: Token | {} = {}
+  private isChartReady: boolean = false
   private chartConfig = plainToClass(TokenChartConfig, {
     timeInterval: [],
     defaultTimeRange: '1D',

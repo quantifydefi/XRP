@@ -9,6 +9,7 @@
 
       <v-btn text tile to="/">Home</v-btn>
       <v-btn text tile to="/roadmap">Roadmap</v-btn>
+      <v-btn text tile to="/trading-101">Trading 101</v-btn>
       <v-btn
         text
         tile
@@ -58,10 +59,8 @@ export default class Default extends Vue {
   right = true
   rightDrawer = false
   $refs!: { notificationComponent: any }
-  // runEnv = process.env.RUN_ENV
-  mounted() {
-    // this.$vuetify.theme.dark = true
 
+  mounted() {
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)

@@ -13,10 +13,13 @@
         },
       ]"
       :number-of-coins-values="heatmapConfig.numberOfCoins"
+      :default-time-frame="heatmapConfig.timeFrame.default"
+      :time-frame-options="heatmapConfig.timeFrame.options"
       @heatmap-data="ethereumHeatmap($event)"
       @data-value-change="changeDataValue($event)"
       @number-of-coins-change="changeNumberOfCoins"
       @exit-metamask="loadDefaultHeatmap"
+      @time-frame-change="onTimeFrameChange($event)"
     />
     <v-col cols="12" class="px-0 py-0">
       <v-card tile outlined height="800">
@@ -27,10 +30,20 @@
           :data-field="dataField"
           :tile-body="tile"
           :chart-height="800"
+          :color-field="colorField"
           @heatmap-ready="isHeatmapReady = true"
         />
       </v-card>
     </v-col>
+    <v-overlay :opacity="1" color="grey lighten-5" :value="!isHeatmapReady">
+      <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+      <v-progress-linear
+        color="primary"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-overlay>
   </v-row>
 </template>
 
@@ -40,7 +53,7 @@ import { plainToClass } from 'class-transformer'
 import Marketcap from '../components/heatmap/Marketcap.vue'
 import { HeatmapData, HeatmapConfig } from '~/models/heatmap'
 import { Events } from '~/types/global'
-
+import MetamaskButton from '~/components/heatmap/MetamaskButton.vue'
 declare global {
   interface Window {
     ethereum: any
@@ -50,7 +63,7 @@ declare global {
 @Component({
   name: 'Index',
   components: {
-    MetamaskButton: () => import('../components/heatmap/MetamaskButton.vue'),
+    MetamaskButton,
     Marketcap,
   },
   head(): object {
@@ -72,6 +85,31 @@ export default class Index extends Vue {
 
   private heatmapData: HeatmapData[] = []
   private heatmapConfig = plainToClass(HeatmapConfig, {
+    timeFrame: {
+      title: 'Time Frame',
+      tooltip: 'Change Performance time Range',
+      default: { title: '1 Hour', value: '1h' },
+      options: [
+        {
+          value: '1h',
+          title: '1 Hour',
+          tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+                  [font-size: {fontSizeLev2}px; font-weight: 400;]$ {price_usd}
+                  {percent_change_1h}% [font-size: {fontSizeLev3}px] 1h`,
+          colorField: 'color1h',
+        },
+        {
+          value: '24h',
+          title: '1 Day',
+          tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+                  [font-size: {fontSizeLev2}px; font-weight: 400;]
+                  $ {price_usd}
+                  {percent_change_24h}% [font-size: {fontSizeLev3}px] 24h`,
+          colorField: 'color24h',
+        },
+      ],
+    },
+
     blockSize: {
       title: 'Heatmap Data Value',
       tooltip: 'Change Data Value',
@@ -81,21 +119,19 @@ export default class Index extends Vue {
           title: 'Liquidity',
           tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]$ {price_usd}
-                  {percent_change_1h} %[/]`,
+                  {percent_change_1h}% [font-size: {fontSizeLev3}px] 1h`,
 
           toolTip: `[bold]{coin_name}[/]
                     ---------------------
-                    1 Hour Change: {percent_change_1h}%
-                    Liquidity: $ {liquidityTransformed} Million [font-size: {fontSize}px font-weight: 400;]`,
+                    Liquidity: $ {liquidityTransformed}m`,
         },
-
         balanceUsd: {
           dataField: 'balance_usd',
           title: 'Balance USD',
           tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]
                   $ {price_usd}
-                  {percent_change_1h} %[/]`,
+                  {percent_change_1h}% [font-size: {fontSizeLev3}px] 1h`,
 
           toolTip: `[bold]{coin_name}[/]
                     ---------------------
@@ -111,6 +147,8 @@ export default class Index extends Vue {
   private toolTip: string | null = null
   private tile: string | null = null
   private dataField: string | null = null
+  private colorField: string = 'color1h'
+  private isHeatmapReady = false
 
   private async mounted() {
     this.applyConfigs('liquidity')
@@ -180,6 +218,16 @@ export default class Index extends Vue {
   async changeNumberOfCoins(numberOfCoins: number | undefined) {
     if (numberOfCoins === undefined) return
     this.heatmapData = await this.getHeatmapData({ numOfCoins: numberOfCoins })
+  }
+
+  onTimeFrameChange(value: string) {
+    const found = this.heatmapConfig.timeFrame.options.find(
+      (elem) => elem.value === value
+    )
+    if (found) {
+      this.tile = found.tile
+      this.colorField = found.colorField
+    }
   }
 }
 </script>

@@ -47,7 +47,7 @@ export class Token implements TokenInterface {
   }
 
   get coinImage(): string {
-    return `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${this.symbol.toLowerCase()}.png`
+    return `https://tokens.dharma.io/assets/${this.id}/icon.png`
   }
 }
 

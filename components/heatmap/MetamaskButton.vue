@@ -100,6 +100,40 @@
             @change="(v) => $emit('data-value-change', v.value)"
           />
         </div>
+        <div>
+          <v-btn
+            id="timeFrameToggle"
+            tile
+            class="text-capitalize text-subtitle-2"
+            color="grey lighten-5"
+            depressed
+            :disabled="loading"
+            @click="toggleTimeFrame = !toggleTimeFrame"
+          >
+            Time Frame:
+            <span class="primary--text mx-1"> {{ timeFrameModel.title }} </span>
+            <v-icon right> mdi-chevron-down </v-icon>
+          </v-btn>
+          <v-select
+            v-show="false"
+            v-model="timeFrameModel"
+            return-object
+            attach="#timeFrameToggle"
+            dense
+            :items="timeFrameOptions"
+            item-text="title"
+            item-value="value"
+            :menu-props="{
+              flat: true,
+              tile: true,
+              value: toggleTimeFrame,
+              closeOnClick: true,
+              bottom: true,
+              'nudge-top': -40,
+            }"
+            @change="(v) => $emit('time-frame-change', v.value)"
+          />
+        </div>
 
         <v-btn
           v-if="!isMetamaskActive"
@@ -140,12 +174,18 @@
 import detectEthereumProvider from '@metamask/detect-provider'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Events } from '~/types/global'
-import { HeatmapData } from '~/models/heatmap'
+import { HeatmapData, TimeFrameOption } from '~/models/heatmap'
 
 @Component({ name: 'MetamaskButton' })
 export default class MetamaskButton extends Vue {
   @Prop({ default: () => [] }) blockSizeOptions!: string[]
   @Prop({ default: () => [] }) readonly numberOfCoinsValues!: number[]
+  @Prop({ default: () => [] }) readonly timeFrameOptions!: TimeFrameOption[]
+  @Prop({ default: () => ({}) }) readonly defaultTimeFrame!: {
+    title: string
+    value: string
+  }
+
   private $ga: any
   private account: string | null = null
   private requestJobId: string | null = null
@@ -157,7 +197,9 @@ export default class MetamaskButton extends Vue {
   private isEthereumActive: boolean = false
   private isMetamaskActive: boolean = false
   private toggleDataValue: boolean = false
-  blockSizeModel = { value: 'liquidity_index', text: 'Liquidity' }
+  private blockSizeModel = { value: 'liquidity_index', text: 'Liquidity' }
+  private timeFrameModel = this.defaultTimeFrame
+  private toggleTimeFrame: boolean = false
 
   @Watch('isHeatmapReedy')
   private async onHeatmapReadyChanged(value: boolean) {

@@ -17,11 +17,33 @@ export class HeatmapData implements HeatmapDataInterface {
   readonly price_eth!: number
   readonly price_usd!: number
   readonly percent_change_1h!: number
+  readonly percent_change_24h!: number
   readonly balance_usd!: number
   readonly contract_balance!: number
 
-  get color() {
+  get color1h() {
     const x = this.percent_change_1h
+    if (x * 100 > 0 && x * 100 <= 1) {
+      return '#71c175'
+    } else if (x * 100 > 1 && x * 100 <= 2.5) {
+      return '#4eb153'
+    } else if (x * 100 > 2.5 && x * 100 <= 5) {
+      return '#3e8e42'
+    } else if (x * 100 > 5) {
+      return '#2f6a32'
+    } else if (x * 100 <= 0 && x * 100 >= -1) {
+      return '#ff8080'
+    } else if (x * 100 < -1 && x * 100 >= -2.5) {
+      return '#ff4d4d'
+    } else if (x * 100 < -2.5 && x * 100 >= -5) {
+      return '#ff1a1a'
+    } else if (x * 100 < -5) {
+      return '#e60000'
+    }
+  }
+
+  get color24h() {
+    const x = this.percent_change_24h
     if (x * 100 > 0 && x * 100 <= 1) {
       return '#71c175'
     } else if (x * 100 > 1 && x * 100 <= 2.5) {
@@ -78,10 +100,26 @@ export class DataValueConfig implements DataValueConfigInterface {
   title!: string
   tooltip!: string
 }
+export class TimeFrameOption {
+  value!: string
+  title!: string
+  tile!: string
+  colorField!: string
+}
+export class TimeFrameConfig {
+  title!: string
+  tooltip!: string
+  default!: { title: string; value: string }
+  @Type(() => TimeFrameOption)
+  options!: TimeFrameOption[]
+}
 
 export class HeatmapConfig implements HeatmapConfigInterface {
   @Type(() => DataValueConfig)
   blockSize!: DataValueConfig
+
+  @Type(() => TimeFrameConfig)
+  timeFrame!: TimeFrameConfig
 
   numberOfCoins!: number[]
 }

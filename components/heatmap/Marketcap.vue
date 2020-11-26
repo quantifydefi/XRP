@@ -1,6 +1,6 @@
 <template>
   <div
-    ref="chartdiv"
+    ref="mainTreemap"
     :style="{ width: '100%', height: `${chartHeight}px` }"
   ></div>
 </template>
@@ -8,7 +8,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 
 let am4core: any = null
 let am4charts: any = null
@@ -25,20 +25,15 @@ export default class Marketcap extends Vue {
   @Prop({ default: '' }) readonly tileBody!: string
   @Prop({ default: '' }) readonly tileTooltip!: string
   @Prop({ default: 'liquidity_index' }) readonly dataField!: string
+  @Prop({ default: '' }) readonly colorField!: string
   @Prop({ default: 0 }) readonly chartHeight!: number
   @Prop({ default: () => [] }) readonly data!: any
+  @Ref() readonly mainTreemap!: any
 
-  $refs!: {
-    chartdiv: any
-  }
-
-  $options: any
-  chart: any = null
-  level1_column: any
-  level1_bullet: any
-  level1: any
-  loading: boolean = true
-  $am4core: any
+  private chart: any = null
+  private level1_column: any
+  private level1_bullet: any
+  private level1: any
 
   @Watch('dataField')
   onDataFieldChanged() {
@@ -53,6 +48,14 @@ export default class Marketcap extends Vue {
     this.chart.data = this.data
   }
 
+  @Watch('colorField')
+  onColorFieldChanged() {
+    if (this.chart) {
+      this.chart.dispose()
+      this.renderChart()
+    }
+  }
+
   mounted() {
     this.renderChart()
   }
@@ -65,7 +68,7 @@ export default class Marketcap extends Vue {
 
   renderChart() {
     am4core.addLicense('CH187387301')
-    this.chart = am4core.create(this.$refs.chartdiv, am4charts.TreeMap)
+    this.chart = am4core.create(this.$refs.mainTreemap, am4charts.TreeMap)
     this.chart.preloader.disabled = true
     this.chart.padding(0, 0, 0, 0)
     this.chart.hiddenState.properties.opacity = 0
@@ -77,7 +80,7 @@ export default class Marketcap extends Vue {
     /* Define data fields */
     this.chart.dataFields.value = this.dataField
     this.chart.dataFields.name = 'symbol'
-    this.chart.dataFields.color = 'color'
+    this.chart.dataFields.color = this.colorField
     this.chart.dataFields.children = 'children'
 
     /* Configure top-level series */
@@ -119,9 +122,11 @@ export default class Marketcap extends Vue {
       if (fontSizeLev2 > 20) {
         fontSizeLev2 = 20
       }
+      const fontSizeLev3: any = fontSizeLev2 / 1.5
       return tileBody
         .replace('{fontSize}', fontSize)
         .replace('{fontSizeLev2}', fontSizeLev2)
+        .replace('{fontSizeLev3}', fontSizeLev3)
     })
     this.level1_bullet.label.fill = am4core.color('#fff')
     this.chart.events.on('ready', () => {
