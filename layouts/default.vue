@@ -35,7 +35,7 @@
         href="https://quantifycrypto.com/terminal"
         >Crypto</v-btn
       >
-      <api-menu-header />
+      <api-menu-header v-if="allowApiBar" />
     </v-app-bar>
     <v-main class="grey lighten-5">
       <v-container style="max-width: 3000px">
@@ -61,9 +61,9 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { Events } from '../types/global'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
+import { Events } from '~/types/global'
 
 @Component({
   name: 'Default',
@@ -78,6 +78,9 @@ export default class Default extends Vue {
   rightDrawer = false
   $refs!: { notificationComponent: any }
   isBarDisplayed = true
+  allowApiBar =
+    process.env.runEnv === 'development' || process.env.runEnv === 'staging'
+
   mounted() {
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {

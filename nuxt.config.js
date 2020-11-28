@@ -31,7 +31,7 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
-  plugins: ['~/plugins/axiosHTTPS.js'],
+  plugins: [],
 
   components: true,
 
@@ -125,7 +125,7 @@ export default {
     },
   },
 
-  env: { baseURL: config[runEnv].BASE_URL },
+  env: { baseURL: config[runEnv].BASE_URL, runEnv },
 
   server: { port: 3000, host: config[runEnv].SERVER_HOST },
 }
