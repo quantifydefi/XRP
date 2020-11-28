@@ -2,7 +2,9 @@
   <v-row justify="center">
     <v-col cols="8">
       <v-card tile outlined class="pa-4">
-        <h1 class="text-h3">Trading 101</h1>
+        <h1 class="text-h4">
+          Decentralized Finance (DeFI) Concepts: Beginner to Advanced
+        </h1>
         <h4 class="text-h6 mt-6">What is DeFi?</h4>
         <p>
           Back in 2016 many traders considered Bitcoin and the cryptocurrency
@@ -25,7 +27,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/embed/zjcVPZCG4sM' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/k9HYC0EJU6E' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
         <h4 class="text-h6 mt-6">What is a DEX?</h4>
@@ -49,7 +51,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/watch?v=_f_GQI-Ri9w' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/_f_GQI-Ri9w' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
 
@@ -73,7 +75,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/watch?v=ZIGUC9JAAw8' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/ZIGUC9JAAw8' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
 
@@ -88,7 +90,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/watch?v=ovbs8LT8wIg' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/ovbs8LT8wIg' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
 
@@ -125,7 +127,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/watch?v=cizLhxSKrAc' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/cizLhxSKrAc' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
 
@@ -149,7 +151,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/watch?v=qkiKTW7_OgQ&t=1s' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/qkiKTW7_OgQ&t=1s' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
 
@@ -167,7 +169,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/watch?v=RQMhpllbl1Y' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/RQMhpllbl1Y' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
       </v-card>
@@ -183,12 +185,13 @@ import { Vue, Component } from 'vue-property-decorator'
   components: {},
   head(): object {
     return {
-      title: 'DeFi Trading 101 | Defi Heatmap',
+      title: 'DeFi Guide for Beginners and Advanced users',
       meta: [
         {
           name: 'description',
           hid: 'description',
-          content: 'Trading 101 | Defi Heatmap',
+          content:
+            'DeFi definitions, video explanations, technology concepts for advanced trading',
         },
       ],
     }

@@ -31,7 +31,7 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
-  plugins: [],
+  plugins: ['~/plugins/axiosHTTPS.js'],
 
   components: true,
 

@@ -86,7 +86,7 @@ export default class Index extends Vue {
     {
       color: 'primary lighten-2',
       icon: 'mdi-account-reactivate-outline',
-      header: 'Uniswap Treader',
+      header: 'Uniswap Trader',
       desc: 'Build for the Uniswap Trader',
     },
     {

@@ -1,5 +1,23 @@
 <template>
-  <v-app :dark="true">
+  <v-app>
+    <v-system-bar
+      v-if="isBarDisplayed"
+      app
+      color="primary lighten-5"
+      style="justify-content: center"
+    >
+      Beta Version - Support of tokens paired with Ethereum only, the next
+      release adds support for non Ethereum paired tokens
+      <v-btn
+        class="ml-2"
+        icon
+        x-small
+        @click="isBarDisplayed = !isBarDisplayed"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-system-bar>
+
     <v-app-bar app color="white" elevation="1" tile>
       <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
@@ -59,7 +77,7 @@ export default class Default extends Vue {
   right = true
   rightDrawer = false
   $refs!: { notificationComponent: any }
-
+  isBarDisplayed = true
   mounted() {
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {

@@ -110,6 +110,20 @@ import Chart from '~/components/token-details/Chart.vue'
     ApiMenuHeader,
     Notification,
   },
+  head(this: any) {
+    return {
+      title: `Trade ${this.tokenData.name} (${this.tokenData.symbol}) on Uniswap | DeFi Heatmap`,
+
+      meta: [
+        {
+          name: 'description',
+          hid: 'description',
+          content:
+            'Live prices | Interactive Chart | Simple and Easy to use Uniswap Interface',
+        },
+      ],
+    }
+  },
 })
 export default class Index extends Vue {
   private tokenData: Token | {} = {}

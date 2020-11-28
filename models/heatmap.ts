@@ -23,42 +23,42 @@ export class HeatmapData implements HeatmapDataInterface {
 
   get color1h() {
     const x = this.percent_change_1h
-    if (x * 100 > 0 && x * 100 <= 1) {
+    if (x > 0 && x <= 1) {
       return '#71c175'
-    } else if (x * 100 > 1 && x * 100 <= 2.5) {
+    } else if (x > 1 && x <= 2.5) {
       return '#4eb153'
-    } else if (x * 100 > 2.5 && x * 100 <= 5) {
+    } else if (x > 2.5 && x <= 5) {
       return '#3e8e42'
-    } else if (x * 100 > 5) {
+    } else if (x > 5) {
       return '#2f6a32'
-    } else if (x * 100 <= 0 && x * 100 >= -1) {
+    } else if (x <= 0 && x >= -1) {
       return '#ff8080'
-    } else if (x * 100 < -1 && x * 100 >= -2.5) {
+    } else if (x < -1 && x >= -2.5) {
       return '#ff4d4d'
-    } else if (x * 100 < -2.5 && x * 100 >= -5) {
+    } else if (x < -2.5 && x >= -5) {
       return '#ff1a1a'
-    } else if (x * 100 < -5) {
+    } else if (x < -5) {
       return '#e60000'
     }
   }
 
   get color24h() {
     const x = this.percent_change_24h
-    if (x * 100 > 0 && x * 100 <= 1) {
+    if (x > 0 && x <= 1) {
       return '#71c175'
-    } else if (x * 100 > 1 && x * 100 <= 2.5) {
+    } else if (x > 1 && x <= 2.5) {
       return '#4eb153'
-    } else if (x * 100 > 2.5 && x * 100 <= 5) {
+    } else if (x > 2.5 && x <= 5) {
       return '#3e8e42'
-    } else if (x * 100 > 5) {
+    } else if (x > 5) {
       return '#2f6a32'
-    } else if (x * 100 <= 0 && x * 100 >= -1) {
+    } else if (x <= 0 && x >= -1) {
       return '#ff8080'
-    } else if (x * 100 < -1 && x * 100 >= -2.5) {
+    } else if (x < -1 && x >= -2.5) {
       return '#ff4d4d'
-    } else if (x * 100 < -2.5 && x * 100 >= -5) {
+    } else if (x < -2.5 && x >= -5) {
       return '#ff1a1a'
-    } else if (x * 100 < -5) {
+    } else if (x < -5) {
       return '#e60000'
     }
   }
