@@ -1,6 +1,7 @@
 <template>
   <v-row>
     <metamask-button
+      v-if="$vuetify.breakpoint.lgAndUp"
       ref="metaMaskComponent"
       :block-size-options="[
         {
@@ -22,14 +23,14 @@
       @time-frame-change="onTimeFrameChange($event)"
     />
     <v-col cols="12" class="px-0 py-0">
-      <v-card tile outlined height="800">
+      <v-card tile outlined :height="heatmapChartHeight">
         <marketcap
           v-if="heatmapData.length"
           :data="heatmapData"
           :tile-tooltip="toolTip"
           :data-field="dataField"
           :tile-body="tile"
-          :chart-height="800"
+          :chart-height="heatmapChartHeight"
           :color-field="colorField"
           @heatmap-ready="isHeatmapReady = true"
         />
@@ -149,8 +150,10 @@ export default class Index extends Vue {
   private dataField: string | null = null
   private colorField: string = 'color1h'
   private isHeatmapReady = false
+  private heatmapChartHeight = 800
 
   private async mounted() {
+    this.heatmapChartHeight = window.innerHeight - 95
     this.applyConfigs('liquidity')
     await this.loadDefaultHeatmap()
   }

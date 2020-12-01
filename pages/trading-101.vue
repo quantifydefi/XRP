@@ -131,9 +131,7 @@
           "
         ></p>
 
-        <h4 class="text-h6 mt-6">
-          Yield Farming is the reason for the DEX Boom
-        </h4>
+        <h4 class="text-h6 mt-6">An Advanced Passive Income Strategy</h4>
         <p>
           The prior video touched the benefits for cryptocurrency owners to
           provide liquidity for the tokens they own. The next video is

@@ -6,7 +6,7 @@
       </v-row>
 
       <v-row>
-        <v-col cols="2">
+        <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="2">
           <v-card class="mb-6" tile outlined>
             <v-card-text>
               <div>Liquidity {{ tokenData.symbol }} - ETH</div>
@@ -52,7 +52,7 @@
           </v-card>
         </v-col>
 
-        <v-col>
+        <v-col lg="7" md="12" cols="12">
           <v-card tile outlined height="100%">
             <chart
               :chart-config="chartConfig"
@@ -61,7 +61,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="3">
+        <v-col lg="3" sm="12" md="12">
           <v-card class="mb-2" height="100%" tile outlined>
             <iframe
               id="myId"

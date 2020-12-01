@@ -24,18 +24,19 @@
         <v-toolbar-title class="ml-1">DeFi Heatmap</v-toolbar-title>
       </nuxt-link>
       <v-spacer />
-
-      <v-btn text tile to="/">Home</v-btn>
-      <v-btn text tile to="/roadmap">Roadmap</v-btn>
-      <v-btn text tile to="/trading-101">Trading 101</v-btn>
-      <v-btn
-        text
-        tile
-        target="_blank"
-        href="https://quantifycrypto.com/terminal"
-        >Crypto</v-btn
-      >
-      <api-menu-header v-if="allowApiBar" />
+      <div v-if="$vuetify.breakpoint.lgAndUp">
+        <v-btn text tile to="/">Home</v-btn>
+        <v-btn text tile to="/roadmap">Roadmap</v-btn>
+        <v-btn text tile to="/trading-101">Trading 101</v-btn>
+        <v-btn
+          text
+          tile
+          target="_blank"
+          href="https://quantifycrypto.com/terminal"
+          >Crypto</v-btn
+        >
+        <api-menu-header v-if="allowApiBar" />
+      </div>
     </v-app-bar>
     <v-main class="grey lighten-5">
       <v-container style="max-width: 3000px">
