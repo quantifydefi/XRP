@@ -1,25 +1,27 @@
 <template>
   <v-row justify="center">
     <v-col cols="8">
-      <h1 class="text-h3">Roadmap</h1>
-      <client-only>
-        <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
-          <v-timeline-item
-            v-for="(item, i) in items"
-            :key="i"
-            :color="item.color"
-            :icon="item.icon"
-            fill-dot
-          >
-            <v-card tile outlined :color="item.color">
-              <v-card-title class="title"> {{ item.header }} </v-card-title>
-              <v-card-text class="white text--primary">
-                <p>{{ item.desc }}</p>
-              </v-card-text>
-            </v-card>
-          </v-timeline-item>
-        </v-timeline>
-      </client-only>
+      <v-card tile outlined class="pa-4">
+        <h1 class="text-h4">Roadmap</h1>
+        <client-only>
+          <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
+            <v-timeline-item
+              v-for="(item, i) in items"
+              :key="i"
+              :color="item.color"
+              :icon="item.icon"
+              fill-dot
+            >
+              <v-card tile outlined :color="item.color">
+                <v-card-title class="title"> {{ item.header }} </v-card-title>
+                <v-card-text>
+                  <p class="text-subtitle-1">{{ item.desc }}</p>
+                </v-card-text>
+              </v-card>
+            </v-timeline-item>
+          </v-timeline>
+        </client-only>
+      </v-card>
     </v-col>
   </v-row>
 </template>

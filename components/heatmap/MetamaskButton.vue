@@ -9,20 +9,14 @@
         clear-icon="mdi-close"
         :loading="loading"
         :disabled="loading"
-        @click:append="processHeatmap"
+        @click:append="getBalanceHeatmap"
         @keyup="isFromSearch = true"
         @click="isFromSearch = true"
       >
       </v-text-field>
     </v-col>
     <v-col class="pt-2 pb-0 px-0">
-      <v-btn
-        tile
-        depressed
-        :disabled="loading"
-        color="grey lighten-5"
-        @click="processHeatmap"
-      >
+      <v-btn tile depressed :disabled="loading" @click="getBalanceHeatmap">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-col>
@@ -32,7 +26,6 @@
           <v-menu offset-y>
             <template v-slot:activator="{ attrs, on }">
               <v-btn
-                color="grey lighten-5"
                 class="text-capitalize text-subtitle-2"
                 tile
                 depressed
@@ -71,13 +64,12 @@
             id="ButtonToggle"
             tile
             class="text-capitalize text-subtitle-2"
-            color="grey lighten-5"
             depressed
             :disabled="loading"
             @click="toggleDataValue = !toggleDataValue"
           >
             Block Size:
-            <span class="primary--text mx-1"> {{ blockSizeModel.text }} </span>
+            <span class="primary--text mx-1"> {{ blockSizeModel.title }} </span>
             <v-icon right> mdi-chevron-down </v-icon>
           </v-btn>
           <v-select
@@ -87,7 +79,7 @@
             attach="#ButtonToggle"
             dense
             :items="blockSizeOptions"
-            item-text="text"
+            item-text="title"
             item-value="value"
             :menu-props="{
               flat: true,
@@ -105,7 +97,6 @@
             id="timeFrameToggle"
             tile
             class="text-capitalize text-subtitle-2"
-            color="grey lighten-5"
             depressed
             :disabled="loading"
             @click="toggleTimeFrame = !toggleTimeFrame"
@@ -140,7 +131,6 @@
           tile
           depressed
           :disabled="loading"
-          color="grey lighten-5"
           class="mr-4 text-capitalize text-subtitle-2"
           @click="initMetamask"
           >Metamask
@@ -154,7 +144,6 @@
               :disabled="loading"
               tile
               depressed
-              color="grey lighten-5"
               class="mr-4"
               v-on="on"
               @click="exitMetamask"
@@ -162,7 +151,7 @@
               <v-icon>mdi-exit-to-app</v-icon>
             </v-btn>
           </template>
-          <span>Exit from Metamask</span>
+          <span>Exit to Default</span>
         </v-tooltip>
       </div>
     </v-col>
@@ -174,10 +163,17 @@
 import detectEthereumProvider from '@metamask/detect-provider'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Events } from '~/types/global'
-import { HeatmapData, TimeFrameOption } from '~/models/heatmap'
+import { TimeFrameOption } from '~/models/heatmap'
+import { HeatmapConfigMode, HeatmapEvents } from '~/types/heatmap'
 
 @Component({ name: 'MetamaskButton' })
 export default class MetamaskButton extends Vue {
+  @Prop({ default: () => ({}) }) readonly defaultBlockSize!: {
+    title: string
+    value: string
+  }
+
+  @Prop({ default: 'default' }) configMode!: HeatmapConfigMode
   @Prop({ default: () => [] }) blockSizeOptions!: string[]
   @Prop({ default: () => [] }) readonly numberOfCoinsValues!: number[]
   @Prop({ default: () => [] }) readonly timeFrameOptions!: TimeFrameOption[]
@@ -188,8 +184,6 @@ export default class MetamaskButton extends Vue {
 
   private $ga: any
   private account: string | null = null
-  private requestJobId: string | null = null
-  private isHeatmapReedy: boolean = false
   private loading: boolean = false
   private numberOfCoinsModel: number = 3
   private search: string = ''
@@ -197,33 +191,39 @@ export default class MetamaskButton extends Vue {
   private isEthereumActive: boolean = false
   private isMetamaskActive: boolean = false
   private toggleDataValue: boolean = false
-  private blockSizeModel = { value: 'liquidity_index', text: 'Liquidity' }
+  private blockSizeModel = this.defaultBlockSize
   private timeFrameModel = this.defaultTimeFrame
   private toggleTimeFrame: boolean = false
 
-  @Watch('isHeatmapReedy')
+  @Watch('defaultBlockSize')
+  private onDefaultBlockSizeChanged(value: { title: string; value: string }) {
+    this.blockSizeModel = value
+  }
+
+  /*  @Watch('isHeatmapReedy')
   private async onHeatmapReadyChanged(value: boolean) {
     if (value) {
       const heatmapData: HeatmapData[] | null = await this.ethereumHeatmap()
       if (heatmapData) {
         if (heatmapData.length) {
-          /** Emitting Ethereum Heatmap Data */
-          this.$emit('heatmap-data', heatmapData)
+          /!** Emitting Ethereum Heatmap Data *!/
+          this.$emit(HeatmapEvents.heatmapData, heatmapData)
 
-          /** changing Data Value to balance */
-          this.blockSizeModel = { value: 'balance_usd', text: 'Balance USD' }
+          /!** changing Data Value to balance *!/
+          this.blockSizeModel = { value: 'balanceUsd', title: 'Balance USD' }
 
-          /** Disable Number of coins Button */
+          /!** Disable Number of coins Button *!/
           this.isEthereumActive = true
+          this.isMetamaskActive = true
         } else
           this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
             text: 'Invalid Address',
           })
       }
     }
-  }
+  } */
 
-  private async processHeatmap(): Promise<void> {
+  private getBalanceHeatmap(): void {
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
     this.$ga.event({
@@ -232,7 +232,11 @@ export default class MetamaskButton extends Vue {
       eventLabel: 'label',
       eventValue: 1,
     })
-    try {
+
+    this.$emit(HeatmapEvents.balanceHeatmap, { address: this.account })
+    this.isEthereumActive = true
+    this.isMetamaskActive = true
+    /* try {
       this.requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
         address: this.account,
       })
@@ -246,9 +250,9 @@ export default class MetamaskButton extends Vue {
           text: 'Something went wrong',
         })
       }
-    }
+    } */
 
-    /** checking if Background job completed every sec if completed set isHeatmapReedy to True, then follow onHeatmapReadyChanged watcher */
+    /*    /!** checking if Background job completed every sec if completed set isHeatmapReedy to True, then follow onHeatmapReadyChanged watcher *!/
     if (this.requestJobId) {
       const checkStatus = setInterval(async () => {
         try {
@@ -268,10 +272,10 @@ export default class MetamaskButton extends Vue {
           clearInterval(checkStatus)
         }
       }, 1000)
-    }
+    } */
   }
 
-  private async ethereumHeatmap(): Promise<HeatmapData[] | null> {
+  /*  private async ethereumHeatmap(): Promise<HeatmapData[] | null> {
     try {
       return await this.$store.dispatch('heatmap/ethereumHeatmap', {
         address: this.account,
@@ -282,7 +286,7 @@ export default class MetamaskButton extends Vue {
       })
       return null
     }
-  }
+  } */
 
   private async initMetamask() {
     /** this returns the provider, or null if it wasn't detected */
@@ -313,7 +317,7 @@ export default class MetamaskButton extends Vue {
           method: 'eth_requestAccounts',
         })
         this.account = accounts[0]
-        await this.processHeatmap()
+        await this.getBalanceHeatmap()
         this.isMetamaskActive = true
         this.$ga.event({
           eventCategory: 'metamask-connect',
@@ -330,14 +334,17 @@ export default class MetamaskButton extends Vue {
   }
 
   private exitMetamask() {
-    this.$emit('exit-metamask')
+    this.$emit(HeatmapEvents.exitMetamask)
     this.isMetamaskActive = false
     this.isEthereumActive = false
+    this.blockSizeModel = { value: 'liquidity', title: 'Liquidity' }
   }
 
   private resetBlockSize() {
     setTimeout(() => {
-      this.blockSizeModel = { value: 'liquidity_index', text: 'Liquidity' }
+      this.blockSizeModel = { value: 'liquidity', title: 'Liquidity' }
+      this.isMetamaskActive = false
+      this.isEthereumActive = false
     }, 100)
   }
 }

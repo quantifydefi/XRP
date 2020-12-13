@@ -97,22 +97,32 @@ export default class Marketcap extends Vue {
     this.level1_bullet.label.fontWeight = 400
     const tileBody = this.tileBody
 
-    this.level1_bullet.label.url = '/token/{id}'
+    this.level1_bullet.label.url = '/token/{pool_id}'
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.level1_bullet.label.adapter.add('text', (text: any, target: any) => {
-      /*
-      const key = target.dataItem.dataContext.dataContext.symbol
-      target.url = `/coins/${key}` */
-
-      let fontSize: any =
-        (target.availableWidth /
-          (target.dataItem.dataContext.dataContext.symbol.length * 0.83)) *
-        0.75
-      let fontSizeLev2: any =
-        (target.availableWidth /
-          (target.dataItem.dataContext.dataContext.price_usd.toString().length *
-            0.83)) *
-        0.5
+      let fontSize: any = null
+      let fontSizeLev2: any = null
+      /** Try catch block for default and userAddress heatmap types */
+      try {
+        fontSize =
+          target.availableWidth /
+          (target.dataItem.dataContext.dataContext.poolSymbol.length * 0.7)
+        fontSizeLev2 =
+          (target.availableWidth /
+            (target.dataItem.dataContext.dataContext.token0_price_usd.toString()
+              .length *
+              0.83)) *
+          0.5
+      } catch {
+        fontSize =
+          target.availableWidth /
+          (target.dataItem.dataContext.dataContext.symbol.length * 0.7 * 1.5)
+        fontSizeLev2 =
+          (target.availableWidth /
+            target.dataItem.dataContext.dataContext.balance_usd.toString()
+              .length) *
+          0.85
+      }
 
       if (target.availableHeight < fontSize * 2) {
         fontSize = target.availableHeight / 2.5

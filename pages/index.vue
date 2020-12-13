@@ -3,23 +3,15 @@
     <metamask-button
       v-if="$vuetify.breakpoint.lgAndUp"
       ref="metaMaskComponent"
-      :block-size-options="[
-        {
-          value: heatmapConfig.blockSize.options.liquidity.dataField,
-          text: heatmapConfig.blockSize.options.liquidity.title,
-        },
-        {
-          value: heatmapConfig.blockSize.options.balanceUsd.dataField,
-          text: heatmapConfig.blockSize.options.balanceUsd.title,
-        },
-      ]"
+      :block-size-options="heatmapConfig.blockSize.options[heatmapConfig.mode]"
+      :default-block-size="heatmapConfig.blockSize.default"
       :number-of-coins-values="heatmapConfig.numberOfCoins"
       :default-time-frame="heatmapConfig.timeFrame.default"
-      :time-frame-options="heatmapConfig.timeFrame.options"
-      @heatmap-data="ethereumHeatmap($event)"
-      @data-value-change="changeDataValue($event)"
+      :time-frame-options="heatmapConfig.timeFrame.options[heatmapConfig.mode]"
+      @balance-heatmap="balanceHeatmap($event)"
+      @data-value-change="applyConfigs($event)"
       @number-of-coins-change="changeNumberOfCoins"
-      @exit-metamask="loadDefaultHeatmap"
+      @exit-metamask="exitAccount"
       @time-frame-change="onTimeFrameChange($event)"
     />
     <v-col cols="12" class="px-0 py-0">
@@ -36,7 +28,7 @@
         />
       </v-card>
     </v-col>
-    <v-overlay :opacity="1" color="grey lighten-5" :value="!isHeatmapReady">
+    <v-overlay :opacity="1" :value="!isHeatmapReady">
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
       <v-progress-linear
         color="primary"
@@ -49,12 +41,18 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Ref } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
 import Marketcap from '../components/heatmap/Marketcap.vue'
-import { HeatmapData, HeatmapConfig } from '~/models/heatmap'
+import {
+  HeatmapData,
+  HeatmapConfig,
+  DataValueOption,
+  HeatmapBalancesData,
+} from '~/models/heatmap'
 import { Events } from '~/types/global'
 import MetamaskButton from '~/components/heatmap/MetamaskButton.vue'
+
 declare global {
   interface Window {
     ethereum: any
@@ -82,64 +80,121 @@ declare global {
   },
 })
 export default class Index extends Vue {
-  @Ref('metaMaskComponent') readonly metaMaskComponent!: any
+  $refs!: {
+    metaMaskComponent: HTMLFormElement
+  }
 
-  private heatmapData: HeatmapData[] = []
+  private heatmapData: HeatmapData[] | HeatmapBalancesData[] = []
   private heatmapConfig = plainToClass(HeatmapConfig, {
+    mode: 'default',
     timeFrame: {
-      title: 'Time Frame',
+      title: 'Time Frame Liq',
       tooltip: 'Change Performance time Range',
-      default: { title: '1 Hour', value: '1h' },
-      options: [
-        {
-          value: '1h',
-          title: '1 Hour',
-          tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
-                  [font-size: {fontSizeLev2}px; font-weight: 400;]$ {price_usd}
-                  {percent_change_1h}% [font-size: {fontSizeLev3}px] 1h`,
-          colorField: 'color1h',
-        },
-        {
-          value: '24h',
-          title: '1 Day',
-          tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
-                  [font-size: {fontSizeLev2}px; font-weight: 400;]
-                  $ {price_usd}
-                  {percent_change_24h}% [font-size: {fontSizeLev3}px] 24h`,
-          colorField: 'color24h',
-        },
-      ],
+      default: { title: '1 Day', value: '24h' },
+      options: {
+        default: [
+          {
+            value: '1h',
+            title: '1 Hour',
+            tile: `{percent_change_liq_1h}% [font-size: {fontSizeLev3}px] 1h`,
+            colorField: 'color1h',
+          },
+          {
+            value: '24h',
+            title: '1 Day',
+            tile: `{percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
+            colorField: 'color24h',
+          },
+        ],
+        userAddress: [
+          {
+            value: '24h',
+            title: '1 Day',
+            tile: `{percent_change_24h}% [font-size: {fontSizeLev3}px] 24h`,
+            colorField: 'color24h',
+          },
+          {
+            value: '7d',
+            title: '7 Days',
+            tile: `{percent_change_7d}% [font-size: {fontSizeLev3}px] 7d`,
+            colorField: 'color7d',
+          },
+        ],
+      },
     },
 
     blockSize: {
       title: 'Heatmap Data Value',
       tooltip: 'Change Data Value',
+      default: { title: 'Liquidity', value: 'liquidity' },
       options: {
-        liquidity: {
-          dataField: 'liquidity_index',
-          title: 'Liquidity',
-          tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
-                  [font-size: {fontSizeLev2}px; font-weight: 400;]$ {price_usd}
-                  {percent_change_1h}% [font-size: {fontSizeLev3}px] 1h`,
+        default: [
+          {
+            dataField: 'reserve_index',
+            title: 'Liquidity',
+            value: 'liquidity',
+            tile: `[font-size: {fontSize}px font-weight: 400;]{poolSymbol}[/]
+                  [font-size: {fontSizeLev2}px; font-weight: 400;]$ {liquidityTransformed}m
+                  {time-data}`,
 
-          toolTip: `[bold]{coin_name}[/]
-                    ---------------------
-                    Liquidity: $ {liquidityTransformed}m`,
-        },
-        balanceUsd: {
-          dataField: 'balance_usd',
-          title: 'Balance USD',
-          tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+            toolTip: `[bold]{token0_name}-{token1_name}[/]
+                    ------------------------------------------
+                    Price: $ {token0_price_usd} [font-size: 12px]{token0_price}/{token0_symbol} | {eth_price_usd}/ETH[/]
+                    1H: {token0_percent_change_1h}%
+                    24H: {token0_percent_change_24h}%
+
+                    [bold]{token1_name}[/]
+                    ------------------------------------------
+                    Price: $ {token1_price_usd} [font-size: 12px]{token1_price}/{token1_symbol} | {eth_price_usd}/ETH[/]
+                    1H: {token1_percent_change_1h}%
+                    24H: {token1_percent_change_24h}%`,
+          },
+        ],
+
+        userAddress: [
+          {
+            dataField: 'rate',
+            value: 'rate',
+            title: 'Rate',
+            tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]
-                  $ {price_usd}
-                  {percent_change_1h}% [font-size: {fontSizeLev3}px] 1h`,
-
-          toolTip: `[bold]{coin_name}[/]
+                  $ {rate}
+                  {time-data}`,
+            toolTip: `[bold]{coin_name}[/]
                     ---------------------
-                    Balance: {contract_balance}
-                    Liquidity: $ {liquidityTransformed} Million
-                    Balance USD: $ {balance_usd} (@{price_usd}/{symbol})`,
-        },
+                    USD: $ {rate}
+                    Uniswap Pool: {pool_des}`,
+          },
+
+          {
+            dataField: 'market_cap_usd',
+            value: 'marketCap',
+            title: 'MarketCap',
+            tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+                  [font-size: {fontSizeLev2}px; font-weight: 400;]
+                  $ {marketCapFormatted}
+                  {time-data}`,
+
+            toolTip: `[bold]{coin_name}[/]
+                    ---------------------
+                    USD: $ {rate}
+                    Uniswap Pool: {pool_des}`,
+          },
+          {
+            dataField: 'balance_usd',
+            value: 'balanceUsd',
+            title: 'Balance USD',
+            tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+                  [font-size: {fontSizeLev2}px; font-weight: 400;]
+                  $ {balance_usd}
+                  {time-data}`,
+
+            toolTip: `[bold]{coin_name}[/]
+                    ---------------------
+                    USD: $ {rate}
+                    Uniswap Pool: {pool_des}`,
+          },
+        ],
       },
     },
     numberOfCoins: [10, 20, 36, 50, 100, 200, 500, 750],
@@ -148,7 +203,7 @@ export default class Index extends Vue {
   private toolTip: string | null = null
   private tile: string | null = null
   private dataField: string | null = null
-  private colorField: string = 'color1h'
+  private colorField: string = 'color24h'
   private isHeatmapReady = false
   private heatmapChartHeight = 800
 
@@ -176,46 +231,49 @@ export default class Index extends Vue {
   }
 
   /** Handler id Ethereum Heatmap Data ready. Apply tole and tooltip templates for Ethereum heatmap */
-  private ethereumHeatmap(data: HeatmapData[]): void {
-    this.heatmapData = data
+  private async balanceHeatmap({
+    address,
+  }: {
+    address: string
+  }): Promise<void> {
+    try {
+      this.heatmapData = await this.$store.dispatch('heatmap/balanceHeatmap', {
+        address,
+      })
 
-    if (HeatmapData.hasUsdBalance(this.heatmapData)) {
+      this.heatmapConfig.blockSize.default = {
+        value: 'balanceUsd',
+        title: 'Balance USD',
+      }
+      this.heatmapConfig.mode = 'userAddress'
+      this.colorField = 'color24h'
       this.applyConfigs('balanceUsd')
-    } else {
+    } catch {
       this.applyConfigs('liquidity')
       this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
         text:
           'Cannot build Heatmap since Contract Balances are missing or equal to zero',
       })
-      this.metaMaskComponent.resetBlockSize()
+      this.$refs.metaMaskComponent.resetBlockSize()
     }
   }
 
-  private changeDataValue(dataValue: string): void {
-    switch (dataValue) {
-      case 'liquidity_index':
-        this.applyConfigs('liquidity')
-        break
-
-      case 'balance_usd':
-        /** Check if contract balances in the dataset */
-        if (!HeatmapData.hasUsdBalance(this.heatmapData)) {
-          this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-            text:
-              'Cannot build Heatmap since Contract Balances are missing or equal to zero',
-          })
-          this.metaMaskComponent.resetBlockSize()
-          return
-        }
-        this.applyConfigs('balanceUsd')
+  private applyConfigs(value: string) {
+    const found:
+      | DataValueOption
+      | undefined = this.heatmapConfig.blockSize.options[
+      this.heatmapConfig.mode
+    ].find((elem) => elem.value === value)
+    if (found) {
+      const timeData = this.heatmapConfig.timeFrame.options[
+        this.heatmapConfig.mode
+      ].find((elem) => elem.colorField === this.colorField)
+      if (timeData) {
+        this.toolTip = found.toolTip
+        this.tile = found.tile.replace('{time-data}', timeData.tile)
+        this.dataField = found.dataField
+      }
     }
-  }
-
-  private applyConfigs(option: 'balanceUsd' | 'liquidity') {
-    this.toolTip = this.heatmapConfig.blockSize.options[option].toolTip
-    this.tile = this.heatmapConfig.blockSize.options[option].tile
-    this.tile = this.heatmapConfig.blockSize.options[option].tile
-    this.dataField = this.heatmapConfig.blockSize.options[option].dataField
   }
 
   async changeNumberOfCoins(numberOfCoins: number | undefined) {
@@ -224,13 +282,27 @@ export default class Index extends Vue {
   }
 
   onTimeFrameChange(value: string) {
-    const found = this.heatmapConfig.timeFrame.options.find(
-      (elem) => elem.value === value
-    )
+    const found = this.heatmapConfig.timeFrame.options[
+      this.heatmapConfig.mode
+    ].find((elem) => elem.value === value)
+
     if (found) {
-      this.tile = found.tile
-      this.colorField = found.colorField
+      const blockData = this.heatmapConfig.blockSize.options[
+        this.heatmapConfig.mode
+      ].find((elem) => elem.dataField === this.dataField)
+
+      if (blockData) {
+        this.tile = blockData.tile.replace('{time-data}', found.tile)
+        this.colorField = found.colorField
+      }
     }
+  }
+
+  exitAccount() {
+    this.heatmapConfig.mode = 'default'
+    this.colorField = 'color24h'
+    this.loadDefaultHeatmap()
+    this.applyConfigs('liquidity')
   }
 }
 </script>

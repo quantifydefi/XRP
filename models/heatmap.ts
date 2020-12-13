@@ -6,23 +6,45 @@ import {
   DataValueOptionInterface,
   DataValueConfigInterface,
   HeatmapConfigInterface,
+  HeatmapConfigMode,
+  TimeFrameOptionInterface,
+  TimeFrameConfigInterface,
+  DataValueOptionGroupType,
+  BalanceHeatmapDataInterface,
+  TimeFrameGropeType,
 } from '~/types/heatmap'
 
 export class HeatmapData implements HeatmapDataInterface {
-  readonly id: string = ''
-  readonly symbol!: string
-  readonly coin_name!: string
-  readonly liquidity!: number
-  readonly liquidity_index!: number
-  readonly price_eth!: number
-  readonly price_usd!: number
-  readonly percent_change_1h!: number
-  readonly percent_change_24h!: number
-  readonly balance_usd!: number
-  readonly contract_balance!: number
+  readonly pool_id!: string
+  readonly token0_id!: string
+  readonly token0_symbol!: string
+  readonly token0_name!: string
+  readonly token0_price!: number
+  readonly token1_id!: string
+  readonly token1_symbol!: string
+  readonly token1_name!: string
+  readonly token1_price!: number
+  readonly reserve_eth!: number
+  readonly reserve_index!: number
+  readonly eth_price_usd!: number
+  readonly token0_percent_change_1h!: number
+  readonly token1_percent_change_1h!: number
+  readonly percent_change_liq_1h!: number
+  readonly token0_percent_change_24h!: number
+  readonly token1_percent_change_24h!: number
+  readonly percent_change_liq_24h!: number
+  readonly token0_price_usd!: number
+  readonly token1_price_usd!: number
+  readonly contract_balance?: number
+  readonly unique_token?: string
+  readonly balance_usd?: number
 
-  get color1h() {
-    const x = this.percent_change_1h
+  get poolSymbol(): string {
+    return `${this.token0_symbol}-${this.token1_symbol}`
+  }
+
+  get color1h(): string | undefined {
+    const x = this.percent_change_liq_1h
     if (x > 0 && x <= 1) {
       return '#71c175'
     } else if (x > 1 && x <= 2.5) {
@@ -42,7 +64,90 @@ export class HeatmapData implements HeatmapDataInterface {
     }
   }
 
-  get color24h() {
+  get color24h(): string | undefined {
+    const x = this.percent_change_liq_24h
+    if (x > 0 && x <= 1) {
+      return '#71c175'
+    } else if (x > 1 && x <= 2.5) {
+      return '#4eb153'
+    } else if (x > 2.5 && x <= 5) {
+      return '#3e8e42'
+    } else if (x > 5) {
+      return '#2f6a32'
+    } else if (x <= 0 && x >= -1) {
+      return '#ff8080'
+    } else if (x < -1 && x >= -2.5) {
+      return '#ff4d4d'
+    } else if (x < -2.5 && x >= -5) {
+      return '#ff1a1a'
+    } else if (x < -5) {
+      return '#e60000'
+    }
+  }
+
+  get liquidityTransformed(): number {
+    return parseFloat((this.reserve_eth / 10 ** 3).toFixed(2))
+  }
+
+  get uniqueTokenSymbol(): string | undefined {
+    if (this.unique_token) {
+      if (this.unique_token === this.token0_id) {
+        return this.token0_symbol
+      } else return this.token1_symbol
+    }
+  }
+
+  static hasUsdBalance(data: HeatmapData[]): boolean {
+    const balances = []
+    for (const elem in data) {
+      if (data[elem].contract_balance) {
+        balances.push(data[elem].contract_balance)
+      }
+    }
+    return balances.length > 0
+  }
+}
+
+export class HeatmapBalancesData implements BalanceHeatmapDataInterface {
+  readonly address!: string
+  readonly balance!: number
+  readonly balance_usd!: number
+  readonly currency!: string
+  readonly market_cap_usd!: number
+  readonly coin_name!: string
+  readonly percent_change_24h!: number
+  readonly percent_change_7d!: number
+  readonly pool_des!: string
+  readonly pool_id!: number
+  readonly rate!: number
+  readonly symbol!: number
+
+  get marketCapFormatted(): number {
+    return parseFloat((this.market_cap_usd / 10 ** 6).toFixed(2))
+  }
+
+  get color7d(): string | undefined {
+    const x = this.percent_change_7d
+    if (x > 0 && x <= 1) {
+      return '#71c175'
+    } else if (x > 1 && x <= 2.5) {
+      return '#4eb153'
+    } else if (x > 2.5 && x <= 5) {
+      return '#3e8e42'
+    } else if (x > 5) {
+      return '#2f6a32'
+    } else if (x <= 0 && x >= -1) {
+      return '#ff8080'
+    } else if (x < -1 && x >= -2.5) {
+      return '#ff4d4d'
+    } else if (x < -2.5 && x >= -5) {
+      return '#ff1a1a'
+    } else if (x < -5) {
+      return '#e60000'
+    }
+  }
+
+  get color24h(): string | undefined {
     const x = this.percent_change_24h
     if (x > 0 && x <= 1) {
       return '#71c175'
@@ -62,59 +167,52 @@ export class HeatmapData implements HeatmapDataInterface {
       return '#e60000'
     }
   }
-
-  get liquidityTransformed() {
-    return parseFloat((this.liquidity / 10 ** 3).toFixed(2))
-  }
-
-  static hasUsdBalance(data: HeatmapData[]): boolean {
-    const balances = []
-    for (const elem in data) {
-      if (data[elem].contract_balance) {
-        balances.push(data[elem].contract_balance)
-      }
-    }
-    return balances.length > 0
-  }
 }
 
 export class DataValueOption implements DataValueOptionInterface {
-  dataField!: string
-  title!: string
-  tile!: string
-  toolTip!: string
+  readonly dataField!: string
+  readonly title!: string
+  readonly value!: string
+  readonly tile!: string
+  readonly toolTip!: string
 }
 
-export class DataValueOptions {
-  @Type(() => DataValueOption)
-  liquidity!: DataValueOption
-
-  @Type(() => DataValueOption)
-  balanceUsd!: DataValueOption
+export class DataValueOptionGroup implements DataValueOptionGroupType {
+  default!: DataValueOption[]
+  userAddress!: DataValueOption[]
 }
 
 export class DataValueConfig implements DataValueConfigInterface {
-  @Type(() => DataValueOptions)
-  options!: DataValueOptions
+  @Type(() => DataValueOptionGroup)
+  options!: DataValueOptionGroup
 
+  default!: { title: string; value: string }
   title!: string
   tooltip!: string
 }
-export class TimeFrameOption {
+export class TimeFrameOption implements TimeFrameOptionInterface {
   value!: string
   title!: string
   tile!: string
   colorField!: string
 }
-export class TimeFrameConfig {
+
+export class TimeFrameOptionGroup implements TimeFrameGropeType {
+  default!: TimeFrameOptionInterface[]
+  userAddress!: TimeFrameOptionInterface[]
+}
+
+export class TimeFrameConfig implements TimeFrameConfigInterface {
   title!: string
   tooltip!: string
   default!: { title: string; value: string }
-  @Type(() => TimeFrameOption)
-  options!: TimeFrameOption[]
+  @Type(() => TimeFrameOptionGroup)
+  options!: TimeFrameOptionGroup
 }
 
 export class HeatmapConfig implements HeatmapConfigInterface {
+  mode!: HeatmapConfigMode
+
   @Type(() => DataValueConfig)
   blockSize!: DataValueConfig
 
