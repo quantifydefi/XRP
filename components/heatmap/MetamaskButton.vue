@@ -37,7 +37,7 @@
                 <span class="primary--text mx-1">
                   {{ numberOfCoinsValues[numberOfCoinsModel] }}
                 </span>
-                <v-icon right> mdi-chevron-down </v-icon>
+                <v-icon right> mdi-chevron-down</v-icon>
               </v-btn>
             </template>
             <v-list dense>
@@ -70,7 +70,7 @@
           >
             Block Size:
             <span class="primary--text mx-1"> {{ blockSizeModel.title }} </span>
-            <v-icon right> mdi-chevron-down </v-icon>
+            <v-icon right> mdi-chevron-down</v-icon>
           </v-btn>
           <v-select
             v-show="false"
@@ -103,7 +103,7 @@
           >
             Time Frame:
             <span class="primary--text mx-1"> {{ timeFrameModel.title }} </span>
-            <v-icon right> mdi-chevron-down </v-icon>
+            <v-icon right> mdi-chevron-down</v-icon>
           </v-btn>
           <v-select
             v-show="false"
@@ -134,7 +134,7 @@
           class="mr-4 text-capitalize text-subtitle-2"
           @click="initMetamask"
           >Metamask
-          <v-icon right> mdi-wallet-outline </v-icon>
+          <v-icon right> mdi-wallet-outline</v-icon>
         </v-btn>
 
         <v-tooltip v-else bottom color="black">
@@ -194,50 +194,41 @@ export default class MetamaskButton extends Vue {
   private blockSizeModel = this.defaultBlockSize
   private timeFrameModel = this.defaultTimeFrame
   private toggleTimeFrame: boolean = false
+  private isHeatmapReedy: boolean = false
 
   @Watch('defaultBlockSize')
   private onDefaultBlockSizeChanged(value: { title: string; value: string }) {
     this.blockSizeModel = value
   }
 
-  /*  @Watch('isHeatmapReedy')
-  private async onHeatmapReadyChanged(value: boolean) {
+  @Watch('timeFrameModel')
+  private onTimeFrameModelChanged(value: { title: string; value: string }) {
+    this.timeFrameModel = value
+  }
+
+  @Watch('isHeatmapReedy')
+  private onHeatmapReadyChanged(value: boolean) {
     if (value) {
-      const heatmapData: HeatmapData[] | null = await this.ethereumHeatmap()
-      if (heatmapData) {
-        if (heatmapData.length) {
-          /!** Emitting Ethereum Heatmap Data *!/
-          this.$emit(HeatmapEvents.heatmapData, heatmapData)
+      this.$ga.event({
+        eventCategory: 'address-search',
+        eventAction: this.account,
+        eventLabel: 'label',
+        eventValue: 1,
+      })
 
-          /!** changing Data Value to balance *!/
-          this.blockSizeModel = { value: 'balanceUsd', title: 'Balance USD' }
-
-          /!** Disable Number of coins Button *!/
-          this.isEthereumActive = true
-          this.isMetamaskActive = true
-        } else
-          this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-            text: 'Invalid Address',
-          })
-      }
+      this.$emit(HeatmapEvents.balanceHeatmap, { address: this.account })
+      this.isEthereumActive = true
+      this.isMetamaskActive = true
     }
-  } */
+  }
 
-  private getBalanceHeatmap(): void {
+  private async getBalanceHeatmap(): Promise<void> {
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
-    this.$ga.event({
-      eventCategory: 'address-search',
-      eventAction: this.account,
-      eventLabel: 'label',
-      eventValue: 1,
-    })
 
-    this.$emit(HeatmapEvents.balanceHeatmap, { address: this.account })
-    this.isEthereumActive = true
-    this.isMetamaskActive = true
-    /* try {
-      this.requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
+    let requestJobId: string | null = null
+    try {
+      requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
         address: this.account,
       })
     } catch (error) {
@@ -250,16 +241,17 @@ export default class MetamaskButton extends Vue {
           text: 'Something went wrong',
         })
       }
-    } */
+    }
 
-    /*    /!** checking if Background job completed every sec if completed set isHeatmapReedy to True, then follow onHeatmapReadyChanged watcher *!/
-    if (this.requestJobId) {
+    /** checking if Background job completed every sec if completed set isHeatmapReedy to True, then follow onHeatmapReadyChanged watcher */
+    if (requestJobId) {
       const checkStatus = setInterval(async () => {
         try {
           this.loading = true
+          this.$emit(HeatmapEvents.heatmapLoading, true)
           this.isHeatmapReedy = await this.$store.dispatch(
             'heatmap/requestHeatmapStatus',
-            { jobId: this.requestJobId }
+            { jobId: requestJobId }
           )
           if (this.isHeatmapReedy) {
             clearInterval(checkStatus)
@@ -272,21 +264,8 @@ export default class MetamaskButton extends Vue {
           clearInterval(checkStatus)
         }
       }, 1000)
-    } */
-  }
-
-  /*  private async ethereumHeatmap(): Promise<HeatmapData[] | null> {
-    try {
-      return await this.$store.dispatch('heatmap/ethereumHeatmap', {
-        address: this.account,
-      })
-    } catch {
-      this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-        text: 'Something went wrong',
-      })
-      return null
     }
-  } */
+  }
 
   private async initMetamask() {
     /** this returns the provider, or null if it wasn't detected */
@@ -338,6 +317,7 @@ export default class MetamaskButton extends Vue {
     this.isMetamaskActive = false
     this.isEthereumActive = false
     this.blockSizeModel = { value: 'liquidity', title: 'Liquidity' }
+    this.timeFrameModel = { title: '1 Day', value: '24h' }
   }
 
   private resetBlockSize() {

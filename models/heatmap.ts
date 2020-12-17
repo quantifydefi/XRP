@@ -109,25 +109,25 @@ export class HeatmapData implements HeatmapDataInterface {
 }
 
 export class HeatmapBalancesData implements BalanceHeatmapDataInterface {
-  readonly address!: string
-  readonly balance!: number
   readonly balance_usd!: number
-  readonly currency!: string
+  readonly contract_balance!: number
+  readonly eth_price_usd!: number
   readonly market_cap_usd!: number
-  readonly coin_name!: string
-  readonly percent_change_24h!: number
-  readonly percent_change_7d!: number
-  readonly pool_des!: string
-  readonly pool_id!: number
-  readonly rate!: number
-  readonly symbol!: number
+  readonly percent_change_liq_1h!: number
+  readonly percent_change_liq_24h!: number
+  readonly pool_id!: string
+  readonly rate_usd!: number
+  readonly reserve_eth!: number
+  readonly token_pair!: string
+  readonly token_price!: number
+  readonly token_symbol!: string
 
   get marketCapFormatted(): number {
     return parseFloat((this.market_cap_usd / 10 ** 6).toFixed(2))
   }
 
-  get color7d(): string | undefined {
-    const x = this.percent_change_7d
+  get color1h(): string | undefined {
+    const x = this.percent_change_liq_1h
     if (x > 0 && x <= 1) {
       return '#71c175'
     } else if (x > 1 && x <= 2.5) {
@@ -148,7 +148,7 @@ export class HeatmapBalancesData implements BalanceHeatmapDataInterface {
   }
 
   get color24h(): string | undefined {
-    const x = this.percent_change_24h
+    const x = this.percent_change_liq_24h
     if (x > 0 && x <= 1) {
       return '#71c175'
     } else if (x > 1 && x <= 2.5) {

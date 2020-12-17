@@ -13,6 +13,7 @@
       @number-of-coins-change="changeNumberOfCoins"
       @exit-metamask="exitAccount"
       @time-frame-change="onTimeFrameChange($event)"
+      @heatmap-loading="(status) => (isHeatmapReady = !status)"
     />
     <v-col cols="12" class="px-0 py-0">
       <v-card tile outlined :height="heatmapChartHeight">
@@ -108,16 +109,16 @@ export default class Index extends Vue {
         ],
         userAddress: [
           {
-            value: '24h',
-            title: '1 Day',
-            tile: `{percent_change_24h}% [font-size: {fontSizeLev3}px] 24h`,
-            colorField: 'color24h',
+            value: '1h',
+            title: '1 Hour',
+            tile: `{percent_change_liq_1h}% [font-size: {fontSizeLev3}px] 1h`,
+            colorField: 'color1h',
           },
           {
-            value: '7d',
-            title: '7 Days',
-            tile: `{percent_change_7d}% [font-size: {fontSizeLev3}px] 7d`,
-            colorField: 'color7d',
+            value: '24h',
+            title: '1 Day',
+            tile: `{percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
+            colorField: 'color24h',
           },
         ],
       },
@@ -153,46 +154,46 @@ export default class Index extends Vue {
 
         userAddress: [
           {
-            dataField: 'rate',
+            dataField: 'rate_usd',
             value: 'rate',
             title: 'Rate',
-            tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+            tile: `[font-size: {fontSize}px font-weight: 400;]{token_symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]
-                  $ {rate}
+                  $ {rate_usd}
                   {time-data}`,
-            toolTip: `[bold]{coin_name}[/]
+            toolTip: `[bold]{token_name}[/]
                     ---------------------
-                    USD: $ {rate}
-                    Uniswap Pool: {pool_des}`,
+                    USD: $ {rate_usd}
+                    Uniswap Pool: {token_pair}`,
           },
 
           {
             dataField: 'market_cap_usd',
             value: 'marketCap',
             title: 'MarketCap',
-            tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+            tile: `[font-size: {fontSize}px font-weight: 400;]{token_symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]
                   $ {marketCapFormatted}
                   {time-data}`,
 
-            toolTip: `[bold]{coin_name}[/]
+            toolTip: `[bold]{token_name}[/]
                     ---------------------
-                    USD: $ {rate}
-                    Uniswap Pool: {pool_des}`,
+                    USD: $ {rate_usd}
+                    Uniswap Pool: {token_pair}`,
           },
           {
             dataField: 'balance_usd',
             value: 'balanceUsd',
             title: 'Balance USD',
-            tile: `[font-size: {fontSize}px font-weight: 400;]{symbol}[/]
+            tile: `[font-size: {fontSize}px font-weight: 400;]{token_symbol}[/]
                   [font-size: {fontSizeLev2}px; font-weight: 400;]
                   $ {balance_usd}
                   {time-data}`,
 
-            toolTip: `[bold]{coin_name}[/]
+            toolTip: `[bold]{token_name}[/]
                     ---------------------
-                    USD: $ {rate}
-                    Uniswap Pool: {pool_des}`,
+                    USD: $ {rate_usd}
+                    Uniswap Pool: {token_pair}`,
           },
         ],
       },

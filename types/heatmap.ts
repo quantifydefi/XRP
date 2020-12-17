@@ -26,18 +26,18 @@ export interface HeatmapDataInterface {
 }
 
 export interface BalanceHeatmapDataInterface {
-  readonly address: string
-  readonly coin_name: string
-  readonly symbol: number
-  readonly balance: number
-  readonly balance_usd: number
-  readonly rate: number
-  readonly currency: string
-  readonly market_cap_usd: number
-  readonly percent_change_24h: number
-  readonly percent_change_7d: number
-  readonly pool_id: number
-  readonly pool_des: string
+  balance_usd: number
+  contract_balance: number
+  eth_price_usd: number
+  market_cap_usd: number
+  percent_change_liq_1h: number
+  percent_change_liq_24h: number
+  pool_id: string
+  rate_usd: number
+  reserve_eth: number
+  token_pair: string
+  token_price: number
+  token_symbol: string
 }
 
 export type HeatmapConfigMode = 'default' | 'userAddress'
@@ -90,4 +90,5 @@ export enum HeatmapEvents {
   heatmapData = 'heatmap-data',
   exitMetamask = 'exit-metamask',
   balanceHeatmap = 'balance-heatmap',
+  heatmapLoading = 'heatmap-loading',
 }
