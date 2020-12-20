@@ -261,6 +261,7 @@ export default class Index extends Vue {
       this.heatmapConfig.mode = 'userAddress'
       this.colorField = 'color24h'
       this.applyConfigs('balanceUsd')
+      this.isHeatmapReady = true
     } catch {
       this.applyConfigs('liquidity')
       this.$root.$emit(Events.GLOBAL_NOTIFICATION, {

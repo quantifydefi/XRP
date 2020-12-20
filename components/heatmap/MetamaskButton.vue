@@ -166,6 +166,12 @@ import { Events } from '~/types/global'
 import { TimeFrameOption } from '~/models/heatmap'
 import { HeatmapConfigMode, HeatmapEvents } from '~/types/heatmap'
 
+declare global {
+  interface Window {
+    ethereum: any
+  }
+}
+
 @Component({ name: 'MetamaskButton' })
 export default class MetamaskButton extends Vue {
   @Prop({ default: () => ({}) }) readonly defaultBlockSize!: {
@@ -223,6 +229,7 @@ export default class MetamaskButton extends Vue {
   }
 
   private async getBalanceHeatmap(): Promise<void> {
+    this.isHeatmapReedy = false
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
 
