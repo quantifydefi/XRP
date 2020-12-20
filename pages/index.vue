@@ -29,7 +29,11 @@
         />
       </v-card>
     </v-col>
-    <v-overlay :opacity="1" :value="!isHeatmapReady">
+    <v-overlay
+      :opacity="1"
+      :value="!isHeatmapReady"
+      :color="ui[ui.theme].overlayColor"
+    >
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
       <v-progress-linear
         color="primary"
@@ -44,6 +48,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
+import { mapState } from 'vuex'
 import Marketcap from '../components/heatmap/Marketcap.vue'
 import {
   HeatmapData,
@@ -53,7 +58,7 @@ import {
 } from '~/models/heatmap'
 import { Events } from '~/types/global'
 import MetamaskButton from '~/components/heatmap/MetamaskButton.vue'
-
+import { UiState } from '~/store/ui'
 declare global {
   interface Window {
     ethereum: any
@@ -65,6 +70,12 @@ declare global {
   components: {
     MetamaskButton,
     Marketcap,
+  },
+  computed: {
+    ...mapState({
+      // TODO: Add models for UI types
+      ui: (state: any) => state.ui,
+    }),
   },
   head(): object {
     return {
@@ -207,6 +218,7 @@ export default class Index extends Vue {
   private colorField: string = 'color24h'
   private isHeatmapReady = false
   private heatmapChartHeight = 800
+  private ui!: UiState
 
   private async mounted() {
     this.heatmapChartHeight = window.innerHeight - 95
@@ -256,6 +268,7 @@ export default class Index extends Vue {
           'Cannot build Heatmap since Contract Balances are missing or equal to zero',
       })
       this.$refs.metaMaskComponent.resetBlockSize()
+      this.isHeatmapReady = true
     }
   }
 

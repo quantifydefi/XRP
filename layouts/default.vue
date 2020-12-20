@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app :dark="false">
     <v-app-bar app elevation="1" tile>
       <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
@@ -19,6 +19,9 @@
         >
         <api-menu-header v-if="allowApiBar" />
       </div>
+      <v-btn icon @click="changeTheme">
+        <v-icon>mdi-white-balance-sunny</v-icon>
+      </v-btn>
     </v-app-bar>
     <!--    <v-main class="grey lighten-5">-->
     <v-main>
@@ -48,6 +51,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import { Events } from '~/types/global'
+import { ThemeOptions } from '~/types/ui'
 
 @Component({
   name: 'Default',
@@ -61,11 +65,13 @@ export default class Default extends Vue {
   right = true
   rightDrawer = false
   $refs!: { notificationComponent: any }
+  $cookies!: Record<string, any>
+  $vuetify!: any
+
   allowApiBar =
     process.env.runEnv === 'development' || process.env.runEnv === 'staging'
 
   mounted() {
-    // this.$vuetify.theme.dark = true
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)
@@ -73,8 +79,29 @@ export default class Default extends Vue {
     })
   }
 
+  changeTheme() {
+    const theme: ThemeOptions = this.$cookies.get('theme')
+    if (theme === 'dark') {
+      this.$vuetify.theme.dark = false
+      this.$cookies.set('theme', 'light')
+      this.$store.dispatch('ui/changeTheme', 'light')
+    } else {
+      this.$vuetify.theme.dark = true
+      this.$cookies.set('theme', 'dark')
+      this.$store.dispatch('ui/changeTheme', 'dark')
+    }
+  }
+
   created() {
-    this.$vuetify.theme.dark = true
+    const theme: ThemeOptions | undefined = this.$cookies.get('theme')
+    if (theme) {
+      this.$vuetify.theme[theme] = true
+      this.$store.dispatch('ui/changeTheme', theme)
+    } else {
+      this.$cookies.set('theme', 'dark')
+      this.$vuetify.theme.dark = true
+      this.$store.dispatch('ui/changeTheme', 'dark')
+    }
   }
 }
 </script>
