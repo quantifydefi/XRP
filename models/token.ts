@@ -2,41 +2,34 @@
 import { ChartDataInterface, TokenInterface } from '~/types/token'
 
 export class Token implements TokenInterface {
-  created_at_timestamp!: number
-  id!: string
-  liquidity_provider_count!: number
-  name!: string
-  reserve_eth!: number
-  liquidity_usd_mil!: number
-  reserve_index!: number
-  symbol!: string
-  token_price!: number
-  tx_count!: number
-  volume_usd!: number
-  eth_price_usd!: number
-  price_usd!: number
-  percent_change_24h!: number
+  readonly base_asset!: string
+  readonly created_at_timestamp!: number
+  readonly eth_price_btc!: number
+  readonly eth_price_usd!: number
+  readonly exclude_pair!: boolean
+  readonly liquidity_provider_count!: number
+  readonly pool_id!: string
+  readonly quote_asset!: string
+  readonly quote_currency!: string
+  readonly reserve_eth!: number
+  readonly reserve_index!: number
+  readonly token0_id!: string
+  readonly token0_name!: string
+  readonly token0_price!: number
+  readonly token0_symbol!: string
+  readonly token1_id!: string
+  readonly token1_name!: string
+  readonly token1_price!: number
+  readonly token1_symbol!: string
+  readonly tx_count!: number
+  readonly volume_usd!: number
 
-  get percent24hColor() {
-    const x = this.percent_change_24h
-    if (x * 100 > 0 && x * 100 <= 1) {
-      return '#71c175'
-    } else if (x * 100 > 1 && x * 100 <= 2.5) {
-      return '#4eb153'
-    } else if (x * 100 > 2.5 && x * 100 <= 5) {
-      return '#3e8e42'
-    } else if (x * 100 > 5) {
-      return '#2f6a32'
-    } else if (x * 100 <= 0 && x * 100 >= -1) {
-      return '#ff8080'
-    } else if (x * 100 < -1 && x * 100 >= -2.5) {
-      return '#ff4d4d'
-    } else if (x * 100 < -2.5 && x * 100 >= -5) {
-      return '#ff1a1a'
-    } else if (x * 100 < -5) {
-      return '#e60000'
-    }
-  }
+  readonly percent_change_liq_1h!: number
+  readonly percent_change_liq_24h!: number
+  readonly token0_percent_change_1h!: number
+  readonly token0_percent_change_24h!: number
+  readonly token1_percent_change_1h!: number
+  readonly token1_percent_change_24h!: number
 
   get volumeUsdFormatted() {
     return parseFloat((this.volume_usd / 10 ** 3).toFixed(2))
@@ -46,8 +39,8 @@ export class Token implements TokenInterface {
     return new Date(this.created_at_timestamp * 1000)
   }
 
-  get coinImage(): string {
-    return `https://tokens.dharma.io/assets/${this.id}/icon.png`
+  coinImage(tokenId: string): string {
+    return `https://tokens.dharma.io/assets/${tokenId}/icon.png`
   }
 }
 
@@ -58,12 +51,14 @@ export class TokenChartConfig {
 }
 
 export class ChartData implements ChartDataInterface {
-  unix_time!: number
-  reserve_eth!: number
-  token_price!: number
-  price_usd!: number
-  liquidity_usd_mil!: number
   eth_price_usd!: number
+  liquidity_usd_mil!: number
+  reserve_eth!: number
+  token0_price_usd!: number
+  token1_price_usd!: number
+  token0_price!: number
+  token1_price!: number
+  unix_time!: number
 
   get date() {
     return new Date(this.unix_time * 1000)

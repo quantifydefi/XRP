@@ -15,32 +15,52 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Ref, Watch } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import { ChartData, TokenChartConfig } from '~/models/token'
 import ChartTimeRange from '~/components/token-details/ChartTimeRange.vue'
 let am4core: any = null
 let am4charts: any = null
 let am4themesAnimated: any = null
+let am4themesDark: any = null
 if (process.browser) {
   am4core = require('@amcharts/amcharts4/core')
   am4charts = require('@amcharts/amcharts4/charts')
   am4themesAnimated = require('@amcharts/amcharts4/themes/animated')
-  am4core.useTheme(am4themesAnimated.default)
+  am4themesDark = require('@amcharts/amcharts4/themes/dark')
 }
 
-@Component({ name: 'Chart', components: { ChartTimeRange } })
+@Component({
+  name: 'Chart',
+  components: { ChartTimeRange },
+  computed: {
+    ...mapState({
+      ui: (state: any) => state.ui,
+    }),
+  },
+})
 export default class Chart extends Vue {
   @Prop({ default: () => ({}) }) readonly chartConfig!: TokenChartConfig
   @Prop({ default: () => 700 }) readonly chartHeight!: TokenChartConfig
+  @Prop({ default: () => '' }) readonly token0Symbol!: string
+  @Prop({ default: () => '' }) readonly token1Symbol!: string
+
   @Ref() readonly chartDiv!: any
 
   private timeRange = this.chartConfig.defaultTimeRange
   private chart: any = null
   private chartData!: ChartData[]
-
+  private ui!: any
+  private allowChart: boolean = true
   @Watch('timeRange')
   async onTimeRangeChange(value: string) {
     this.chartData = await this.getChartData(value)
     this.chart.data = this.chartData.reverse()
+  }
+
+  @Watch('ui', { deep: true })
+  onThemeChange() {
+    // this.chart.dispose()
+    this.renderChart()
   }
 
   async mounted() {
@@ -60,6 +80,13 @@ export default class Chart extends Vue {
   }
 
   private renderChart() {
+    if (this.ui.theme === 'dark') {
+      am4core.useTheme(am4themesDark.default)
+    } else {
+      am4core.unuseTheme(am4themesDark.default)
+      am4core.useTheme(am4themesAnimated.default)
+    }
+    am4core.options.autoSetClassName = true
     am4core.addLicense('CH187387301')
     this.chart = am4core.create(this.$refs.chartDiv, am4charts.XYChart)
     this.chart.padding(0, 15, 0, 15)
@@ -90,27 +117,41 @@ export default class Chart extends Vue {
     valueAxis.renderer.opposite = true
     // height of axis
     valueAxis.height = am4core.percent(80)
-
     const series1 = this.chart.series.push(new am4charts.LineSeries())
     series1.dataFields.dateX = 'date'
-    series1.dataFields.valueY = 'price_usd'
-    // series1.dataFields.valueYShow = 'changePercent'
+    series1.dataFields.valueY = 'token0_price_usd'
     series1.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
-                            ETH: {token_price}
-                            USD: {price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
+                            ETH: {token0_price}
+                            USD: {token0_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
       '{}',
       '$'
     )
-    series1.name = 'Token Price'
+    series1.name = this.token0Symbol
     series1.tooltip.getFillFromObject = false
-    series1.tooltip.getStrokeFromObject = true
-    series1.tooltip.background.fill = am4core.color('#fff')
-    series1.tooltip.background.strokeWidth = 2
-    series1.tooltip.label.fill = series1.stroke
+    series1.tooltip.background.strokeWidth = 0
     series1.strokeWidth = 2
     series1.stroke = am4core.color('#1E88E5')
-    series1.fillOpacity = 0.3
-    series1.fill = am4core.color('#BBDEFB')
+    series1.tooltip.background.fill = am4core.color('#86b9e5')
+    series1.fill = am4core.color('#86b9e5')
+    series1.fillOpacity = 0.1
+
+    const series2 = this.chart.series.push(new am4charts.LineSeries())
+    series2.dataFields.dateX = 'date'
+    series2.dataFields.valueY = 'token1_price_usd'
+    series2.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
+                            ETH: {token1_price}
+                            USD: {token1_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
+      '{}',
+      '$'
+    )
+    series2.name = this.token1Symbol
+    series2.tooltip.getFillFromObject = false
+    series2.tooltip.background.strokeWidth = 0
+    series2.strokeWidth = 2
+    series2.stroke = am4core.color('#d20678')
+    series2.tooltip.background.fill = am4core.color('#db80b1')
+    series2.fill = am4core.color('#db80b1')
+    series2.fillOpacity = 0.1
 
     const valueAxis2 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxis2.tooltip.disabled = true
@@ -130,34 +171,38 @@ export default class Chart extends Vue {
     valueAxis.renderer.maxLabelPosition = 0.95
     valueAxis2.renderer.fontSize = '0.8em'
 
-    const volumeSeries = this.chart.series.push(new am4charts.LineSeries())
-    volumeSeries.fillOpacity = 0.5
-    volumeSeries.fill = series1.stroke
-    volumeSeries.stroke = series1.stroke
-    volumeSeries.dataFields.dateX = 'date'
-    volumeSeries.dataFields.valueY = 'reserve_eth'
-    volumeSeries.yAxis = valueAxis2
-    volumeSeries.tooltipText = `Liquidity:
+    const liqSeries = this.chart.series.push(new am4charts.LineSeries())
+    liqSeries.fillOpacity = 0.5
+    liqSeries.fill = series1.stroke
+    liqSeries.stroke = series1.stroke
+    liqSeries.dataFields.dateX = 'date'
+    liqSeries.dataFields.valueY = 'reserve_eth'
+    liqSeries.yAxis = valueAxis2
+    liqSeries.tooltipText = `Liquidity:
                                 -------------------
                                 ETH: {reserve_eth}
                                 USD: {liquidity_usd_mil}m`
-    volumeSeries.name = 'Liquidity'
-    volumeSeries.clustered = false
-    volumeSeries.stroke = am4core.color('#536af6')
-    volumeSeries.fillOpacity = 0.3
-    volumeSeries.fill = am4core.color('#536af6')
-    // volume should be summed
-    volumeSeries.groupFields.valueY = 'sum'
-    volumeSeries.tooltip.label.fill = volumeSeries.stroke
+    liqSeries.name = 'Liquidity'
+    liqSeries.clustered = false
+    liqSeries.stroke = am4core.color('#536af6')
+    liqSeries.fillOpacity = 0.3
+    liqSeries.fill = am4core.color('#536af6')
+    // liq should be summed
+    liqSeries.groupFields.valueY = 'sum'
+    liqSeries.tooltip.label.fill = liqSeries.stroke
     this.chart.cursor = new am4charts.XYCursor()
 
     this.chart.cursor = new am4charts.XYCursor()
     const scrollbarX = new am4charts.XYChartScrollbar()
     scrollbarX.series.push(series1)
+    // scrollbarX.series.push(series2)
     scrollbarX.marginBottom = 20
     const sbSeries = scrollbarX.scrollbarChart.series.getIndex(0)
     sbSeries.dataFields.valueYShow = undefined
     this.chart.scrollbarX = scrollbarX
+
+    // Add legend
+    this.chart.legend = new am4charts.Legend()
 
     this.chart.events.on('ready', () => {
       this.$emit('chart-ready')
@@ -172,4 +217,14 @@ export default class Chart extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+@media screen and (-ms-high-contrast: active) {
+  .amcharts-Label {
+    fill: #fff !important;
+  }
+  .amcharts-Grid {
+    stroke: #fff !important;
+    stroke-opacity: 1;
+  }
+}
+</style>

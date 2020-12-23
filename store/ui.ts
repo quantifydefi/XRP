@@ -5,7 +5,7 @@ import { ThemeOptions } from '~/types/ui'
 export const state = () => ({
   // TODO: Add models for UI types
   theme: 'dark' as ThemeOptions,
-  dark: { overlayColor: 'grey darken-3' },
+  dark: { overlayColor: 'grey darken-4' },
   light: { overlayColor: 'grey lighten-4' },
 })
 export type UiState = ReturnType<typeof state>
