@@ -2,7 +2,7 @@
   <v-card class="mb-2" height="100%" tile outlined>
     <iframe
       id="myId"
-      :src="`https://app.uniswap.org/#/swap?theme=${ui.theme}&outputCurrency=${this.$route.params.id}`"
+      :src="`https://app.uniswap.org/#/swap?theme=${ui.theme}&outputCurrency=${quoteToken}`"
       height="730px"
       width="100%"
       style="
@@ -17,7 +17,7 @@
   </v-card>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 @Component({
@@ -29,7 +29,9 @@ import { mapState } from 'vuex'
     }),
   },
 })
-export default class UniswapIframe extends Vue {}
+export default class UniswapIframe extends Vue {
+  @Prop({ default: () => '' }) readonly quoteToken!: string
+}
 </script>
 
 <style scoped></style>

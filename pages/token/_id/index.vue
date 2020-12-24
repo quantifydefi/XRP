@@ -1,6 +1,6 @@
 <template>
-  <v-row v-if="isDataReady" align="center" justify="center">
-    <v-col class="py-0">
+  <v-row align="center" justify="center">
+    <v-col v-if="isDataReady" class="py-0">
       <token-header :token-data="tokenData" />
 
       <v-row>
@@ -9,6 +9,7 @@
         <v-col lg="7" md="12" cols="12">
           <v-card tile outlined height="100%">
             <chart
+              :token-data="tokenData"
               :chart-config="chartConfig"
               :token0-symbol="tokenData.token0_symbol"
               :token1-symbol="tokenData.token1_symbol"
@@ -18,7 +19,9 @@
         </v-col>
 
         <v-col lg="3" sm="12" md="12">
-          <uniswap-iframe />
+          <uniswap-iframe
+            :quote-token="tokenData[`${tokenData.quote_asset}_id`]"
+          />
         </v-col>
       </v-row>
     </v-col>

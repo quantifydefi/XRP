@@ -16,7 +16,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Ref, Watch } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import { ChartData, TokenChartConfig } from '~/models/token'
+import { ChartData, TokenChartConfig, Token } from '~/models/token'
 import ChartTimeRange from '~/components/token-details/ChartTimeRange.vue'
 let am4core: any = null
 let am4charts: any = null
@@ -39,8 +39,9 @@ if (process.browser) {
   },
 })
 export default class Chart extends Vue {
+  @Prop({ default: () => ({}) }) readonly tokenData!: Token
   @Prop({ default: () => ({}) }) readonly chartConfig!: TokenChartConfig
-  @Prop({ default: () => 700 }) readonly chartHeight!: TokenChartConfig
+  @Prop({ default: () => 700 }) readonly chartHeight!: number
   @Prop({ default: () => '' }) readonly token0Symbol!: string
   @Prop({ default: () => '' }) readonly token1Symbol!: string
 
@@ -59,7 +60,7 @@ export default class Chart extends Vue {
 
   @Watch('ui', { deep: true })
   onThemeChange() {
-    // this.chart.dispose()
+    this.chart.dispose()
     this.renderChart()
   }
 
@@ -119,7 +120,7 @@ export default class Chart extends Vue {
     valueAxis.height = am4core.percent(80)
     const series1 = this.chart.series.push(new am4charts.LineSeries())
     series1.dataFields.dateX = 'date'
-    series1.dataFields.valueY = 'token0_price_usd'
+    series1.dataFields.valueY = 'token0_price'
     series1.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
                             ETH: {token0_price}
                             USD: {token0_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
@@ -134,10 +135,11 @@ export default class Chart extends Vue {
     series1.tooltip.background.fill = am4core.color('#86b9e5')
     series1.fill = am4core.color('#86b9e5')
     series1.fillOpacity = 0.1
+    series1.hidden = !Token.isQuoteToken(this.token0Symbol, this.tokenData)
 
     const series2 = this.chart.series.push(new am4charts.LineSeries())
     series2.dataFields.dateX = 'date'
-    series2.dataFields.valueY = 'token1_price_usd'
+    series2.dataFields.valueY = 'token1_price'
     series2.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
                             ETH: {token1_price}
                             USD: {token1_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
@@ -152,6 +154,7 @@ export default class Chart extends Vue {
     series2.tooltip.background.fill = am4core.color('#db80b1')
     series2.fill = am4core.color('#db80b1')
     series2.fillOpacity = 0.1
+    series2.hidden = !Token.isQuoteToken(this.token1Symbol, this.tokenData)
 
     const valueAxis2 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxis2.tooltip.disabled = true

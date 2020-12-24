@@ -33,8 +33,6 @@ export interface TokenInterface {
 export interface ChartDataInterface {
   unix_time: number
   reserve_eth: number
-  token0_price_usd: number
-  token1_price_usd: number
   token0_price: number
   token1_price: number
   liquidity_usd_mil: number

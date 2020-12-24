@@ -3,12 +3,30 @@
     <v-card tile outlined class="mb-2">
       <v-tabs color="primary" grow>
         <v-tab @click="changeTab('pool')">Pair</v-tab>
-        <v-tab @click="changeTab('token0')">{{
-          tokenData.token0_symbol
-        }}</v-tab>
-        <v-tab @click="changeTab('token1')">{{
-          tokenData.token1_symbol
-        }}</v-tab>
+        <v-tab @click="changeTab('token0')"
+          >{{ tokenData.token0_symbol }}
+
+          <v-tooltip v-if="isToken0Quote" top color="black">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
+                mdi-cash-usd-outline
+              </v-icon>
+            </template>
+            <span>Quote Asset</span>
+          </v-tooltip>
+        </v-tab>
+        <v-tab @click="changeTab('token1')"
+          >{{ tokenData.token1_symbol }}
+
+          <v-tooltip v-if="isToken1Quote" top color="black">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
+                mdi-cash-usd-outline
+              </v-icon>
+            </template>
+            <span>Quote Asset</span>
+          </v-tooltip>
+        </v-tab>
       </v-tabs>
     </v-card>
     <div v-if="tab === 'pool'">
@@ -169,6 +187,14 @@ import { Token } from '~/models/token'
 export default class LeftBar extends Vue {
   @Prop({ default: () => ({}) }) tokenData!: Token
   tab: string = 'pool'
+
+  get isToken0Quote() {
+    return Token.isQuoteToken(this.tokenData.token0_symbol, this.tokenData)
+  }
+
+  get isToken1Quote() {
+    return Token.isQuoteToken(this.tokenData.token1_symbol, this.tokenData)
+  }
 
   changeTab(tab: string) {
     this.tab = tab

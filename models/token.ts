@@ -42,6 +42,13 @@ export class Token implements TokenInterface {
   coinImage(tokenId: string): string {
     return `https://tokens.dharma.io/assets/${tokenId}/icon.png`
   }
+
+  static isQuoteToken(symbol: string, token: Token | any): boolean {
+    const key: any = Object.keys(token).find(
+      (key: any) => token[key] === symbol
+    )
+    return key.split('_')[0] === token.quote_asset
+  }
 }
 
 export class TokenChartConfig {
@@ -54,8 +61,6 @@ export class ChartData implements ChartDataInterface {
   eth_price_usd!: number
   liquidity_usd_mil!: number
   reserve_eth!: number
-  token0_price_usd!: number
-  token1_price_usd!: number
   token0_price!: number
   token1_price!: number
   unix_time!: number
