@@ -1,3 +1,7 @@
+options:
+  docker: true
+  size: 2x
+
 pipelines:
   custom:
     build-image:
@@ -41,3 +45,8 @@ pipelines:
                 CLUSTER_NAME: 'Defi'
                 SERVICE_NAME: 'nginx'
                 TASK_DEFINITION: 'task-definition.json'
+
+definitions:
+  services:
+    docker:
+      memory: 4096
