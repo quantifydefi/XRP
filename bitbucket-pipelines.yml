@@ -9,6 +9,7 @@ pipelines:
           caches:
             - pip
           script:
+            - apk add gcc musl-dev python3-dev libffi-dev openssl-dev
             - pip3 install awscli
             - IMAGE="488443597418.dkr.ecr.us-west-2.amazonaws.com/qc-defi-nuxt-server"
             - aws configure set aws_access_key_id "${AWS_KEY}"
