@@ -126,6 +126,10 @@ export class HeatmapBalancesData implements BalanceHeatmapDataInterface {
     return parseFloat((this.market_cap_usd / 10 ** 6).toFixed(2))
   }
 
+  get liquidityTransformed(): number {
+    return parseFloat((this.reserve_eth / 10 ** 3).toFixed(2))
+  }
+
   get color1h(): string | undefined {
     const x = this.percent_change_liq_1h
     if (x > 0 && x <= 1) {

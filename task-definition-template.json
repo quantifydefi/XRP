@@ -1,0 +1,32 @@
+{
+  "family": "qc-nginx",
+  "containerDefinitions": [
+    {
+      "name": "${CONTAINER_NAME}",
+      "image": "${IMAGE_NAME}",
+      "environment": [],
+      "essential": true,
+      "hostname": "qc-nginx",
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "qc-nginx-${RUN_ENV}",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "qc-nginx"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "cpu": "128",
+  "memory": "50"
+}

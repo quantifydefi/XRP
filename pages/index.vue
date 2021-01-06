@@ -165,20 +165,6 @@ export default class Index extends Vue {
 
         userAddress: [
           {
-            dataField: 'rate_usd',
-            value: 'rate',
-            title: 'Rate',
-            tile: `[font-size: {fontSize}px font-weight: 400;]{token_symbol}[/]
-                  [font-size: {fontSizeLev2}px; font-weight: 400;]
-                  $ {rate_usd}
-                  {time-data}`,
-            toolTip: `[bold]{token_name}[/]
-                    ---------------------
-                    USD: $ {rate_usd}
-                    Uniswap Pool: {token_pair}`,
-          },
-
-          {
             dataField: 'market_cap_usd',
             value: 'marketCap',
             title: 'MarketCap',
@@ -189,7 +175,9 @@ export default class Index extends Vue {
 
             toolTip: `[bold]{token_name}[/]
                     ---------------------
-                    USD: $ {rate_usd}
+                    MarketCap: $ {marketCapFormatted}
+                    Price USD: $ {rate_usd}
+                    Liquidity: $ {liquidityTransformed}m
                     Uniswap Pool: {token_pair}`,
           },
           {
@@ -203,7 +191,10 @@ export default class Index extends Vue {
 
             toolTip: `[bold]{token_name}[/]
                     ---------------------
-                    USD: $ {rate_usd}
+                    Balance USD: $ {balance_usd} [font-size: 12px] | {eth_price_usd}/ETH[/]
+                    Contract Balance: {contract_balance}
+                    Price USD: $ {rate_usd}
+                    Liquidity: $ {liquidityTransformed}m
                     Uniswap Pool: {token_pair}`,
           },
         ],
