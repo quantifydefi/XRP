@@ -2,7 +2,7 @@ pipelines:
   custom:
     build-image:
       - step:
-          image: python:3.6-alpine
+          image: node:12.7.0-alpine
           name: Build Image
           services:
             - docker
