@@ -4,7 +4,7 @@ options:
 
 pipelines:
   custom:
-    build-image:
+    build-image-dev:
       - step:
           image: node:12.7.0-alpine
           name: Build Image
@@ -15,7 +15,7 @@ pipelines:
           script:
             - apk add gcc musl-dev python3-dev libffi-dev openssl-dev
             - pip3 install awscli
-            - IMAGE="488443597418.dkr.ecr.us-west-2.amazonaws.com/qc-defi-nuxt-server"
+            - IMAGE="488443597418.dkr.ecr.us-west-2.amazonaws.com/qc-defi-nuxt-server:dev"
             - aws configure set aws_access_key_id "${AWS_KEY}"
             - aws configure set aws_secret_access_key "${AWS_SECRET}"
             - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
