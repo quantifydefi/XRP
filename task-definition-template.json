@@ -1,25 +1,25 @@
 {
-  "family": "qc-nginx",
+  "family": "${CONTAINER_NAME}",
   "containerDefinitions": [
     {
       "name": "${CONTAINER_NAME}",
       "image": "${IMAGE_NAME}",
       "environment": [],
       "essential": true,
-      "hostname": "qc-nginx",
+      "hostname": "${CONTAINER_NAME}",
       "portMappings": [
         {
-          "hostPort": 0,
+          "hostPort": 3000,
           "protocol": "tcp",
-          "containerPort": 80
+          "containerPort": 3000
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "qc-nginx-${RUN_ENV}",
+          "awslogs-group": "qc-defi-nuxt-server-${RUN_ENV}",
           "awslogs-region": "us-west-2",
-          "awslogs-stream-prefix": "qc-nginx"
+          "awslogs-stream-prefix": "qc-defi-nuxt-server"
         }
       }
     }
