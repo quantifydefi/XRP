@@ -45,6 +45,7 @@ pipelines:
                 CLUSTER_NAME: 'Defi'
                 SERVICE_NAME: 'qc-defi-nuxt-server'
                 TASK_DEFINITION: 'task-definition.json'
+                FORCE_NEW_DEPLOYMENT: "true"
 
 definitions:
   services:

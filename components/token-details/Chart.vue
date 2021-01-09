@@ -127,7 +127,7 @@ export default class Chart extends Vue {
       '{}',
       '$'
     )
-    series1.name = this.token0Symbol
+    series1.name = this.token1Symbol
     series1.tooltip.getFillFromObject = false
     series1.tooltip.background.strokeWidth = 0
     series1.strokeWidth = 2
@@ -135,7 +135,7 @@ export default class Chart extends Vue {
     series1.tooltip.background.fill = am4core.color('#86b9e5')
     series1.fill = am4core.color('#86b9e5')
     series1.fillOpacity = 0.1
-    series1.hidden = !Token.isQuoteToken(this.token0Symbol, this.tokenData)
+    series1.hidden = Token.isQuoteToken(this.token0Symbol, this.tokenData)
 
     const series2 = this.chart.series.push(new am4charts.LineSeries())
     series2.dataFields.dateX = 'date'
@@ -146,7 +146,7 @@ export default class Chart extends Vue {
       '{}',
       '$'
     )
-    series2.name = this.token1Symbol
+    series2.name = this.token0Symbol
     series2.tooltip.getFillFromObject = false
     series2.tooltip.background.strokeWidth = 0
     series2.strokeWidth = 2
@@ -154,7 +154,7 @@ export default class Chart extends Vue {
     series2.tooltip.background.fill = am4core.color('#db80b1')
     series2.fill = am4core.color('#db80b1')
     series2.fillOpacity = 0.1
-    series2.hidden = !Token.isQuoteToken(this.token1Symbol, this.tokenData)
+    series2.hidden = Token.isQuoteToken(this.token1Symbol, this.tokenData)
 
     const valueAxis2 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxis2.tooltip.disabled = true

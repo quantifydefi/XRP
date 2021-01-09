@@ -2,8 +2,14 @@
   <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="2">
     <v-card tile outlined class="mb-2">
       <v-tabs color="primary" grow>
-        <v-tab @click="changeTab('pool')">Pair</v-tab>
-        <v-tab @click="changeTab('token0')"
+        <v-tab
+          style="min-width: 60px; padding: 0 5px"
+          @click="changeTab('pool')"
+          >Pair</v-tab
+        >
+        <v-tab
+          style="min-width: 60px; padding: 0 5px"
+          @click="changeTab('token0')"
           >{{ tokenData.token0_symbol }}
 
           <v-tooltip v-if="isToken0Quote" top color="black">
@@ -15,7 +21,9 @@
             <span>Quote Asset</span>
           </v-tooltip>
         </v-tab>
-        <v-tab @click="changeTab('token1')"
+        <v-tab
+          style="min-width: 60px; padding: 0 5px"
+          @click="changeTab('token1')"
           >{{ tokenData.token1_symbol }}
 
           <v-tooltip v-if="isToken1Quote" top color="black">
