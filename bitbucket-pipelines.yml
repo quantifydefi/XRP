@@ -43,7 +43,7 @@ pipelines:
                 AWS_SECRET_ACCESS_KEY: $AWS_SECRET
                 AWS_DEFAULT_REGION: $AWS_REGION
                 CLUSTER_NAME: 'Defi'
-                SERVICE_NAME: 'defi-nuxt-server'
+                SERVICE_NAME: 'qc-defi-nuxt-server'
                 TASK_DEFINITION: 'task-definition.json'
 
 definitions:
