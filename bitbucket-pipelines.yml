@@ -12,6 +12,7 @@ pipelines:
             - docker
           caches:
             - pip
+            - docker
           script:
             - apk add gcc musl-dev python3-dev libffi-dev openssl-dev
             - pip3 install awscli
@@ -28,6 +29,9 @@ pipelines:
           name: Deploy to ECS Staging
           deployment: staging
           services:
+            - docker
+          caches:
+            - pip
             - docker
           script:
             # Replace the docker image name in the task definition with the newly pushed image.
