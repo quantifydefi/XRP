@@ -111,73 +111,82 @@ export default class Chart extends Vue {
     dateAxis.renderer.maxLabelPosition = 0.99
     dateAxis.keepSelection = true
 
-    const valueAxis = this.chart.yAxes.push(new am4charts.ValueAxis())
-    valueAxis.tooltip.disabled = false
-    valueAxis.zIndex = 1
-    valueAxis.renderer.baseGrid.disabled = false
-    valueAxis.renderer.opposite = true
-    // height of axis
-    valueAxis.height = am4core.percent(80)
-    const series1 = this.chart.series.push(new am4charts.LineSeries())
-    series1.dataFields.dateX = 'date'
-    series1.dataFields.valueY = 'token0_price'
-    series1.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
+    const valueAxisTone0 = this.chart.yAxes.push(new am4charts.ValueAxis())
+    valueAxisTone0.tooltip.disabled = false
+    valueAxisTone0.zIndex = 1
+    valueAxisTone0.title.text = this.tokenData.token1_name
+    // valueAxisTone0.renderer.baseGrid.disabled = false
+    valueAxisTone0.height = am4core.percent(80)
+
+    const valueAxisTone1 = this.chart.yAxes.push(new am4charts.ValueAxis())
+    valueAxisTone1.tooltip.disabled = false
+    valueAxisTone1.zIndex = 2
+    valueAxisTone1.renderer.opposite = true
+    valueAxisTone1.renderer.grid.template.disabled = true
+    valueAxisTone1.height = am4core.percent(80)
+    valueAxisTone1.title.text = this.tokenData.token0_name
+
+    const token0Series = this.chart.series.push(new am4charts.LineSeries())
+    token0Series.yAxis = valueAxisTone0
+    token0Series.dataFields.dateX = 'date'
+    token0Series.dataFields.valueY = 'token0_price'
+    token0Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
                             ETH: {token0_price}
                             USD: {token0_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
       '{}',
       '$'
     )
-    series1.name = this.token1Symbol
-    series1.tooltip.getFillFromObject = false
-    series1.tooltip.background.strokeWidth = 0
-    series1.strokeWidth = 2
-    series1.stroke = am4core.color('#1E88E5')
-    series1.tooltip.background.fill = am4core.color('#86b9e5')
-    series1.fill = am4core.color('#86b9e5')
-    series1.fillOpacity = 0.1
-    series1.hidden = Token.isQuoteToken(this.token0Symbol, this.tokenData)
+    token0Series.name = this.token1Symbol
+    token0Series.tooltip.getFillFromObject = false
+    token0Series.tooltip.background.strokeWidth = 0
+    token0Series.strokeWidth = 2
+    token0Series.stroke = am4core.color('#1E88E5')
+    token0Series.tooltip.background.fill = am4core.color('#86b9e5')
+    token0Series.fill = am4core.color('#86b9e5')
+    token0Series.fillOpacity = 0.1
+    // series1.hidden = Token.isQuoteToken(this.token0Symbol, this.tokenData)
 
-    const series2 = this.chart.series.push(new am4charts.LineSeries())
-    series2.dataFields.dateX = 'date'
-    series2.dataFields.valueY = 'token1_price'
-    series2.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
+    const token1Series = this.chart.series.push(new am4charts.LineSeries())
+    token1Series.yAxis = valueAxisTone1
+    token1Series.dataFields.dateX = 'date'
+    token1Series.dataFields.valueY = 'token1_price'
+    token1Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
                             ETH: {token1_price}
                             USD: {token1_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
       '{}',
       '$'
     )
-    series2.name = this.token0Symbol
-    series2.tooltip.getFillFromObject = false
-    series2.tooltip.background.strokeWidth = 0
-    series2.strokeWidth = 2
-    series2.stroke = am4core.color('#d20678')
-    series2.tooltip.background.fill = am4core.color('#db80b1')
-    series2.fill = am4core.color('#db80b1')
-    series2.fillOpacity = 0.1
-    series2.hidden = Token.isQuoteToken(this.token1Symbol, this.tokenData)
+    token1Series.name = this.token0Symbol
+    token1Series.tooltip.getFillFromObject = false
+    token1Series.tooltip.background.strokeWidth = 0
+    token1Series.strokeWidth = 2
+    token1Series.stroke = am4core.color('#d20678')
+    token1Series.tooltip.background.fill = am4core.color('#db80b1')
+    token1Series.fill = am4core.color('#db80b1')
+    token1Series.fillOpacity = 0.1
+    token1Series.marginBottom = 200
 
     const valueAxis2 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxis2.tooltip.disabled = true
-    // valueAxis2.labelsEnabled = false
     valueAxis2.renderer.labels.template.disabled = true
+
     // height of axis
     valueAxis2.height = am4core.percent(20)
     valueAxis2.zIndex = 3
     valueAxis2.renderer.baseGrid.disabled = true
     valueAxis2.renderer.grid.template.disabled = true
+
     // this makes gap between panels
-    valueAxis2.marginTop = 450
+    // valueAxis2.marginTop = 450
     valueAxis2.renderer.baseGrid.disabled = true
     valueAxis2.renderer.inside = true
     valueAxis2.renderer.labels.template.verticalCenter = 'bottom'
     valueAxis2.renderer.labels.template.padding(0, 0, 0, 0)
-    valueAxis.renderer.maxLabelPosition = 0.95
     valueAxis2.renderer.fontSize = '0.8em'
 
     const liqSeries = this.chart.series.push(new am4charts.LineSeries())
     liqSeries.fillOpacity = 0.5
-    liqSeries.fill = series1.stroke
-    liqSeries.stroke = series1.stroke
+
     liqSeries.dataFields.dateX = 'date'
     liqSeries.dataFields.valueY = 'reserve_eth'
     liqSeries.yAxis = valueAxis2
@@ -190,6 +199,7 @@ export default class Chart extends Vue {
     liqSeries.stroke = am4core.color('#536af6')
     liqSeries.fillOpacity = 0.3
     liqSeries.fill = am4core.color('#536af6')
+
     // liq should be summed
     liqSeries.groupFields.valueY = 'sum'
     liqSeries.tooltip.label.fill = liqSeries.stroke
@@ -197,7 +207,7 @@ export default class Chart extends Vue {
 
     this.chart.cursor = new am4charts.XYCursor()
     const scrollbarX = new am4charts.XYChartScrollbar()
-    scrollbarX.series.push(series1)
+    scrollbarX.series.push(token0Series)
     // scrollbarX.series.push(series2)
     scrollbarX.marginBottom = 20
     const sbSeries = scrollbarX.scrollbarChart.series.getIndex(0)
