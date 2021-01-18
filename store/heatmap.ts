@@ -16,9 +16,10 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
         params: { num_of_coins: numOfCoins },
       }
     )
-    return plainToClass(HeatmapData, data as HeatmapData[])
+    return plainToClass(HeatmapData, data.data as HeatmapData[])
   },
 
+  /*
   async requestHeatmap({ commit }, { address }): Promise<string> {
     const { data } = await this.$axios.post(
       `/api/defi/heatmap/ethereum-request`,
@@ -32,18 +33,13 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
   async requestHeatmapStatus({ commit }, { jobId }): Promise<boolean> {
     const { data } = await this.$axios.get(`/api/defi/heatmap/status/${jobId}`)
     return data
-  },
+  }, */
 
   async balanceHeatmap(
     { commit },
     { address }
   ): Promise<HeatmapBalancesData[]> {
-    const { data } = await this.$axios.post(
-      `/api/defi/heatmap/balance-heatmap`,
-      {
-        address,
-      }
-    )
-    return plainToClass(HeatmapBalancesData, data as HeatmapBalancesData[])
+    const { data } = await this.$axios.get(`/api/defi/balances/${address}`)
+    return plainToClass(HeatmapBalancesData, data.data as HeatmapBalancesData[])
   },
 }

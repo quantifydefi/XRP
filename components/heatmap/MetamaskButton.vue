@@ -212,66 +212,14 @@ export default class MetamaskButton extends Vue {
     this.timeFrameModel = value
   }
 
-  @Watch('isHeatmapReedy')
-  private onHeatmapReadyChanged(value: boolean) {
-    if (value) {
-      this.$ga.event({
-        eventCategory: 'address-search',
-        eventAction: this.account,
-        eventLabel: 'label',
-        eventValue: 1,
-      })
-
-      this.$emit(HeatmapEvents.balanceHeatmap, { address: this.account })
-      this.isEthereumActive = true
-      this.isMetamaskActive = true
-    }
-  }
-
-  private async getBalanceHeatmap(): Promise<void> {
+  private getBalanceHeatmap(): void {
     this.isHeatmapReedy = false
     /** Check if account coming from search bar */
     if (this.isFromSearch) this.account = this.search
 
-    let requestJobId: string | null = null
-    try {
-      requestJobId = await this.$store.dispatch('heatmap/requestHeatmap', {
-        address: this.account,
-      })
-    } catch (error) {
-      if (error.response) {
-        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-          text: error.response.data.message,
-        })
-      } else {
-        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-          text: 'Something went wrong',
-        })
-      }
-    }
-
-    /** checking if Background job completed every sec if completed set isHeatmapReedy to True, then follow onHeatmapReadyChanged watcher */
-    if (requestJobId) {
-      const checkStatus = setInterval(async () => {
-        try {
-          this.loading = true
-          this.$emit(HeatmapEvents.heatmapLoading, true)
-          this.isHeatmapReedy = await this.$store.dispatch(
-            'heatmap/requestHeatmapStatus',
-            { jobId: requestJobId }
-          )
-          if (this.isHeatmapReedy) {
-            clearInterval(checkStatus)
-            this.loading = false
-          }
-        } catch (error) {
-          this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-            text: 'Something went wrong',
-          })
-          clearInterval(checkStatus)
-        }
-      }, 1000)
-    }
+    this.$emit(HeatmapEvents.balanceHeatmap, { address: this.account })
+    this.isEthereumActive = true
+    this.isMetamaskActive = true
   }
 
   private async initMetamask() {

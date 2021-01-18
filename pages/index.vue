@@ -240,6 +240,7 @@ export default class Index extends Vue {
   }: {
     address: string
   }): Promise<void> {
+    this.isHeatmapReady = false
     try {
       this.heatmapData = await this.$store.dispatch('heatmap/balanceHeatmap', {
         address,

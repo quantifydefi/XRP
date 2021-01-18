@@ -10,20 +10,17 @@ export const mutations: MutationTree<HeatmapState> = {}
 
 export const actions: ActionTree<HeatmapState, HeatmapState> = {
   async getTokenData({ commit }, { tokeId }): Promise<Token> {
-    const { data } = await this.$axios.get(`/api/defi/common/token/${tokeId}`)
-    return plainToClass(Token, data as Token)
+    const { data } = await this.$axios.get(`/api/defi/pair/${tokeId}`)
+    return plainToClass(Token, data.data as Token)
   },
 
   async getTokenChart(
     { commit },
     { tokenId, timeRange }
   ): Promise<ChartData[]> {
-    const { data } = await this.$axios.get(
-      `/api/defi/common/token/${tokenId}/chart`,
-      {
-        params: { time_range: timeRange },
-      }
-    )
-    return plainToClass(ChartData, data as ChartData[])
+    const { data } = await this.$axios.get(`/api/defi/pair/${tokenId}/chart`, {
+      params: { time_range: timeRange },
+    })
+    return plainToClass(ChartData, data.data as ChartData[])
   },
 }
