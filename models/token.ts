@@ -1,5 +1,9 @@
 /* eslint-disable camelcase */
-import { ChartDataInterface, TokenInterface } from '~/types/token'
+import {
+  ChartDataInterface,
+  SearchPoolInterface,
+  TokenInterface,
+} from '~/types/token'
 
 export class Token implements TokenInterface {
   readonly base_asset!: string
@@ -68,4 +72,14 @@ export class ChartData implements ChartDataInterface {
   get date() {
     return new Date(this.unix_time * 1000)
   }
+}
+
+export class TokenPoolSearch implements SearchPoolInterface {
+  pool_id!: string
+  token0_id!: string
+  token0_name!: string
+  token0_symbol!: string
+  token1_id!: string
+  token1_name!: string
+  token1_symbol!: string
 }

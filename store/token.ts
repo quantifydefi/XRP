@@ -23,4 +23,13 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
     })
     return plainToClass(ChartData, data.data as ChartData[])
   },
+
+  async search({ commit }, { searchString }): Promise<any> {
+    const { data } = await this.$axios.get(`api/defi/search`, {
+      params: { q: searchString },
+    })
+    if (data.data) {
+      return data.data
+    } else return []
+  },
 }

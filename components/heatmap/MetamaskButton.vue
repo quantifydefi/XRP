@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="4" class="pt-2 pb-0 my-0">
+    <v-col cols="4" class="pt-2 pb-0 mt-4">
       <v-text-field
         v-model="search"
         class="py-0 pl-4"
@@ -15,12 +15,12 @@
       >
       </v-text-field>
     </v-col>
-    <v-col class="pt-2 pb-0 px-0">
+    <v-col class="pt-2 pb-0 px-0 mt-4">
       <v-btn tile depressed :disabled="loading" @click="getBalanceHeatmap">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-col>
-    <v-col class="pt-2 pb-0 my-0">
+    <v-col class="pt-2 pb-0 mt-4">
       <div class="d-flex justify-end align-right">
         <client-only>
           <v-menu offset-y>
@@ -165,12 +165,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Events } from '~/types/global'
 import { TimeFrameOption } from '~/models/heatmap'
 import { HeatmapConfigMode, HeatmapEvents } from '~/types/heatmap'
-
-declare global {
-  interface Window {
-    ethereum: any
-  }
-}
 
 @Component({ name: 'MetamaskButton' })
 export default class MetamaskButton extends Vue {

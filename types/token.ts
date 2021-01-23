@@ -38,3 +38,13 @@ export interface ChartDataInterface {
   liquidity_usd_mil: number
   eth_price_usd: number
 }
+
+export interface SearchPoolInterface {
+  pool_id: string
+  token0_id: string
+  token0_name: string
+  token0_symbol: string
+  token1_id: string
+  token1_name: string
+  token1_symbol: string
+}

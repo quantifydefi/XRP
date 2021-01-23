@@ -1,14 +1,15 @@
 <template>
   <v-app :dark="false">
     <v-app-bar app elevation="1" tile>
-      <img :src="'/img/logo/logo.svg'" height="55" width="55" alt="logo" />
+      <img :src="'/img/logo/logo.svg'" height="55" width="55" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-toolbar-title class="ml-1">DeFi Heatmap</v-toolbar-title>
       </nuxt-link>
       <v-spacer />
       <div v-if="$vuetify.breakpoint.lgAndUp">
         <v-btn text tile to="/">Home</v-btn>
-        <v-btn text tile to="/roadmap">Roadmap</v-btn>
+        <v-btn text tile to="/heatmap">Heatmap</v-btn>
+        <!--        <v-btn text tile to="/roadmap">Roadmap</v-btn>-->
         <v-btn text tile to="/trading-101">Trading 101</v-btn>
         <v-btn
           text
@@ -23,7 +24,6 @@
         <v-icon>mdi-white-balance-sunny</v-icon>
       </v-btn>
     </v-app-bar>
-    <!--    <v-main class="grey lighten-5">-->
     <v-main>
       <v-container style="max-width: 3000px">
         <nuxt />

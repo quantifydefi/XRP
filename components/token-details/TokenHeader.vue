@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12">
+    <v-col cols="12" class="mt-4 pb-0">
       <v-avatar
         max-height="32"
         style="bottom: 6px"
@@ -45,7 +45,7 @@
         > </span
       ><br v-if="$vuetify.breakpoint.mdAndDown" />
     </v-col>
-    <v-col cols="2" class="py-0">
+    <v-col cols="2">
       <v-card tile outlined link>
         <v-card-actions class="py-0">
           <v-list-item class="grow px-0">
@@ -67,7 +67,7 @@
         </v-card-actions>
       </v-card>
     </v-col>
-    <v-col cols="2" class="py-0">
+    <v-col cols="2">
       <v-card tile outlined link>
         <v-card-actions class="py-0">
           <v-list-item class="grow px-0">
