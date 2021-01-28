@@ -21,11 +21,7 @@
               <v-col cols="7">
                 <token-search />
               </v-col>
-              <v-col cols="1"
-                ><v-btn tile color="primary" class="mb-7" height="48"
-                  >Connect To Wallet</v-btn
-                ></v-col
-              >
+              <v-col cols="1"><connect-to-wallet-button /></v-col>
             </v-row>
           </v-col>
 
@@ -90,10 +86,11 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import TokenSearch from '~/components/common/TokenSearch.vue'
+import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue'
 
 @Component({
   name: 'Index',
-  components: { TokenSearch },
+  components: { ConnectToWalletButton, TokenSearch },
   head(): object {
     return {
       title: 'DeFi Portfolio Tracker | Account Analysis | Defi Heatmap',

@@ -159,7 +159,6 @@
 </template>
 
 <script lang="ts">
-// @ts-ignore
 import detectEthereumProvider from '@metamask/detect-provider'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Events } from '~/types/global'

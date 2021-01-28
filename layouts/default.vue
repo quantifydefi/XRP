@@ -9,7 +9,6 @@
       <div v-if="$vuetify.breakpoint.lgAndUp">
         <v-btn text tile to="/">Home</v-btn>
         <v-btn text tile to="/heatmap">Heatmap</v-btn>
-        <!--        <v-btn text tile to="/roadmap">Roadmap</v-btn>-->
         <v-btn text tile to="/trading-101">Trading 101</v-btn>
         <v-btn
           text
@@ -47,17 +46,19 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
+import { mixins } from 'vue-class-component'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import { Events } from '~/types/global'
 import { ThemeOptions } from '~/types/ui'
+import LayoutMixin from '~/mixins/LayoutMixin.vue'
 
 @Component({
   name: 'Default',
   components: { ApiMenuHeader, Notification },
 })
-export default class Default extends Vue {
+export default class Wallet extends mixins(LayoutMixin) {
   clipped = false
   drawer = false
   fixed = false
@@ -88,18 +89,6 @@ export default class Default extends Vue {
     } else {
       this.$vuetify.theme.dark = true
       this.$cookies.set('theme', 'dark')
-      this.$store.dispatch('ui/changeTheme', 'dark')
-    }
-  }
-
-  created() {
-    const theme: ThemeOptions | undefined = this.$cookies.get('theme')
-    if (theme) {
-      this.$vuetify.theme[theme] = true
-      this.$store.dispatch('ui/changeTheme', theme)
-    } else {
-      this.$cookies.set('theme', 'dark')
-      this.$vuetify.theme.dark = true
       this.$store.dispatch('ui/changeTheme', 'dark')
     }
   }
