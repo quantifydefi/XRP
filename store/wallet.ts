@@ -6,7 +6,9 @@ import { HeatmapBalancesData } from '~/models/heatmap'
 export const state = () => ({
   isWalletConnected: false as boolean,
   address: (null as unknown) as string,
+  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   balances: [] as HeatmapBalancesData[],
+  transactions: [] as any,
 })
 export type WalletState = ReturnType<typeof state>
 
@@ -70,5 +72,6 @@ export const actions: ActionTree<WalletState, WalletState> = {
   metamaskLogout({ commit }) {
     commit('SET_ADDRESS', null)
     commit('SET_WALLET_STATUS', false)
+    commit('SET_BALANCES', [])
   },
 }

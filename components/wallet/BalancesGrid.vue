@@ -1,8 +1,8 @@
 <template>
   <v-data-table
+    class="transparent"
     :headers="headers"
     :items="data"
-    height="560"
     :sort-by="['balance_usd']"
     :sort-desc="[true]"
     :items-per-page="10"
@@ -25,10 +25,6 @@
 
     <template v-slot:item.token_price="{ item }">
       {{ item.token_price.toFixed(4) }}
-    </template>
-
-    <template v-slot:item.eth_price_usd="{ item }">
-      {{ item.eth_price_usd.toFixed(4) }}
     </template>
 
     <template v-slot:item.reserve_eth="{ item }">
@@ -103,13 +99,7 @@ export default class BalancesGrid extends Vue {
       class: 'px-2',
       width: 120,
     },
-    {
-      text: 'ETH Price USD',
-      align: 'start',
-      value: 'eth_price_usd',
-      class: 'px-2',
-      width: 120,
-    },
+
     {
       text: 'Token Pair',
       align: 'start',
@@ -142,4 +132,10 @@ export default class BalancesGrid extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.transparent > .table,
+.transparent > .table__overflow > .table,
+.transparent > .table > .datatable__actions {
+  background-color: transparent;
+}
+</style>

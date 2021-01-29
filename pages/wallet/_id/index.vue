@@ -14,8 +14,14 @@
     <v-col v-if="etherData" cols="9">
       <v-row>
         <v-col cols="8">
-          <h1 class="text-h3">$ {{ portfolioSum.toFixed(2) }}</h1>
-          <h1 class="text-h5">{{ address }}</h1>
+          <h1 class="text-h3">$ {{ numberWithCommas(portfolioSum) }}</h1>
+          <a
+            target="_blank"
+            class="text-h5 primary--text text-decoration-none"
+            :href="`https://etherscan.io/address/${address}`"
+          >
+            {{ address }}
+          </a>
         </v-col>
         <v-spacer />
         <v-col
@@ -44,15 +50,17 @@
       </v-row>
       <v-row>
         <v-col cols="6">
-          <v-card height="310" tile outlined>
+          <v-card height="360" tile outlined color="transparent">
             <v-card-title>Overview</v-card-title>
 
-            <v-simple-table>
+            <v-simple-table class="transparent">
               <template v-slot:default>
                 <tbody>
                   <tr>
                     <td>Address</td>
-                    <td>{{ address }}</td>
+                    <td>
+                      <span>{{ address }}</span>
+                    </td>
                   </tr>
                   <tr></tr>
 
@@ -62,10 +70,12 @@
                   </tr>
                   <tr>
                     <td>Balance USD</td>
-                    <td>
-                      $ {{ etherData.balance_usd.toFixed(4) }} |
-                      {{ etherData.eth_price_usd }}/ETH
-                    </td>
+                    <td>$ {{ etherData.balance_usd.toFixed(4) }}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Ethereum Price USD</td>
+                    <td>$ {{ etherData.eth_price_usd }}</td>
                   </tr>
 
                   <tr>
@@ -86,14 +96,14 @@
           </v-card>
         </v-col>
         <v-col cols="6">
-          <v-card height="310" tile outlined>
+          <v-card height="360" tile outlined>
             <client-only>
               <marketcap
                 :data="balances"
                 :tile-tooltip="heatmapConfig.blockSize.toolTip"
                 :data-field="heatmapConfig.blockSize.dataField"
                 :tile-body="heatmapConfig.blockSize.tile"
-                :chart-height="310"
+                :chart-height="360"
                 :color-field="heatmapConfig.colorField"
               />
             </client-only>
@@ -101,8 +111,19 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" class="mt-2">
-          <v-card v-if="balances" height="700" tile outlined>
+        <v-col>
+          <v-divider />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-card
+            v-if="balances"
+            height="100%"
+            tile
+            outlined
+            color="transparent"
+          >
             <v-card-title>Positions</v-card-title>
             <client-only>
               <balances-grid :data="balances" />
@@ -214,5 +235,17 @@ export default class Index extends Vue {
     this.$store.dispatch('wallet/metamaskLogout')
     this.$router.push('/')
   }
+
+  numberWithCommas(n: number) {
+    const num = parseFloat(n.toFixed(2))
+    return Number(num).toLocaleString('en')
+  }
 }
 </script>
+<style scoped>
+.transparent > .table,
+.transparent > .table__overflow > .table,
+.transparent > .table > .datatable__actions {
+  background-color: transparent;
+}
+</style>
