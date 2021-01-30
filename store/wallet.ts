@@ -60,7 +60,6 @@ export const actions: ActionTree<WalletState, WalletState> = {
         if (accounts.length > 0) {
           commit('SET_ADDRESS', accounts[0])
           commit('SET_WALLET_STATUS', true)
-
           return { status: true, address: accounts[0] }
         }
       }

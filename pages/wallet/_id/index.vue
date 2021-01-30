@@ -50,20 +50,20 @@
       </v-row>
       <v-row>
         <v-col cols="6">
-          <v-card height="360" tile outlined color="transparent">
+          <v-card
+            height="360"
+            tile
+            outlined
+            :color="theme === 'dark' ? 'transparent' : ''"
+            :style="
+              theme === 'dark' ? 'border: 1px solid #424242 !important' : ''
+            "
+          >
             <v-card-title>Overview</v-card-title>
 
             <v-simple-table class="transparent">
               <template v-slot:default>
                 <tbody>
-                  <tr>
-                    <td>Address</td>
-                    <td>
-                      <span>{{ address }}</span>
-                    </td>
-                  </tr>
-                  <tr></tr>
-
                   <tr>
                     <td>Balance ETH</td>
                     <td>{{ etherData.contract_balance }} Ether</td>
@@ -89,6 +89,13 @@
                   <tr>
                     <td>Uniswap Pool</td>
                     <td>{{ etherData.token_pair }}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Address</td>
+                    <td>
+                      <span>{{ address }}</span>
+                    </td>
                   </tr>
                 </tbody>
               </template>
@@ -122,9 +129,9 @@
             height="100%"
             tile
             outlined
-            color="transparent"
+            :color="theme === 'dark' ? 'transparent' : ''"
           >
-            <v-card-title>Positions</v-card-title>
+            <v-card-title class="pt-0">Positions</v-card-title>
             <client-only>
               <balances-grid :data="balances" />
             </client-only>
@@ -166,6 +173,8 @@ import walletMiddleware from '~/middleware/wallet'
       address: (state: any) => state.wallet.address,
       balanceUsd: (state: any) => state.wallet.balanceUsd,
       balances: (state: any) => state.wallet.balances,
+      theme: (state: any) => state.ui.theme,
+      ui: (state: any) => state.ui,
     }),
   },
 })
@@ -242,10 +251,4 @@ export default class Index extends Vue {
   }
 }
 </script>
-<style scoped>
-.transparent > .table,
-.transparent > .table__overflow > .table,
-.transparent > .table > .datatable__actions {
-  background-color: transparent;
-}
-</style>
+<style scoped></style>

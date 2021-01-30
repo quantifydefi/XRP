@@ -6,7 +6,18 @@
     :sort-by="['balance_usd']"
     :sort-desc="[true]"
     :items-per-page="10"
+    item-class="px-1"
   >
+    <template v-slot:item.token_pair="{ item }">
+      <a
+        target="_blank"
+        class="primary--text text-decoration-none"
+        :href="`/token/${item.pool_id}`"
+      >
+        {{ item.token_pair }}</a
+      >
+    </template>
+
     <template v-slot:item.contract_balance="{ item }">
       {{ item.contract_balance.toFixed(4) }}
     </template>
@@ -19,10 +30,6 @@
       {{ item.rate_usd.toFixed(4) }}
     </template>
 
-    <template v-slot:item.market_cap_usd="{ item }">
-      {{ item.market_cap_usd.toFixed(4) }}
-    </template>
-
     <template v-slot:item.token_price="{ item }">
       {{ item.token_price.toFixed(4) }}
     </template>
@@ -30,12 +37,19 @@
     <template v-slot:item.reserve_eth="{ item }">
       {{ item.reserve_eth.toFixed(4) }}
     </template>
+
     <template v-slot:item.percent_change_liq_1h="{ item }">
-      {{ item.percent_change_liq_1h.toFixed(2) }}
+      <v-icon :color="applyColor(item.percent_change_liq_1h).color">{{
+        applyColor(item.percent_change_liq_1h).icon
+      }}</v-icon>
+      {{ applyColor(item.percent_change_liq_1h).val }}
     </template>
 
     <template v-slot:item.percent_change_liq_24h="{ item }">
-      {{ item.percent_change_liq_24h.toFixed(2) }}
+      <v-icon :color="applyColor(item.percent_change_liq_24h).color">{{
+        applyColor(item.percent_change_liq_24h).icon
+      }}</v-icon>
+      {{ applyColor(item.percent_change_liq_24h).val }}
     </template>
   </v-data-table>
 </template>
@@ -62,7 +76,15 @@ export default class BalancesGrid extends Vue {
       align: 'start',
       value: 'token_name',
       class: 'px-2',
-      width: 200,
+      width: 180,
+    },
+
+    {
+      text: 'Token Pair',
+      align: 'start',
+      value: 'token_pair',
+      class: 'px-2',
+      width: 160,
     },
     {
       text: 'Balance ETH',
@@ -85,28 +107,30 @@ export default class BalancesGrid extends Vue {
       class: 'px-2',
       width: 110,
     },
-    {
-      text: 'Marketcap USD',
-      align: 'start',
-      value: 'market_cap_usd',
-      class: 'px-2',
-      width: 120,
-    },
+
     {
       text: 'Token Price',
       align: 'start',
       value: 'token_price',
       class: 'px-2',
-      width: 120,
+      width: 80,
     },
 
     {
-      text: 'Token Pair',
-      align: 'start',
-      value: 'token_pair',
+      text: '1H %',
+      align: 'center',
+      value: 'percent_change_liq_1h',
       class: 'px-2',
-      width: 120,
+      width: 100,
     },
+    {
+      text: '24H %',
+      align: 'center',
+      value: 'percent_change_liq_24h',
+      class: 'px-2',
+      width: 100,
+    },
+
     {
       text: 'Liquidity',
       align: 'start',
@@ -114,28 +138,12 @@ export default class BalancesGrid extends Vue {
       class: 'px-2',
       width: 110,
     },
-    {
-      text: 'Ptc Change',
-      align: 'start',
-      value: 'percent_change_liq_1h',
-      class: 'px-2',
-      width: 100,
-    },
-    {
-      text: 'Ptc Change',
-      align: 'start',
-      value: 'percent_change_liq_24h',
-      class: 'px-2',
-      width: 100,
-    },
   ]
+
+  applyColor(n: number): { val: string; icon: string; color: string } {
+    return n > 0
+      ? { val: Math.abs(n).toFixed(2), icon: 'mdi-chevron-up', color: 'green' }
+      : { val: Math.abs(n).toFixed(2), icon: 'mdi-chevron-down', color: 'red' }
+  }
 }
 </script>
-
-<style scoped>
-.transparent > .table,
-.transparent > .table__overflow > .table,
-.transparent > .table > .datatable__actions {
-  background-color: transparent;
-}
-</style>

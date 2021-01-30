@@ -7,7 +7,15 @@
         <left-bar :token-data="tokenData" />
 
         <v-col lg="7" md="12" cols="12">
-          <v-card tile outlined height="100%">
+          <v-card
+            tile
+            outlined
+            height="100%"
+            :color="theme === 'dark' ? 'transparent' : ''"
+            :style="
+              theme === 'dark' ? 'border: 1px solid #424242 !important' : ''
+            "
+          >
             <chart
               :token-data="tokenData"
               :chart-config="chartConfig"
@@ -82,6 +90,7 @@ import UniswapIframe from '~/components/token-details/UniswapIframe.vue'
     ...mapState({
       // TODO: Add models for UI types
       ui: (state: any) => state.ui,
+      theme: (state: any) => state.ui.theme,
     }),
   },
 })

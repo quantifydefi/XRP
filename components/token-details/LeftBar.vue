@@ -1,44 +1,51 @@
 <template>
   <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="2">
-    <v-card tile outlined class="mb-2">
-      <v-tabs color="primary" grow>
-        <v-tab
-          style="min-width: 60px; padding: 0 5px"
-          @click="changeTab('pool')"
-          >Pair</v-tab
-        >
-        <v-tab
-          style="min-width: 60px; padding: 0 5px"
-          @click="changeTab('token0')"
-          >{{ tokenData.token0_symbol }}
+    <v-tabs
+      color="primary"
+      grow
+      :background-color="theme === 'dark' ? 'transparent' : ''"
+    >
+      <v-tab style="min-width: 60px; padding: 0 5px" @click="changeTab('pool')"
+        >Pair</v-tab
+      >
+      <v-tab
+        style="min-width: 60px; padding: 0 5px"
+        @click="changeTab('token0')"
+        >{{ tokenData.token0_symbol }}
 
-          <v-tooltip v-if="isToken0Quote" top color="black">
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
-                mdi-cash-usd-outline
-              </v-icon>
-            </template>
-            <span>Quote Asset</span>
-          </v-tooltip>
-        </v-tab>
-        <v-tab
-          style="min-width: 60px; padding: 0 5px"
-          @click="changeTab('token1')"
-          >{{ tokenData.token1_symbol }}
+        <v-tooltip v-if="isToken0Quote" top color="black">
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
+              mdi-cash-usd-outline
+            </v-icon>
+          </template>
+          <span>Quote Asset</span>
+        </v-tooltip>
+      </v-tab>
+      <v-tab
+        style="min-width: 60px; padding: 0 5px"
+        @click="changeTab('token1')"
+        >{{ tokenData.token1_symbol }}
 
-          <v-tooltip v-if="isToken1Quote" top color="black">
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
-                mdi-cash-usd-outline
-              </v-icon>
-            </template>
-            <span>Quote Asset</span>
-          </v-tooltip>
-        </v-tab>
-      </v-tabs>
-    </v-card>
+        <v-tooltip v-if="isToken1Quote" top color="black">
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
+              mdi-cash-usd-outline
+            </v-icon>
+          </template>
+          <span>Quote Asset</span>
+        </v-tooltip>
+      </v-tab>
+    </v-tabs>
+
     <div v-if="tab === 'pool'">
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>
             Liquidity {{ tokenData.token0_symbol }}-{{
@@ -50,7 +57,13 @@
           </p>
         </v-card-text>
       </v-card>
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>All time Volume in USD</div>
           <p class="display-1 text--primary mb-0">
@@ -58,7 +71,13 @@
           </p>
         </v-card-text>
       </v-card>
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Transaction Count</div>
           <p class="display-1 text--primary mb-0">
@@ -66,7 +85,13 @@
           </p>
         </v-card-text>
       </v-card>
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Liquidity Provider Count</div>
           <p class="display-1 text--primary mb-0">
@@ -74,7 +99,13 @@
           </p>
         </v-card-text>
       </v-card>
-      <v-card class="mb-2" tile outlined>
+      <v-card
+        class="mb-2"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Created At</div>
           <p class="text-subtitle-1 text--primary mb-0">
@@ -85,7 +116,13 @@
     </div>
 
     <div v-if="tab === 'token0'">
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Token Name</div>
           <p class="display-1 text--primary mb-0">
@@ -94,7 +131,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Token Price ETH</div>
           <p class="display-1 text--primary mb-0">
@@ -103,7 +146,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Token Price USD</div>
           <p class="display-1 text--primary mb-0">
@@ -117,7 +166,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Ptc Change 1H</div>
           <p class="display-1 text--primary mb-0">
@@ -126,7 +181,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Ptc Change 24H</div>
           <p class="display-1 text--primary mb-0">
@@ -136,7 +197,13 @@
       </v-card>
     </div>
     <div v-if="tab === 'token1'">
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Token Name</div>
           <p class="display-1 text--primary mb-0">
@@ -145,7 +212,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Token Price ETH</div>
           <p class="display-1 text--primary mb-0">
@@ -154,7 +227,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Token Price USD</div>
           <p class="display-1 text--primary mb-0">
@@ -167,7 +246,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Ptc Change 1H</div>
           <p class="display-1 text--primary mb-0">
@@ -176,7 +261,13 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="mb-6" tile outlined>
+      <v-card
+        class="mb-6"
+        tile
+        outlined
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-text>
           <div>Ptc Change 24H</div>
           <p class="display-1 text--primary mb-0">
@@ -189,9 +280,17 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import { Token } from '~/models/token'
 
-@Component({ name: 'LeftBar' })
+@Component({
+  name: 'LeftBar',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
+})
 export default class LeftBar extends Vue {
   @Prop({ default: () => ({}) }) tokenData!: Token
   tab: string = 'pool'

@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12" class="mt-4 pb-0">
+    <v-col cols="6" class="mt-4 pb-0">
       <v-avatar
         max-height="32"
         style="bottom: 6px"
@@ -45,8 +45,16 @@
         > </span
       ><br v-if="$vuetify.breakpoint.mdAndDown" />
     </v-col>
-    <v-col cols="2">
-      <v-card tile outlined link>
+    <v-spacer />
+    <v-col cols="2" class="mt-2">
+      <v-card
+        tile
+        outlined
+        class="py-0"
+        link
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-actions class="py-0">
           <v-list-item class="grow px-0">
             <v-list-item-avatar size="32">
@@ -57,7 +65,7 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title class="text-subtitle-1 font-weight-medium"
+              <v-list-item-title class="text-subtitle-1"
                 >1 {{ tokenData.token0_symbol }} =
                 {{ tokenData.token1_price.toFixed(4) }}
                 {{ tokenData.token1_symbol }}</v-list-item-title
@@ -67,8 +75,14 @@
         </v-card-actions>
       </v-card>
     </v-col>
-    <v-col cols="2">
-      <v-card tile outlined link>
+    <v-col cols="2" class="mt-2">
+      <v-card
+        tile
+        outlined
+        link
+        :color="theme === 'dark' ? 'transparent' : ''"
+        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
+      >
         <v-card-actions class="py-0">
           <v-list-item class="grow px-0">
             <v-list-item-avatar size="32">
@@ -93,9 +107,17 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import { Token } from '~/models/token'
 
-@Component({ name: 'TokenHeader' })
+@Component({
+  name: 'TokenHeader',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
+})
 export default class TokenHeader extends Vue {
   @Prop({ default: () => ({}) }) tokenData!: Token
 }

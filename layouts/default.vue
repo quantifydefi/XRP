@@ -1,5 +1,8 @@
 <template>
-  <v-app :dark="false">
+  <v-app
+    :dark="true"
+    :style="{ background: $vuetify.theme.themes[theme].background }"
+  >
     <v-app-bar app elevation="1" tile>
       <img :src="'/img/logo/logo.svg'" height="55" width="55" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
@@ -48,6 +51,7 @@
 <script lang="ts">
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
+import { mapState } from 'vuex'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import { Events } from '~/types/global'
@@ -57,6 +61,11 @@ import LayoutMixin from '~/mixins/LayoutMixin.vue'
 @Component({
   name: 'Default',
   components: { ApiMenuHeader, Notification },
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
 })
 export default class Wallet extends mixins(LayoutMixin) {
   clipped = false
