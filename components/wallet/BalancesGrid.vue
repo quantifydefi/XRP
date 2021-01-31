@@ -19,11 +19,15 @@
     </template>
 
     <template v-slot:item.contract_balance="{ item }">
-      {{ item.contract_balance.toFixed(4) }}
+      {{ $numberWithCommas(item.contract_balance) }}
     </template>
 
     <template v-slot:item.balance_usd="{ item }">
-      {{ item.balance_usd.toFixed(4) }}
+      {{ $numberWithCommas(item.balance_usd) }}
+    </template>
+
+    <template v-slot:item.holdings="{ item }">
+      {{ calculateHoldings(item.balance_usd) }}
     </template>
 
     <template v-slot:item.rate_usd="{ item }">
@@ -63,16 +67,11 @@ import { HeatmapBalancesData } from '~/models/heatmap'
 })
 export default class BalancesGrid extends Vue {
   @Prop({ default: () => [] }) data!: HeatmapBalancesData[]
+  @Prop({ default: () => 0 }) portfolioBalance!: number
+
   headers = [
     {
-      text: 'Symbol',
-      align: 'start',
-      value: 'token_symbol',
-      class: 'px-2 ',
-      width: 90,
-    },
-    {
-      text: 'Name',
+      text: 'Asset',
       align: 'start',
       value: 'token_name',
       class: 'px-2',
@@ -87,33 +86,34 @@ export default class BalancesGrid extends Vue {
       width: 160,
     },
     {
-      text: 'Balance ETH',
+      text: 'Quantity',
       align: 'start',
       value: 'contract_balance',
       class: 'px-2',
       width: 110,
     },
     {
-      text: 'Balance USD',
+      text: 'Balance',
       align: 'start',
       value: 'balance_usd',
       class: 'px-2',
       width: 110,
     },
+
+    {
+      text: 'Holdings %',
+      align: 'start',
+      value: 'holdings',
+      class: 'px-2',
+      width: 100,
+    },
+
     {
       text: 'Rate USD',
       align: 'start',
       value: 'rate_usd',
       class: 'px-2',
       width: 110,
-    },
-
-    {
-      text: 'Token Price',
-      align: 'start',
-      value: 'token_price',
-      class: 'px-2',
-      width: 80,
     },
 
     {
@@ -144,6 +144,14 @@ export default class BalancesGrid extends Vue {
     return n > 0
       ? { val: Math.abs(n).toFixed(2), icon: 'mdi-chevron-up', color: 'green' }
       : { val: Math.abs(n).toFixed(2), icon: 'mdi-chevron-down', color: 'red' }
+  }
+
+  calculateHoldings(balanceUsd: number): number {
+    if (this.portfolioBalance === 0) {
+      return 0.0
+    } else {
+      return parseFloat(((balanceUsd / this.portfolioBalance) * 100).toFixed(2))
+    }
   }
 }
 </script>

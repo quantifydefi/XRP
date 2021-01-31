@@ -1,10 +1,6 @@
 <template>
   <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="2">
-    <v-tabs
-      color="primary"
-      grow
-      :background-color="theme === 'dark' ? 'transparent' : ''"
-    >
+    <v-tabs color="primary" grow background-color="transparent">
       <v-tab style="min-width: 60px; padding: 0 5px" @click="changeTab('pool')"
         >Pair</v-tab
       >

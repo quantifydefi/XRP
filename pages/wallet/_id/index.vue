@@ -14,7 +14,7 @@
     <v-col v-if="etherData" cols="9">
       <v-row>
         <v-col cols="8">
-          <h1 class="text-h3">$ {{ numberWithCommas(portfolioSum) }}</h1>
+          <h1 class="text-h3">$ {{ $numberWithCommas(portfolioBalance) }}</h1>
           <a
             target="_blank"
             class="text-h5 primary--text text-decoration-none"
@@ -51,7 +51,7 @@
       <v-row>
         <v-col cols="6">
           <v-card
-            height="360"
+            height="310"
             tile
             outlined
             :color="theme === 'dark' ? 'transparent' : ''"
@@ -59,7 +59,7 @@
               theme === 'dark' ? 'border: 1px solid #424242 !important' : ''
             "
           >
-            <v-card-title>Overview</v-card-title>
+            <v-card-title>Ethereum Overview</v-card-title>
 
             <v-simple-table class="transparent">
               <template v-slot:default>
@@ -79,23 +79,13 @@
                   </tr>
 
                   <tr>
-                    <td>MarketCap</td>
-                    <td>
-                      $
-                      {{ (etherData.market_cap_usd / 10 ** 6).toFixed(4) }}
-                      Million
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Uniswap Pool</td>
-                    <td>{{ etherData.token_pair }}</td>
+                    <td>Estimated Gas Fee</td>
+                    <td>$ 0</td>
                   </tr>
 
                   <tr>
-                    <td>Address</td>
-                    <td>
-                      <span>{{ address }}</span>
-                    </td>
+                    <td>Uniswap Pool</td>
+                    <td>{{ etherData.token_pair }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -103,14 +93,14 @@
           </v-card>
         </v-col>
         <v-col cols="6">
-          <v-card height="360" tile outlined>
+          <v-card height="310" tile outlined>
             <client-only>
               <marketcap
                 :data="balances"
                 :tile-tooltip="heatmapConfig.blockSize.toolTip"
                 :data-field="heatmapConfig.blockSize.dataField"
                 :tile-body="heatmapConfig.blockSize.tile"
-                :chart-height="360"
+                :chart-height="310"
                 :color-field="heatmapConfig.colorField"
               />
             </client-only>
@@ -133,7 +123,10 @@
           >
             <v-card-title class="pt-0">Positions</v-card-title>
             <client-only>
-              <balances-grid :data="balances" />
+              <balances-grid
+                :data="balances"
+                :portfolio-balance="portfolioBalance"
+              />
             </client-only>
           </v-card>
         </v-col>
@@ -214,7 +207,7 @@ export default class Index extends Vue {
     )
   }
 
-  get portfolioSum() {
+  get portfolioBalance() {
     return this.balances
       .map((o) => o.balance_usd)
       .reduce((a, c) => {
@@ -243,11 +236,6 @@ export default class Index extends Vue {
   disconnect(): void {
     this.$store.dispatch('wallet/metamaskLogout')
     this.$router.push('/')
-  }
-
-  numberWithCommas(n: number) {
-    const num = parseFloat(n.toFixed(2))
-    return Number(num).toLocaleString('en')
   }
 }
 </script>

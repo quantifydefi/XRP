@@ -32,6 +32,7 @@ export default {
   css: [],
 
   plugins: [
+    '~/plugins/global/helpers.ts',
     '~/plugins/clientInit.client.js', // only in client side
   ],
 

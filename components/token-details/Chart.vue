@@ -52,6 +52,7 @@ export default class Chart extends Vue {
   private chartData!: ChartData[]
   private ui!: any
   private allowChart: boolean = true
+
   @Watch('timeRange')
   async onTimeRangeChange(value: string) {
     this.chartData = await this.getChartData(value)
@@ -111,28 +112,28 @@ export default class Chart extends Vue {
     dateAxis.renderer.maxLabelPosition = 0.99
     dateAxis.keepSelection = true
 
-    const valueAxisTone0 = this.chart.yAxes.push(new am4charts.ValueAxis())
-    valueAxisTone0.tooltip.disabled = false
-    valueAxisTone0.zIndex = 1
-    valueAxisTone0.title.text = this.tokenData.token1_name
+    const valueAxisToken0 = this.chart.yAxes.push(new am4charts.ValueAxis())
+    valueAxisToken0.tooltip.disabled = false
+    valueAxisToken0.zIndex = 1
+    valueAxisToken0.title.text = this.tokenData.token1_name
     // valueAxisTone0.renderer.baseGrid.disabled = false
-    valueAxisTone0.height = am4core.percent(80)
+    valueAxisToken0.height = am4core.percent(80)
 
-    const valueAxisTone1 = this.chart.yAxes.push(new am4charts.ValueAxis())
-    valueAxisTone1.tooltip.disabled = false
-    valueAxisTone1.zIndex = 2
-    valueAxisTone1.renderer.opposite = true
-    valueAxisTone1.renderer.grid.template.disabled = true
-    valueAxisTone1.height = am4core.percent(80)
-    valueAxisTone1.title.text = this.tokenData.token0_name
+    const valueAxisToken1 = this.chart.yAxes.push(new am4charts.ValueAxis())
+    valueAxisToken1.tooltip.disabled = false
+    valueAxisToken1.zIndex = 2
+    valueAxisToken1.renderer.opposite = true
+    valueAxisToken1.renderer.grid.template.disabled = true
+    valueAxisToken1.height = am4core.percent(80)
+    valueAxisToken1.title.text = this.tokenData.token0_name
 
     const token0Series = this.chart.series.push(new am4charts.LineSeries())
-    token0Series.yAxis = valueAxisTone0
+    token0Series.yAxis = valueAxisToken0
     token0Series.dataFields.dateX = 'date'
     token0Series.dataFields.valueY = 'token0_price'
-    token0Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
+    token0Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#ffffff]+#.00|[#ffffff]#.##|0')}%[/]
                             ETH: {token0_price}
-                            USD: {token0_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
+                            USD: {token0_price_usd} {}{eth_price_usd}/ETH`.replace(
       '{}',
       '$'
     )
@@ -147,12 +148,12 @@ export default class Chart extends Vue {
     // series1.hidden = Token.isQuoteToken(this.token0Symbol, this.tokenData)
 
     const token1Series = this.chart.series.push(new am4charts.LineSeries())
-    token1Series.yAxis = valueAxisTone1
+    token1Series.yAxis = valueAxisToken1
     token1Series.dataFields.dateX = 'date'
     token1Series.dataFields.valueY = 'token1_price'
-    token1Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#0c0]+#.00|[#c00]#.##|0')}% [/]
+    token1Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#ffffff]+#.00|[#ffffff]#.##|0')}% [/]
                             ETH: {token1_price}
-                            USD: {token1_price_usd} [font-size: 12px]{}{eth_price_usd}/ETH[/]`.replace(
+                            USD: {token1_price_usd} {}{eth_price_usd}/ETH`.replace(
       '{}',
       '$'
     )
@@ -165,6 +166,7 @@ export default class Chart extends Vue {
     token1Series.fill = am4core.color('#db80b1')
     token1Series.fillOpacity = 0.1
     token1Series.marginBottom = 200
+    token1Series.hidden = true
 
     const valueAxis2 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxis2.tooltip.disabled = true
