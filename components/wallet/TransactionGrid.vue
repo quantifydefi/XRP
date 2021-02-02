@@ -85,11 +85,10 @@ export default class TransactionGrid extends Vue {
     },
   ]
 
+  address!: string
+
   async mounted() {
-    const currentAddress = this.address
-    await this.$store.dispatch('wallet/transactions', {
-      address: currentAddress,
-    })
+    await this.$store.dispatch('wallet/transactions', { address: this.address })
   }
 
   timeConverter(timestamp: number): string {
