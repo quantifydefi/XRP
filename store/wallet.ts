@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ActionTree, MutationTree } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
+import { plainToClass } from 'class-transformer'
 import { HeatmapBalancesData } from '~/models/heatmap'
+import { Trade } from '~/models/transaction'
 
 export const state = () => ({
   isWalletConnected: false as boolean,
   address: (null as unknown) as string,
   // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   balances: [] as HeatmapBalancesData[],
-  transactions: [] as any,
+  transactions: [] as Trade[],
 })
 export type WalletState = ReturnType<typeof state>
 
@@ -23,6 +25,10 @@ export const mutations: MutationTree<WalletState> = {
   SET_WALLET_STATUS: (state, status: boolean) => {
     state.isWalletConnected = status
   },
+
+  SET_TRANSACTIONS: (state, transactions: Trade[]) => {
+    state.transactions = transactions
+  },
 }
 
 export const actions: ActionTree<WalletState, WalletState> = {
@@ -36,6 +42,13 @@ export const actions: ActionTree<WalletState, WalletState> = {
     )
 
     commit('SET_BALANCES', balances)
+  },
+
+  async transactions({ commit }, { address }): Promise<Trade[]> {
+    const { data } = await this.$axios.get(`/api/defi/transactions/${address}`)
+    const classData = plainToClass(Trade, data.data as Trade[])
+    commit('SET_TRANSACTIONS', classData)
+    return classData
   },
 
   connectToWallet({ commit }, { wallet, status }) {

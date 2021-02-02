@@ -19,22 +19,6 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
     return plainToClass(HeatmapData, data.data as HeatmapData[])
   },
 
-  /*
-  async requestHeatmap({ commit }, { address }): Promise<string> {
-    const { data } = await this.$axios.post(
-      `/api/defi/heatmap/ethereum-request`,
-      {
-        address,
-      }
-    )
-    return data
-  },
-
-  async requestHeatmapStatus({ commit }, { jobId }): Promise<boolean> {
-    const { data } = await this.$axios.get(`/api/defi/heatmap/status/${jobId}`)
-    return data
-  }, */
-
   async balanceHeatmap(
     { commit },
     { address }

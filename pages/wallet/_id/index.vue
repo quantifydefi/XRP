@@ -121,12 +121,21 @@
             outlined
             :color="theme === 'dark' ? 'transparent' : ''"
           >
-            <v-card-title class="pt-0">Positions</v-card-title>
+            <v-btn-toggle v-model="table" tile color="primary" group mandatory>
+              <v-btn value="positions" class="px-2" height="38">
+                Positions
+              </v-btn>
+              <v-btn value="transactions" class="px-2" height="38">
+                Transactions
+              </v-btn>
+            </v-btn-toggle>
             <client-only>
               <balances-grid
+                v-if="table === 'positions'"
                 :data="balances"
                 :portfolio-balance="portfolioBalance"
               />
+              <transaction-grid v-if="table === 'transactions'" />
             </client-only>
           </v-card>
         </v-col>
@@ -142,10 +151,11 @@ import Marketcap from '~/components/heatmap/Marketcap.vue'
 import BalancesGrid from '~/components/wallet/BalancesGrid.vue'
 import { HeatmapBalancesData } from '~/models/heatmap'
 import walletMiddleware from '~/middleware/wallet'
+import TransactionGrid from '~/components/wallet/TransactionGrid.vue'
 
 @Component({
   name: 'Index',
-  components: { BalancesGrid, Marketcap },
+  components: { TransactionGrid, BalancesGrid, Marketcap },
   layout: 'wallet',
   middleware: [walletMiddleware],
   head(): object {
@@ -198,6 +208,8 @@ export default class Index extends Vue {
       colorField: 'color24h',
     },
   }
+
+  private table: 'positions' | 'transactions' = 'positions'
 
   balances!: HeatmapBalancesData[]
 
