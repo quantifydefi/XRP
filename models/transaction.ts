@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { TransactionInterface } from '~/types/transactions'
+import { AdapterInterface, TransactionInterface } from '~/types/transactions'
 
 export class Trade implements TransactionInterface {
   input_token_id!: string
@@ -15,4 +15,13 @@ export class Trade implements TransactionInterface {
   trade_value_usd!: number
   transaction_hash!: number
   transaction_type!: number
+}
+
+export class Adapter implements AdapterInterface {
+  asset_address!: string
+  asset_balance!: number
+  asset_name!: string
+  asset_symbol!: string
+  balance_type!: string
+  protocol_name!: string
 }

@@ -13,3 +13,12 @@ export interface TransactionInterface {
   transaction_hash: number
   transaction_type: number
 }
+
+export interface AdapterInterface {
+  protocol_name: string
+  asset_name: string
+  asset_address: string
+  asset_symbol: string
+  asset_balance: number
+  balance_type: string
+}

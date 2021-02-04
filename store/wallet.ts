@@ -3,14 +3,15 @@ import { ActionTree, MutationTree } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { plainToClass } from 'class-transformer'
 import { HeatmapBalancesData } from '~/models/heatmap'
-import { Trade } from '~/models/transaction'
+import { Adapter, Trade } from '~/models/transaction'
 
 export const state = () => ({
   isWalletConnected: false as boolean,
   address: (null as unknown) as string,
-  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+  // address: '0x66A51330b37938f414cBf09ebd2E1eB9c70051A1',
   balances: [] as HeatmapBalancesData[],
   transactions: [] as Trade[],
+  adapters: ((null as unknown) as Adapter[]) || null,
 })
 export type WalletState = ReturnType<typeof state>
 
@@ -28,6 +29,10 @@ export const mutations: MutationTree<WalletState> = {
 
   SET_TRANSACTIONS: (state, transactions: Trade[]) => {
     state.transactions = transactions
+  },
+
+  SET_ADAPTERS: (state, adapters: Adapter[]) => {
+    state.adapters = adapters
   },
 }
 
@@ -81,9 +86,17 @@ export const actions: ActionTree<WalletState, WalletState> = {
     return connected
   },
 
+  async getAdapters({ commit }, { address }): Promise<Adapter[]> {
+    const { data } = await this.$axios.get(`/api/defi/adapters/${address}`)
+    const classData = plainToClass(Adapter, data.data as Adapter[])
+    commit('SET_ADAPTERS', classData)
+    return classData
+  },
+
   metamaskLogout({ commit }) {
     commit('SET_ADDRESS', null)
     commit('SET_WALLET_STATUS', false)
     commit('SET_BALANCES', [])
+    commit('SET_ADAPTERS', null)
   },
 }

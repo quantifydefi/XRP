@@ -128,6 +128,13 @@
               <v-btn value="transactions" class="px-2" height="38">
                 Transactions
               </v-btn>
+
+              <v-btn value="deposits" class="px-2" height="38"
+                >Deposits/Stakes
+              </v-btn>
+              <v-btn value="loans" class="px-2" height="38">
+                Loans/Debts
+              </v-btn>
             </v-btn-toggle>
             <client-only>
               <balances-grid
@@ -136,6 +143,8 @@
                 :portfolio-balance="portfolioBalance"
               />
               <transaction-grid v-if="table === 'transactions'" />
+              <adapters-grid v-if="table === 'deposits'" type="Deposit" />
+              <adapters-grid v-if="table === 'loans'" type="Debt" />
             </client-only>
           </v-card>
         </v-col>
@@ -152,10 +161,11 @@ import BalancesGrid from '~/components/wallet/BalancesGrid.vue'
 import { HeatmapBalancesData } from '~/models/heatmap'
 import walletMiddleware from '~/middleware/wallet'
 import TransactionGrid from '~/components/wallet/TransactionGrid.vue'
+import AdaptersGrid from '~/components/wallet/AdaptersGrid.vue'
 
 @Component({
   name: 'Index',
-  components: { TransactionGrid, BalancesGrid, Marketcap },
+  components: { AdaptersGrid, TransactionGrid, BalancesGrid, Marketcap },
   layout: 'wallet',
   middleware: [walletMiddleware],
   head(): object {
@@ -176,6 +186,7 @@ import TransactionGrid from '~/components/wallet/TransactionGrid.vue'
       address: (state: any) => state.wallet.address,
       balanceUsd: (state: any) => state.wallet.balanceUsd,
       balances: (state: any) => state.wallet.balances,
+      adapters: (state: any) => state.wallet.adapters,
       theme: (state: any) => state.ui.theme,
       ui: (state: any) => state.ui,
     }),
@@ -209,9 +220,11 @@ export default class Index extends Vue {
     },
   }
 
-  private table: 'positions' | 'transactions' = 'positions'
+  private table: 'positions' | 'transactions' | 'deposits' | 'loans' =
+    'positions'
 
   balances!: HeatmapBalancesData[]
+  address!: string
 
   get etherData() {
     return this.balances.find(
@@ -229,7 +242,7 @@ export default class Index extends Vue {
 
   async mounted() {
     await this.$store.dispatch('wallet/balances')
-
+    await this.$store.dispatch('wallet/getAdapters', { address: this.address })
     /**
      Listener for account change
      */
