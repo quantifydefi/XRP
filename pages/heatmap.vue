@@ -14,12 +14,13 @@
       @exit-metamask="exitAccount"
       @time-frame-change="onTimeFrameChange($event)"
       @heatmap-loading="(status) => (isHeatmapReady = !status)"
+      @filter-heatmap="(value) => (heatmapDataFilterString = value)"
     />
     <v-col cols="12" class="px-0 py-1">
       <v-card tile outlined :height="heatmapChartHeight">
         <marketcap
           v-if="heatmapData.length"
-          :data="heatmapData"
+          :data="filteredHeatmapData"
           :tile-tooltip="toolTip"
           :data-field="dataField"
           :tile-body="tile"
@@ -91,7 +92,7 @@ export default class Heatmap extends Vue {
     metaMaskComponent: HTMLFormElement
   }
 
-  private heatmapData: HeatmapData[] | HeatmapBalancesData[] = []
+  private heatmapData: (HeatmapData | HeatmapBalancesData)[] = []
   private heatmapConfig = plainToClass(HeatmapConfig, {
     mode: 'default',
     timeFrame: {
@@ -103,13 +104,13 @@ export default class Heatmap extends Vue {
           {
             value: '1h',
             title: '1 Hour',
-            tile: `{percent_change_liq_1h}% [font-size: {fontSizeLev3}px] 1h`,
+            tile: `LIQ {percent_change_liq_1h}% [font-size: {fontSizeLev3}px] 1h`,
             colorField: 'color1h',
           },
           {
             value: '24h',
             title: '1 Day',
-            tile: `{percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
+            tile: `LIQ {percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
             colorField: 'color24h',
           },
         ],
@@ -117,13 +118,13 @@ export default class Heatmap extends Vue {
           {
             value: '1h',
             title: '1 Hour',
-            tile: `{percent_change_liq_1h}% [font-size: {fontSizeLev3}px] 1h`,
+            tile: `LIQ {percent_change_liq_1h}% [font-size: {fontSizeLev3}px] 1h`,
             colorField: 'color1h',
           },
           {
             value: '24h',
             title: '1 Day',
-            tile: `{percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
+            tile: `LIQ {percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
             colorField: 'color24h',
           },
         ],
@@ -141,7 +142,7 @@ export default class Heatmap extends Vue {
             title: 'Liquidity',
             value: 'liquidity',
             tile: `[font-size: {fontSize}px font-weight: 400;]{poolSymbol}[/]
-                  [font-size: {fontSizeLev2}px; font-weight: 400;]$ {liquidityTransformed}m
+                  [font-size: {fontSizeLev2}px; font-weight: 400;]$ {token0_price.formatNumber('#.0000')} - $ {token1_price.formatNumber('#.0000')}
                   {time-data}`,
 
             toolTip: `[bold]{token0_name}-{token1_name}[/]
@@ -205,6 +206,30 @@ export default class Heatmap extends Vue {
   private isHeatmapReady = false
   private heatmapChartHeight = 800
   private ui!: UiState
+  private heatmapDataFilterString = ''
+
+  get filteredHeatmapData() {
+    if (
+      this.heatmapDataFilterString &&
+      this.heatmapDataFilterString.length > 1
+    ) {
+      const type = this.heatmapData[0].constructor.name
+      switch (type) {
+        case 'HeatmapData':
+          return this.heatmapData.filter((elem: any) =>
+            elem.poolSymbol
+              .toLowerCase()
+              .includes(this.heatmapDataFilterString.toLowerCase())
+          )
+        case 'HeatmapBalancesData':
+          return this.heatmapData.filter((elem: any) =>
+            elem.token_symbol
+              .toLowerCase()
+              .includes(this.heatmapDataFilterString.toLowerCase())
+          )
+      }
+    } else return this.heatmapData
+  }
 
   private async mounted() {
     this.heatmapChartHeight = window.innerHeight - 95

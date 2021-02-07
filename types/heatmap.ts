@@ -91,4 +91,5 @@ export enum HeatmapEvents {
   exitMetamask = 'exit-metamask',
   balanceHeatmap = 'balance-heatmap',
   heatmapLoading = 'heatmap-loading',
+  filterHeatmap = 'filter-heatmap',
 }

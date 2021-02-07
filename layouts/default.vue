@@ -21,6 +21,7 @@
           >Crypto</v-btn
         >
         <api-menu-header v-if="allowApiBar" />
+        <v-btn text tile @click="initMetamask">Positions</v-btn>
       </div>
       <v-btn icon @click="changeTheme">
         <v-icon>mdi-white-balance-sunny</v-icon>
@@ -57,6 +58,7 @@ import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import { Events } from '~/types/global'
 import { ThemeOptions } from '~/types/ui'
 import LayoutMixin from '~/mixins/LayoutMixin.vue'
+import MetamaskMixin from '~/mixins/MetamaskMixin.vue'
 
 @Component({
   name: 'Default',
@@ -67,7 +69,7 @@ import LayoutMixin from '~/mixins/LayoutMixin.vue'
     }),
   },
 })
-export default class Wallet extends mixins(LayoutMixin) {
+export default class Wallet extends mixins(LayoutMixin, MetamaskMixin) {
   clipped = false
   drawer = false
   fixed = false

@@ -16,12 +16,46 @@
       </v-text-field>
     </v-col>
     <v-col class="pt-2 pb-0 px-0 mt-4">
-      <v-btn tile depressed :disabled="loading" @click="getBalanceHeatmap">
+      <v-btn
+        tile
+        depressed
+        :disabled="loading || !isSearchButtonEnabled"
+        @click="getBalanceHeatmap"
+      >
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-col>
     <v-col class="pt-2 pb-0 mt-4">
       <div class="d-flex justify-end align-right">
+        <div>
+          <v-menu
+            v-model="filterMenuModel"
+            :close-on-content-click="false"
+            :nudge-width="200"
+            offset-y
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn tile depressed v-bind="attrs" v-on="on">
+                <v-icon>mdi-filter</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-content class="pb-0 mb-0">
+                    <v-text-field
+                      v-model="filterStringModel"
+                      label="Type Symbol Name"
+                      class="py-0 my-0"
+                      clearable
+                    />
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-menu>
+        </div>
+
         <client-only>
           <v-menu offset-y>
             <template v-slot:activator="{ attrs, on }">
@@ -194,6 +228,15 @@ export default class MetamaskButton extends Vue {
   private timeFrameModel = this.defaultTimeFrame
   private toggleTimeFrame: boolean = false
   private isHeatmapReedy: boolean = false
+  private filterMenuModel = false
+  private filterStringModel: string | null = ''
+  private searchTimeout: any = null
+
+  get isSearchButtonEnabled() {
+    if (this.search) {
+      return this.search.length > 1
+    } else return false
+  }
 
   @Watch('defaultBlockSize')
   private onDefaultBlockSizeChanged(value: { title: string; value: string }) {
@@ -203,6 +246,14 @@ export default class MetamaskButton extends Vue {
   @Watch('timeFrameModel')
   private onTimeFrameModelChanged(value: { title: string; value: string }) {
     this.timeFrameModel = value
+  }
+
+  @Watch('filterStringModel')
+  private onFilterChange(value: string) {
+    clearTimeout(this.searchTimeout)
+    this.searchTimeout = setTimeout(() => {
+      this.$emit(HeatmapEvents.filterHeatmap, value)
+    }, 1000)
   }
 
   private getBalanceHeatmap(): void {

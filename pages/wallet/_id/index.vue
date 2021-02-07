@@ -26,25 +26,9 @@
         <v-spacer />
         <v-col
           ><div class="text-right">
-            <v-menu open-on-hover bottom offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  tile
-                  color="green accent-4"
-                  text
-                  class="mt-1"
-                  v-bind="attrs"
-                  v-on="on"
-                  >Connected
-                  <v-icon right>mdi-chevron-down</v-icon>
-                </v-btn>
-              </template>
-              <v-list tile>
-                <v-list-item dense link @click="disconnect">
-                  <v-list-item-title>Disconnect</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <v-btn text icon color="red" @click="disconnect">
+              <v-icon size="28">mdi-power-standby</v-icon>
+            </v-btn>
           </div>
         </v-col>
       </v-row>
@@ -166,7 +150,7 @@ import AdaptersGrid from '~/components/wallet/AdaptersGrid.vue'
 @Component({
   name: 'Index',
   components: { AdaptersGrid, TransactionGrid, BalancesGrid, Marketcap },
-  layout: 'wallet',
+  // layout: 'wallet',
   middleware: [walletMiddleware],
   head(): object {
     return {
