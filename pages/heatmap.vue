@@ -210,23 +210,22 @@ export default class Heatmap extends Vue {
 
   get filteredHeatmapData() {
     if (
+      this.heatmapData.length > 0 &&
       this.heatmapDataFilterString &&
       this.heatmapDataFilterString.length > 1
     ) {
-      const type = this.heatmapData[0].constructor.name
-      switch (type) {
-        case 'HeatmapData':
-          return this.heatmapData.filter((elem: any) =>
-            elem.poolSymbol
-              .toLowerCase()
-              .includes(this.heatmapDataFilterString.toLowerCase())
-          )
-        case 'HeatmapBalancesData':
-          return this.heatmapData.filter((elem: any) =>
-            elem.token_symbol
-              .toLowerCase()
-              .includes(this.heatmapDataFilterString.toLowerCase())
-          )
+      if (this.heatmapData[0] instanceof HeatmapData) {
+        return this.heatmapData.filter((elem: any) =>
+          elem.poolSymbol
+            .toLowerCase()
+            .includes(this.heatmapDataFilterString.toLowerCase())
+        )
+      } else if (this.heatmapData[0] instanceof HeatmapBalancesData) {
+        return this.heatmapData.filter((elem: any) =>
+          elem.token_symbol
+            .toLowerCase()
+            .includes(this.heatmapDataFilterString.toLowerCase())
+        )
       }
     } else return this.heatmapData
   }
