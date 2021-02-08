@@ -18,10 +18,12 @@
                   Technical Analysis and Intelligence for Cryptocurrency Traders
                 </p>
               </v-col>
-              <v-col cols="7">
-                <token-search />
-              </v-col>
-              <v-col cols="1"><connect-to-wallet-button /></v-col>
+              <client-only>
+                <v-col cols="7">
+                  <token-search />
+                </v-col>
+                <v-col cols="1"><connect-to-wallet-button /></v-col>
+              </client-only>
             </v-row>
           </v-col>
 

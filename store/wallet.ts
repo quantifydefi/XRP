@@ -8,7 +8,7 @@ import { Adapter, Trade } from '~/models/transaction'
 export const state = () => ({
   isWalletConnected: false as boolean,
   address: (null as unknown) as string,
-  // address: '0x66A51330b37938f414cBf09ebd2E1eB9c70051A1',
+  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   balances: [] as HeatmapBalancesData[],
   transactions: [] as Trade[],
   adapters: ((null as unknown) as Adapter[]) || null,
@@ -50,10 +50,16 @@ export const actions: ActionTree<WalletState, WalletState> = {
   },
 
   async transactions({ commit }, { address }): Promise<Trade[]> {
-    const { data } = await this.$axios.get(`/api/defi/transactions/${address}`)
-    const classData = plainToClass(Trade, data.data as Trade[])
-    commit('SET_TRANSACTIONS', classData)
-    return classData
+    try {
+      const { data } = await this.$axios.get(
+        `/api/defi/transactions/${address}`
+      )
+      const classData = plainToClass(Trade, data.data as Trade[])
+      commit('SET_TRANSACTIONS', classData)
+      return classData
+    } catch {
+      return []
+    }
   },
 
   connectToWallet({ commit }, { wallet, status }) {
@@ -87,10 +93,14 @@ export const actions: ActionTree<WalletState, WalletState> = {
   },
 
   async getAdapters({ commit }, { address }): Promise<Adapter[]> {
-    const { data } = await this.$axios.get(`/api/defi/adapters/${address}`)
-    const classData = plainToClass(Adapter, data.data as Adapter[])
-    commit('SET_ADAPTERS', classData)
-    return classData
+    try {
+      const { data } = await this.$axios.get(`/api/defi/adapters/${address}`)
+      const classData = plainToClass(Adapter, data.data as Adapter[])
+      commit('SET_ADAPTERS', classData)
+      return classData
+    } catch {
+      return []
+    }
   },
 
   metamaskLogout({ commit }) {

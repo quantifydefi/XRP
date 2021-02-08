@@ -23,15 +23,15 @@
     </template>
 
     <template v-slot:item.balance_usd="{ item }">
-      {{ $numberWithCommas(item.balance_usd) }}
+      $ {{ $numberWithCommas(item.balance_usd) }}
     </template>
 
     <template v-slot:item.holdings="{ item }">
-      {{ calculateHoldings(item.balance_usd) }}
+      {{ calculateHoldings(item.balance_usd) }} %
     </template>
 
     <template v-slot:item.rate_usd="{ item }">
-      {{ item.rate_usd.toFixed(4) }}
+      $ {{ $numberWithCommas(item.rate_usd) }}
     </template>
 
     <template v-slot:item.token_price="{ item }">
@@ -39,7 +39,7 @@
     </template>
 
     <template v-slot:item.reserve_eth="{ item }">
-      {{ item.reserve_eth.toFixed(4) }}
+      $ {{ $numberWithCommas(item.reserve_eth) }}
     </template>
 
     <template v-slot:item.percent_change_liq_1h="{ item }">
@@ -85,13 +85,15 @@ export default class BalancesGrid extends Vue {
       class: 'px-2',
       width: 160,
     },
+
     {
-      text: 'Quantity',
+      text: 'Holdings',
       align: 'start',
-      value: 'contract_balance',
+      value: 'holdings',
       class: 'px-2',
-      width: 110,
+      width: 100,
     },
+
     {
       text: 'Balance',
       align: 'start',
@@ -101,15 +103,15 @@ export default class BalancesGrid extends Vue {
     },
 
     {
-      text: 'Holdings %',
+      text: 'Quantity',
       align: 'start',
-      value: 'holdings',
+      value: 'contract_balance',
       class: 'px-2',
-      width: 100,
+      width: 110,
     },
 
     {
-      text: 'Rate USD',
+      text: 'Price',
       align: 'start',
       value: 'rate_usd',
       class: 'px-2',
@@ -117,14 +119,14 @@ export default class BalancesGrid extends Vue {
     },
 
     {
-      text: '1H %',
+      text: 'LIQ 1H %',
       align: 'center',
       value: 'percent_change_liq_1h',
       class: 'px-2',
       width: 100,
     },
     {
-      text: '24H %',
+      text: 'LIQ 24H %',
       align: 'center',
       value: 'percent_change_liq_24h',
       class: 'px-2',

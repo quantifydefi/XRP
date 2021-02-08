@@ -137,7 +137,7 @@ export default class Chart extends Vue {
       '{}',
       '$'
     )
-    token0Series.name = this.token1Symbol
+    token0Series.name = this.token0Symbol
     token0Series.tooltip.getFillFromObject = false
     token0Series.tooltip.background.strokeWidth = 0
     token0Series.strokeWidth = 2
@@ -145,7 +145,7 @@ export default class Chart extends Vue {
     token0Series.tooltip.background.fill = am4core.color('#86b9e5')
     token0Series.fill = am4core.color('#86b9e5')
     token0Series.fillOpacity = 0.1
-    // series1.hidden = Token.isQuoteToken(this.token0Symbol, this.tokenData)
+    token0Series.hidden = !Token.isQuoteToken(this.token0Symbol, this.tokenData)
 
     const token1Series = this.chart.series.push(new am4charts.LineSeries())
     token1Series.yAxis = valueAxisToken1
@@ -157,7 +157,7 @@ export default class Chart extends Vue {
       '{}',
       '$'
     )
-    token1Series.name = this.token0Symbol
+    token1Series.name = this.token1Symbol
     token1Series.tooltip.getFillFromObject = false
     token1Series.tooltip.background.strokeWidth = 0
     token1Series.strokeWidth = 2
@@ -167,6 +167,7 @@ export default class Chart extends Vue {
     token1Series.fillOpacity = 0.1
     token1Series.marginBottom = 200
     token1Series.hidden = true
+    token1Series.hidden = !Token.isQuoteToken(this.token1Symbol, this.tokenData)
 
     const valueAxis2 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxis2.tooltip.disabled = true
