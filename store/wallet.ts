@@ -109,4 +109,24 @@ export const actions: ActionTree<WalletState, WalletState> = {
     commit('SET_BALANCES', [])
     commit('SET_ADAPTERS', null)
   },
+
+  async gasPrices({ commit }): Promise<any> {
+    try {
+      let gasPrices = {}
+      const { data } = await this.$axios.get(
+        'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=PAZS11XR4CSXFTQJZ8SK61IAB4UTPR5K6C'
+      )
+      if (data) {
+        gasPrices = {
+          Fast: data.result.FastGasPrice,
+          Average: data.result.ProposeGasPrice,
+          Slow: data.result.SafeGasPrice,
+        }
+      }
+      console.log(gasPrices)
+      return gasPrices
+    } catch {
+      return null
+    }
+  },
 }

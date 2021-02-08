@@ -63,8 +63,12 @@
                   </tr>
 
                   <tr>
-                    <td>Estimated Gas Fee</td>
-                    <td>$ 0</td>
+                    <td>Gas Prices</td>
+
+                    <td>
+                      Slow: {{ slowPrice }} Average: {{ averagePrice }} Fast:
+                      {{ fastPrice }}
+                    </td>
                   </tr>
 
                   <tr>
@@ -209,6 +213,11 @@ export default class Index extends Vue {
 
   balances!: HeatmapBalancesData[]
   address!: string
+  gasPrices!: {
+    Fast: 0
+    Average: 0
+    Slow: 0
+  }
 
   get etherData() {
     return this.balances.find(
@@ -224,7 +233,20 @@ export default class Index extends Vue {
       })
   }
 
+  get fastPrice() {
+    return this.gasPrices.Fast
+  }
+
+  get averagePrice() {
+    return this.gasPrices.Average
+  }
+
+  get slowPrice() {
+    return this.gasPrices.Slow
+  }
+
   async mounted() {
+    this.gasPrices = await this.$store.dispatch('wallet/gasPrices')
     await this.$store.dispatch('wallet/balances')
     await this.$store.dispatch('wallet/getAdapters', { address: this.address })
     /**

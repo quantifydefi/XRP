@@ -161,6 +161,7 @@ export default class Index extends Vue {
   ]
 
   isButtonVisible = true
+
   goTo() {
     this.$vuetify.goTo(1000)
     this.isButtonVisible = false
