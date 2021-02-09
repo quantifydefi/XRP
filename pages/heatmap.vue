@@ -142,14 +142,14 @@ export default class Heatmap extends Vue {
             title: 'Liquidity',
             value: 'liquidity',
             tile: `[font-size: {fontSize}px font-weight: 400;]{poolSymbol}[/]
-                  {time-data}`,
+                  [font-size: {fontSizeLev2}px]{time-data}`,
 
             toolTip: `[bold]{token0_name}-{token1_name}[/]
                       ------------------------------------------
-                      [bold]1 {token0_symbol}[/] = {token1_price} {token1_symbol}
-                      [bold]1 {token1_symbol}[/] = {token0_price} {token0_symbol}
-                      [bold]1 ETH[/] = $ {eth_price_usd}
-                      [bold]Liquidity[/] = $ {reserveEthUsd}`,
+                      1 {token0_symbol}: {token1_price} {token1_symbol}
+                      1 {token1_symbol}: {token0_price} {token0_symbol}
+                      1 ETH: $ {eth_price_usd}
+                      Liquidity: $ {reserveEthUsd}`,
           },
         ],
 

@@ -112,7 +112,7 @@ export default class Marketcap extends Vue {
             (target.dataItem.dataContext.dataContext.token0_price_usd.toString()
               .length *
               0.5)) *
-          0.5
+          0.75
       } catch {
         fontSize =
           target.availableWidth /
