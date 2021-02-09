@@ -7,8 +7,8 @@ import { Adapter, Trade } from '~/models/transaction'
 
 export const state = () => ({
   isWalletConnected: false as boolean,
-  // address: (null as unknown) as string,
-  address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+  address: (null as unknown) as string,
+  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   balances: [] as HeatmapBalancesData[],
   transactions: [] as Trade[],
   adapters: ((null as unknown) as Adapter[]) || null,
@@ -89,8 +89,8 @@ export const actions: ActionTree<WalletState, WalletState> = {
         })
 
         if (accounts.length > 0) {
-          // commit('SET_ADDRESS', accounts[0])
-          // commit('SET_WALLET_STATUS', true)
+          commit('SET_ADDRESS', accounts[0])
+          commit('SET_WALLET_STATUS', true)
           return { status: true, address: accounts[0] }
         }
       }
