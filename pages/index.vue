@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-4">
     <v-row justify="center" style="height: 800px; margin-top: 100px">
       <v-col cols="10">
         <v-row align="center">
@@ -50,7 +50,47 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center" style="height: 800px">
+    <v-row justify="center">
+      <v-col cols="10">
+        <v-row>
+          <v-col
+            ><p id="#roadmap" class="text-center text-h3 mt-5">
+              Features
+            </p></v-col
+          >
+        </v-row>
+
+        <v-row align="center">
+          <v-col
+            v-for="item in featureItems"
+            :key="item.header"
+            cols="auto"
+            md="4"
+            sm="6"
+            style="width: 100%"
+          >
+            <v-hover v-slot="{ hover }">
+              <v-card
+                height="250"
+                tile
+                outlined
+                class="px-5"
+                :class="{ 'on-hover': hover }"
+                :elevation="hover ? 10 : 0"
+              >
+                <p class="text-center mt-5">
+                  <v-icon color="primary" size="50">{{ item.icon }}</v-icon>
+                </p>
+                <p class="text-center text-h5" v-text="item.header" />
+                <p class="text-center" v-text="item.desc" />
+              </v-card>
+            </v-hover>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+
+    <v-row justify="center">
       <v-col cols="10">
         <v-row>
           <v-col
@@ -61,13 +101,20 @@
         </v-row>
 
         <v-row align="center">
-          <v-col v-for="item in items" :key="item.header" cols="4">
+          <v-col
+            v-for="item in items"
+            :key="item.header"
+            cols="auto"
+            md="4"
+            sm="6"
+            style="width: 100%"
+          >
             <v-hover v-slot="{ hover }">
               <v-card
-                height="200"
+                height="250"
                 tile
                 outlined
-                class="px-2"
+                class="px-5"
                 :class="{ 'on-hover': hover }"
                 :elevation="hover ? 10 : 0"
               >
@@ -112,8 +159,8 @@ export default class Index extends Vue {
     {
       color: 'primary lighten-2',
       icon: 'mdi-star',
-      header: 'Ethereum Wallet connector',
-      desc: 'Ethereum wallet connector for viewing your Uniswap portfolio',
+      header: 'Ethereum Wallet Connector',
+      desc: 'Support for additional software wallets',
     },
     {
       color: 'red lighten-2',
@@ -131,7 +178,7 @@ export default class Index extends Vue {
     {
       color: 'primary lighten-2',
       icon: 'mdi-currency-usd-circle',
-      header: 'Token Pairs',
+      header: 'Uniswap Screener',
       desc: 'Daily and hourly trends for tokens and token pairs.',
     },
     {
@@ -141,22 +188,64 @@ export default class Index extends Vue {
       desc: 'Customize price alert notifications for your favorite DeFI tokens',
     },
     {
-      color: 'orange lighten-2',
-      icon: 'mdi-telegram',
-      header: 'Telegram Group',
-      desc: 'Exclusive Telegram Group with the latest DeFi intel',
+      color: 'red lighten-2',
+      icon: 'mdi-information',
+      header: 'Information',
+      desc: 'Providing all the critical DeFi information you need',
+    },
+    {
+      color: 'red lighten-2',
+      icon: 'mdi-newspaper',
+      header: 'News',
+      desc: 'Latest news for the Defi space',
+    },
+    {
+      color: 'red lighten-2',
+      icon: 'mdi-finance',
+      header: 'DeFi Movers',
+      desc: 'Daily leaders and decliners, New DeFi tokens',
+    },
+  ]
+
+  featureItems = [
+    {
+      color: 'primary lighten-2',
+      icon: 'mdi-star',
+      header: 'Metamask Wallet Connector',
+      desc: 'Connect to your Metamask wallet with a single click',
     },
     {
       color: 'primary lighten-2',
       icon: 'mdi-account-reactivate-outline',
       header: 'Uniswap Trader',
-      desc: 'Build for the Uniswap Trader',
+      desc:
+        'Automated Smart Contract Links for Uniswap Trading, part of our Token Pages',
     },
     {
       color: 'red lighten-2',
       icon: 'mdi-information',
-      header: 'Information',
-      desc: 'Providing all the critical DeFi information you need.  ',
+      header: 'Uniswap Analytics',
+      desc: 'Providing all the critical DeFi information you need',
+    },
+    {
+      color: 'red lighten-2',
+      icon: 'mdi-format-columns',
+      header: 'Pairs Heatmap',
+      desc:
+        'Visually display hundreds of trading pairs on a single screen. Perform search for desired trading pair',
+    },
+    {
+      color: 'red lighten-2',
+      icon: 'mdi-chart-box',
+      header: 'Token Pages',
+      desc:
+        'Single screen with Analytics, Price Chart and Uniswap I-frame trading link with Metamask interface',
+    },
+    {
+      color: 'orange lighten-2',
+      icon: 'mdi-telegram',
+      header: 'Telegram Group',
+      desc: 'Exclusive Telegram Group with the latest DeFi intel',
     },
   ]
 

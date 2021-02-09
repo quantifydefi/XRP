@@ -1,0 +1,284 @@
+<template>
+  <v-container>
+    <v-card class="pa-4" tile outlined justify="center">
+      <v-row class="pa-10">
+        <v-col cols="auto" lg="4">
+          <h2 class="text-h3 font-weight-medium">Our Team</h2>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </v-col>
+        <v-col cols="auto" lg="8">
+          <v-row class="my-5">
+            <v-col
+              v-for="member in team"
+              :key="member._id"
+              cols="auto"
+              lg="6"
+              md="6"
+              sm="12"
+              width="200"
+            >
+              <BioDialog
+                :is-visibility="member.bioIsVisible"
+                :name="member.name"
+                :job-title="member.jobTitle"
+                :bio="member.bio"
+                :thumbnail-url="member.thumbnailUrl"
+                @close-dialog="closeBio"
+              ></BioDialog>
+              <div
+                class="d-flex justify-left v-clickable"
+                @click="openBio(member._id)"
+              >
+                <v-avatar size="80" class="ml-5">
+                  <img
+                    class="rounded-circle"
+                    :src="
+                      require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
+                    "
+                    alt="avatar"
+                  />
+                </v-avatar>
+
+                <div class="pa-6" align="left">
+                  <h3>
+                    {{ member.name }}
+                  </h3>
+                  <p class="text--secondary h5">
+                    {{ member.jobTitle }}
+                  </p>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-divider></v-divider>
+      <v-row class="pa-10">
+        <v-col cols="auto" lg="4" align="left">
+          <h2 class="text-h3 font-weight-medium">Our Advisors</h2>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </v-col>
+        <v-col cols="auto" lg="8">
+          <v-row class="my-5">
+            <v-col
+              v-for="advisor in advisors"
+              :key="advisor.id"
+              cols="auto"
+              lg="6"
+              md="6"
+              sm="12"
+              width="200"
+            >
+              <BioDialog
+                :is-visibility="advisor.bioIsVisible"
+                :name="advisor.name"
+                :job-title="advisor.jobTitle"
+                :bio="advisor.bio"
+                :thumbnail-url="advisor.thumbnailUrl"
+                @close-dialog="closeAdvisorBio"
+              ></BioDialog>
+              <div
+                class="d-flex justify-left v-clickable"
+                @click="openAdvisorBio(advisor._id)"
+              >
+                <v-avatar size="80" class="ml-5">
+                  <img
+                    class="rounded-circle"
+                    :src="
+                      require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
+                    "
+                    alt="avatar"
+                  />
+                </v-avatar>
+
+                <div class="pa-6" align="left">
+                  <h3>{{ advisor.name }}</h3>
+                  <p class="text--secondary h5">{{ advisor.jobTitle }}</p>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-container>
+</template>
+
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+
+interface Team {
+  _id: number
+  name: string
+  jobTitle: string
+  thumbnailUrl: string
+  bioIsVisible: boolean
+  bio: string
+}
+
+@Component({
+  name: 'Team',
+  transition: 'slide-x-transition',
+  components: {
+    BioDialog: () => import('@/components/BioDialog.vue'),
+  },
+
+  head(): object {
+    return {
+      title: 'Meet Our Team',
+      meta: [
+        { name: 'description', hid: 'description', content: 'Meet our team.' },
+      ],
+    }
+  },
+})
+export default class OurTeam extends Vue {
+  openBio(memberId: number): void {
+    for (const member of this.team) {
+      if (member._id === memberId) {
+        member.bioIsVisible = true
+      }
+    }
+  }
+
+  closeBio(teamMember: string): void {
+    for (const member of this.team) {
+      if (member.thumbnailUrl === teamMember) {
+        member.bioIsVisible = false
+      }
+    }
+  }
+
+  openAdvisorBio(advisorId: number): void {
+    for (const advisor of this.advisors) {
+      if (advisor._id === advisorId) {
+        advisor.bioIsVisible = true
+      }
+    }
+  }
+
+  closeAdvisorBio(advisorName: string): void {
+    for (const advisor of this.advisors) {
+      if (advisor.thumbnailUrl === advisorName) {
+        advisor.bioIsVisible = false
+      }
+    }
+  }
+
+  private team: Array<Team> = [
+    {
+      _id: 1,
+      name: 'John Barry',
+      jobTitle: 'CEO / Co-Founder',
+      thumbnailUrl: 'john',
+      bioIsVisible: false,
+      bio:
+        'John is an Information Technology developer with over 30 years of executive experience in financial services, including 23 years at the New York Stock Exchange. He flourished as lead developer for the vital SuperDot order flow system that tracked every order entering the NYSE computer systems. Later, John was responsible for the Capacity Planning of all NYSE order flow system, earning the Chairman’s Award for his project management success. As the CEO of Quantify Crypto, John combines his deep understanding of the securities industry and project leadership expertise to form the company vision.',
+    },
+    {
+      _id: 2,
+      name: 'Alexander Barry',
+      jobTitle: 'CTO / Co-Founder',
+      thumbnailUrl: 'alex',
+      bioIsVisible: false,
+      bio:
+        'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated trading bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
+    },
+    {
+      _id: 3,
+      name: 'Maksym "Max" Zhakun',
+      jobTitle: 'Web Engineer',
+      thumbnailUrl: 'maksym',
+      bioIsVisible: false,
+      bio:
+        'Max is a brilliant developer with complete usage of latest software components and tools.  He is lead system architect of the Quantify Crypto platform, deciding the necessary technology and techniques the system requires.  His full knowledge of databases, AWS servers, networking, programming languages, communication protocols and standards is demonstrated on our platform.',
+    },
+    {
+      _id: 4,
+      name: 'Irene Aguas',
+      jobTitle: 'Software Developer',
+      thumbnailUrl: 'irene',
+      bioIsVisible: false,
+      bio:
+        "Irene's career in Programming started in 2017 for a healthcare company in California. Her immense love for technology and software applications made her change profession from being a Nurse to a full time Software Developer. Irene has quickly learned the most advanced concepts of front-end web site design while using her creative skills to ensure that our platform exceeds the industry standards. She is a strong contributor to our web site development team.",
+    },
+    {
+      _id: 5,
+      name: 'Angela Barry',
+      jobTitle: 'Manager',
+      thumbnailUrl: 'angela',
+      bioIsVisible: false,
+      bio:
+        'With a Master of Science in Digital Currency, she’s an expert on the workings of blockchain technology and tracks its regulatory framework. Angela has a bachelor’s degree in economics bringing over 15 years of research talent and supports our team with a diverse skillset.',
+    },
+    {
+      _id: 6,
+      name: 'Joseph Nisivoccia',
+      jobTitle: 'Customer Outreach and Sales',
+      thumbnailUrl: 'joseph',
+      bioIsVisible: false,
+      bio:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    },
+    {
+      _id: 7,
+      name: 'Annalese a.k.a "Bitcoin Queen"',
+      jobTitle: 'Head of Business Development',
+      thumbnailUrl: 'annalese',
+      bioIsVisible: false,
+      bio:
+        'Annalese- otherwise known as "Bitcoin Queen" is a crypto community advocate for the city of Miami. She has a BA in business administration with a minor in health administration and communications. Annalese came across bitcoin for the first time in 2017 through a mutual friend, who later became her business partner in building a local media company with a blockchain focus. She has worked closely with both local and national organizations curating conferences and events. Aside from crypto, she enjoys spending time with her trusty companion- Trunks the pitbull',
+    },
+  ]
+
+  private advisors: Array<Team> = [
+    {
+      _id: 1,
+      name: 'Paul Bauccio',
+      jobTitle: 'Advisor',
+      thumbnailUrl: 'paul',
+      bioIsVisible: false,
+      bio:
+        'Paul currently serves as Chief Risk Officer of IEX Group, Inc. (a successful startup founded in 2012) parent company of Investors Exchange, IEX Cloud, and IEX Astral. Paul joined IEX in 2015 after 15 years at the New York Stock Exchange where he was Senior Vice President of Market Operations. Paul was responsible for overseeing daily operations of the NYSE Trading Floor and cash equity business. With over 20 years of leadership experience, Paul has been at the forefront of industry shaping initiatives and innovative technology projects.',
+    },
+    {
+      _id: 2,
+      name: 'Warren Rosenbaum',
+      jobTitle: 'Advisor',
+      thumbnailUrl: 'warren',
+      bioIsVisible: false,
+      bio:
+        'Warren was the chief architect of the Technology and Operations divisions of the New York Stock Exchange. A senior Vice President leader with full responsibility for the software and hardware architecture of the NYSE enterprise systems.  Warren provided the vision and innovation guidance keeping NYSE as a technology leader. During his tenure, over 25+ years, the NYSE systems consistently had operational uptimes of over 99.99% due to his successful.',
+    },
+    {
+      _id: 3,
+      name: 'Harold Bott',
+      jobTitle: 'Advisor',
+      thumbnailUrl: 'harold',
+      bioIsVisible: false,
+      bio:
+        "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop trading platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic trading for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency trading firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
+    },
+  ]
+}
+</script>
+
+<style scoped>
+h3 {
+  font-size: 1.3em;
+}
+
+p {
+  font-size: 1.2em;
+}
+
+.v-clickable {
+  cursor: pointer;
+}
+</style>
