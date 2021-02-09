@@ -48,8 +48,8 @@
               tokenData.token1_symbol
             }}
           </div>
-          <p class="display-1 text--primary mb-0">
-            ${{ tokenData.reserve_eth.toFixed(2) }}m
+          <p class="text-h5 text--primary mb-0">
+            ${{ $numberWithCommas(tokenData.reserveEthUsd) }}
           </p>
         </v-card-text>
       </v-card>
@@ -62,8 +62,9 @@
       >
         <v-card-text>
           <div>All time Volume in USD</div>
-          <p class="display-1 text--primary mb-0">
-            ${{ tokenData.volumeUsdFormatted }}m
+
+          <p class="text-h5 text--primary mb-0">
+            ${{ $numberWithCommas(tokenData.volume_usd / 10 ** 3) }}m
           </p>
         </v-card-text>
       </v-card>
@@ -76,7 +77,7 @@
       >
         <v-card-text>
           <div>Transaction Count</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.tx_count }}
           </p>
         </v-card-text>
@@ -90,7 +91,7 @@
       >
         <v-card-text>
           <div>Liquidity Provider Count</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.liquidity_provider_count }}
           </p>
         </v-card-text>
@@ -105,7 +106,7 @@
         <v-card-text>
           <div>Created At</div>
           <p class="text-subtitle-1 text--primary mb-0">
-            {{ tokenData.date }}
+            {{ timeConverter(tokenData.created_at_timestamp) }}
           </p>
         </v-card-text>
       </v-card>
@@ -121,7 +122,7 @@
       >
         <v-card-text>
           <div>Token Name</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token0_name }}
           </p>
         </v-card-text>
@@ -136,7 +137,7 @@
       >
         <v-card-text>
           <div>Token Price ETH</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token0_price.toFixed(4) }}
           </p>
         </v-card-text>
@@ -150,28 +151,8 @@
         :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
       >
         <v-card-text>
-          <div>Token Price USD</div>
-          <p class="display-1 text--primary mb-0">
-            $
-            {{ (tokenData.token0_price * tokenData.eth_price_usd).toFixed(2) }}
-
-            <span class="text-subtitle-1"
-              >${{ tokenData.eth_price_usd.toFixed(2) }}/ETH</span
-            >
-          </p>
-        </v-card-text>
-      </v-card>
-
-      <v-card
-        class="mb-6"
-        tile
-        outlined
-        :color="theme === 'dark' ? 'transparent' : ''"
-        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
-      >
-        <v-card-text>
           <div>Ptc Change 1H</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token0_percent_change_1h }}%
           </p>
         </v-card-text>
@@ -186,7 +167,7 @@
       >
         <v-card-text>
           <div>Ptc Change 24H</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token0_percent_change_24h }}%
           </p>
         </v-card-text>
@@ -202,7 +183,7 @@
       >
         <v-card-text>
           <div>Token Name</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token1_name }}
           </p>
         </v-card-text>
@@ -217,7 +198,7 @@
       >
         <v-card-text>
           <div>Token Price ETH</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token1_price.toFixed(4) }}
           </p>
         </v-card-text>
@@ -231,27 +212,8 @@
         :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
       >
         <v-card-text>
-          <div>Token Price USD</div>
-          <p class="display-1 text--primary mb-0">
-            $
-            {{ (tokenData.token1_price * tokenData.eth_price_usd).toFixed(2) }}
-            <span class="text-subtitle-1"
-              >${{ tokenData.eth_price_usd.toFixed(2) }}/ETH</span
-            >
-          </p>
-        </v-card-text>
-      </v-card>
-
-      <v-card
-        class="mb-6"
-        tile
-        outlined
-        :color="theme === 'dark' ? 'transparent' : ''"
-        :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
-      >
-        <v-card-text>
           <div>Ptc Change 1H</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token1_percent_change_1h }}%
           </p>
         </v-card-text>
@@ -266,7 +228,7 @@
       >
         <v-card-text>
           <div>Ptc Change 24H</div>
-          <p class="display-1 text--primary mb-0">
+          <p class="text-h5 text--primary mb-0">
             {{ tokenData.token1_percent_change_24h }}%
           </p>
         </v-card-text>
@@ -301,6 +263,31 @@ export default class LeftBar extends Vue {
 
   changeTab(tab: string) {
     this.tab = tab
+  }
+
+  timeConverter(timestamp: number): string {
+    const a = new Date(timestamp * 1000)
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ]
+    const year = a.getFullYear()
+    const month = months[a.getMonth()]
+    const date = a.getDate()
+    const hour = a.getHours()
+    const min = a.getMinutes()
+    const sec = a.getSeconds()
+    return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
   }
 }
 </script>

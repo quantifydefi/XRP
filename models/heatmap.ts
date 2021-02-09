@@ -43,6 +43,10 @@ export class HeatmapData implements HeatmapDataInterface {
     return `${this.token0_symbol}-${this.token1_symbol}`
   }
 
+  get reserveEthUsd() {
+    return parseFloat((this.reserve_eth * this.eth_price_usd).toFixed(2))
+  }
+
   get color1h(): string | undefined {
     const x = this.percent_change_liq_1h
     if (x > 0 && x <= 1) {
@@ -83,10 +87,6 @@ export class HeatmapData implements HeatmapDataInterface {
     } else if (x < -5) {
       return '#e60000'
     }
-  }
-
-  get liquidityTransformed(): number {
-    return parseFloat((this.reserve_eth / 10 ** 3).toFixed(2))
   }
 
   get uniqueTokenSymbol(): string | undefined {

@@ -39,7 +39,7 @@
     </template>
 
     <template v-slot:item.reserve_eth="{ item }">
-      $ {{ $numberWithCommas(item.reserve_eth) }}
+      $ {{ $numberWithCommas(item.reserve_eth * ethPrice) }}
     </template>
 
     <template v-slot:item.percent_change_liq_1h="{ item }">
@@ -68,6 +68,7 @@ import { HeatmapBalancesData } from '~/models/heatmap'
 export default class BalancesGrid extends Vue {
   @Prop({ default: () => [] }) data!: HeatmapBalancesData[]
   @Prop({ default: () => 0 }) portfolioBalance!: number
+  @Prop({ default: () => 0 }) ethPrice!: number
 
   headers = [
     {
@@ -83,7 +84,7 @@ export default class BalancesGrid extends Vue {
       align: 'start',
       value: 'token_pair',
       class: 'px-2',
-      width: 160,
+      width: 140,
     },
 
     {

@@ -7,11 +7,12 @@ import { Adapter, Trade } from '~/models/transaction'
 
 export const state = () => ({
   isWalletConnected: false as boolean,
-  address: (null as unknown) as string,
-  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+  // address: (null as unknown) as string,
+  address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   balances: [] as HeatmapBalancesData[],
   transactions: [] as Trade[],
   adapters: ((null as unknown) as Adapter[]) || null,
+  gasPrice: { fast: 0, average: 0, slow: 0 },
 })
 export type WalletState = ReturnType<typeof state>
 
@@ -33,6 +34,12 @@ export const mutations: MutationTree<WalletState> = {
 
   SET_ADAPTERS: (state, adapters: Adapter[]) => {
     state.adapters = adapters
+  },
+
+  SET_GAS: (state: WalletState, { fast, average, slow }) => {
+    state.gasPrice.slow = slow
+    state.gasPrice.average = average
+    state.gasPrice.fast = fast
   },
 }
 
@@ -82,8 +89,8 @@ export const actions: ActionTree<WalletState, WalletState> = {
         })
 
         if (accounts.length > 0) {
-          commit('SET_ADDRESS', accounts[0])
-          commit('SET_WALLET_STATUS', true)
+          // commit('SET_ADDRESS', accounts[0])
+          // commit('SET_WALLET_STATUS', true)
           return { status: true, address: accounts[0] }
         }
       }
@@ -112,19 +119,13 @@ export const actions: ActionTree<WalletState, WalletState> = {
 
   async gasPrices({ commit }): Promise<any> {
     try {
-      let gasPrices = {}
       const { data } = await this.$axios.get(
         'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=PAZS11XR4CSXFTQJZ8SK61IAB4UTPR5K6C'
       )
-      if (data) {
-        gasPrices = {
-          Fast: data.result.FastGasPrice,
-          Average: data.result.ProposeGasPrice,
-          Slow: data.result.SafeGasPrice,
-        }
-      }
-      console.log(gasPrices)
-      return gasPrices
+      const fast = parseFloat(data.result.FastGasPrice)
+      const average = parseFloat(data.result.ProposeGasPrice)
+      const slow = parseFloat(data.result.SafeGasPrice)
+      commit('SET_GAS', { fast, average, slow })
     } catch {
       return null
     }

@@ -35,8 +35,9 @@
             offset-y
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn tile depressed v-bind="attrs" v-on="on">
-                <v-icon>mdi-filter</v-icon>
+              <v-btn tile depressed v-bind="attrs" v-on="on"
+                >Filter
+                <v-icon right>mdi-filter</v-icon>
               </v-btn>
             </template>
             <v-card>

@@ -39,6 +39,10 @@ export class Token implements TokenInterface {
     return parseFloat((this.volume_usd / 10 ** 3).toFixed(2))
   }
 
+  get reserveEthUsd() {
+    return parseFloat((this.reserve_eth * this.eth_price_usd).toFixed(2))
+  }
+
   get date() {
     return new Date(this.created_at_timestamp * 1000)
   }

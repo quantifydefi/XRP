@@ -66,8 +66,22 @@
                     <td>Gas Prices</td>
 
                     <td>
-                      Slow: {{ slowPrice }} Average: {{ averagePrice }} Fast:
-                      {{ fastPrice }}
+                      <span>
+                        {{ gasPrice.slow }}
+                        <small class="grey--text text--lighten-1">Slow</small>
+                      </span>
+
+                      <span class="mx-2">
+                        {{ gasPrice.average }}
+                        <small class="grey--text text--lighten-1"
+                          >Average</small
+                        >
+                      </span>
+
+                      <span>
+                        {{ gasPrice.fast }}
+                        <small class="grey--text text--lighten-1">Fast</small>
+                      </span>
                     </td>
                   </tr>
 
@@ -129,6 +143,7 @@
                 v-if="table === 'positions'"
                 :data="balances"
                 :portfolio-balance="portfolioBalance"
+                :eth-price="etherData.eth_price_usd"
               />
               <transaction-grid v-if="table === 'transactions'" />
               <adapters-grid v-if="table === 'deposits'" type="Deposit" />
@@ -177,6 +192,7 @@ import AdaptersGrid from '~/components/wallet/AdaptersGrid.vue'
       adapters: (state: any) => state.wallet.adapters,
       theme: (state: any) => state.ui.theme,
       ui: (state: any) => state.ui,
+      gasPrice: (state: any) => state.wallet.gasPrice,
     }),
   },
 })
@@ -249,6 +265,7 @@ export default class Index extends Vue {
     this.gasPrices = await this.$store.dispatch('wallet/gasPrices')
     await this.$store.dispatch('wallet/balances')
     await this.$store.dispatch('wallet/getAdapters', { address: this.address })
+
     /**
      Listener for account change
      */
