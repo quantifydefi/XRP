@@ -60,7 +60,7 @@
       <v-col cols="10">
         <v-row>
           <v-col
-            ><p id="#roadmap" class="text-center text-h3 mt-5">
+            ><p id="#features" class="text-center text-h3 mt-5">
               Features
             </p></v-col
           >

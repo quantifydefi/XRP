@@ -63,7 +63,7 @@
                   </tr>
 
                   <tr>
-                    <td>Gas Prices</td>
+                    <td>Gas Prices (GWEI)</td>
 
                     <td>
                       <span>

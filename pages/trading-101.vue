@@ -137,9 +137,9 @@
           provide liquidity for the tokens they own. The next video is
           groundbreaking. Published on May 31st 2020, by a mostly unknown
           Youtuber “denome”, who had fewer than 1,000 subscribers at the time
-          (almost 15,000 now). Since then over 58,000 views have occurred with
-          an explosion of trading volume UniSwap two months later. Was this
-          video alone the reason for the volume surge at a mostly unknown DEX
+          (over 20,000 now). Since then over 75,000 views have occurred with an
+          explosion of trading volume UniSwap two months later. Was this video
+          alone the reason for the volume surge at a mostly unknown DEX
           exchange, it's hard to say. However this is the first video from a
           trader making money by being a liquidity provider. He reviews his
           strategy of collecting fees. He reviews the earning method and the
@@ -149,7 +149,7 @@
         <p
           class="text-center"
           v-html="
-            `<iframe width='700' height='400' src='https://www.youtube.com/embed/qkiKTW7_OgQ&t=1s' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
+            `<iframe width='700' height='400' src='https://www.youtube.com/embed/qkiKTW7_OgQ' frameborder='0' allow='encrypted-media' allowfullscreen></iframe>`
           "
         ></p>
 
