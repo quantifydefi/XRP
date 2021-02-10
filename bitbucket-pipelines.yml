@@ -95,7 +95,7 @@ pipelines:
                 AWS_ACCESS_KEY_ID: $AWS_KEY
                 AWS_SECRET_ACCESS_KEY: $AWS_SECRET
                 AWS_DEFAULT_REGION: $AWS_REGION
-                CLUSTER_NAME: 'Defi'
+                CLUSTER_NAME: 'Defi-Production'
                 SERVICE_NAME: 'qc-defi-nuxt-server'
                 TASK_DEFINITION: 'task-definition.json'
                 FORCE_NEW_DEPLOYMENT: "true"
