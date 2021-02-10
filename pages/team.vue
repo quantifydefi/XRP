@@ -224,7 +224,7 @@ export default class OurTeam extends Vue {
       thumbnailUrl: 'joseph',
       bioIsVisible: false,
       bio:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        'Hey there, my name is Joe Nisivoccia and I’m the Vice President of Sales for Quantify Crypto. My professional background has been in B2B and B2C sales for the past 4 years for some of the most innovative, disruptive software and financial services companies in the US - now leading me to the Quantify Crypto team. As a member of the 2020 Scotsman’s Guide, I was ranked within the top 500 individual mortgage loan originators with Better Mortgage - recently voted LinkedIn’s #1 Startup of 2020! In my spare time, I’m an avid sports fan (NFL, MLB and NBA) and enjoy spending time outdoors. I plan on providing Quantify Crypto’s potential clients and investors a level of customer care and market & product insight second to none in the emerging digital asset space. Contact me with my information seen below if you have any questions at all, and feel free to book a time to speak with me on my calendar to learn more here: link.',
     },
     {
       _id: 7,
