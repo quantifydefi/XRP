@@ -23,6 +23,27 @@ pipelines:
             - docker build -t $IMAGE .
             - docker push $IMAGE
 
+
+    build-image-prod:
+      - step:
+          image: node:12.7.0-alpine
+          name: Build Image
+          services:
+            - docker
+          caches:
+            - pip
+            - docker
+          script:
+            - apk add gcc musl-dev python3-dev libffi-dev openssl-dev
+            - pip3 install awscli
+            - IMAGE="488443597418.dkr.ecr.us-west-2.amazonaws.com/qc-defi-nuxt-server:prod"
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
+            - docker build -t $IMAGE .
+            - docker push $IMAGE
+
+
     deploy-to-ecs-dev:
       - step:
           image: atlassian/default-image:2
@@ -37,6 +58,34 @@ pipelines:
             # Replace the docker image name in the task definition with the newly pushed image.
             - export RUN_ENV="development"
             - export IMAGE_NAME="488443597418.dkr.ecr.us-west-2.amazonaws.com/qc-defi-nuxt-server:dev"
+            - export CONTAINER_NAME="qc-defi-nuxt-server"
+            - envsubst < task-definition-template.json >  task-definition.json
+
+            # Update the task definition.
+            - pipe: atlassian/aws-ecs-deploy:1.0.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_KEY
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET
+                AWS_DEFAULT_REGION: $AWS_REGION
+                CLUSTER_NAME: 'Defi'
+                SERVICE_NAME: 'qc-defi-nuxt-server'
+                TASK_DEFINITION: 'task-definition.json'
+                FORCE_NEW_DEPLOYMENT: "true"
+
+    deploy-to-ecs-prod:
+      - step:
+          image: atlassian/default-image:2
+          name: Deploy to ECS Production
+          deployment: production
+          services:
+            - docker
+          caches:
+            - pip
+            - docker
+          script:
+            # Replace the docker image name in the task definition with the newly pushed image.
+            - export RUN_ENV="development"
+            - export IMAGE_NAME="488443597418.dkr.ecr.us-west-2.amazonaws.com/qc-defi-nuxt-server:prod"
             - export CONTAINER_NAME="qc-defi-nuxt-server"
             - envsubst < task-definition-template.json >  task-definition.json
 
