@@ -11,11 +11,17 @@
                 </p>
 
                 <p class="v-heading text-h3 font-weight-regular mb-8">
-                  Decentralize Finance Platform
+                  Decentralized Finance Platform
                 </p>
 
                 <p class="text-uppercase">
-                  Technical Analysis and Intelligence for Cryptocurrency Traders
+                  <a
+                    href="https://uniswap.org"
+                    target="_blank"
+                    class="text-decoration-none font-weight-medium pink--text text--accent-2"
+                    >UNISWAP</a
+                  >
+                  TRADING INFERFACE, MARKET OVERVIEW AND PORTFOLIO MANAGEMENT
                 </p>
               </v-col>
               <client-only>
@@ -93,11 +99,7 @@
     <v-row justify="center">
       <v-col cols="10">
         <v-row>
-          <v-col
-            ><p id="#roadmap" class="text-center text-h3 mt-5">
-              Roadmap
-            </p></v-col
-          >
+          <v-col><p class="text-center text-h3 mt-5">Roadmap</p></v-col>
         </v-row>
 
         <v-row align="center">
@@ -142,13 +144,13 @@ import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue
   components: { ConnectToWalletButton, TokenSearch },
   head(): object {
     return {
-      title: 'DeFi Portfolio Tracker | Account Analysis | Defi Heatmap',
+      title: 'Uniswap Trading |Metamask | DeFi Heatmap',
       meta: [
         {
           name: 'description',
           hid: 'description',
           content:
-            'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | Defi Heatmap',
+            'Automated DEX trading with single click smart contract interface',
         },
       ],
     }

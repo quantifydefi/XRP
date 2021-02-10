@@ -75,13 +75,13 @@ import { UiState } from '~/store/ui'
   },
   head(): object {
     return {
-      title: 'Uniswap DEX NexGen Display  | Defi Heatmap',
+      title: ' Defi Trading Interface | Live Prices | Market Overview',
       meta: [
         {
           name: 'description',
           hid: 'description',
           content:
-            'Portfolio Analysis and Tracker | Connect your Ethereum wallet for in-depth analysis ',
+            'Top DeFi Cryptocurrency Investments on the Uniswap Exchange',
         },
       ],
     }

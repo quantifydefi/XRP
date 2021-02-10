@@ -74,7 +74,7 @@ import UniswapIframe from '~/components/token-details/UniswapIframe.vue'
   },
   head(this: any) {
     return {
-      title: `Trade ${this.tokenData.name} (${this.tokenData.symbol}) on Uniswap | DeFi Heatmap`,
+      title: `Trade ${this.tokenData.token0_name}-${this.tokenData.token1_name} (${this.tokenData.token0_symbol}-${this.tokenData.token1_symbol}) on Uniswap | DeFi Heatmap`,
 
       meta: [
         {

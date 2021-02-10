@@ -1,113 +1,115 @@
 <template>
-  <v-container>
-    <v-card class="pa-4" tile outlined justify="center">
-      <v-row class="pa-10">
-        <v-col cols="auto" lg="4">
-          <h2 class="text-h3 font-weight-medium">Our Team</h2>
-          <p>
+  <v-row justify="center">
+    <v-col cols="9">
+      <v-card class="pa-4" tile outlined>
+        <v-row class="pa-10">
+          <v-col cols="auto" lg="4">
+            <h2 class="text-h4">Our Team</h2>
+            <!-- <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-        </v-col>
-        <v-col cols="auto" lg="8">
-          <v-row class="my-5">
-            <v-col
-              v-for="member in team"
-              :key="member._id"
-              cols="auto"
-              lg="6"
-              md="6"
-              sm="12"
-              width="200"
-            >
-              <BioDialog
-                :is-visibility="member.bioIsVisible"
-                :name="member.name"
-                :job-title="member.jobTitle"
-                :bio="member.bio"
-                :thumbnail-url="member.thumbnailUrl"
-                @close-dialog="closeBio"
-              ></BioDialog>
-              <div
-                class="d-flex justify-left v-clickable"
-                @click="openBio(member._id)"
+          </p>-->
+          </v-col>
+          <v-col cols="auto" lg="8">
+            <v-row class="my-5">
+              <v-col
+                v-for="member in team"
+                :key="member._id"
+                cols="auto"
+                lg="6"
+                md="6"
+                sm="12"
+                width="200"
               >
-                <v-avatar size="80" class="ml-5">
-                  <img
-                    class="rounded-circle"
-                    :src="
-                      require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
-                    "
-                    alt="avatar"
-                  />
-                </v-avatar>
+                <BioDialog
+                  :is-visibility="member.bioIsVisible"
+                  :name="member.name"
+                  :job-title="member.jobTitle"
+                  :bio="member.bio"
+                  :thumbnail-url="member.thumbnailUrl"
+                  @close-dialog="closeBio"
+                ></BioDialog>
+                <div
+                  class="d-flex justify-left v-clickable"
+                  @click="openBio(member._id)"
+                >
+                  <v-avatar size="80" class="ml-5">
+                    <img
+                      class="rounded-circle"
+                      :src="
+                        require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
+                      "
+                      alt="avatar"
+                    />
+                  </v-avatar>
 
-                <div class="pa-6" align="left">
-                  <h3>
-                    {{ member.name }}
-                  </h3>
-                  <p class="text--secondary h5">
-                    {{ member.jobTitle }}
-                  </p>
+                  <div class="pa-6" align="left">
+                    <h3>
+                      {{ member.name }}
+                    </h3>
+                    <p class="text--secondary h5">
+                      {{ member.jobTitle }}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-divider></v-divider>
-      <v-row class="pa-10">
-        <v-col cols="auto" lg="4" align="left">
-          <h2 class="text-h3 font-weight-medium">Our Advisors</h2>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-        </v-col>
-        <v-col cols="auto" lg="8">
-          <v-row class="my-5">
-            <v-col
-              v-for="advisor in advisors"
-              :key="advisor.id"
-              cols="auto"
-              lg="6"
-              md="6"
-              sm="12"
-              width="200"
-            >
-              <BioDialog
-                :is-visibility="advisor.bioIsVisible"
-                :name="advisor.name"
-                :job-title="advisor.jobTitle"
-                :bio="advisor.bio"
-                :thumbnail-url="advisor.thumbnailUrl"
-                @close-dialog="closeAdvisorBio"
-              ></BioDialog>
-              <div
-                class="d-flex justify-left v-clickable"
-                @click="openAdvisorBio(advisor._id)"
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row class="pa-10">
+          <v-col cols="auto" lg="4" align="left">
+            <h2 class="text-h4">Our Advisors</h2>
+            <!--<p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>-->
+          </v-col>
+          <v-col cols="auto" lg="8">
+            <v-row class="my-5">
+              <v-col
+                v-for="advisor in advisors"
+                :key="advisor.id"
+                cols="auto"
+                lg="6"
+                md="6"
+                sm="12"
+                width="200"
               >
-                <v-avatar size="80" class="ml-5">
-                  <img
-                    class="rounded-circle"
-                    :src="
-                      require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
-                    "
-                    alt="avatar"
-                  />
-                </v-avatar>
+                <BioDialog
+                  :is-visibility="advisor.bioIsVisible"
+                  :name="advisor.name"
+                  :job-title="advisor.jobTitle"
+                  :bio="advisor.bio"
+                  :thumbnail-url="advisor.thumbnailUrl"
+                  @close-dialog="closeAdvisorBio"
+                ></BioDialog>
+                <div
+                  class="d-flex justify-left v-clickable"
+                  @click="openAdvisorBio(advisor._id)"
+                >
+                  <v-avatar size="80" class="ml-5">
+                    <img
+                      class="rounded-circle"
+                      :src="
+                        require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
+                      "
+                      alt="avatar"
+                    />
+                  </v-avatar>
 
-                <div class="pa-6" align="left">
-                  <h3>{{ advisor.name }}</h3>
-                  <p class="text--secondary h5">{{ advisor.jobTitle }}</p>
+                  <div class="pa-6" align="left">
+                    <h3>{{ advisor.name }}</h3>
+                    <p class="text--secondary h5">{{ advisor.jobTitle }}</p>
+                  </div>
                 </div>
-              </div>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-container>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -131,9 +133,13 @@ interface Team {
 
   head(): object {
     return {
-      title: 'Meet Our Team',
+      title: 'NextGen Visual Displays| DeFi Heatmap',
       meta: [
-        { name: 'description', hid: 'description', content: 'Meet our team.' },
+        {
+          name: 'description',
+          hid: 'description',
+          content: 'Guide and Support for DEX Traders | About Us',
+        },
       ],
     }
   },

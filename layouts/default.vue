@@ -6,11 +6,17 @@
     <v-app-bar app elevation="1" tile>
       <img :src="'/img/logo/logo.svg'" height="55" width="55" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
-        <v-toolbar-title class="ml-1">DeFi Heatmap</v-toolbar-title>
+        <v-toolbar-title class="ml-1"
+          >DeFi Heatmap
+          <small class="grey--text text--lighten-1 ml-1 text-caption"
+            >Beta</small
+          ></v-toolbar-title
+        >
       </nuxt-link>
       <v-spacer />
       <div v-if="$vuetify.breakpoint.lgAndUp">
         <v-btn text tile to="/">Home</v-btn>
+        <v-btn text tile @click="initMetamask">Portfolio</v-btn>
         <v-btn text tile to="/heatmap">Heatmap</v-btn>
         <v-btn text tile to="/trading-101">Trading 101</v-btn>
         <v-btn
@@ -21,8 +27,8 @@
           >Crypto</v-btn
         >
         <api-menu-header v-if="allowApiBar" />
-        <v-btn text tile @click="initMetamask">Positions</v-btn>
       </div>
+      <v-btn text tile to="/team">Team</v-btn>
       <v-btn icon @click="changeTheme">
         <v-icon>mdi-white-balance-sunny</v-icon>
       </v-btn>

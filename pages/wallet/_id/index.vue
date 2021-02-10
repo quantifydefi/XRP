@@ -169,17 +169,15 @@ import AdaptersGrid from '~/components/wallet/AdaptersGrid.vue'
 @Component({
   name: 'Index',
   components: { AdaptersGrid, TransactionGrid, BalancesGrid, Marketcap },
-  // layout: 'wallet',
   middleware: [walletMiddleware],
   head(): object {
     return {
-      title: 'DeFi Portfolio Tracker | Account Analysis | Defi Heatmap',
+      title: 'DEX Portfolio Balances and History | Defi Heatmap',
       meta: [
         {
           name: 'description',
           hid: 'description',
-          content:
-            'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | Defi Heatmap',
+          content: 'Metamask Balance Summary from the Ethereum Blockchain',
         },
       ],
     }
