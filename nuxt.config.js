@@ -1,4 +1,6 @@
+import https from 'https'
 import colors from 'vuetify/es5/util/colors'
+import axios from 'axios'
 // defiheatmap.com
 
 require('dotenv').config()
@@ -46,12 +48,20 @@ export default {
     'nuxt-webfontloader',
     'cookie-universal-nuxt',
     [
+      '@nuxtjs/robots',
+      {
+        UserAgent: '*',
+        Disallow: '/wallet',
+      },
+    ],
+    [
       '@nuxtjs/google-analytics',
       {
         ua: 'UA-119114337-5',
         debug: { sendHitTask: true },
       },
     ],
+    '@nuxtjs/sitemap', // must be last
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -60,6 +70,25 @@ export default {
     withCredentials: true,
     debug: false,
   },
+
+  sitemap: {
+    hostname: config[runEnv].BASE_URL,
+    gzip: true,
+    exclude: ['/wallet/**'],
+    defaults: {
+      changefreq: 'daily',
+      priority: 1,
+      lastmod: new Date(),
+    },
+    routes: async () => {
+      axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false })
+      const { data } = await axios.get(
+        `${config[runEnv].BASE_URL}/api/defi/heatmap/uniswap-heatmap?num_of_coins=100`
+      )
+      return data.data.map((v) => `/token/${v.pool_id}`)
+    },
+  },
+
   webfontloader: {
     google: {
       families: ['Roboto:100,300,400,500,700,900&display=swap'],
