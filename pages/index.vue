@@ -144,13 +144,54 @@ import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue
   components: { ConnectToWalletButton, TokenSearch },
   head(): object {
     return {
-      title: 'Uniswap Trading |Metamask | DeFi Heatmap',
+      title: 'Uniswap Trading | Metamask | DeFi Heatmap',
       meta: [
         {
           name: 'description',
           hid: 'description',
           content:
             'Automated DEX trading with single click smart contract interface',
+        },
+
+        // Open Graph
+        {
+          name: 'og:title',
+          content: 'Uniswap Trading | Metamask | DeFi Heatmap',
+        },
+        {
+          name: 'og:description',
+          content:
+            'Automated DEX trading with single click smart contract interface',
+        },
+        { name: 'og:type', content: 'website' },
+        { name: 'og:url', content: process.env.baseURL },
+        {
+          name: 'og:image',
+          content:
+            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+        },
+
+        // Twitter Card
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@Quantify_Crypto' },
+        {
+          name: 'twitter:title',
+          content: 'Uniswap Trading | Metamask | DeFi Heatmap',
+        },
+        {
+          name: 'twitter:description',
+          content:
+            'Automated DEX trading with single click smart contract interface',
+        },
+        {
+          name: 'twitter:image',
+          content:
+            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+        },
+        {
+          name: 'twitter:image:alt',
+          content:
+            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
         },
       ],
     }

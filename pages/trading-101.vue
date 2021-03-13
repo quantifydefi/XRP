@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="8">
+    <v-col cols="12" sm="8">
       <v-card tile outlined class="pa-4">
         <h1 class="text-h4">
           Decentralized Finance (DeFI) Concepts: Beginner to Advanced
@@ -24,6 +24,7 @@
           from Finematics, provides an overview of DeFi and its product
           landscape.
         </p>
+
         <p
           class="text-center"
           v-html="
@@ -197,3 +198,11 @@ import { Vue, Component } from 'vue-property-decorator'
 })
 export default class Trading101 extends Vue {}
 </script>
+
+<style scoped>
+iframe {
+  width: 100%;
+  height: 400px;
+  border: none;
+}
+</style>

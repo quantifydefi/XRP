@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="9">
+    <v-col cols="12" sm="9">
       <v-card class="pa-4" tile outlined>
         <v-row class="pa-10">
           <v-col cols="auto" lg="4">
