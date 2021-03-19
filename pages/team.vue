@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-col cols="12" sm="9">
       <v-card class="pa-4" tile outlined>
-        <v-row class="pa-10">
+        <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
           <v-col cols="auto" lg="4">
             <h1 class="text-h4">Our Team</h1>
             <p class="mt-2">
@@ -39,7 +39,10 @@
                 >
                 </BioDialog>
                 <div class="d-flex justify-left">
-                  <v-avatar size="80" class="ml-5">
+                  <v-avatar
+                    :size="$vuetify.breakpoint.xs ? 65 : 80"
+                    :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+                  >
                     <img
                       class="rounded-circle"
                       :src="
@@ -77,7 +80,7 @@
           </v-col>
         </v-row>
         <v-divider></v-divider>
-        <v-row class="pa-10">
+        <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
           <v-col cols="auto" lg="4" align="left">
             <h1 class="text-h4">Our Advisors</h1>
             <p class="mt-2">
@@ -108,7 +111,10 @@
                   @close-dialog="closeAdvisorBio"
                 ></BioDialog>
                 <div class="d-flex justify-left">
-                  <v-avatar size="80" class="ml-5">
+                  <v-avatar
+                    :size="$vuetify.breakpoint.xs ? 65 : 80"
+                    :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+                  >
                     <img
                       class="rounded-circle"
                       :src="
@@ -170,12 +176,53 @@ interface Team {
 
   head(): object {
     return {
-      title: 'NextGen Visual Displays| DeFi Heatmap',
+      title: 'Meet Our Team and Advisors | DeFi Heatmap',
       meta: [
         {
           name: 'description',
           hid: 'description',
-          content: 'Guide and Support for DEX Traders | About Us',
+          content:
+            'The cryptocurrency team working to improve the crypto trading experience',
+        },
+        // Open Graph
+        {
+          name: 'og:title',
+          content: 'Our Team and Advisors | DeFi Heatmap',
+        },
+        {
+          name: 'og:description',
+          content:
+            'The cryptocurrency team working to improve the crypto trading experience',
+        },
+        { name: 'og:type', content: 'website' },
+        { name: 'og:url', content: process.env.BASE_URL },
+        {
+          name: 'og:image',
+          content:
+            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+        },
+
+        // Twitter Card
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@Quantify_Crypto' },
+        {
+          name: 'twitter:title',
+          content: 'Our Team and Advisors | DeFi Heatmap',
+        },
+        {
+          name: 'twitter:description',
+          content:
+            'The cryptocurrency team working to improve the crypto trading experience',
+        },
+        {
+          name: 'twitter:image',
+          content:
+            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+        },
+        {
+          name: 'twitter:image:alt',
+          content:
+            'The cryptocurrency team working to improve the crypto trading experience',
         },
       ],
     }
