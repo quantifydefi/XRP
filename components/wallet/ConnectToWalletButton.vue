@@ -1,5 +1,11 @@
 <template>
-  <v-btn tile color="primary" class="mb-7" height="48" @click="initMetamask"
+  <v-btn
+    tile
+    color="primary"
+    class="mb-7"
+    block
+    height="48"
+    @click="initMetamask"
     >Connect To Wallet</v-btn
   >
 </template>

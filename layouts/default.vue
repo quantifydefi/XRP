@@ -12,9 +12,9 @@
       >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <img :src="'/img/logo/logo.svg'" height="55" width="55" />
+      <img :src="'/img/logo/logo.svg'" height="46" width="46" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
-        <v-toolbar-title class="ml-1"
+        <v-toolbar-title class="ml-2"
           >DeFi Heatmap
           <small class="grey--text text--lighten-1 ml-1 text-caption"
             >Beta</small

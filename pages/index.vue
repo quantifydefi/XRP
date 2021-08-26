@@ -25,10 +25,17 @@
                 </p>
               </v-col>
               <client-only>
-                <v-col cols="7">
-                  <token-search />
-                </v-col>
-                <v-col cols="1"><connect-to-wallet-button /></v-col>
+                <v-row>
+                  <v-col class="pb-0" cols="12" md="7">
+                    <token-search />
+                  </v-col>
+                  <v-col
+                    :class="$vuetify.breakpoint.smAndDown ? 'mt-n5 pt-0' : ''"
+                    cols="12"
+                    md="1"
+                    ><connect-to-wallet-button
+                  /></v-col>
+                </v-row>
               </client-only>
             </v-row>
           </v-col>
