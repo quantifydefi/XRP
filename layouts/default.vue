@@ -3,7 +3,15 @@
     :dark="true"
     :style="{ background: $vuetify.theme.themes[theme].background }"
   >
-    <v-app-bar app elevation="1" tile>
+    <v-app-bar app elevation="1" tile class="text-no-wrap">
+      <v-btn
+        v-if="$vuetify.breakpoint.smAndDown"
+        class="mr-1"
+        icon
+        @click="toggleNavigationMenu"
+      >
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
       <img :src="'/img/logo/logo.svg'" height="55" width="55" />
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-toolbar-title class="ml-1"
@@ -14,8 +22,8 @@
         >
       </nuxt-link>
       <v-spacer />
-      <div v-if="$vuetify.breakpoint.lgAndUp">
-        <v-btn text tile to="/">Home</v-btn>
+      <div v-if="$vuetify.breakpoint.mdAndUp">
+        <!--        <v-btn text tile to="/terminal">Terminal</v-btn>-->
         <v-btn text tile @click="initMetamask">Portfolio</v-btn>
         <v-btn text tile to="/heatmap">Heatmap</v-btn>
         <v-btn text tile to="/trading-101">Trading 101</v-btn>
@@ -26,11 +34,13 @@
           href="https://quantifycrypto.com/terminal"
           >Crypto</v-btn
         >
+        <v-btn text tile to="/team">Team</v-btn>
         <api-menu-header v-if="allowApiBar" />
       </div>
-      <v-btn text tile to="/team">Team</v-btn>
+
       <v-btn icon @click="changeTheme">
-        <v-icon>mdi-white-balance-sunny</v-icon>
+        <v-icon v-if="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
+        <v-icon v-if="!$vuetify.theme.dark">mdi-weather-night</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
@@ -38,16 +48,9 @@
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light> mdi-repeat </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+
+    <main-navigation-menu />
+
     <v-footer :absolute="!fixed" app>
       <span>Defi Heatmap &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
@@ -61,14 +64,16 @@ import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
+import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
 import { Events } from '~/types/global'
 import { ThemeOptions } from '~/types/ui'
 import LayoutMixin from '~/mixins/LayoutMixin.vue'
 import MetamaskMixin from '~/mixins/MetamaskMixin.vue'
+import { EmitEvents } from '~/types/events'
 
 @Component({
   name: 'Default',
-  components: { ApiMenuHeader, Notification },
+  components: { ApiMenuHeader, Notification, MainNavigationMenu },
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
@@ -80,8 +85,6 @@ export default class Wallet extends mixins(LayoutMixin, MetamaskMixin) {
   drawer = false
   fixed = false
   miniVariant = false
-  right = true
-  rightDrawer = false
   $refs!: { notificationComponent: any }
   $cookies!: Record<string, any>
   $vuetify!: any
@@ -108,6 +111,10 @@ export default class Wallet extends mixins(LayoutMixin, MetamaskMixin) {
       this.$cookies.set('theme', 'dark')
       this.$store.dispatch('ui/changeTheme', 'dark')
     }
+  }
+
+  toggleNavigationMenu() {
+    this.$root.$emit(EmitEvents.toggleNavigationMenu)
   }
 }
 </script>
