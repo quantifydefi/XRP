@@ -11,7 +11,7 @@ export const mutations: MutationTree<HeatmapState> = {}
 export const actions: ActionTree<HeatmapState, HeatmapState> = {
   async getHeatmapData({ commit }, { numOfCoins }): Promise<HeatmapData[]> {
     const { data } = await this.$axios.get(
-      `/api/defi/heatmap/uniswap-heatmap`,
+      `https://defiheatmap.com/api/defi/heatmap/uniswap-heatmap`,
       {
         params: { num_of_coins: numOfCoins },
       }

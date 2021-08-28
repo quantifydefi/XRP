@@ -54,11 +54,11 @@ export default class MainNavigationMenu extends Vue {
     to?: string
     href?: string
   }[] = [
-    // {
-    //   icon: 'mdi-tablet-dashboard',
-    //   title: 'Terminal',
-    //   to: '/terminal',
-    // },
+    {
+      icon: 'mdi-tablet-dashboard',
+      title: 'Terminal',
+      to: '/terminal',
+    },
     {
       icon: 'mdi-briefcase',
       title: 'Portfolio',

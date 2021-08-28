@@ -23,7 +23,7 @@
       </nuxt-link>
       <v-spacer />
       <div v-if="$vuetify.breakpoint.mdAndUp">
-        <!--        <v-btn text tile to="/terminal">Terminal</v-btn>-->
+        <v-btn text tile to="/terminal">Terminal</v-btn>
         <v-btn text tile @click="initMetamask">Portfolio</v-btn>
         <v-btn text tile to="/heatmap">Heatmap</v-btn>
         <v-btn text tile to="/trading-101">Trading 101</v-btn>
