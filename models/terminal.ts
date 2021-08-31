@@ -38,7 +38,7 @@ export class TerminalGrid {
     terminalUI.theme = store.state.ui.theme
   }
 
-  updateTheme() {
+  updateTheme(): void {
     terminalUI.theme = this._$store.state.ui.theme
   }
 
@@ -50,6 +50,7 @@ export class TerminalGrid {
         cellStyle: { 'justify-content': 'flex-end' },
         width: 50,
         resizable: true,
+        /* istanbul ignore next */
         cellRenderer(params: any) {
           const iDiv: HTMLElement = document.createElement('div')
 
@@ -96,6 +97,7 @@ export class TerminalGrid {
         width: 35,
         resizable: true,
         valueFormatter: (params: any) => {
+          /* istanbul ignore next */
           return TerminalGrid.calcReserveEthUsd(
             params.data.reserve_eth,
             params.data.eth_price_usd
@@ -108,7 +110,11 @@ export class TerminalGrid {
         cellClass: 'grid-cell-centered ',
         width: 20,
         resizable: true,
-        valueFormatter: (params: any) => `${params.value.toFixed(2)}%`,
+
+        valueFormatter: (params: any) => {
+          /* istanbul ignore next */
+          return `${params.value.toFixed(2)}%`
+        },
         cellStyle: GridCellStyles.ptcCellStyle,
       },
     ]
@@ -118,12 +124,13 @@ export class TerminalGrid {
     return this._data
   }
 
-  async getData() {
+  async getData(): Promise<void> {
     try {
       this._data = await this._$store.dispatch('terminal/getTerminalData', {
         numOfCoins: 160,
       })
     } catch {
+      /* istanbul ignore next */
       this._data = []
     }
   }
@@ -132,7 +139,7 @@ export class TerminalGrid {
     return `https://tokens.dharma.io/assets/${tokenId}/icon.png`
   }
 
-  static calcReserveEthUsd(reserveEth: number, ethPriceUsd: number) {
+  static calcReserveEthUsd(reserveEth: number, ethPriceUsd: number): string {
     return new Intl.NumberFormat('en', {
       currency: 'USD',
       style: 'currency',
@@ -142,7 +149,7 @@ export class TerminalGrid {
   }
 }
 
-class GridCellStyles {
+export class GridCellStyles {
   static ptcCellStyle(params: any) {
     const value: number = params.value
     switch (terminalUI.theme) {
@@ -164,6 +171,7 @@ class GridCellStyles {
         } else if (value * 100 < -5) {
           return { 'background-color': '#f7aaa1', color: 'black' }
         }
+        /* istanbul ignore next */
         break
       case 'dark':
         if (value * 100 >= 0) {
