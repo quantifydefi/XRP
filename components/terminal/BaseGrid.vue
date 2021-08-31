@@ -23,9 +23,12 @@ import GridCore from '@/components/common/grid/GridCore.vue'
     GridCore,
   },
 })
-export default class BaseTerminalGrid extends Vue {
-  @Prop({ default: () => [] }) readonly rowData!: Array<Record<string, any>>
-  @Prop({ default: () => [] }) readonly columnDefs!: Array<Record<string, any>>
+export default class BaseGrid extends Vue {
+  @Prop({ default: () => null }) readonly rowData!: Array<Record<string, any>>
+  @Prop({ default: () => null }) readonly columnDefs!: Array<
+    Record<string, any>
+  >
+
   @Prop({ default: 503 }) readonly height!: number
 }
 </script>

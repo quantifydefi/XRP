@@ -47,12 +47,12 @@ import {
     }),
   },
 })
-export default class CoreGrid extends Vue {
+export default class GridCore extends Vue {
   @Prop({ default: [] }) columnDefs!: Array<Record<string, any>>
   @Prop({ default: [] }) rowData!: Array<Record<string, any>>
   @Prop({ default: true }) pagination!: boolean
   @Prop({ default: 'grid' }) gridId!: string
-  @Prop({ default: 'token0_symbol' }) readonly rowId!: string
+  @Prop({ default: 'pool_id' }) readonly rowId!: string
   @Prop({ default: false }) readonly animateRows!: boolean
   @Prop({ default: 20 }) paginationPageSize!: number
   @Prop({ default: 60 }) headerHeight!: number

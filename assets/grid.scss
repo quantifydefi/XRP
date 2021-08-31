@@ -4,7 +4,7 @@
 
 .qc-coin-icon {
   width: auto !important;
-  height: 18px !important;
+  height: 17px !important;
   padding-right: 8px;
   margin-top: -3px;
   vertical-align: middle;
@@ -34,8 +34,8 @@
 .ag-theme-alpine .ag-header-cell, .ag-theme-alpine .ag-header-group-cell {
   padding-left: 12px;
   padding-right: 12px;
-}
 
+}
 
 .coin-link:hover {
   color: #536aff !important;
@@ -43,9 +43,19 @@
 }
 
 .ag-theme-alpine-dark .ag-root-wrapper {
-  border: solid 1px;
-  border-color: #68686e;
-  border-color: #404040;
+  border: solid 1px #404040;
+  border-left: 0;
+  border-right: 0;
+}
+
+.ag-theme-alpine .ag-root-wrapper {
+  border-left: 0;
+  border-right: 0;
+}
+
+/* Bottom Border of Grid Header */
+.ag-theme-alpine-dark .ag-header {
+  border-bottom: 1px solid #404040 !important;
 }
 
 .ag-row .ag-cell {
