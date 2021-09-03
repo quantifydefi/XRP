@@ -37,6 +37,7 @@
 
 }
 
+
 .coin-link:hover {
   color: #536aff !important;
   font-weight: 500 !important;
@@ -49,14 +50,16 @@
 }
 
 .ag-theme-alpine .ag-root-wrapper {
+  border: solid 1px #BABFC5;
   border-left: 0;
   border-right: 0;
 }
 
-/* Bottom Border of Grid Header */
-.ag-theme-alpine-dark .ag-header {
-  border-bottom: 1px solid #404040 !important;
-}
+///* Bottom Border of Grid Header */
+//.ag-theme-alpine-dark .ag-header {
+//  border-bottom: 1px solid #404040 !important;
+//  color: #BABFC5;
+//}
 
 .ag-row .ag-cell {
   display: flex !important;

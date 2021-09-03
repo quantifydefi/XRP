@@ -38,9 +38,15 @@ export default class MetamaskMixin extends Vue {
         await this.$router.push(`/wallet/${accounts[0]}`)
       }
     } catch (error) {
-      this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-        text: error.message,
-      })
+      if (error instanceof Error) {
+        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
+          text: error.message,
+        })
+      } else {
+        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
+          text: 'Something went wrong with metamask',
+        })
+      }
     }
   }
 }

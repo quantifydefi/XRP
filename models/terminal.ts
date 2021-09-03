@@ -48,7 +48,7 @@ export class TerminalGrid {
         headerName: 'SYMBOL',
         field: 'token0_symbol',
         cellStyle: { 'justify-content': 'flex-end' },
-        width: 50,
+        width: 55,
         resizable: true,
         /* istanbul ignore next */
         cellRenderer(params: any) {
@@ -94,7 +94,7 @@ export class TerminalGrid {
         headerName: 'LIQUIDITY',
         field: 'liquidity',
         cellStyle: { 'justify-content': 'flex-end' },
-        width: 35,
+        width: 38,
         resizable: true,
         valueFormatter: (params: any) => {
           /* istanbul ignore next */

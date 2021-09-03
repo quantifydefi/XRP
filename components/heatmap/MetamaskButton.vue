@@ -305,9 +305,15 @@ export default class MetamaskButton extends Vue {
         })
       }
     } catch (error) {
-      this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-        text: error.message,
-      })
+      if (error instanceof Error) {
+        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
+          text: error.message,
+        })
+      } else {
+        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
+          text: 'Something went wrong with metamask',
+        })
+      }
     }
   }
 
