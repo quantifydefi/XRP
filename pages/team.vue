@@ -79,6 +79,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-divider></v-divider>
         <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
           <v-col cols="auto" lg="4" align="left">
@@ -278,8 +279,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/Quantify_Crypto',
         },
       ],
-      bio:
-        'John is an Information Technology developer with over 30 years of executive experience in financial services, including 23 years at the New York Stock Exchange. He flourished as lead developer for the vital SuperDot order flow system that tracked every order entering the NYSE computer systems. Later, John was responsible for the Capacity Planning of all NYSE order flow system, earning the Chairman’s Award for his project management success. As the CEO of Quantify Crypto, John combines his deep understanding of the securities industry and project leadership expertise to form the company vision.',
+      bio: 'John is an Information Technology developer with over 30 years of executive experience in financial services, including 23 years at the New York Stock Exchange. He flourished as lead developer for the vital SuperDot order flow system that tracked every order entering the NYSE computer systems. Later, John was responsible for the Capacity Planning of all NYSE order flow system, earning the Chairman’s Award for his project management success. As the CEO of Quantify Crypto, John combines his deep understanding of the securities industry and project leadership expertise to form the company vision.',
     },
     {
       _id: 2,
@@ -297,8 +297,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/Alexclarkbarry',
         },
       ],
-      bio:
-        'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated trading bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
+      bio: 'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated trading bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
     },
     {
       _id: 3,
@@ -316,8 +315,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/maxzhakun',
         },
       ],
-      bio:
-        'Max is a brilliant developer with complete usage of latest software components and tools.  He is lead system architect of the Quantify Crypto platform, deciding the necessary technology and techniques the system requires.  His full knowledge of databases, AWS servers, networking, programming languages, communication protocols and standards is demonstrated on our platform.',
+      bio: 'Max is a brilliant developer with complete usage of latest software components and tools.  He is lead system architect of the Quantify Crypto platform, deciding the necessary technology and techniques the system requires.  His full knowledge of databases, AWS servers, networking, programming languages, communication protocols and standards is demonstrated on our platform.',
     },
     {
       _id: 4,
@@ -335,8 +333,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/hay_rheen',
         },
       ],
-      bio:
-        "Irene's career in Programming started in 2017 for a healthcare company in California. Her immense love for technology and software applications made her change profession from being a Nurse to a full time Software Developer. Irene has quickly learned the most advanced concepts of front-end web site design while using her creative skills to ensure that our platform exceeds the industry standards. She is a strong contributor to our web site development team.",
+      bio: "Irene's career in Programming started in 2017 for a healthcare company in California. Her immense love for technology and software applications made her change profession from being a Nurse to a full time Software Developer. Irene has quickly learned the most advanced concepts of front-end web site design while using her creative skills to ensure that our platform exceeds the industry standards. She is a strong contributor to our web site development team.",
     },
     {
       _id: 5,
@@ -350,8 +347,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/TheBTCQueen',
         },
       ],
-      bio:
-        'Annalese- otherwise known as "Bitcoin Queen" is a crypto community advocate for the city of Miami. She has a BA in business administration with a minor in health administration and communications. Annalese came across bitcoin for the first time in 2017 through a mutual friend, who later became her business partner in building a local media company with a blockchain focus. She has worked closely with both local and national organizations curating conferences and events. Aside from crypto, she enjoys spending time with her trusty companion- Trunks the pitbull',
+      bio: 'Annalese- otherwise known as "Bitcoin Queen" is a crypto community advocate for the city of Miami. She has a BA in business administration with a minor in health administration and communications. Annalese came across bitcoin for the first time in 2017 through a mutual friend, who later became her business partner in building a local media company with a blockchain focus. She has worked closely with both local and national organizations curating conferences and events. Aside from crypto, she enjoys spending time with her trusty companion- Trunks the pitbull',
     },
     {
       _id: 6,
@@ -365,8 +361,7 @@ export default class OurTeam extends Vue {
           link: 'https://www.linkedin.com/in/joe-nisivoccia-a76859ab/',
         },
       ],
-      bio:
-        'Hey there, my name is Joe Nisivoccia. My professional background has been in B2B and B2C sales for the past 4 years for some of the most innovative, disruptive software and financial services companies in the US. As a member of the 2020 Scotsman’s Guide, I was ranked within the top 500 individual mortgage loan originators with Better Mortgage - recently voted LinkedIn’s #1 Startup of 2020! In my spare time, I’m an avid sports fan (NFL, MLB and NBA) and enjoy spending time outdoors. I plan on providing Quantify Crypto’s potential clients and investors a level of customer care and market & product insight second to none in the emerging digital asset space.',
+      bio: 'Hey there, my name is Joe Nisivoccia. My professional background has been in B2B and B2C sales for the past 4 years for some of the most innovative, disruptive software and financial services companies in the US. As a member of the 2020 Scotsman’s Guide, I was ranked within the top 500 individual mortgage loan originators with Better Mortgage - recently voted LinkedIn’s #1 Startup of 2020! In my spare time, I’m an avid sports fan (NFL, MLB and NBA) and enjoy spending time outdoors. I plan on providing Quantify Crypto’s potential clients and investors a level of customer care and market & product insight second to none in the emerging digital asset space.',
     },
     {
       _id: 7,
@@ -380,8 +375,7 @@ export default class OurTeam extends Vue {
           link: 'https://www.linkedin.com/in/angela-barry-638a2a155/',
         },
       ],
-      bio:
-        'With a Master of Science in Digital Currency, she’s an expert on the workings of blockchain technology and tracks its regulatory framework. Angela has a bachelor’s degree in economics bringing over 15 years of research talent and supports our team with a diverse skillset.',
+      bio: 'With a Master of Science in Digital Currency, she’s an expert on the workings of blockchain technology and tracks its regulatory framework. Angela has a bachelor’s degree in economics bringing over 15 years of research talent and supports our team with a diverse skillset.',
     },
   ]
 
@@ -402,8 +396,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/PaulBauccio',
         },
       ],
-      bio:
-        'Paul currently serves as Chief Risk Officer of IEX Group, Inc. (a successful startup founded in 2012) parent company of Investors Exchange, IEX Cloud, and IEX Astral. Paul joined IEX in 2015 after 15 years at the New York Stock Exchange where he was Senior Vice President of Market Operations. Paul was responsible for overseeing daily operations of the NYSE Trading Floor and cash equity business. With over 20 years of leadership experience, Paul has been at the forefront of industry shaping initiatives and innovative technology projects.',
+      bio: 'Paul currently serves as Chief Risk Officer of IEX Group, Inc. (a successful startup founded in 2012) parent company of Investors Exchange, IEX Cloud, and IEX Astral. Paul joined IEX in 2015 after 15 years at the New York Stock Exchange where he was Senior Vice President of Market Operations. Paul was responsible for overseeing daily operations of the NYSE Trading Floor and cash equity business. With over 20 years of leadership experience, Paul has been at the forefront of industry shaping initiatives and innovative technology projects.',
     },
     {
       _id: 2,
@@ -421,8 +414,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/haroldbott',
         },
       ],
-      bio:
-        "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop trading platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic trading for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency trading firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
+      bio: "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop trading platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic trading for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency trading firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
     },
     {
       _id: 3,
@@ -436,8 +428,7 @@ export default class OurTeam extends Vue {
           link: 'https://www.linkedin.com/in/warrenrosenbaum/',
         },
       ],
-      bio:
-        'Warren was the chief architect of the Technology and Operations divisions of the New York Stock Exchange. A senior Vice President leader with full responsibility for the software and hardware architecture of the NYSE enterprise systems.  Warren provided the vision and innovation guidance keeping NYSE as a technology leader. During his tenure, over 25+ years, the NYSE systems consistently had operational uptimes of over 99.99% due to his successful.',
+      bio: 'Warren was the chief architect of the Technology and Operations divisions of the New York Stock Exchange. A senior Vice President leader with full responsibility for the software and hardware architecture of the NYSE enterprise systems.  Warren provided the vision and innovation guidance keeping NYSE as a technology leader. During his tenure, over 25+ years, the NYSE systems consistently had operational uptimes of over 99.99% due to his successful.',
     },
   ]
 }

@@ -8,7 +8,7 @@
     :items-per-page="10"
     item-class="px-1"
   >
-    <template v-slot:item.token_pair="{ item }">
+    <template #[`item.token_pair`]="{ item }">
       <a
         target="_blank"
         class="primary--text text-decoration-none"
@@ -18,38 +18,38 @@
       >
     </template>
 
-    <template v-slot:item.contract_balance="{ item }">
+    <template #[`item.contract_balance`]="{ item }">
       {{ $numberWithCommas(item.contract_balance) }}
     </template>
 
-    <template v-slot:item.balance_usd="{ item }">
+    <template #[`item.balance_usd`]="{ item }">
       $ {{ $numberWithCommas(item.balance_usd) }}
     </template>
 
-    <template v-slot:item.holdings="{ item }">
+    <template #[`item.holdings`]="{ item }">
       {{ calculateHoldings(item.balance_usd) }} %
     </template>
 
-    <template v-slot:item.rate_usd="{ item }">
+    <template #[`item.rate_usd`]="{ item }">
       $ {{ $numberWithCommas(item.rate_usd) }}
     </template>
 
-    <template v-slot:item.token_price="{ item }">
+    <template #[`item.token_price`]="{ item }">
       {{ item.token_price.toFixed(4) }}
     </template>
 
-    <template v-slot:item.reserve_eth="{ item }">
+    <template #[`item.reserve_eth`]="{ item }">
       $ {{ $numberWithCommas(item.reserve_eth * ethPrice) }}
     </template>
 
-    <template v-slot:item.percent_change_liq_1h="{ item }">
+    <template #[`item.percent_change_liq_1h`]="{ item }">
       <v-icon :color="applyColor(item.percent_change_liq_1h).color">{{
         applyColor(item.percent_change_liq_1h).icon
       }}</v-icon>
       {{ applyColor(item.percent_change_liq_1h).val }}
     </template>
 
-    <template v-slot:item.percent_change_liq_24h="{ item }">
+    <template #[`item.percent_change_liq_24h`]="{ item }">
       <v-icon :color="applyColor(item.percent_change_liq_24h).color">{{
         applyColor(item.percent_change_liq_24h).icon
       }}</v-icon>

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line import/named
 import { ActionTree, MutationTree } from 'vuex'
 import { ThemeOptions } from '~/types/ui'
 

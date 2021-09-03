@@ -24,11 +24,10 @@
       ]
     },
     "types": [
-      "@types/node",
       "@nuxt/types",
       "@nuxtjs/axios",
-      "@nuxtjs/vuetify",
-      "@types/jest"
+      "@types/jest",
+      "@types/node"
     ]
   },
   "exclude": [

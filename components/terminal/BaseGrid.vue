@@ -15,15 +15,13 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import GridCore from '@/components/common/grid/GridCore.vue'
-
 @Component({
   name: 'BaseGrid',
   components: {
-    GridCore,
+    GridCore: () => import('../../components/common/grid/GridCore.vue'),
   },
 })
-export default class BaseGrid extends Vue {
+export default class TerminalGrid extends Vue {
   @Prop({ default: () => null }) readonly rowData!: Array<Record<string, any>>
   @Prop({ default: () => null }) readonly columnDefs!: Array<
     Record<string, any>

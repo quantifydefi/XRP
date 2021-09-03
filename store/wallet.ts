@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line import/named
 import { ActionTree, MutationTree } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { plainToClass } from 'class-transformer'
@@ -7,11 +8,11 @@ import { Adapter, Trade } from '~/models/transaction'
 
 export const state = () => ({
   isWalletConnected: false as boolean,
-  address: (null as unknown) as string,
+  address: null as unknown as string,
   // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   balances: [] as HeatmapBalancesData[],
   transactions: [] as Trade[],
-  adapters: ((null as unknown) as Adapter[]) || null,
+  adapters: (null as unknown as Adapter[]) || null,
   gasPrice: { fast: 0, average: 0, slow: 0 },
 })
 export type WalletState = ReturnType<typeof state>

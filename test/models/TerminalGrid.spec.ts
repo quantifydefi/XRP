@@ -1,9 +1,8 @@
 import 'reflect-metadata'
 import Vuex, { Store } from 'vuex'
 
-import { TerminalGrid, terminalUI, GridCellStyles } from '@/models/terminal'
-
 import { createLocalVue } from '@vue/test-utils'
+import { TerminalGrid, terminalUI, GridCellStyles } from '@/models/terminal'
 
 const spyOn = jest.spyOn
 

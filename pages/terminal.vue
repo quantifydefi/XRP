@@ -1,4 +1,8 @@
 <template>
+  <!--  <div>
+    <h1>SSSSSSSSSS</h1>
+    &lt;!&ndash;    <grid-core />&ndash;&gt;
+  </div>-->
   <v-row no-gutters justify="center">
     <v-col cols="12">
       <v-row no-gutters class="">
@@ -210,30 +214,30 @@ import { TerminalGrid } from '~/models/terminal'
   name: 'Terminal',
   components: {
     GridHeader,
-    BaseGrid: () => import('@/components/terminal/BaseGrid.vue'),
+    BaseGrid: () => import('~/components/terminal/BaseGrid.vue'),
   },
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
     }),
   },
-  // head(this: Terminal) {
-  //   return {
-  //     link: [
-  //       {
-  //         rel: 'stylesheet',
-  //         href: `https://quantifycrypto.com/widgets/grid/css/qc-grid-widget.css`,
-  //       },
-  //     ],
-  //     script: [
-  //       {
-  //         src: `https://quantifycrypto.com/widgets/grid/js/qc-grid-widget.js`,
-  //         type: 'module',
-  //         mode: 'client',
-  //       },
-  //     ],
-  //   }
-  // },
+  head(this: Terminal) {
+    return {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: `https://quantifycrypto.com/widgets/grid/css/qc-grid-widget.css`,
+        },
+      ],
+      script: [
+        {
+          src: `https://quantifycrypto.com/widgets/grid/js/qc-grid-widget.js`,
+          type: 'module',
+          mode: 'client',
+        },
+      ],
+    }
+  },
 })
 export default class Terminal extends Vue {
   showSkeleton = true

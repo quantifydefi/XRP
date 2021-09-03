@@ -1,6 +1,6 @@
 <template>
   <v-menu open-on-hover bottom offset-y>
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn text tile v-bind="attrs" v-on="on"
         >API
         <v-icon right>mdi-chevron-down</v-icon>

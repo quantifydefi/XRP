@@ -18,8 +18,7 @@ export default class MetamaskMixin extends Vue {
 
       if (provider !== (window.ethereum as any)) {
         this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-          text:
-            'Do you have multiple wallets installed? Currently supporting only Ethereum Wallets',
+          text: 'Do you have multiple wallets installed? Currently supporting only Ethereum Wallets',
         })
         return
       }

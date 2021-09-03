@@ -18,7 +18,12 @@
                   <a
                     href="https://uniswap.org"
                     target="_blank"
-                    class="text-decoration-none font-weight-medium pink--text text--accent-2"
+                    class="
+                      text-decoration-none
+                      font-weight-medium
+                      pink--text
+                      text--accent-2
+                    "
                     >UNISWAP</a
                   >
                   TRADING INFERFACE, MARKET OVERVIEW AND PORTFOLIO MANAGEMENT
@@ -268,8 +273,7 @@ export default class Index extends Vue {
       color: 'primary lighten-2',
       icon: 'mdi-account-reactivate-outline',
       header: 'Uniswap Trader',
-      desc:
-        'Automated Smart Contract Links for Uniswap Trading, part of our Token Pages',
+      desc: 'Automated Smart Contract Links for Uniswap Trading, part of our Token Pages',
     },
     {
       color: 'red lighten-2',
@@ -281,15 +285,13 @@ export default class Index extends Vue {
       color: 'red lighten-2',
       icon: 'mdi-format-columns',
       header: 'Pairs Heatmap',
-      desc:
-        'Visually display hundreds of trading pairs on a single screen. Perform search for desired trading pair',
+      desc: 'Visually display hundreds of trading pairs on a single screen. Perform search for desired trading pair',
     },
     {
       color: 'red lighten-2',
       icon: 'mdi-chart-box',
       header: 'Token Pages',
-      desc:
-        'Single screen with Analytics, Price Chart and Uniswap I-frame trading link with Metamask interface',
+      desc: 'Single screen with Analytics, Price Chart and Uniswap I-frame trading link with Metamask interface',
     },
     {
       color: 'orange lighten-2',

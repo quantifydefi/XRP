@@ -13,7 +13,7 @@
       :items-per-page="10"
       item-class="px-1"
     >
-      <template v-slot:item.asset_balance="{ item }">
+      <template #[`item.asset_balance`]="{ item }">
         {{ item.asset_balance.toFixed(4) }}
       </template>
     </v-data-table>

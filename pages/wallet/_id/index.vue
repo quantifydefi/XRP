@@ -46,7 +46,7 @@
             <v-card-title>Ethereum Overview</v-card-title>
 
             <v-simple-table class="transparent">
-              <template v-slot:default>
+              <template #default>
                 <tbody>
                   <tr>
                     <td>Balance ETH</td>

@@ -28,7 +28,6 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { AgGridVue } from 'ag-grid-vue'
 import { mapState } from 'vuex'
 import {
   ColumnApi,
@@ -40,7 +39,9 @@ import {
 
 @Component({
   name: 'GridCore',
-  components: { AgGridVue },
+  components: {
+    AgGridVue: process.client ? require('ag-grid-vue').AgGridVue : null,
+  },
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,

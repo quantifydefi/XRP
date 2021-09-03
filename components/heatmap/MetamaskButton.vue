@@ -34,7 +34,7 @@
             :nudge-width="200"
             offset-y
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn tile depressed v-bind="attrs" v-on="on"
                 >Filter
                 <v-icon right>mdi-filter</v-icon>
@@ -59,7 +59,7 @@
 
         <client-only>
           <v-menu offset-y>
-            <template v-slot:activator="{ attrs, on }">
+            <template #activator="{ attrs, on }">
               <v-btn
                 class="text-capitalize text-subtitle-2"
                 tile
@@ -173,7 +173,7 @@
         </v-btn>
 
         <v-tooltip v-else bottom color="black">
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               v-bind="attrs"
               :disabled="loading"
@@ -283,8 +283,7 @@ export default class MetamaskButton extends Vue {
 
       if (provider !== (window.ethereum as any)) {
         this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-          text:
-            'Do you have multiple wallets installed? Currently supporting only Ethereum Wallets',
+          text: 'Do you have multiple wallets installed? Currently supporting only Ethereum Wallets',
         })
         return
       }

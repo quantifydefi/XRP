@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable import/named */
+
+// TODO: Adjust import
 import { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { HeatmapData, HeatmapBalancesData } from '~/models/heatmap'

@@ -10,7 +10,7 @@
         >{{ tokenData.token0_symbol }}
 
         <v-tooltip v-if="isToken0Quote" top color="black">
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
               mdi-cash-usd-outline
             </v-icon>
@@ -24,7 +24,7 @@
         >{{ tokenData.token1_symbol }}
 
         <v-tooltip v-if="isToken1Quote" top color="black">
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
               mdi-cash-usd-outline
             </v-icon>

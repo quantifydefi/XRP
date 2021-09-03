@@ -16,7 +16,7 @@
       prepend-inner-icon="mdi-magnify"
       @input="goToPool"
     >
-      <template v-slot:append>
+      <template #append>
         <v-progress-circular
           v-if="loading"
           indeterminate
@@ -24,7 +24,7 @@
         ></v-progress-circular>
       </template>
 
-      <template v-slot:item="data">
+      <template #item="data">
         <v-avatar max-height="24" class="mx-0" min-width="24" width="24">
           <v-img
             :src="`https://tokens.dharma.io/assets/${data.item.token0_id}/icon.png`"

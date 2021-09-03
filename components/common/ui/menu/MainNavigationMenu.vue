@@ -6,7 +6,7 @@
     fixed
     :color="$vuetify.theme.dark ? 'grey darken-4' : ''"
   >
-    <template v-slot:prepend>
+    <template #prepend>
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-list-item two-line>
           <v-list-item-avatar size="46">

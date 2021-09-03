@@ -155,6 +155,7 @@ export default {
           test: /\.(js|vue|ts)$/,
           loader: 'eslint-loader',
           exclude: /(node_modules)/,
+          options: { fix: true },
         })
       }
     },

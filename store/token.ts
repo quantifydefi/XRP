@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line import/named
 import { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { Token, ChartData } from '~/models/token'

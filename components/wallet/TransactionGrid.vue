@@ -8,24 +8,24 @@
     :items-per-page="10"
     item-class="px-1"
   >
-    <template v-slot:item.timestamp="{ item }">
+    <template #[`item.timestamp`]="{ item }">
       {{ timeConverter(item.timestamp) }}
     </template>
 
-    <template v-slot:item.total_sent="{ item }">
+    <template #[`item.total_sent`]="{ item }">
       {{ parseFloat(item.input_token_quantity.toFixed(4)) }}
       <span class="grey--text text--lighten-1 ml-1">
         {{ item.input_token_name }} ({{ item.input_token_symbol }})</span
       >
     </template>
-    <template v-slot:item.total_received="{ item }">
+    <template #[`item.total_received`]="{ item }">
       {{ parseFloat(item.output_token_quantity.toFixed(4)) }}
       <span class="grey--text text--lighten-1 ml-1"
         >{{ item.output_token_name }} ({{ item.output_token_symbol }})</span
       >
     </template>
 
-    <template v-slot:item.trade_value_usd="{ item }">
+    <template #[`item.trade_value_usd`]="{ item }">
       $ {{ item.trade_value_usd.toFixed(2) }}
     </template>
   </v-data-table>

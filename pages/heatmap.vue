@@ -270,8 +270,7 @@ export default class Heatmap extends Vue {
     } catch {
       this.applyConfigs('liquidity')
       this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-        text:
-          'Cannot build Heatmap since Contract Balances are missing or equal to zero',
+        text: 'Cannot build Heatmap since Contract Balances are missing or equal to zero',
       })
       this.$refs.metaMaskComponent.resetBlockSize()
       this.isHeatmapReady = true
@@ -279,11 +278,10 @@ export default class Heatmap extends Vue {
   }
 
   private applyConfigs(value: string) {
-    const found:
-      | DataValueOption
-      | undefined = this.heatmapConfig.blockSize.options[
-      this.heatmapConfig.mode
-    ].find((elem) => elem.value === value)
+    const found: DataValueOption | undefined =
+      this.heatmapConfig.blockSize.options[this.heatmapConfig.mode].find(
+        (elem) => elem.value === value
+      )
     if (found) {
       const timeData = this.heatmapConfig.timeFrame.options[
         this.heatmapConfig.mode

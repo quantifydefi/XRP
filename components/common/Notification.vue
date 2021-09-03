@@ -7,7 +7,7 @@
     style="padding-bottom: 0"
   >
     {{ text }}
-    <template v-slot:action="{ attrs }">
+    <template #action="{ attrs }">
       <v-btn :color="buttonColor" text v-bind="attrs" @click="snackbar = false">
         Close
       </v-btn>
