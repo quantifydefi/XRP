@@ -22,6 +22,8 @@ const config = {
   },
 }
 
+config[runEnv].COVALENT_API_KEY = process.env.COVALENT_API_KEY
+
 console.log(config[runEnv])
 
 export default {
@@ -161,7 +163,10 @@ export default {
     },
   },
 
-  env: { baseURL: config[runEnv].BASE_URL, runEnv },
+  env: {
+    baseURL: config[runEnv].BASE_URL,
+    COVALENT_API_KEY: config[runEnv].COVALENT_API_KEY,
+  },
 
   server: { port: 3000, host: config[runEnv].SERVER_HOST },
 }
