@@ -89,7 +89,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { BalanceDataInterface } from '~/types/balance'
 
 const BalancesGrid: any = () => ({
   component: new Promise((resolve) => {
@@ -140,12 +139,12 @@ export default class Portfolio extends Vue {
     },
   ]
 
-  totalHoldings: BalanceDataInterface[] = []
+  totalHoldings: any[] = []
 
   totalBalance = 0
 
   /** Calculates total Balance **/
-  getTotalBalance(balanceData: BalanceDataInterface) {
+  getTotalBalance(balanceData: any) {
     let balance = 0
     for (const item of balanceData) {
       balance += item.totalValue

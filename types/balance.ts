@@ -3,7 +3,7 @@ export interface BalanceDataInterface {
   readonly tokenAddress: string
   readonly tokenName: string
   readonly tokenSymbol: string
-  readonly tokenBalance: number | string
+  readonly tokenBalance: number
   readonly tokenPrice: number
   readonly totalValue: number
   readonly chainId: number
