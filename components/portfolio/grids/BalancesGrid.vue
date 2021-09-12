@@ -27,7 +27,7 @@
         :items-per-page="10"
         class="elevation-1"
       >
-        <template #item.totalValue="{ item }">
+        <template #[`item.totalValue`]="{ item }">
           <span>{{ priceFormatter(item.totalValue) }}</span>
         </template>
       </v-data-table>

@@ -80,7 +80,7 @@ import { EmitEvents } from '~/types/events'
     }),
   },
 })
-export default class Wallet extends mixins(LayoutMixin, MetamaskMixin) {
+export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
   clipped = false
   drawer = false
   fixed = false

@@ -37,7 +37,7 @@
 
                 <v-card-title
                   v-for="(network, i) in networks"
-                  :key="network.chainId"
+                  :key="i"
                   class="pa-0 ma-0"
                 >
                   <v-col cols="6" class="d-flex">
@@ -52,11 +52,11 @@
                     </h1>
                   </v-col>
 
-                  <v-col cols="6" class="text-right"
+                  <!--                  <v-col cols="6" class="text-right"
                     ><h1 class="subtitle-1">
                       {{ priceFormatter(getTotalBalance(totalHoldings[i])) }}
                     </h1></v-col
-                  >
+                  >-->
                 </v-card-title>
               </v-card>
             </v-col>
@@ -89,6 +89,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import detectEthereumProvider from '@metamask/detect-provider'
+import walletMiddleware from '~/middleware/wallet'
 
 const BalancesGrid: any = () => ({
   component: new Promise((resolve) => {
@@ -103,6 +105,7 @@ const BalancesGrid: any = () => ({
   components: {
     BalancesGrid,
   },
+  middleware: [walletMiddleware],
 })
 export default class Portfolio extends Vue {
   showSkeleton = true
@@ -142,8 +145,8 @@ export default class Portfolio extends Vue {
   totalHoldings: any[] = []
 
   totalBalance = 0
-
-  /** Calculates total Balance **/
+  /*
+  /!** Calculates total Balance **!/
   getTotalBalance(balanceData: any) {
     let balance = 0
     for (const item of balanceData) {
@@ -151,7 +154,7 @@ export default class Portfolio extends Vue {
     }
 
     return balance
-  }
+  } */
 
   /** Gets account data and total balances from Covalent API **/
   async getAccountBalance(chainId: number, network: string) {
@@ -230,6 +233,23 @@ export default class Portfolio extends Vue {
       this.totalHoldings.push(
         await this.getAccountBalance(network.chainId, network.network)
       )
+    }
+
+    /**
+     Listener for account change
+     */
+    const provider: any = await detectEthereumProvider()
+
+    console.log(provider)
+
+    if (provider) {
+      await provider.request({ method: 'eth_accounts' })
+      provider.on('accountsChanged', (accounts: string[]) => {
+        if (!accounts.length) {
+          this.$store.dispatch('wallet/metamaskLogout')
+          this.$router.push('/')
+        }
+      })
     }
 
     setTimeout(() => {
