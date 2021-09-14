@@ -59,11 +59,11 @@ export default class MainNavigationMenu extends Vue {
       title: 'Terminal',
       to: '/terminal',
     },
-    {
-      icon: 'mdi-briefcase',
-      title: 'Portfolio',
-      to: '/portfolio',
-    },
+    // {
+    //   icon: 'mdi-briefcase',
+    //   title: 'Portfolio',
+    //   to: '/portfolio',
+    // },
     {
       icon: 'mdi-view-dashboard-variant',
       title: 'Heatmap',

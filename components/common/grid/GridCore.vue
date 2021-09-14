@@ -3,6 +3,7 @@
     <ag-grid-vue
       :id="gridId"
       v-resize="setGridWidth"
+      :row-id="rowId"
       :grid-options="gridOptions"
       :column-defs="gridOptions.columnDefs"
       :row-data="rowData"
@@ -86,6 +87,7 @@ export default class GridCore extends Vue {
     this.gridOptions.getRowNodeId = (data: any) => {
       return data[this.rowId]
     }
+    this.gridOptions.localeText = { noRowsToShow: 'No data to show' }
   }
 
   onGridReady(params: GridReadyEvent): void {

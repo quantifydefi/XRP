@@ -4,7 +4,7 @@
 
 .qc-coin-icon {
   width: auto !important;
-  height: 17px !important;
+  height: 18px !important;
   padding-right: 8px;
   margin-top: -3px;
   vertical-align: middle;
@@ -13,6 +13,11 @@
 .grid-cell-centered {
   justify-content: center !important;
 }
+
+.grid-cell-left {
+  justify-content: flex-end !important;
+}
+
 
 /* Cell padding*/
 .ag-theme-alpine-dark .ag-cell {
@@ -34,7 +39,6 @@
 .ag-theme-alpine .ag-header-cell, .ag-theme-alpine .ag-header-group-cell {
   padding-left: 12px;
   padding-right: 12px;
-
 }
 
 
@@ -43,23 +47,16 @@
   font-weight: 500 !important;
 }
 
+
 .ag-theme-alpine-dark .ag-root-wrapper {
-  border: solid 1px #404040;
-  border-left: 0;
-  border-right: 0;
+  border: solid 0px #404040 !important;
 }
 
 .ag-theme-alpine .ag-root-wrapper {
-  border: solid 1px #BABFC5;
-  border-left: 0;
-  border-right: 0;
+  border: solid 0px #BABFC5 !important;
+
 }
 
-///* Bottom Border of Grid Header */
-//.ag-theme-alpine-dark .ag-header {
-//  border-bottom: 1px solid #404040 !important;
-//  color: #BABFC5;
-//}
 
 .ag-row .ag-cell {
   display: flex !important;

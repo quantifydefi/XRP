@@ -13,7 +13,7 @@
         </v-col>
 
         <v-col cols="6" class="text-right"
-          ><h1 class="title">{{ priceFormatter(totalBalance) }}</h1></v-col
+          ><h1 class="title">{{ totalBalance }}</h1></v-col
         >
       </v-card-title>
       <v-divider></v-divider>
@@ -21,14 +21,18 @@
       <v-data-table
         dense
         :height="gridHeight - 32 + 'px'"
-        :headers="headers"
+        :headers="cols"
         :items="gridData"
         :sort-desc="[true]"
-        :items-per-page="10"
+        :items-per-page="12"
         class="elevation-1"
+        :mobile-breakpoint="0"
       >
         <template #[`item.totalValue`]="{ item }">
           <span>{{ priceFormatter(item.totalValue) }}</span>
+        </template>
+        <template #[`item.tokenBalance`]="{ item }">
+          <span>{{ balanceFormatter(item.tokenBalance) }}</span>
         </template>
       </v-data-table>
       <v-divider></v-divider>
@@ -40,7 +44,9 @@
 /* eslint-disable */
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
-import { ChainOptions, BalanceDataInterface } from '~/types/balance'
+import { ChainOptions, BalanceGridDataInterface } from '~/types/balance'
+
+import { Helper } from '~/models/helper'
 
 
 @Component({
@@ -55,65 +61,26 @@ export default class BalancesGrid extends Vue {
   @Prop({ default: 'Ethereum' }) readonly network!: string
   @Prop({ default: 'eth' }) readonly icon!: string
   @Prop({default: ''}) readonly address!: string
-  @Prop({default: []}) readonly gridData!: BalanceDataInterface[]
+  @Prop({default: []}) readonly cols!: any
+  @Prop({default: []}) readonly gridData!: BalanceGridDataInterface[]
 
 
-  get totalBalance(): number{
-    let balance  = 0
+  get totalBalance(): string{
+    let balance: number  = 0
     for (let item of this.gridData){
       balance += item.totalValue
     }
 
-    return balance
+    return Helper.priceFormatter(balance)
   }
 
-  headers = [
-    //  {
-    //   text: 'Token',
-    //   align: 'start',
-    //   value: 'tokenName',
-    //   class: 'px-2',
-    //   width: 180,
-    // },
-          {
-      text: 'Token',
-      align: 'start',
-      value: 'tokenSymbol',
-      class: 'px-2',
-      width: 60,
-    },
-          {
-      text: 'Balance',
-      align: 'start',
-      value: 'tokenBalance',
-      class: 'px-2',
-      width: 80,
-    },
-          {
-      text: 'Price',
-      align: 'start',
-      value: 'tokenPrice',
-      class: 'px-2',
-      width: 80,
-    },
-          {
-      text: 'Value',
-      align: 'start',
-      value: 'totalValue',
-      class: 'px-2',
-      width: 90,
-    },
-  ]
-
-
-  priceFormatter(value:number): string{
-    if(value > 1){
-      return new Intl.NumberFormat('en', { style: 'currency', currency: 'USD', maximumFractionDigits:2 }).format(value)
-    } else {
-      return new Intl.NumberFormat('en', { style: 'currency', currency: 'USD', maximumFractionDigits:4 }).format(value)
-    }
+  priceFormatter(value: number){
+    return Helper.priceFormatter(value)
   }
 
+  balanceFormatter(value: number): string{
+    return new Intl.NumberFormat('en', { maximumSignificantDigits: 8 }).format(value)
+  }
 }
 </script>
 

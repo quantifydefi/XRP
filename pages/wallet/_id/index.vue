@@ -19,7 +19,11 @@
         </v-row>
 
         <client-only>
-          <v-row v-if="!showSkeleton" class="px-1 pt-3" data-nosnippet>
+          <v-row
+            v-if="!showSkeleton && balances"
+            class="px-1 pt-3"
+            data-nosnippet
+          >
             <v-col cols="12" md="6" lg="4" class="pa-1">
               <v-card tile outlined height="535">
                 <v-card-title class="pa-0 ma-0">
@@ -29,39 +33,33 @@
 
                   <v-col cols="6" class="text-right"
                     ><h1 class="title">
-                      {{ priceFormatter(totalBalance) }}
+                      {{ balances.totalBalance }}
                     </h1></v-col
                   >
                 </v-card-title>
                 <v-divider />
 
                 <v-card-title
-                  v-for="(network, i) in networks"
+                  v-for="(item, i) in balances.networks"
                   :key="i"
                   class="pa-0 ma-0"
                 >
                   <v-col cols="6" class="d-flex">
                     <v-avatar size="26px">
                       <v-img
-                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${network.icon}.png`"
-                        :lazy-src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${network.icon}.png`"
+                        :src="balances.tokenImage(item.symbol)"
+                        :lazy-src="balances.tokenImage(item.symbol)"
                       ></v-img>
                     </v-avatar>
                     <h1 class="subtitle-1 font-weight-medium pl-3">
-                      {{ network.network }}
+                      {{ item.network }}
                     </h1>
                   </v-col>
-
-                  <!--                  <v-col cols="6" class="text-right"
-                    ><h1 class="subtitle-1">
-                      {{ priceFormatter(getTotalBalance(totalHoldings[i])) }}
-                    </h1></v-col
-                  >-->
                 </v-card-title>
               </v-card>
             </v-col>
             <v-col
-              v-for="(network, i) in networks"
+              v-for="(network, i) in balances.networks"
               :key="network.chainId"
               cols="12"
               md="6"
@@ -74,8 +72,9 @@
                     :chain-id="network.chainId"
                     :address="address"
                     :network="network.network"
-                    :icon="network.icon"
-                    :grid-data="totalHoldings[i]"
+                    :icon="network.symbol"
+                    :cols="balances.cols"
+                    :grid-data="balances.data[i]"
                   ></balances-grid>
                 </client-only>
               </v-card>
@@ -92,6 +91,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import walletMiddleware from '~/middleware/wallet'
+import { BalanceGrid } from '~/models/balance'
 
 const BalancesGrid: any = () => ({
   component: new Promise((resolve) => {
@@ -105,6 +105,7 @@ const BalancesGrid: any = () => ({
   name: 'Portfolio',
   components: {
     BalancesGrid,
+    BaseGrid: () => import('~/components/terminal/BaseGrid.vue'),
   },
   middleware: [walletMiddleware],
 
@@ -116,124 +117,12 @@ const BalancesGrid: any = () => ({
 })
 export default class Portfolio extends Vue {
   showSkeleton = true
-  covalentApiKey: string = process.env.COVALENT_API_KEY || ''
+  balances: BalanceGrid | null = null
   address!: string
-  networks = [
-    {
-      chainId: 1,
-      network: 'Ethereum',
-      icon: 'eth',
-    },
-    {
-      chainId: 56,
-      network: 'Binance',
-      icon: 'bnb',
-    },
-    {
-      chainId: 137,
-      network: 'Polygon',
-      icon: 'matic',
-    },
-    {
-      chainId: 250,
-      network: 'Fantom',
-      icon: 'ftm',
-    },
-    {
-      chainId: 43114,
-      network: 'Avalanche',
-      icon: 'avax',
-    },
-  ]
-
-  totalHoldings: any[] = []
-  totalBalance = 0
-
-  /** Calculates total Balance **/
-  getTotalBalance(balanceData: any) {
-    let balance = 0
-    for (const item of balanceData) {
-      balance += item.totalValue
-    }
-
-    return balance
-  }
-
-  /** Gets account data and total balances from Covalent API **/
-  async getAccountBalance(chainId: number, network: string) {
-    const balancesData = []
-    let assetTotalBalance = 0
-
-    try {
-      const {
-        data: {
-          data: { items: balances },
-        },
-      } = await this.$axios.get(
-        `https://api.covalenthq.com/v1/${chainId}/address/${this.address}/balances_v2/?key=${this.covalentApiKey}`
-      )
-
-      if (balances) {
-        for (const balance of balances) {
-          if (balance.type !== 'dust') {
-            const balanceRounded =
-              balance.balance / 10 ** balance.contract_decimals
-
-            assetTotalBalance += balance.quote
-
-            const tokenBalanceData = {
-              tokenAddress: balance.contract_address,
-              tokenName: balance.contract_name,
-              tokenSymbol: balance.contract_ticker_symbol,
-              tokenBalance: this.balanceFormatter(balanceRounded),
-              tokenPrice: balance.quote_rate,
-              totalValue: balance.quote,
-              chainId,
-              network,
-            }
-
-            balancesData.push(tokenBalanceData)
-          }
-        }
-      }
-
-      this.totalBalance += assetTotalBalance
-    } catch (err) {
-      console.log(err)
-    }
-
-    return balancesData
-  }
-
-  priceFormatter(value: number): string {
-    if (value > 1) {
-      return new Intl.NumberFormat('en', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 2,
-      }).format(value)
-    } else {
-      return new Intl.NumberFormat('en', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 4,
-      }).format(value)
-    }
-  }
-
-  balanceFormatter(value: number): string {
-    return new Intl.NumberFormat('en', { maximumSignificantDigits: 6 }).format(
-      value
-    )
-  }
 
   async mounted() {
-    /** For each network supported get account balance **/
-    for (const network of this.networks) {
-      this.totalHoldings.push(
-        await this.getAccountBalance(network.chainId, network.network)
-      )
-    }
+    this.balances = new BalanceGrid(this.$store)
+    await this.balances.getData()
 
     /**
      Listener for account change
