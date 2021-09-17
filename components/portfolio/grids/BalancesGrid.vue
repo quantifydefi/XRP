@@ -25,7 +25,7 @@
         :items="gridData"
         :sort-desc="[true]"
         :items-per-page="12"
-        class="elevation-1"
+        class="elevation-0"
         :mobile-breakpoint="0"
       >
         <template #[`item.totalValue`]="{ item }">

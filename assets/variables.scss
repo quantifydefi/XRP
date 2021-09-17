@@ -2,3 +2,10 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+
+#aave-balances tbody tr:hover,
+#aave-assets tbody tr:hover {
+  //background-color: rgba(20, 67, 255, 0.17);
+  background-color: rgba(83, 106, 246, 0.1);
+}

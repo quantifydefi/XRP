@@ -121,9 +121,6 @@ export default class Portfolio extends Vue {
   address!: string
 
   async mounted() {
-    this.balances = new BalanceGrid(this.$store)
-    await this.balances.getData()
-
     /**
      Listener for account change
      */
@@ -138,6 +135,9 @@ export default class Portfolio extends Vue {
         }
       })
     }
+
+    this.balances = new BalanceGrid(this.$store)
+    await this.balances.getData()
 
     setTimeout(() => {
       this.showSkeleton = false
