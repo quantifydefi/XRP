@@ -34,6 +34,7 @@ export const actions: ActionTree<BalanceState, BalanceState> = {
               tokenPrice: balance.quote_rate,
               totalValue: balance.quote,
               chainId,
+              logoUrl: balance.logo_url,
             }
 
             balancesData.push(tokenBalanceData)

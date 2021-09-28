@@ -19,20 +19,35 @@
       <v-divider></v-divider>
 
       <v-data-table
+        id="balances-grid"
         dense
         :height="gridHeight - 32 + 'px'"
         :headers="cols"
         :items="gridData"
         :sort-desc="[true]"
-        :items-per-page="12"
+        :items-per-page="16"
         class="elevation-0"
         :mobile-breakpoint="0"
       >
-        <template #[`item.totalValue`]="{ item }">
-          <span>{{ priceFormatter(item.totalValue) }}</span>
+        <template #[`item.tokenSymbol`]="{ item }">
+          <div style="width: 78px" class="text-no-wrap overflow-x-hidden">
+            <v-avatar size="18" class="mr-2">
+              <img
+                :alt="`${item.tokenSymbol} logo`"
+                :src="item.logoUrl"
+                @error="setAltImg"
+              />
+            </v-avatar>
+            {{ item.tokenSymbol }}
+          </div>
         </template>
+
         <template #[`item.tokenBalance`]="{ item }">
           <span>{{ balanceFormatter(item.tokenBalance) }}</span>
+        </template>
+
+        <template #[`item.totalValue`]="{ item }">
+          <span>{{ priceFormatter(item.totalValue) }}</span>
         </template>
       </v-data-table>
       <v-divider></v-divider>
@@ -49,14 +64,12 @@ import { ChainOptions, BalanceGridDataInterface } from '~/types/balance'
 import { Helper } from '~/models/helper'
 
 
+
 @Component({
   name: 'BalancesGrid',
-  components: {
-    GridCore: () => import('../../common/grid/GridCore.vue'),
-  },
 })
 export default class BalancesGrid extends Vue {
-  @Prop({ default: 450 }) readonly gridHeight!: number
+  @Prop({ default: 435 }) readonly gridHeight!: number
   @Prop({ default: 1 }) readonly chainId!: ChainOptions
   @Prop({ default: 'Ethereum' }) readonly network!: string
   @Prop({ default: 'eth' }) readonly icon!: string
@@ -79,7 +92,14 @@ export default class BalancesGrid extends Vue {
   }
 
   balanceFormatter(value: number): string{
-    return new Intl.NumberFormat('en', { maximumSignificantDigits: 8 }).format(value)
+    return new Intl.NumberFormat('en', {
+      maximumSignificantDigits: 8,
+      minimumSignificantDigits: 8
+    }).format(value)
+  }
+
+  setAltImg(event: any) {
+    return Helper.setAltImg(event)
   }
 }
 </script>

@@ -19,8 +19,6 @@
     "@nuxtjs/robots": "^2.4.2",
     "@nuxtjs/sitemap": "^2.4.0",
     "@types/web3": "^1.2.2",
-    "ag-grid-community": "^25.2.1",
-    "ag-grid-vue": "^25.2.0",
     "class": "^0.1.4",
     "class-transformer": "^0.3.1",
     "cookie-universal-nuxt": "^2.1.4",

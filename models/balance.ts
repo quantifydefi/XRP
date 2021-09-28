@@ -11,6 +11,7 @@ export class BalanceGridData implements BalanceGridDataInterface {
   readonly tokenBalance!: number
   readonly tokenPrice!: number
   readonly totalValue!: number
+  readonly logoUrl!: string
 }
 
 export class BalanceGrid {
@@ -24,13 +25,6 @@ export class BalanceGrid {
 
   get cols() {
     return [
-      //  {
-      //   text: 'Token',
-      //   align: 'start',
-      //   value: 'tokenName',
-      //   class: 'px-2',
-      //   width: 180,
-      // },
       {
         text: 'Token',
         align: 'start',

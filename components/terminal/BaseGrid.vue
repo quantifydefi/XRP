@@ -1,36 +1,88 @@
 <template>
-  <client-only>
-    <grid-core
-      ref="gridCoreComponent"
-      :row-data="rowData"
-      :column-defs="columnDefs"
-      :pagination="pagination"
-      :header-height="30"
-      :row-height="rowHeight"
-      :pagination-page-size="paginationPageSize"
-      :height="height + 'px'"
-      :row-id="rowId"
-    />
-  </client-only>
+  <v-data-table
+    id="base-grid"
+    dense
+    :headers="columnDefs"
+    :items="rowData"
+    class="elevation-0"
+    hide-default-footer
+    disable-pagination
+    :mobile-breakpoint="0"
+  >
+    <template #[`item.token0_symbol`]="{ item }">
+      <div class="text-no-wrap" style="width: 130px">
+        <v-avatar size="17">
+          <img
+            :src="getTokenImage(item.token0_id)"
+            :alt="`${item.token0_symbol} logo`"
+            @error="setAltImg"
+          />
+        </v-avatar>
+        <v-avatar size="17">
+          <img
+            :src="getTokenImage(item.token1_id)"
+            :alt="`${item.token0_symbol} logo`"
+            @error="setAltImg"
+          />
+        </v-avatar>
+        <nuxt-link
+          class="ml-2 coin-link"
+          :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
+          style="text-decoration: none"
+          :to="`/token/${item.pool_id}`"
+          >{{ item.token0_symbol }}-{{ item.token1_symbol }}</nuxt-link
+        >
+      </div>
+    </template>
+
+    <template #[`item.liquidity`]="{ item }">
+      <div
+        class="subtitle-2 font-weight-regular text-no-wrap"
+        style="width: 95px"
+      >
+        {{ calcReserveEthUsd(item.reserve_eth, item.eth_price_usd) }}
+      </div>
+    </template>
+
+    <template #[`item.percent_change_liq_24h`]="{ item }">
+      <div
+        style="width: 30px"
+        class="subtitle-2 font-weight-regular text-left text-no-wrap"
+        :class="
+          Math.sign(item.percent_change_liq_24h) === -1
+            ? 'red--text accent-4'
+            : 'green--text'
+        "
+      >
+        {{ Math.sign(item.percent_change_liq_24h) === 1 ? '+' : ''
+        }}{{ item.percent_change_liq_24h }}%
+      </div>
+    </template>
+  </v-data-table>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { TerminalGrid } from '~/models/terminal'
+import { Helper } from '~/models/helper'
+
 @Component({
   name: 'BaseGrid',
-  components: {
-    GridCore: () => import('../../components/common/grid/GridCore.vue'),
-  },
 })
-export default class TerminalGrid extends Vue {
-  @Prop({ default: '' }) readonly rowId!: string
+export default class BaseGrid extends Vue {
   @Prop({ default: () => [] }) readonly rowData!: Array<Record<string, any>>
   @Prop({ default: () => [] }) readonly columnDefs!: Array<Record<string, any>>
 
-  @Prop({ default: () => 23.4 }) readonly rowHeight!: number
-  @Prop({ default: 15 }) readonly paginationPageSize!: number
-  @Prop({ default: false }) readonly pagination!: number
+  getTokenImage(tokenId: string): string {
+    return TerminalGrid.getTokenImage(tokenId)
+  }
 
-  @Prop({ default: 502 }) readonly height!: number
+  calcReserveEthUsd(reserveEth: number, ethPriceUsd: number): string {
+    return TerminalGrid.calcReserveEthUsd(reserveEth, ethPriceUsd)
+  }
+
+  setAltImg(event: any) {
+    return Helper.setAltImg(event)
+  }
 }
 </script>

@@ -1,31 +1,33 @@
 <template>
   <v-row no-gutters justify="center">
+    <v-overlay
+      :value="showOverlay"
+      :opacity="1"
+      :color="$vuetify.theme.themes[theme].overlay"
+    >
+      <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+      <v-progress-linear
+        color="primary"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-overlay>
+
     <v-col cols="12">
       <v-row no-gutters>
         <v-col cols="12">
           <h1 class="text-h4">Portfolio</h1>
         </v-col>
 
-        <v-row v-if="showSkeleton" class="px-1 pt-3" data-nosnippet>
-          <v-col v-for="i in 6" :key="i" cols="12" md="4" class="pa-1">
-            <v-card tile outlined>
-              <v-skeleton-loader
-                type="table-heading, table-tbody, table-tbody"
-                height="536"
-                tile
-              ></v-skeleton-loader>
-            </v-card>
-          </v-col>
-        </v-row>
-
         <client-only>
           <v-row
-            v-if="!showSkeleton && balances"
+            v-if="!showOverlay && balances"
             class="px-1 pt-3"
             data-nosnippet
           >
             <v-col cols="12" md="6" lg="4" class="pa-1">
-              <v-card tile outlined height="535">
+              <v-card tile outlined height="522">
                 <v-card-title class="pa-0 ma-0">
                   <v-col cols="6" class="d-flex">
                     <h1 class="title">My Assets</h1>
@@ -66,9 +68,10 @@
               lg="4"
               class="pa-1"
             >
-              <v-card tile outlined height="535">
+              <v-card tile outlined height="522" style="border-bottom: none">
                 <client-only>
                   <balances-grid
+                    :grid-height="435"
                     :chain-id="network.chainId"
                     :address="address"
                     :network="network.network"
@@ -92,6 +95,7 @@ import { mapState } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import walletMiddleware from '~/middleware/wallet'
 import { BalanceGrid } from '~/models/balance'
+import { UiState } from '~/store/ui'
 
 const BalancesGrid: any = () => ({
   component: new Promise((resolve) => {
@@ -111,14 +115,16 @@ const BalancesGrid: any = () => ({
 
   computed: {
     ...mapState({
+      theme: (state: any) => state.ui.theme,
       address: (state: any) => state.wallet.address,
     }),
   },
 })
 export default class Portfolio extends Vue {
-  showSkeleton = true
+  showOverlay = true
   balances: BalanceGrid | null = null
   address!: string
+  theme!: UiState
 
   async mounted() {
     /**
@@ -140,8 +146,8 @@ export default class Portfolio extends Vue {
     await this.balances.getData()
 
     setTimeout(() => {
-      this.showSkeleton = false
-    }, 1000)
+      this.showOverlay = false
+    }, 1500)
   }
 }
 </script>

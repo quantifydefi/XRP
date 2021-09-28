@@ -1,10 +1,8 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
-import Vue from 'vue'
 import { Type } from 'class-transformer'
 import { Store } from 'vuex'
 import { TerminalGridDataInterface } from '~/types/terminal'
-import { ThemeOptions } from '~/types/ui'
 
 export class TerminalGridData implements TerminalGridDataInterface {
   readonly pool_id!: string
@@ -18,104 +16,39 @@ export class TerminalGridData implements TerminalGridDataInterface {
   readonly eth_price_usd!: number
 }
 
-export const terminalUI: { theme: ThemeOptions } = { theme: 'dark' }
-
 export class TerminalGrid {
-  /** Vue root Interface **/
-  private _$root: Vue
-
   /** Vuex **/
   private _$store: Store<any>
 
   @Type(() => TerminalGridData)
   private _data: TerminalGridData[] = []
 
-  constructor(store: Store<any>, root: Vue) {
+  constructor(store: Store<any>) {
     this._$store = store
-    this._$root = root
-
-    /** Update Global Theme **/
-    terminalUI.theme = store.state.ui.theme
-  }
-
-  updateTheme(): void {
-    terminalUI.theme = this._$store.state.ui.theme
   }
 
   get cols() {
     return [
       {
-        headerName: 'SYMBOL',
-        field: 'token0_symbol',
-        cellStyle: { 'justify-content': 'flex-end' },
-        width: 55,
-        resizable: true,
-        /* istanbul ignore next */
-        cellRenderer(params: any) {
-          const iDiv: HTMLElement = document.createElement('div')
-
-          const image = document.createElement('img')
-          const tokenImage = TerminalGrid.getTokenImage(params.data.token0_id)
-          image.setAttribute('src', tokenImage)
-          image.setAttribute('class', 'qc-coin-icon')
-
-          const image2 = document.createElement('img')
-          image2.setAttribute(
-            'src',
-            TerminalGrid.getTokenImage(params.data.token1_id)
-          )
-          image2.setAttribute('class', 'qc-coin-icon')
-
-          /** If an image URL is broken, add a generic image. **/
-          const onImageError = (image: any) => {
-            image.onerror = ''
-            image.src =
-              'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/crypto-img/32/icon/undefined.png'
-            return true
-          }
-
-          image.addEventListener('error', () => onImageError(image))
-          image2.addEventListener('error', () => onImageError(image2))
-
-          const link: HTMLElement | any = document.createElement('a')
-          link.disabled = true
-          link.href = `https://defiheatmap.com/token/${params.data.pool_id}`
-          link.textContent = `${params.value} - ${params.data.token1_symbol}`
-          link.setAttribute('style', 'text-decoration:none; color: inherit')
-          link.setAttribute('class', 'coin-link')
-          iDiv.appendChild(image)
-          iDiv.appendChild(image2)
-          iDiv.appendChild(link)
-
-          return iDiv
-        },
+        text: 'SYMBOL',
+        align: 'start',
+        value: 'token0_symbol',
+        class: 'px-2 text-no-wrap subtitle-2 font-weight-bold',
+        width: 90,
       },
       {
-        headerName: 'LIQUIDITY',
-        field: 'liquidity',
-        cellStyle: { 'justify-content': 'flex-end' },
-        width: 38,
-        resizable: true,
-        valueFormatter: (params: any) => {
-          /* istanbul ignore next */
-          return TerminalGrid.calcReserveEthUsd(
-            params.data.reserve_eth,
-            params.data.eth_price_usd
-          )
-        },
+        text: 'LIQUIDITY',
+        align: 'start',
+        value: 'liquidity',
+        class: 'px-2 text-no-wrap subtitle-2 font-weight-bold',
+        width: 70,
       },
       {
-        headerName: 'LIQ 1D%',
-        field: 'percent_change_liq_24h',
-        cellClass: 'grid-cell-centered ',
-        width: 20,
-        resizable: true,
-
-        valueFormatter: (params: any) => {
-          /* istanbul ignore next */
-          return `${params.value.toFixed(2)}%`
-        },
-        cellStyle: GridCellStyles.ptcCellStyle,
+        text: 'LIQ 1D%',
+        align: '',
+        value: 'percent_change_liq_24h',
+        class: 'px-2 text-no-wrap subtitle-2 font-weight-bold',
+        width: 30,
       },
     ]
   }
@@ -146,39 +79,5 @@ export class TerminalGrid {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(reserveEth * ethPriceUsd)
-  }
-}
-
-export class GridCellStyles {
-  static ptcCellStyle(params: any) {
-    const value: number = params.value
-    switch (terminalUI.theme) {
-      case 'light':
-        if (value * 100 >= 0 && value * 100 <= 1) {
-          return { 'background-color': '#ebf9f0', color: 'black' }
-        } else if (value * 100 > 1 && value * 100 <= 2.5) {
-          return { 'background-color': '#d8f3e1', color: 'black' }
-        } else if (value * 100 > 2.5 && value * 100 <= 5) {
-          return { 'background-color': '#c4edd2', color: 'black' }
-        } else if (value * 100 > 5) {
-          return { 'background-color': '#b1e7c3', color: 'black' }
-        } else if (value * 100 < 0 && value * 100 >= -1) {
-          return { 'background-color': '#fdeae8', color: 'black' }
-        } else if (value * 100 < -1 && value * 100 >= -2.5) {
-          return { 'background-color': '#fbd4d0', color: 'black' }
-        } else if (value * 100 < -2.5 && value * 100 >= -5) {
-          return { 'background-color': '#f9bfb9', color: 'black' }
-        } else if (value * 100 < -5) {
-          return { 'background-color': '#f7aaa1', color: 'black' }
-        }
-        /* istanbul ignore next */
-        break
-      case 'dark':
-        if (value * 100 >= 0) {
-          return { color: '#4caf50', 'background-color': 'transparent' }
-        } else if (value * 100 < 0) {
-          return { color: '#f44336', 'background-color': 'transparent' }
-        }
-    }
   }
 }

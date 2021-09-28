@@ -4,18 +4,24 @@ export class Helper {
   }
 
   static priceFormatter(value: number): string {
-    if (value > 1) {
+    if (value > 100) {
       return new Intl.NumberFormat('en', {
         style: 'currency',
         currency: 'USD',
         maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
       }).format(value)
     } else {
       return new Intl.NumberFormat('en', {
         style: 'currency',
         currency: 'USD',
         maximumFractionDigits: 4,
+        minimumFractionDigits: 4,
       }).format(value)
     }
+  }
+
+  static setAltImg(event: any) {
+    event.target.src = require(`~/assets/images/generic/aave-generic.png`)
   }
 }
