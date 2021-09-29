@@ -21,9 +21,9 @@
         </v-col>
 
         <client-only>
-          <v-row class="pt-3">
+          <v-row class="pt-3 px-1">
             <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="540" tile>
+              <v-card outlined height="535" tile>
                 <grid-header title="Top 20 Coins"></grid-header>
                 <v-divider />
                 <base-grid

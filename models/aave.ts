@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
 import { Store } from 'vuex'
-import { AaveAssetDataInterface, AaveBalanceDataInterface } from '~/types/aave'
+import { AaveAssetDataInterface, AaveBalanceDataInterface } from '@/types/aave'
 
 export class AaveBalanceData implements AaveBalanceDataInterface {
   readonly balance!: {
@@ -76,11 +76,15 @@ export class AaveAssetData implements AaveAssetDataInterface {
 }
 
 export class AaveBalance {
-  private _$store: Store<any>
-  private _data: AaveBalanceData[] = []
+  address = ''
 
-  constructor(store: Store<any>) {
+  private _$store: Store<any>
+  private _ethereumBalance: AaveBalanceData[] = []
+  private _polygonBalance: AaveBalanceData[] = []
+
+  constructor(store: Store<any>, address: string) {
     this._$store = store
+    this.address = address
   }
 
   get cols() {
@@ -173,13 +177,26 @@ export class AaveBalance {
     ]
   }
 
-  get data() {
-    return this._data
+  get ethereumBalance() {
+    return this._ethereumBalance
+  }
+
+  get polygonBalance() {
+    return this._polygonBalance
   }
 
   async getData(): Promise<void> {
-    this._data = await this._$store.dispatch('aave/getAaveBalances', {
-      chainId: 1,
+    this._ethereumBalance = await this._$store.dispatch(
+      'aave/getAaveBalances',
+      {
+        chainId: 1,
+        address: this.address,
+      }
+    )
+
+    this._polygonBalance = await this._$store.dispatch('aave/getAaveBalances', {
+      chainId: 137,
+      address: this.address,
     })
   }
 
@@ -190,7 +207,8 @@ export class AaveBalance {
 
 export class AaveAssets {
   private _$store: Store<any>
-  private _data: AaveAssetData[] = []
+  private _ethereumAssets: AaveAssetData[] = []
+  private _polygonAssets: AaveAssets[] = []
 
   constructor(store: Store<any>) {
     this._$store = store
@@ -202,8 +220,7 @@ export class AaveAssets {
         text: 'Symbol',
         align: 'center',
         class: 'text-no-wrap',
-        value: 'underlying.logo_url',
-        sortable: false,
+        value: 'underlying.contract_ticker_symbol',
       },
       {
         text: 'Quote Rate',
@@ -266,6 +283,11 @@ export class AaveAssets {
         value: 'atoken.contract_address',
       },
       {
+        text: 'Supply APY',
+        align: 'start',
+        value: 'supply_apy',
+      },
+      {
         text: 'Variable Borrow APR',
         align: 'start',
         value: 'variable_borrow_apr',
@@ -273,15 +295,9 @@ export class AaveAssets {
       {
         text: 'Stable Borrow APR',
         align: 'start',
-        class: 'text-no-wrap',
         value: 'stable_borrow_apr',
       },
-      {
-        text: 'Supply APY',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'supply_apy',
-      },
+
       {
         text: 'Lending Pool Contract',
         align: 'start',
@@ -291,12 +307,21 @@ export class AaveAssets {
     ]
   }
 
-  get data() {
-    return this._data
+  get ethereumAssets() {
+    return this._ethereumAssets
+  }
+
+  get polygonAssets() {
+    return this._polygonAssets
   }
 
   async getData(): Promise<void> {
-    this._data = await this._$store.dispatch('aave/getAaveAssets')
+    this._ethereumAssets = await this._$store.dispatch('aave/getAaveAssets', {
+      chainId: 1,
+    })
+    this._polygonAssets = await this._$store.dispatch('aave/getAaveAssets', {
+      chainId: 137,
+    })
   }
 
   setAltImg(event: any) {

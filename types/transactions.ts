@@ -22,3 +22,22 @@ export interface AdapterInterface {
   asset_balance: number
   balance_type: string
 }
+
+/** Transaction Fields retrieved from Covalent API **/
+export interface TransactionHistoryInterface {
+  block_signed_at: string
+  block_height: number
+  tx_hash: string
+  tx_offset: number
+  successful: boolean
+  from_address: string
+  to_address: string
+  to_address_label: string
+  value: string
+  value_quote: number
+  gas_offered: number
+  gas_spent: number
+  gas_price: number
+  gas_quote: number
+  gas_quote_rate: number
+}

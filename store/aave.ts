@@ -7,7 +7,7 @@ export type AaveState = ReturnType<typeof state>
 export const mutations: MutationTree<AaveState> = {}
 
 export const actions: ActionTree<AaveState, AaveState> = {
-  async getAaveBalances(_, { chainId }): Promise<AaveBalanceData[]> {
+  async getAaveBalances(_, { chainId, address }): Promise<AaveBalanceData[]> {
     try {
       const {
         data: {
@@ -16,8 +16,7 @@ export const actions: ActionTree<AaveState, AaveState> = {
           },
         },
       } = await this.$axios.get(
-        // `https://api.covalenthq.com/v1/${chainId}/address/${address}/stacks/aave_v2/balances/?key=${process.env.COVALENT_API_KEY}`
-        `https://api.covalenthq.com/v1/${chainId}/address/0xf705b9ba1908ca505537f309b08e6949c1b8f31f/stacks/aave_v2/balances/?key=${process.env.COVALENT_API_KEY}`
+        `https://api.covalenthq.com/v1/${chainId}/address/${address}/stacks/aave_v2/balances/?key=${process.env.COVALENT_API_KEY}`
       )
 
       return plainToClass(AaveBalanceData, balances as AaveBalanceData[])
@@ -25,12 +24,12 @@ export const actions: ActionTree<AaveState, AaveState> = {
       return []
     }
   },
-  async getAaveAssets(): Promise<AaveAssetData[]> {
+  async getAaveAssets(_, { chainId }): Promise<AaveAssetData[]> {
     try {
       const {
         data: { data: items },
       } = await this.$axios.get(
-        'https://api.covalenthq.com/v1/1/networks/aave_v2/assets/?key=ckey_8c009f2c57b24a2d8e8b0553b0d5'
+        `https://api.covalenthq.com/v1/${chainId}/networks/aave_v2/assets/?key=ckey_8c009f2c57b24a2d8e8b0553b0d5`
       )
 
       return plainToClass(

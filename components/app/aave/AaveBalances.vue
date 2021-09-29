@@ -1,16 +1,21 @@
 <template>
-  <v-row no-gutters justify="center">
-    <v-col cols="12">
-      <v-row no-gutters>
-        <h1 class="text-h4">Aave Balances</h1>
-      </v-row>
-      <v-row>
-        <v-col v-if="aaveBalance" cols="12" class="py-0 align-center">
+  <v-row no-gutters>
+    <v-col class="pa-2" cols="12">
+      <v-row v-if="aaveBalance">
+        <v-col cols="12" class="pa-1 mt-1">
           <v-card outlined tile>
+            <v-card-title class="subtitle-1 pa-2"
+              >{{ $route.params.id == 1 ? 'Ethereum' : 'Polygon' }} Mainnet
+            </v-card-title>
+            <v-divider />
             <v-data-table
               id="aave-balances"
               :headers="aaveBalance.cols"
-              :items="aaveBalance.data"
+              :items="
+                $route.params.id == 1
+                  ? aaveBalance.ethereumBalance
+                  : aaveBalance.polygonBalance
+              "
               :items-per-page="20"
               :hide-default-footer="true"
               mobile-breakpoint="0"
@@ -130,20 +135,16 @@ import { AaveBalance } from '~/models/aave'
   },
 })
 export default class AaveBalances extends Vue {
+  address!: any
   aaveBalance: AaveBalance | null = null
 
   async mounted() {
-    this.aaveBalance = new AaveBalance(this.$store)
+    this.aaveBalance = new AaveBalance(this.$store, this.address)
     await this.aaveBalance.getData()
   }
 
   formatBalance(value: number, decimal: number, precision: number): number {
     return parseFloat((value / 10 ** decimal).toFixed(precision))
-  }
-
-  /** If image does not exists or encounters an error, set generic image **/
-  setAltImg(event: any) {
-    event.target.src = require(`~/assets/images/generic/aave-generic.png`)
   }
 }
 </script>
