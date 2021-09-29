@@ -91,7 +91,7 @@
               how trading systems work and the features traders expect.
             </p>
           </v-col>
-          <v-col cols="auto" lg="8">
+          <v-col cols="12" lg="8">
             <v-row class="my-5">
               <v-col
                 v-for="advisor in advisors"

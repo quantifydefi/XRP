@@ -20,97 +20,95 @@
           <h1 class="text-h4">Terminal</h1>
         </v-col>
 
-        <client-only>
-          <v-row class="pt-3 px-1">
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Top 20 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(0, 20)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+        <v-row class="pt-3 px-1">
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Top 20 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(0, 20)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 21-40 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(20, 40)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 21-40 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(20, 40)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 41-60 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(40, 60)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 41-60 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(40, 60)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 61-80 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(60, 80)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 61-80 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(60, 80)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 81-100 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(80, 100)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 81-100 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(80, 100)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 101-120 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(100, 120)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 101-120 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(100, 120)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 121-140 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(120, 140)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 121-140 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(120, 140)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
 
-            <v-col cols="12" lg="3" sm="6" class="pa-1">
-              <v-card outlined height="535" tile>
-                <grid-header title="Rank 141-160 Coins"></grid-header>
-                <v-divider />
-                <base-grid
-                  :row-data="gridData.data.slice(140, 160)"
-                  :column-defs="gridData.cols"
-                ></base-grid>
-              </v-card>
-            </v-col>
-          </v-row>
-        </client-only>
+          <v-col cols="12" lg="3" sm="6" class="pa-1">
+            <v-card outlined height="535" tile>
+              <grid-header title="Rank 141-160 Coins"></grid-header>
+              <v-divider />
+              <base-grid
+                :row-data="gridData.data.slice(140, 160)"
+                :column-defs="gridData.cols"
+              ></base-grid>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-row>
     </v-col>
   </v-row>
