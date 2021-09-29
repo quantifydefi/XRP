@@ -400,6 +400,35 @@ export default class OurTeam extends Vue {
     },
     {
       _id: 2,
+      name: 'Jerry Raio',
+      jobTitle: 'Advisor',
+      thumbnailUrl: 'jerry',
+      bioIsVisible: false,
+      socials: [
+        {
+          icon: 'linkedin',
+          link: 'https://www.linkedin.com/in/jerry-raio-5556a814/',
+        },
+      ],
+      bio: `<div>Jerry is the Founder, President and CEO of Arbor Lane Advisors, Inc., a financial services consulting firm with expertise in product development, product management, marketing, and distribution of investment products. His career on Wall Street spans over 30 years, mostly focused on the distribution of new issue Equity Capital Markets product to Financial Advisors and retail investors. Jerry was Head of Retail Origination at Wells Fargo Securities where he worked closely with asset management clients to structure, market and execute new closed end fund offerings. Jerry also had significant roles at Wachovia (now Wells Fargo), Morgan Stanley and Citigroup.  He serves on the board/advisory board of several firms including RiverNorth Capital Management closed-end funds, FLX Distribution and Qudos Technologies. </div>
+        <div class='mt-3'>Jerry holds multiple FINRA licenses including the following: Series 7 (General Securities Representative), 24 (General Principal) and 79 (Investment Banking Representative)</div>`,
+    },
+    {
+      _id: 3,
+      name: 'Warren Rosenbaum',
+      jobTitle: 'Advisor',
+      thumbnailUrl: 'warren',
+      bioIsVisible: false,
+      socials: [
+        {
+          icon: 'linkedin',
+          link: 'https://www.linkedin.com/in/warrenrosenbaum/',
+        },
+      ],
+      bio: 'Warren was the chief architect of the Technology and Operations divisions of the New York Stock Exchange. A senior Vice President leader with full responsibility for the software and hardware architecture of the NYSE enterprise systems.  Warren provided the vision and innovation guidance keeping NYSE as a technology leader. During his tenure, over 25+ years, the NYSE systems consistently had operational uptimes of over 99.99% due to his successful.',
+    },
+    {
+      _id: 4,
       name: 'Harold Bott',
       jobTitle: 'Advisor',
       thumbnailUrl: 'harold',
@@ -415,20 +444,6 @@ export default class OurTeam extends Vue {
         },
       ],
       bio: "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop trading platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic trading for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency trading firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
-    },
-    {
-      _id: 3,
-      name: 'Warren Rosenbaum',
-      jobTitle: 'Advisor',
-      thumbnailUrl: 'warren',
-      bioIsVisible: false,
-      socials: [
-        {
-          icon: 'linkedin',
-          link: 'https://www.linkedin.com/in/warrenrosenbaum/',
-        },
-      ],
-      bio: 'Warren was the chief architect of the Technology and Operations divisions of the New York Stock Exchange. A senior Vice President leader with full responsibility for the software and hardware architecture of the NYSE enterprise systems.  Warren provided the vision and innovation guidance keeping NYSE as a technology leader. During his tenure, over 25+ years, the NYSE systems consistently had operational uptimes of over 99.99% due to his successful.',
     },
   ]
 }

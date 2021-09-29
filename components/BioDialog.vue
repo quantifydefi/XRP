@@ -34,9 +34,7 @@
           >
             <v-icon class="mt-n7 mr-3" size="20">mdi-{{ social.icon }}</v-icon>
           </a>
-          <p>
-            {{ bio }}
-          </p>
+          <div class="text-left" v-html="bio"></div>
         </v-container>
       </v-card>
     </v-dialog>
