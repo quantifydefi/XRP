@@ -29,7 +29,7 @@ export const actions: ActionTree<AaveState, AaveState> = {
       const {
         data: { data: items },
       } = await this.$axios.get(
-        `https://api.covalenthq.com/v1/${chainId}/networks/aave_v2/assets/?key=ckey_8c009f2c57b24a2d8e8b0553b0d5`
+        `https://api.covalenthq.com/v1/${chainId}/networks/aave_v2/assets/?key=${process.env.COVALENT_API_KEY}`
       )
 
       return plainToClass(

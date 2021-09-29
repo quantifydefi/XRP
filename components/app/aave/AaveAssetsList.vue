@@ -72,24 +72,17 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
 import { AaveAssets } from '~/models/aave'
 
 @Component({
   name: 'AaveAssetsList',
-  computed: {
-    ...mapState({
-      address: (state: any) => state.wallet.address,
-    }),
-  },
 })
 export default class Aave extends Vue {
-  address!: string
   aaveAssets: AaveAssets | null = null
 
   async mounted() {
     if (this.$route.params.id === '1' || this.$route.params.id === '137') {
-      this.aaveAssets = new AaveAssets(this.$store, this.address)
+      this.aaveAssets = new AaveAssets(this.$store)
 
       await this.aaveAssets.getData()
     } else {

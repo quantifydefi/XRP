@@ -5,7 +5,7 @@ import { Events } from '~/types/global'
 
 @Component({ name: 'MetamaskMixin' })
 export default class MetamaskMixin extends Vue {
-  private async initMetamask(path: string) {
+  async initMetamask(path: string) {
     try {
       if (typeof window.ethereum === 'undefined') {
         this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
