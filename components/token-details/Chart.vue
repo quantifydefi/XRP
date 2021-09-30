@@ -115,7 +115,7 @@ export default class Chart extends Vue {
     const valueAxisToken0 = this.chart.yAxes.push(new am4charts.ValueAxis())
     valueAxisToken0.tooltip.disabled = false
     valueAxisToken0.zIndex = 1
-    valueAxisToken0.title.text = this.tokenData.token1_name
+    valueAxisToken0.title.text = this.tokenData.token0_name
     // valueAxisTone0.renderer.baseGrid.disabled = false
     valueAxisToken0.height = am4core.percent(80)
 
@@ -125,7 +125,7 @@ export default class Chart extends Vue {
     valueAxisToken1.renderer.opposite = true
     valueAxisToken1.renderer.grid.template.disabled = true
     valueAxisToken1.height = am4core.percent(80)
-    valueAxisToken1.title.text = this.tokenData.token0_name
+    valueAxisToken1.title.text = this.tokenData.token1_name
 
     const token0Series = this.chart.series.push(new am4charts.LineSeries())
     token0Series.yAxis = valueAxisToken0
