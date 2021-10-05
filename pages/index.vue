@@ -95,6 +95,7 @@
                 class="px-5"
                 :class="{ 'on-hover': hover }"
                 :elevation="hover ? 10 : 0"
+                color="transparent"
               >
                 <p class="text-center mt-5">
                   <v-icon color="primary" size="50">{{ item.icon }}</v-icon>
@@ -125,6 +126,7 @@
           >
             <v-hover v-slot="{ hover }">
               <v-card
+                color="transparent"
                 height="250"
                 tile
                 outlined
@@ -295,7 +297,7 @@ export default class Index extends Vue {
     },
     {
       color: 'orange lighten-2',
-      icon: 'mdi-telegram',
+      icon: 'mdi-send',
       header: 'Telegram Group',
       desc: 'Exclusive Telegram Group with the latest DeFi intel',
     },

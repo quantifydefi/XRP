@@ -4,7 +4,9 @@
       <v-row v-if="aaveAssets">
         <v-col cols="12" class="pa-1">
           <v-card outlined tile>
-            <v-card-title class="subtitle-1 pa-2"
+            <v-card-title
+              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+              class="subtitle-1 pa-2"
               >{{ $route.params.id == 1 ? 'Ethereum' : 'Polygon' }} Mainnet
             </v-card-title>
             <v-divider />
@@ -19,6 +21,7 @@
               :items-per-page="20"
               :hide-default-footer="true"
               mobile-breakpoint="0"
+              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
             >
               <template #[`item.underlying.contract_ticker_symbol`]="{ item }">
                 <div class="text-no-wrap">
@@ -72,10 +75,16 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import { AaveAssets } from '~/models/aave'
 
 @Component({
   name: 'AaveAssetsList',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
 })
 export default class Aave extends Vue {
   aaveAssets: AaveAssets | null = null

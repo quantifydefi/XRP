@@ -36,8 +36,8 @@ export default class MetamaskMixin extends Vue {
           status: true,
         })
 
-        if (path === 'app') {
-          await this.$router.push(`/app`)
+        if (path === '/') {
+          await this.$router.push(`/`)
         } else {
           await this.$router.push(`/wallet/${accounts[0]}`)
         }

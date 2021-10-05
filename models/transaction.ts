@@ -76,7 +76,7 @@ export class TransactionsHistory {
         text: 'Status',
         align: 'start',
         value: 'successful',
-        class: 'px-2',
+        class: 'px-2 text-no-wrap',
       },
       {
         text: 'Txn Hash',

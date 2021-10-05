@@ -3,6 +3,7 @@
     <v-overlay
       :value="showOverlay"
       :opacity="1"
+      absolute
       :color="$vuetify.theme.themes[theme].overlay"
     >
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
@@ -16,19 +17,25 @@
 
     <v-col cols="12">
       <v-row no-gutters>
-        <v-col cols="12">
-          <h1 class="text-h4">Portfolio</h1>
-        </v-col>
+        <!--        <v-col cols="12">-->
+        <!--          <h1 class="text-h4">Portfolio</h1>-->
+        <!--        </v-col>-->
 
         <client-only>
-          <v-row
-            v-if="!showOverlay && balances"
-            class="px-1 pt-3"
-            data-nosnippet
-          >
+          <v-row v-if="!showOverlay && balances" class="px-1" data-nosnippet>
             <v-col cols="12" md="6" lg="4" class="pa-1">
-              <v-card tile outlined height="522">
-                <v-card-title class="pa-0 ma-0">
+              <v-card
+                tile
+                outlined
+                height="522"
+                :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+              >
+                <v-card-title
+                  class="pa-0 ma-0"
+                  :style="{
+                    backgroundColor: $vuetify.theme.themes[theme].appBg,
+                  }"
+                >
                   <v-col cols="6" class="d-flex">
                     <h1 class="title">My Assets</h1>
                   </v-col>

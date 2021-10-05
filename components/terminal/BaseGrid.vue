@@ -2,6 +2,7 @@
   <client-only>
     <v-data-table
       id="base-grid"
+      :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
       dense
       :headers="columnDefs"
       :items="rowData"
@@ -65,11 +66,17 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import { TerminalGrid } from '~/models/terminal'
 import { Helper } from '~/models/helper'
 
 @Component({
   name: 'BaseGrid',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
 })
 export default class BaseGrid extends Vue {
   @Prop({ default: () => [] }) readonly rowData!: Array<Record<string, any>>

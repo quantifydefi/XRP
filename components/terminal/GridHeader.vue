@@ -2,6 +2,7 @@
   <v-card-title
     class="py-1 px-2"
     :class="!$vuetify.theme.dark ? 'grey lighten-3' : ''"
+    :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
   >
     <component
       :is="title === 'Daily Winners/Losers' ? 'h1' : 'span'"
@@ -33,8 +34,16 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 
-@Component({ name: 'GridHeader' })
+@Component({
+  name: 'GridHeader',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
+})
 export default class GridHeader extends Vue {
   @Prop({ default: '' }) readonly title!: string
   @Prop({ default: null }) readonly infoTooltip!: string | null

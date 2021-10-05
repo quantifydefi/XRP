@@ -1,7 +1,10 @@
 <template>
   <client-only>
     <div>
-      <v-card-title class="pa-0 ma-0">
+      <v-card-title
+        class="pa-0 ma-0"
+        :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+      >
         <v-col cols="6" class="d-flex">
           <v-avatar size="32px">
             <v-img
@@ -20,6 +23,7 @@
 
       <v-data-table
         id="balances-grid"
+        :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
         dense
         :height="gridHeight - 32 + 'px'"
         :headers="cols"
@@ -58,15 +62,19 @@
 <script lang="ts">
 /* eslint-disable */
 import { Vue, Component, Prop } from 'vue-property-decorator'
-
 import { ChainOptions, BalanceGridDataInterface } from '~/types/balance'
-
 import { Helper } from '~/models/helper'
+import {mapState} from "vuex";
 
 
 
 @Component({
   name: 'BalancesGrid',
+   computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
 })
 export default class BalancesGrid extends Vue {
   @Prop({ default: 435 }) readonly gridHeight!: number

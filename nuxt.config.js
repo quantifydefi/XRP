@@ -124,7 +124,10 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
           background: colors.black,
-          overlay: colors.grey.darken4,
+          overlay: '#121212',
+          appBg: '#121212',
+          baseText: '#fff',
+          outline: '#2F2F2F',
         },
 
         light: {
@@ -136,7 +139,10 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
           background: colors.grey.lighten5,
-          overlay: colors.grey.lighten4,
+          overlay: '#fff',
+          appBg: colors.grey.lighten5,
+          baseText: colors.grey.darken3,
+          outline: '#E0E0E0',
         },
       },
     },

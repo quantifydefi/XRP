@@ -1,10 +1,9 @@
 <template>
   <v-navigation-drawer
-    dark
     app
     left
     permanent
-    color="grey darken-4"
+    :color="$vuetify.theme.themes[theme].appBg"
     :mini-variant.sync="mini"
   >
     <v-list-item class="px-2 pt-1 pb-2">
@@ -66,17 +65,22 @@
           >
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
-                <v-icon color="white">mdi-lan</v-icon>
+                <v-icon :color="$vuetify.theme.themes[theme].baseText"
+                  >mdi-lan</v-icon
+                >
               </v-list-item-icon>
             </template>
             <template #appendIcon>
               <v-list-item-icon class="mt-0 mr-0">
-                <v-icon color="white">mdi-chevron-down</v-icon>
+                <v-icon :color="$vuetify.theme.themes[theme].baseText"
+                  >mdi-chevron-down</v-icon
+                >
               </v-list-item-icon>
             </template>
             <template #activator>
               <v-list-item-title
-                class="subtitle-1 font-weight-regular white--text"
+                :style="{ color: $vuetify.theme.themes[theme].baseText }"
+                class="subtitle-1 font-weight-regular"
                 >Protocols</v-list-item-title
               >
             </template>
@@ -124,7 +128,7 @@
       </client-only>
       <div style="position: fixed; bottom: 5px; width: 100%">
         <v-divider></v-divider>
-        <v-menu offset-y top tile>
+        <v-menu offset-y top tile nudge-right="57px">
           <template #activator="{ on, attrs }">
             <v-btn
               class="subtitle-1 text-capitalize justify-start elevation-0"
@@ -138,7 +142,10 @@
               large
               v-on="on"
             >
-              <v-row no-gutters class="white--text">
+              <v-row
+                no-gutters
+                :style="{ color: $vuetify.theme.themes[theme].baseText }"
+              >
                 <v-avatar size="26" class="mr-4 ml-n1">
                   <img
                     :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${defiApp.configs.networks.defaultNetwork.icon}.png`"
@@ -152,10 +159,14 @@
               </v-row>
             </v-btn>
           </template>
-          <v-list>
+          <v-list
+            outlined
+            :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+          >
             <v-list-item
               v-for="item in defiApp.configs.networks.networkOptions"
               :key="item.chainId"
+              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
               @click="changeNetwork(item)"
             >
               <v-list-item-title>
@@ -175,12 +186,20 @@
 
 <script lang="ts">
 import { Component } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import { mixins } from 'vue-class-component'
 import MetamaskMixin from '~/mixins/MetamaskMixin.vue'
 import { DefiApp } from '~/models/app'
 import { ChainOptions } from '~/types/balance'
 
-@Component({ name: 'LeftSideBar' })
+@Component({
+  name: 'LeftSideBar',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
+})
 export default class LeftSideBar extends mixins(MetamaskMixin) {
   mini = false
 

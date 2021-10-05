@@ -4,12 +4,15 @@
       <v-row v-if="aaveBalance">
         <v-col cols="12" class="pa-1 mt-1">
           <v-card outlined tile>
-            <v-card-title class="subtitle-1 pa-2"
+            <v-card-title
+              class="subtitle-1 pa-2"
+              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
               >{{ $route.params.id == 1 ? 'Ethereum' : 'Polygon' }} Mainnet
             </v-card-title>
             <v-divider />
             <v-data-table
               id="aave-balances"
+              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
               :headers="aaveBalance.cols"
               :items="
                 $route.params.id == 1
@@ -130,6 +133,7 @@ import { AaveBalance } from '~/models/aave'
   name: 'AaveBalances',
   computed: {
     ...mapState({
+      theme: (state: any) => state.ui.theme,
       address: (state: any) => state.wallet.address,
     }),
   },

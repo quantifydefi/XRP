@@ -9,6 +9,7 @@
             mandatory
             dense
             color="primary"
+            :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
             tile
           >
             <v-btn width="100" small outlined> assets </v-btn>
@@ -31,6 +32,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { mapState } from 'vuex'
 import TopBar from '~/components/app/TopBar.vue'
 import AaveBalances from '~/components/app/aave/AaveBalances.vue'
 import AaveAssetsList from '~/components/app/aave/AaveAssetsList.vue'
@@ -39,6 +41,11 @@ import AaveAssetsList from '~/components/app/aave/AaveAssetsList.vue'
   name: 'Aave',
   components: { TopBar, AaveAssetsList, AaveBalances },
   layout: 'app',
+  computed: {
+    ...mapState({
+      theme: (state: any) => state.ui.theme,
+    }),
+  },
 })
 export default class Aave extends Vue {
   toggleAssets = 0

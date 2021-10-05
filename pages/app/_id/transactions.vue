@@ -4,13 +4,18 @@
 
     <v-col v-if="transactionsHistory" cols="12">
       <v-card outlined tile>
-        <v-card-title class="py-1 px-2 subtitle-1"
+        <v-card-title
+          :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+          class="py-1 px-2 subtitle-1"
           >Most Recent Transactions</v-card-title
         >
         <v-divider></v-divider>
         <client-only>
           <v-data-table
             id="recent-transactions"
+            :style="{
+              backgroundColor: $vuetify.theme.themes[theme].appBg,
+            }"
             height="95vh"
             dense
             :headers="transactionsHistory.cols"
@@ -21,13 +26,13 @@
             :loading="transactionsHistory.loading"
           >
             <template #[`item.block_signed_at`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 {{ new Date(item.block_signed_at).toLocaleString('en-US') }}
               </div>
             </template>
 
             <template #[`item.tx_hash`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 {{ item.tx_hash.slice(0, 12) }}...{{
                   item.tx_hash.slice(54, item.tx_hash.length)
                 }}
@@ -35,15 +40,18 @@
             </template>
 
             <template #[`item.successful`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
-                <v-icon :color="item.successful ? 'primary' : 'red darken-4'">
+              <div class="text-no-wrap">
+                <v-icon
+                  small
+                  :color="item.successful ? 'primary' : 'red darken-4'"
+                >
                   {{ item.successful ? 'mdi-check' : 'mdi-close' }}</v-icon
                 >
               </div>
             </template>
 
             <template #[`item.from_address`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 {{ item.from_address.slice(0, 10) }}...{{
                   item.from_address.slice(31, item.from_address.length)
                 }}
@@ -51,7 +59,7 @@
             </template>
 
             <template #[`item.to_address`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 {{ item.to_address.slice(0, 10) }}...{{
                   item.to_address.slice(31, item.to_address.length)
                 }}
@@ -59,19 +67,19 @@
             </template>
 
             <template #[`item.value`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 {{ (item.value / 10 ** 18).toFixed(6) || '' }} ETH
               </div>
             </template>
 
             <template #[`item.value_quote`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 ${{ item.value_quote.toFixed(4) || '' }}
               </div>
             </template>
 
             <template #[`item.gas_quote`]="{ item }">
-              <div class="text-no-wrap overflow-x-hidden">
+              <div class="text-no-wrap">
                 ${{ item.gas_quote.toFixed(4) || '' }}
               </div>
             </template>
@@ -94,6 +102,7 @@ import { TransactionsHistory } from '~/models/transaction'
   layout: 'app',
   computed: {
     ...mapState({
+      theme: (state: any) => state.ui.theme,
       address: (state: any) => state.wallet.address,
     }),
   },

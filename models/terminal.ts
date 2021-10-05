@@ -60,7 +60,7 @@ export class TerminalGrid {
   async getData(): Promise<void> {
     try {
       this._data = await this._$store.dispatch('terminal/getTerminalData', {
-        numOfCoins: 160,
+        numOfCoins: 180,
       })
     } catch {
       /* istanbul ignore next */

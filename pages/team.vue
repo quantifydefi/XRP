@@ -1,156 +1,151 @@
 <template>
   <v-row justify="center">
-    <v-col cols="12" sm="9">
-      <v-card class="pa-4" tile outlined>
-        <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
-          <v-col cols="auto" lg="4">
-            <h1 class="text-h4">Our Team</h1>
-            <p class="mt-2">
-              Our team's goal is empowering cryptocurrency enthusiasts and
-              traders for success. We know from our own trading experiences that
-              the crypto market is fast moving which demands reliable data and
-              tools. Our platforms provide content-rich resources that inform,
-              track, and simplify the trading process with superior visuals
-              displays. While each member has a varied skill set, we collaborate
-              to offer a fast platform with advanced interactive features. We
-              are a new site in active development, so we encourage feedback
-              from users regarding features they desire.
-            </p>
-          </v-col>
-          <v-col cols="auto" lg="8">
-            <v-row class="my-5">
-              <v-col
-                v-for="member in team"
-                :key="member._id"
-                cols="auto"
-                lg="6"
-                md="6"
-                sm="12"
-                width="200"
+    <v-col cols="12" md="11">
+      <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
+        <v-col cols="auto" lg="4">
+          <h1 class="text-h4">Our Team</h1>
+          <p class="mt-2">
+            Our team's goal is empowering cryptocurrency enthusiasts and traders
+            for success. We know from our own trading experiences that the
+            crypto market is fast moving which demands reliable data and tools.
+            Our platforms provide content-rich resources that inform, track, and
+            simplify the trading process with superior visuals displays. While
+            each member has a varied skill set, we collaborate to offer a fast
+            platform with advanced interactive features. We are a new site in
+            active development, so we encourage feedback from users regarding
+            features they desire.
+          </p>
+        </v-col>
+        <v-col cols="auto" lg="8">
+          <v-row class="my-5">
+            <v-col
+              v-for="member in team"
+              :key="member._id"
+              cols="auto"
+              lg="6"
+              md="6"
+              sm="12"
+              width="200"
+            >
+              <BioDialog
+                :is-visibility="member.bioIsVisible"
+                :name="member.name"
+                :job-title="member.jobTitle"
+                :bio="member.bio"
+                :thumbnail-url="member.thumbnailUrl"
+                :socials="member.socials"
+                @close-dialog="closeBio"
               >
-                <BioDialog
-                  :is-visibility="member.bioIsVisible"
-                  :name="member.name"
-                  :job-title="member.jobTitle"
-                  :bio="member.bio"
-                  :thumbnail-url="member.thumbnailUrl"
-                  :socials="member.socials"
-                  @close-dialog="closeBio"
+              </BioDialog>
+              <div class="d-flex justify-left">
+                <v-avatar
+                  :size="$vuetify.breakpoint.xs ? 65 : 80"
+                  :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
                 >
-                </BioDialog>
-                <div class="d-flex justify-left">
-                  <v-avatar
-                    :size="$vuetify.breakpoint.xs ? 65 : 80"
-                    :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+                  <img
+                    class="rounded-circle"
+                    :src="
+                      require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
+                    "
+                    alt="avatar"
+                  />
+                </v-avatar>
+
+                <div class="ml-6 mt-2">
+                  <h4 class="text-h6 v-clickable" @click="openBio(member._id)">
+                    {{ member.name }}
+                  </h4>
+                  <p class="text--secondary">
+                    {{ member.jobTitle }}
+                  </p>
+
+                  <a
+                    v-for="social in member.socials"
+                    :key="social.social"
+                    :href="social.link"
+                    target="_blank"
                   >
-                    <img
-                      class="rounded-circle"
-                      :src="
-                        require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
-                      "
-                      alt="avatar"
-                    />
-                  </v-avatar>
-
-                  <div class="ml-6 mt-2">
-                    <h4
-                      class="text-h6 v-clickable"
-                      @click="openBio(member._id)"
+                    <v-icon class="mt-n7 mr-3" size="20"
+                      >mdi-{{ social.icon }}</v-icon
                     >
-                      {{ member.name }}
-                    </h4>
-                    <p class="text--secondary">
-                      {{ member.jobTitle }}
-                    </p>
-
-                    <a
-                      v-for="social in member.socials"
-                      :key="social.social"
-                      :href="social.link"
-                      target="_blank"
-                    >
-                      <v-icon class="mt-n7 mr-3" size="20"
-                        >mdi-{{ social.icon }}</v-icon
-                      >
-                    </a>
-                  </div>
+                  </a>
                 </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
 
-        <v-divider></v-divider>
-        <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
-          <v-col cols="auto" lg="4" align="left">
-            <h1 class="text-h4">Our Advisors</h1>
-            <p class="mt-2">
-              Our Advisors are some of the top performers to work and interface
-              with financial trading systems. All have been significant
-              contributors at the New York Stock Exchange, they fully understand
-              how trading systems work and the features traders expect.
-            </p>
-          </v-col>
-          <v-col cols="12" lg="8">
-            <v-row class="my-5">
-              <v-col
-                v-for="advisor in advisors"
-                :key="advisor.id"
-                cols="auto"
-                lg="6"
-                md="6"
-                sm="12"
-                width="200"
-              >
-                <BioDialog
-                  :is-visibility="advisor.bioIsVisible"
-                  :name="advisor.name"
-                  :job-title="advisor.jobTitle"
-                  :bio="advisor.bio"
-                  :thumbnail-url="advisor.thumbnailUrl"
-                  :socials="advisor.socials"
-                  @close-dialog="closeAdvisorBio"
-                ></BioDialog>
-                <div class="d-flex justify-left">
-                  <v-avatar
-                    :size="$vuetify.breakpoint.xs ? 65 : 80"
-                    :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+      <v-divider></v-divider>
+      <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
+        <v-col cols="auto" lg="4" align="left">
+          <h1 class="text-h4">Our Advisors</h1>
+          <p class="mt-2">
+            Our Advisors are some of the top performers to work and interface
+            with financial trading systems. All have been significant
+            contributors at the New York Stock Exchange, they fully understand
+            how trading systems work and the features traders expect.
+          </p>
+        </v-col>
+        <v-col cols="12" lg="8">
+          <v-row class="my-5">
+            <v-col
+              v-for="advisor in advisors"
+              :key="advisor.id"
+              cols="auto"
+              lg="6"
+              md="6"
+              sm="12"
+              width="200"
+            >
+              <BioDialog
+                :is-visibility="advisor.bioIsVisible"
+                :name="advisor.name"
+                :job-title="advisor.jobTitle"
+                :bio="advisor.bio"
+                :thumbnail-url="advisor.thumbnailUrl"
+                :socials="advisor.socials"
+                @close-dialog="closeAdvisorBio"
+              ></BioDialog>
+              <div class="d-flex justify-left">
+                <v-avatar
+                  :size="$vuetify.breakpoint.xs ? 65 : 80"
+                  :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+                >
+                  <img
+                    class="rounded-circle"
+                    :src="
+                      require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
+                    "
+                    alt="avatar"
+                  />
+                </v-avatar>
+
+                <div class="ml-6 mt-2">
+                  <h4
+                    class="text-h6 v-clickable"
+                    @click="openAdvisorBio(advisor._id)"
                   >
-                    <img
-                      class="rounded-circle"
-                      :src="
-                        require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
-                      "
-                      alt="avatar"
-                    />
-                  </v-avatar>
+                    {{ advisor.name }}
+                  </h4>
+                  <p class="text--secondary">{{ advisor.jobTitle }}</p>
 
-                  <div class="ml-6 mt-2">
-                    <h4
-                      class="text-h6 v-clickable"
-                      @click="openAdvisorBio(advisor._id)"
+                  <a
+                    v-for="social in advisor.socials"
+                    :key="social.social"
+                    :href="social.link"
+                    target="_blank"
+                  >
+                    <v-icon class="mt-n7 mr-3" size="20"
+                      >mdi-{{ social.icon }}</v-icon
                     >
-                      {{ advisor.name }}
-                    </h4>
-                    <p class="text--secondary">{{ advisor.jobTitle }}</p>
-
-                    <a
-                      v-for="social in advisor.socials"
-                      :key="social.social"
-                      :href="social.link"
-                      target="_blank"
-                    >
-                      <v-icon class="mt-n7 mr-3" size="20"
-                        >mdi-{{ social.icon }}</v-icon
-                      >
-                    </a>
-                  </div>
+                  </a>
                 </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
