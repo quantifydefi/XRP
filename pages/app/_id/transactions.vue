@@ -14,7 +14,6 @@
             :style="{
               backgroundColor: $vuetify.theme.themes[theme].appBg,
             }"
-            height="95vh"
             dense
             :headers="transactionsHistory.cols"
             :items="transactionsHistory.data"
@@ -118,3 +117,11 @@ export default class Transactions extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+#recent-transactions {
+  tr {
+    height: 30px;
+  }
+}
+</style>

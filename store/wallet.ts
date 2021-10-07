@@ -139,7 +139,7 @@ export const actions: ActionTree<WalletState, WalletState> = {
           data: { items: transactions },
         },
       } = await this.$axios.get(
-        `https://api.covalenthq.com/v1/${chainId}/address/${address}/transactions_v2/?no-logs=true&limit=33&key=${process.env.COVALENT_API_KEY}`
+        `https://api.covalenthq.com/v1/${chainId}/address/${address}/transactions_v2/?no-logs=true&limit=20&key=${process.env.COVALENT_API_KEY}`
       )
 
       return plainToClass(TransactionData, transactions as TransactionData[])
