@@ -1,6 +1,7 @@
 <template>
-  <v-app v-if="defiApp">
+  <v-app>
     <v-app-bar
+      v-if="configs"
       app
       tile
       class="text-no-wrap"
@@ -25,7 +26,7 @@
       <v-spacer />
 
       <v-btn
-        class="pt-1 subtitle-1 text-capitalize font-weight-regular"
+        class="pt-1 subtitle-2 text-capitalize font-weight-regular"
         tile
         text
         color="primary"
@@ -33,18 +34,22 @@
       >
         <div :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }">
           Balance —
-          <span class="text-h6 font-weight-medium">{{
-            !walletConnected ? '$0.00' : '$10,000.00'
+          <span v-if="!walletConnected" class="subtitle-1 font-weight-medium">{{
+            '$0.00'
+          }}</span>
+
+          <span v-else class="subtitle-1 font-weight-medium">{{
+            balances.totalBalance
           }}</span>
         </div>
       </v-btn>
 
       <v-btn
-        class="pt-1 subtitle-1 text-capitalize font-weight-regular"
+        class="pt-1 subtitle-2 text-capitalize font-weight-regular"
         tile
         text
         color="primary"
-        @click="initMetamask('/')"
+        @click="initMetamask($route.path)"
       >
         <div :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }">
           <v-icon>mdi-wallet</v-icon>
@@ -62,63 +67,67 @@
       </v-btn>
 
       <!-- Network Menu -->
-      <div class="mr-2">
-        <v-menu offset-y tile>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              class="subtitle-1 text-capitalize justify-start elevation-0"
-              style="border: 0"
-              outlined
-              color="primary"
-              tile
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-row
-                no-gutters
-                :style="{ color: $vuetify.theme.themes[theme].baseText }"
-              >
-                <div style="margin-top: 1px; margin-left: -7px">
-                  <v-avatar size="24">
-                    <img
-                      :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${defiApp.configs.networks.defaultNetwork.icon}.png`"
-                  /></v-avatar>
-                </div>
-
-                <div
-                  v-if="$vuetify.breakpoint.mdAndUp"
-                  class="mt-1 pl-2 d-flex"
-                >
-                  <div>
-                    {{ defiApp.configs.networks.defaultNetwork.networkName }}
-                  </div>
-                </div>
-                <v-icon small class="pl-2">mdi-chevron-down</v-icon>
-              </v-row>
-            </v-btn>
-          </template>
-          <v-list
+      <v-menu offset-y tile>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            class="
+              subtitle-2
+              font-weight-regular
+              text-capitalize
+              justify-start
+              elevation-0
+            "
+            style="border: 0"
             outlined
-            :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+            color="primary"
+            tile
+            dark
+            v-bind="attrs"
+            v-on="on"
           >
-            <v-list-item
-              v-for="item in defiApp.configs.networks.networkOptions"
-              :key="item.chainId"
-              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
-              @click="changeNetwork(item)"
+            <v-row
+              no-gutters
+              :style="{
+                color: $vuetify.theme.themes[theme].baseText,
+                marginRight: '-5px',
+              }"
             >
-              <v-list-item-title class="subtitle-2 font-weight-regular">
-                <v-avatar size="20" class="mr-2">
+              <div style="margin-top: 1px; margin-left: -5px">
+                <v-avatar size="20">
                   <img
-                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.icon}.png`"
+                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${configs.networks.defaultNetwork.symbol}.png`"
                 /></v-avatar>
-                {{ item.networkName }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+              </div>
+
+              <div v-if="$vuetify.breakpoint.mdAndUp" class="pl-2 pt-1 d-flex">
+                <div>
+                  {{ configs.networks.defaultNetwork.networkName }}
+                </div>
+              </div>
+              <v-icon small class="pl-2">mdi-chevron-down</v-icon>
+            </v-row>
+          </v-btn>
+        </template>
+        <v-list
+          outlined
+          :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+        >
+          <v-list-item
+            v-for="item in configs.networks.networkOptions"
+            :key="item.chainId"
+            :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+            @click="changeNetwork(item)"
+          >
+            <v-list-item-title class="subtitle-2 font-weight-regular">
+              <v-avatar size="20" class="mr-1">
+                <img
+                  :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.symbol}.png`"
+              /></v-avatar>
+              {{ item.networkName }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
       <!-- Gas Menu -->
       <v-menu
@@ -130,25 +139,23 @@
         <template #activator="{ on, attrs }">
           <div class="d-flex">
             <v-btn
+              class="pt-1 subtitle-2 text-capitalize font-weight-regular"
               tile
-              icon
               text
-              target="_blank"
-              height="24"
-              width="24"
-              v-bind="attrs"
               color="primary"
+              v-bind="attrs"
               v-on="on"
             >
-              <v-icon
-                :color="$vuetify.theme.themes[theme].baseText"
-                class="pr-2"
-                >mdi-gas-station</v-icon
+              <div
+                :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }"
               >
+                <v-icon>mdi-gas-station</v-icon>
+                <span class="ml-1">
+                  {{ gas.fast }}
+                </span>
+                <v-icon small>mdi-chevron-down</v-icon>
+              </div>
             </v-btn>
-            <div class="mr-3">
-              {{ gas.fast }}
-            </div>
           </div>
         </template>
 
@@ -256,9 +263,10 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
+import detectEthereumProvider from '@metamask/detect-provider'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
@@ -266,8 +274,10 @@ import { Events } from '~/types/global'
 import LayoutMixin from '~/mixins/LayoutMixin.vue'
 import MetamaskMixin from '~/mixins/MetamaskMixin.vue'
 import { EmitEvents } from '~/types/events'
-import { DefiApp } from '~/models/app'
+import { appConfig } from '~/models/app'
 import { ChainOptions } from '~/types/balance'
+import { AppConfigInterface } from '~/types/app'
+import { Balances } from '~/models/balance'
 
 @Component({
   name: 'Default',
@@ -282,16 +292,14 @@ import { ChainOptions } from '~/types/balance'
   },
 })
 export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
-  clipped = false
-  drawer = false
-  fixed = false
-  miniVariant = false
   $refs!: { notificationComponent: any }
+  walletConnected: any
 
   allowApiBar =
     process.env.runEnv === 'development' || process.env.runEnv === 'staging'
 
-  defiApp: DefiApp | null = null
+  configs: AppConfigInterface | null = null
+  balances: Balances | null = null
 
   pageTitle = {
     index: 'Dashboard',
@@ -302,26 +310,21 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
     'wallet-id': 'Portfolio',
   }
 
-  /** On network change, redirect page to selected network. **/
-  changeNetwork(network: {
-    networkName: string
-    chainId: ChainOptions
-    icon: string
-  }) {
-    if (this.defiApp) {
-      this.defiApp.configs.networks.defaultNetwork = network
-
-      // if (this.$route.name !== 'app') {
-      //   const path = this.$route.path.split('/')
-      //   path[2] = network.chainId.toString()
-      //
-      //   this.$router.push(path.join('/'))
-      // }
+  @Watch('walletConnected')
+  onWalletConnectionChange() {
+    if (this.walletConnected) {
+      this.balances?.getData()
     }
   }
 
-  mounted() {
-    this.defiApp = new DefiApp()
+  async mounted() {
+    this.configs = appConfig
+
+    this.balances = Balances.getInstance(this.$store)
+
+    if (this.walletConnected) {
+      await this.balances.getData()
+    }
 
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
@@ -329,7 +332,41 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
       } catch {}
     })
 
-    this.$store.dispatch('wallet/gasPrices')
+    await this.$store.dispatch('wallet/gasPrices')
+
+    // await this.initMetamask(this.$route.path)
+    /**
+     Listener for account change
+     */
+    const provider: any = await detectEthereumProvider()
+
+    if (provider) {
+      await provider.request({ method: 'eth_accounts' })
+      provider.on('accountsChanged', (accounts: string[]) => {
+        if (!accounts.length) {
+          this.$store.dispatch('wallet/metamaskLogout')
+          // this.$router.push('/')
+        }
+      })
+    }
+  }
+
+  /** On network change, redirect page to selected network. **/
+  changeNetwork(network: {
+    networkName: string
+    chainId: ChainOptions
+    symbol: string
+  }) {
+    if (this.configs) {
+      this.configs.networks.defaultNetwork = network
+
+      if (this.$route.name !== 'index') {
+        const path = this.$route.path.split('/')
+        path[2] = network.chainId.toString()
+
+        this.$router.push(path.join('/'))
+      }
+    }
   }
 
   toggleNavigationMenu() {
@@ -337,3 +374,10 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
   }
 }
 </script>
+
+<style lang="scss">
+.coin-link:hover {
+  color: #536aff !important;
+  font-weight: 500 !important;
+}
+</style>

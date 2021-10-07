@@ -1,7 +1,5 @@
 <template>
   <v-row no-gutters justify="center">
-    <top-bar title="Transactions"></top-bar>
-
     <v-col v-if="transactionsHistory" cols="12">
       <v-card outlined tile>
         <v-card-title
@@ -93,13 +91,10 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import TopBar from '~/components/app/TopBar.vue'
 import { TransactionsHistory } from '~/models/transaction'
 
 @Component({
   name: 'Transactions',
-  components: { TopBar },
-  layout: 'app',
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,

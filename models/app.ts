@@ -1,26 +1,22 @@
-import 'reflect-metadata'
+import { NetworkMenuInterface, AppConfigInterface } from '~/types/app'
 
-import { AppMenuConfigInterface } from '~/types/app'
-
-const appMenu: AppMenuConfigInterface = {
+const networks: NetworkMenuInterface = {
   networkOptions: [
-    { networkName: 'Ethereum Mainnet', chainId: 1, icon: 'eth' },
-    { networkName: 'Polygon/Matic', chainId: 137, icon: 'matic' },
-    { networkName: 'Binance', chainId: 56, icon: 'bnb' },
-    { networkName: 'Fanthom Opera', chainId: 250, icon: 'ftm' },
-    { networkName: 'Avalanche', chainId: 43114, icon: 'avax' },
+    { networkName: 'Ethereum Mainnet', chainId: 1, symbol: 'eth' },
+    { networkName: 'Polygon/Matic', chainId: 137, symbol: 'matic' },
+    { networkName: 'Binance', chainId: 56, symbol: 'bnb' },
+    { networkName: 'Fanthom Opera', chainId: 250, symbol: 'ftm' },
+    { networkName: 'Avalanche', chainId: 43114, symbol: 'avax' },
   ],
 }
 
-export class DefiApp {
-  configs = {
-    networks: {
-      defaultNetwork: {
-        networkName: 'Ethereum Mainnet',
-        chainId: 1,
-        icon: 'eth',
-      },
-      networkOptions: appMenu.networkOptions,
+export const appConfig: AppConfigInterface = {
+  networks: {
+    defaultNetwork: {
+      networkName: 'Ethereum Mainnet',
+      chainId: 1,
+      symbol: 'eth',
     },
-  }
+    networkOptions: networks.networkOptions,
+  },
 }

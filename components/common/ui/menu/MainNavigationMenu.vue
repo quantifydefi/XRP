@@ -28,7 +28,7 @@
     <v-divider></v-divider>
 
     <client-only>
-      <v-list v-if="defiApp" dense>
+      <v-list v-if="config" dense>
         <v-list-item-group color="primary" style="width: 255px">
           <v-list-item exact to="/">
             <v-list-item-icon>
@@ -40,8 +40,8 @@
 
           <v-list-group
             v-if="
-              defiApp.configs.networks.defaultNetwork.chainId === 1 ||
-              defiApp.configs.networks.defaultNetwork.chainId === 137
+              config.networks.defaultNetwork.chainId === 1 ||
+              config.networks.defaultNetwork.chainId === 137
             "
             :value="true"
             no-action
@@ -68,7 +68,11 @@
               >
             </template>
 
-            <v-list-item exact class="ml-n6">
+            <v-list-item
+              exact
+              :to="`/app/${config.networks.defaultNetwork.chainId}/aave`"
+              class="ml-n6"
+            >
               <v-list-item-icon>
                 <v-avatar size="24">
                   <img
@@ -91,7 +95,10 @@
             >
           </v-list-item>
 
-          <v-list-item exact to="/transactions">
+          <v-list-item
+            exact
+            :to="`/app/${config.networks.defaultNetwork.chainId}/transactions`"
+          >
             <v-list-item-icon>
               <v-icon>mdi-history</v-icon>
             </v-list-item-icon>
@@ -136,22 +143,25 @@
           </v-list-group>
         </v-list-item-group>
 
-        <div
-          class="d-flex pa-2"
-          style="position: fixed; bottom: 0; width: 100%"
-        >
-          <v-btn x-small icon class="ml-2 mr-4" @click="changeTheme">
-            <v-icon>{{
-              $vuetify.theme.dark
-                ? 'mdi-white-balance-sunny'
-                : 'mdi-weather-night'
-            }}</v-icon>
-          </v-btn>
+        <div class="pa-2" style="position: fixed; bottom: 0px; width: 100%">
+          <div class="caption d-flex my-4 justify-center">
+            <v-btn x-small icon @click="changeTheme">
+              <v-icon>{{
+                $vuetify.theme.dark
+                  ? 'mdi-white-balance-sunny'
+                  : 'mdi-weather-night'
+              }}</v-icon>
+            </v-btn>
+            <div class="caption ml-2">
+              change to {{ $vuetify.theme.dark ? 'light' : 'dark' }} theme
+            </div>
+          </div>
 
-          <v-list-item-title class="caption"
-            >change to
-            {{ $vuetify.theme.dark ? 'light' : 'dark' }} mode</v-list-item-title
-          >
+          <v-divider />
+
+          <div class="caption text-center mt-2">
+            Defi Heatmap &copy; {{ new Date().getFullYear() }}
+          </div>
         </div>
       </v-list>
     </client-only>
@@ -162,8 +172,9 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { EmitEvents } from '~/types/events'
-import { DefiApp } from '~/models/app'
+import { appConfig } from '~/models/app'
 import { ThemeOptions } from '~/types/ui'
+import { AppConfigInterface } from '~/types/app'
 
 @Component({
   name: 'MainNavigationMenu',
@@ -175,7 +186,7 @@ import { ThemeOptions } from '~/types/ui'
 })
 export default class MainNavigationMenu extends Vue {
   navigationDrawer: boolean = true
-  defiApp: DefiApp | null = null
+  config: AppConfigInterface | null = null
 
   $cookies!: Record<string, any>
   $vuetify!: any
@@ -227,7 +238,7 @@ export default class MainNavigationMenu extends Vue {
   }
 
   mounted() {
-    this.defiApp = new DefiApp()
+    this.config = appConfig
 
     this.$root.$on(EmitEvents.toggleNavigationMenu, () => {
       this.navigationDrawer = !this.navigationDrawer

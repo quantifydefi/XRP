@@ -1,6 +1,6 @@
 import type { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
-import { BalanceGridData } from '~/models/balance'
+import { BalanceData } from '~/models/balance'
 
 export const state = () => ({})
 export type BalanceState = ReturnType<typeof state>
@@ -8,8 +8,8 @@ export type BalanceState = ReturnType<typeof state>
 export const mutations: MutationTree<BalanceState> = {}
 
 export const actions: ActionTree<BalanceState, BalanceState> = {
-  async getGridBalances(_, { chainId, address }): Promise<BalanceGridData[]> {
-    const balancesData: BalanceGridData[] = []
+  async getBalances(_, { chainId, address }): Promise<BalanceData[]> {
+    const balancesData: BalanceData[] = []
 
     try {
       const {
@@ -26,7 +26,7 @@ export const actions: ActionTree<BalanceState, BalanceState> = {
             const balanceRounded =
               balance.balance / 10 ** balance.contract_decimals
 
-            const tokenBalanceData: BalanceGridData = {
+            const tokenBalanceData: BalanceData = {
               tokenAddress: balance.contract_address,
               tokenName: balance.contract_name,
               tokenSymbol: balance.contract_ticker_symbol,
@@ -42,7 +42,7 @@ export const actions: ActionTree<BalanceState, BalanceState> = {
         }
       }
 
-      return plainToClass(BalanceGridData, balancesData as BalanceGridData[])
+      return plainToClass(BalanceData, balancesData as BalanceData[])
     } catch {
       return []
     }

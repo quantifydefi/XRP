@@ -101,7 +101,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import walletMiddleware from '~/middleware/wallet'
-import { BalanceGrid } from '~/models/balance'
+import { Balances } from '~/models/balance'
 import { UiState } from '~/store/ui'
 
 const BalancesGrid: any = () => ({
@@ -129,7 +129,7 @@ const BalancesGrid: any = () => ({
 })
 export default class Portfolio extends Vue {
   showOverlay = true
-  balances: BalanceGrid | null = null
+  balances: Balances | null = null
   address!: string
   theme!: UiState
 
@@ -149,8 +149,7 @@ export default class Portfolio extends Vue {
       })
     }
 
-    this.balances = new BalanceGrid(this.$store)
-    await this.balances.getData()
+    this.balances = Balances.getInstance(this.$store)
 
     setTimeout(() => {
       this.showOverlay = false

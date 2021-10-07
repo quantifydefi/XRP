@@ -3,12 +3,6 @@
 // The variables you want to modify
 // $font-size-root: 20px;
 
-
-.coin-link:hover {
-  color: #536aff !important;
-  font-weight: 500 !important;
-}
-
 .v-data-table > .v-data-table__wrapper > table > thead > tr:last-child > th {
   font-size: 13px !important;
 }
@@ -26,7 +20,7 @@
 .v-data-table--dense > .v-data-table__wrapper > table > tbody > tr > td,
 .v-data-table--dense > .v-data-table__wrapper > table > thead > tr > td,
 .v-data-table--dense > .v-data-table__wrapper > table > tfoot > tr > td {
-  height: 23.2px !important;
+    height: 23.2px !important;
 }
 
 #recent-transactions tbody tr:hover,

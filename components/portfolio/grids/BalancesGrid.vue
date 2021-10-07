@@ -62,7 +62,7 @@
 <script lang="ts">
 /* eslint-disable */
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { ChainOptions, BalanceGridDataInterface } from '~/types/balance'
+import { ChainOptions, BalanceDataInterface } from '~/types/balance'
 import { Helper } from '~/models/helper'
 import {mapState} from "vuex";
 
@@ -83,7 +83,7 @@ export default class BalancesGrid extends Vue {
   @Prop({ default: 'eth' }) readonly icon!: string
   @Prop({default: ''}) readonly address!: string
   @Prop({default: []}) readonly cols!: any
-  @Prop({default: []}) readonly gridData!: BalanceGridDataInterface[]
+  @Prop({default: []}) readonly gridData!: BalanceDataInterface[]
 
 
   get totalBalance(): string{

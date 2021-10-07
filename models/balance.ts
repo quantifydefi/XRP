@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 import { Store } from 'vuex'
-import { BalanceGridDataInterface } from '~/types/balance'
+import { BalanceDataInterface } from '~/types/balance'
 import { Helper } from '~/models/helper'
 
-export class BalanceGridData implements BalanceGridDataInterface {
+export class BalanceData implements BalanceDataInterface {
   readonly chainId!: number
   readonly tokenAddress!: string
   readonly tokenName!: string
@@ -14,13 +14,24 @@ export class BalanceGridData implements BalanceGridDataInterface {
   readonly logoUrl!: string
 }
 
-export class BalanceGrid {
+export class Balances {
+  private static instance: Balances
+
   private _$store: Store<any>
 
-  private _data: BalanceGridData[] = []
+  private _data: BalanceData[] = []
 
-  constructor(store: Store<any>) {
+  private constructor(store: Store<any>) {
     this._$store = store
+  }
+
+  static getInstance(store: Store<any>) {
+    if (this.instance) {
+      return this.instance
+    }
+
+    this.instance = new Balances(store)
+    return this.instance
   }
 
   get cols() {
@@ -95,7 +106,7 @@ export class BalanceGrid {
     try {
       for (const network of this.networks) {
         assets.push(
-          await this._$store.dispatch('balance/getGridBalances', {
+          await this._$store.dispatch('balance/getBalances', {
             chainId: network.chainId,
             address: this._$store.state.wallet.address,
           })

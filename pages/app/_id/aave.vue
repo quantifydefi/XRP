@@ -1,6 +1,5 @@
 <template>
   <v-row no-gutters>
-    <top-bar title="AAVE"></top-bar>
     <v-col class="pa-2" cols="12">
       <v-row>
         <v-col cols="12" class="pa-1">
@@ -33,14 +32,12 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import TopBar from '~/components/app/TopBar.vue'
 import AaveBalances from '~/components/app/aave/AaveBalances.vue'
 import AaveAssetsList from '~/components/app/aave/AaveAssetsList.vue'
 
 @Component({
   name: 'Aave',
-  components: { TopBar, AaveAssetsList, AaveBalances },
-  layout: 'app',
+  components: { AaveAssetsList, AaveBalances },
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
