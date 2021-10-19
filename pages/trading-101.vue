@@ -180,7 +180,7 @@ import { Vue, Component } from 'vue-property-decorator'
           name: 'description',
           hid: 'description',
           content:
-            'DeFi definitions, video explanations, technology concepts for advanced trading',
+            'DeFi definitions, video explanations, technology concepts for advanced modal',
         },
       ],
     }

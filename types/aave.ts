@@ -1,34 +1,34 @@
 /* eslint-disable camelcase */
 export interface AaveBalanceDataInterface {
   balance: {
+    available_balance: number
     atoken_contract_address: string
     atoken_contract_ticker_symbol: string
     atoken_contract_name: string
     atoken_contract_decimals: number
-    atoken_balance: string
-    asset_contract_decimals: number
+    atoken_balance: number
     asset_contract_address: string
-    asset_contract_ticker_symbol: number
+    asset_contract_ticker_symbol: string
+    asset_contract_decimals: number
     logo_url: string
     liquidity_rate: number
     quote_rate: number
     quote: number
-    borrow_balance: string
+    borrow_balance: number
     borrow_rate: number
     borrow_quote: number
-    origination_fee: string
   }
 
   supply_position: {
     supplied: string
-    balance: string
+    balance: number
     balance_quote: number
-    apy: string
+    apy: number
   }
 
   borrow_position: {
     borrowed: string
-    balance: string
+    balance: number
     balance_quote: number
     apr: number
   }

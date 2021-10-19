@@ -27,14 +27,14 @@ export const actions: ActionTree<BalanceState, BalanceState> = {
               balance.balance / 10 ** balance.contract_decimals
 
             const tokenBalanceData: BalanceData = {
-              tokenAddress: balance.contract_address,
-              tokenName: balance.contract_name,
-              tokenSymbol: balance.contract_ticker_symbol,
-              tokenBalance: balanceRounded,
-              tokenPrice: balance.quote_rate,
-              totalValue: balance.quote,
-              chainId,
-              logoUrl: balance.logo_url,
+              contract_address: balance.contract_address,
+              contract_name: balance.contract_name,
+              contract_ticker_symbol: balance.contract_ticker_symbol,
+              balance: balanceRounded,
+              quote_rate: balance.quote_rate,
+              quote: balance.quote,
+              chain_id: chainId,
+              logo_url: balance.logo_url,
             }
 
             balancesData.push(tokenBalanceData)

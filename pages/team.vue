@@ -178,7 +178,7 @@ interface Team {
           name: 'description',
           hid: 'description',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
         // Open Graph
         {
@@ -188,7 +188,7 @@ interface Team {
         {
           name: 'og:description',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
         { name: 'og:type', content: 'website' },
         { name: 'og:url', content: process.env.BASE_URL },
@@ -208,7 +208,7 @@ interface Team {
         {
           name: 'twitter:description',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
         {
           name: 'twitter:image',
@@ -218,7 +218,7 @@ interface Team {
         {
           name: 'twitter:image:alt',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
       ],
     }
@@ -292,7 +292,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/Alexclarkbarry',
         },
       ],
-      bio: 'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated trading bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
+      bio: 'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated modal bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
     },
     {
       _id: 3,
@@ -438,7 +438,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/haroldbott',
         },
       ],
-      bio: "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop trading platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic trading for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency trading firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
+      bio: "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop modal platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic modal for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency modal firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
     },
   ]
 }

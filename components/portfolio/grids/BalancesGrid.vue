@@ -33,25 +33,25 @@
         class="elevation-0"
         :mobile-breakpoint="0"
       >
-        <template #[`item.tokenSymbol`]="{ item }">
+        <template #[`item.contract_ticker_symbol`]="{ item }">
           <div style="width: 78px" class="text-no-wrap overflow-x-hidden">
             <v-avatar size="18" class="mr-2">
               <img
-                :alt="`${item.tokenSymbol} logo`"
-                :src="item.logoUrl"
+                :alt="`${item.contract_ticker_symbol} logo`"
+                :src="item.logo_url"
                 @error="setAltImg"
               />
             </v-avatar>
-            {{ item.tokenSymbol }}
+            {{ item.contract_ticker_symbol }}
           </div>
         </template>
 
-        <template #[`item.tokenBalance`]="{ item }">
-          <span>{{ balanceFormatter(item.tokenBalance) }}</span>
+        <template #[`item.balance`]="{ item }">
+          <span>{{ balanceFormatter(item.balance) }}</span>
         </template>
 
-        <template #[`item.totalValue`]="{ item }">
-          <span>{{ priceFormatter(item.totalValue) }}</span>
+        <template #[`item.quote`]="{ item }">
+          <span>{{ priceFormatter(item.quote) }}</span>
         </template>
       </v-data-table>
       <v-divider></v-divider>
@@ -61,45 +61,41 @@
 
 <script lang="ts">
 /* eslint-disable */
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import { ChainOptions, BalanceDataInterface } from '~/types/balance'
-import { Helper } from '~/models/helper'
+import {Vue, Component, Prop} from 'vue-property-decorator'
+import {BalanceDataInterface} from '~/types/balance'
+import {Helper} from '~/models/helper'
 import {mapState} from "vuex";
-
-
 
 @Component({
   name: 'BalancesGrid',
-   computed: {
+  computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
     }),
   },
 })
 export default class BalancesGrid extends Vue {
-  @Prop({ default: 435 }) readonly gridHeight!: number
-  @Prop({ default: 1 }) readonly chainId!: ChainOptions
-  @Prop({ default: 'Ethereum' }) readonly network!: string
-  @Prop({ default: 'eth' }) readonly icon!: string
-  @Prop({default: ''}) readonly address!: string
+  @Prop({default: 435}) readonly gridHeight!: number
+  @Prop({default: 'Ethereum'}) readonly network!: string
+  @Prop({default: 'eth'}) readonly icon!: string
   @Prop({default: []}) readonly cols!: any
   @Prop({default: []}) readonly gridData!: BalanceDataInterface[]
 
 
-  get totalBalance(): string{
-    let balance: number  = 0
-    for (let item of this.gridData){
-      balance += item.totalValue
+  get totalBalance(): string {
+    let balance: number = 0
+    for (let item of this.gridData) {
+      balance += item.quote
     }
 
     return Helper.priceFormatter(balance)
   }
 
-  priceFormatter(value: number){
+  priceFormatter(value: number) {
     return Helper.priceFormatter(value)
   }
 
-  balanceFormatter(value: number): string{
+  balanceFormatter(value: number): string {
     return new Intl.NumberFormat('en', {
       maximumSignificantDigits: 8,
       minimumSignificantDigits: 8

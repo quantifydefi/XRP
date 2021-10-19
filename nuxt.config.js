@@ -128,6 +128,9 @@ export default {
           appBg: '#121212',
           baseText: '#fff',
           outline: '#2F2F2F',
+          baseButton: colors.grey.darken4,
+          card: '#121212',
+          innerCard: colors.grey.darken4,
         },
 
         light: {
@@ -143,6 +146,9 @@ export default {
           appBg: colors.grey.lighten5,
           baseText: colors.grey.darken3,
           outline: '#E0E0E0',
+          baseButton: colors.white,
+          card: colors.grey.lighten2,
+          innerCard: colors.grey.lighten2,
         },
       },
     },

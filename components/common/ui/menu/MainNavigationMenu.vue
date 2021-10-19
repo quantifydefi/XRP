@@ -80,7 +80,7 @@
                   />
                 </v-avatar>
               </v-list-item-icon>
-              <v-list-item-title>Aave</v-list-item-title>
+              <v-list-item-title>Aave v2</v-list-item-title>
             </v-list-item>
           </v-list-group>
 

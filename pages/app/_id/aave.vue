@@ -1,6 +1,21 @@
 <template>
   <v-row no-gutters>
-    <v-col class="pa-2" cols="12">
+    <v-overlay
+      absolute
+      :value="showOverlay"
+      :opacity="1"
+      :color="$vuetify.theme.themes[theme].overlay"
+    >
+      <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+      <v-progress-linear
+        color="primary"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-overlay>
+
+    <v-col v-if="!showOverlay" class="pa-2" cols="12">
       <v-row>
         <v-col cols="12" class="pa-1">
           <v-btn-toggle
@@ -11,9 +26,9 @@
             :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
             tile
           >
-            <v-btn width="100" small outlined> assets </v-btn>
+            <v-btn width="100" small outlined> Market</v-btn>
 
-            <v-btn width="100" small outlined> balances </v-btn>
+            <v-btn width="100" small outlined> Balance</v-btn>
           </v-btn-toggle>
         </v-col>
 
@@ -45,6 +60,13 @@ import AaveAssetsList from '~/components/app/aave/AaveAssetsList.vue'
   },
 })
 export default class Aave extends Vue {
-  toggleAssets = 0
+  showOverlay = true
+  toggleAssets = 1
+
+  mounted() {
+    setTimeout(() => {
+      this.showOverlay = false
+    }, 1500)
+  }
 }
 </script>

@@ -90,6 +90,7 @@ export default class Aave extends Vue {
   aaveAssets: AaveAssets | null = null
 
   async mounted() {
+    /** If chain id is Ethereum or Polygon, get Aave market assets within the network **/
     if (this.$route.params.id === '1' || this.$route.params.id === '137') {
       this.aaveAssets = new AaveAssets(this.$store)
 

@@ -2,37 +2,38 @@
 import 'reflect-metadata'
 import { Store } from 'vuex'
 import { AaveAssetDataInterface, AaveBalanceDataInterface } from '@/types/aave'
+import { Helper } from '~/models/helper'
 
 export class AaveBalanceData implements AaveBalanceDataInterface {
-  readonly balance!: {
+  balance!: {
+    available_balance: number
     atoken_contract_address: string
     atoken_contract_ticker_symbol: string
     atoken_contract_name: string
     atoken_contract_decimals: number
-    atoken_balance: string
-    asset_contract_decimals: number
+    atoken_balance: number
     asset_contract_address: string
-    asset_contract_ticker_symbol: number
+    asset_contract_ticker_symbol: string
+    asset_contract_decimals: number
     logo_url: string
     liquidity_rate: number
     quote_rate: number
     quote: number
-    borrow_balance: string
+    borrow_balance: number
     borrow_rate: number
     borrow_quote: number
-    origination_fee: string
   }
 
   readonly supply_position!: {
     supplied: string
-    balance: string
+    balance: number
     balance_quote: number
-    apy: string
+    apy: number
   }
 
   readonly borrow_position!: {
     borrowed: string
-    balance: string
+    balance: number
     balance_quote: number
     apr: number
   }
@@ -77,126 +78,63 @@ export class AaveAssetData implements AaveAssetDataInterface {
 
 export class AaveBalance {
   address = ''
+  chainId = 1
 
   private _$store: Store<any>
-  private _ethereumBalance: AaveBalanceData[] = []
-  private _polygonBalance: AaveBalanceData[] = []
+  private _balanceData: AaveBalanceData[] = []
 
-  constructor(store: Store<any>, address: string) {
+  constructor(store: Store<any>, chainId: number, address: string) {
     this._$store = store
+    this.chainId = chainId
     this.address = address
   }
 
   get cols() {
     return [
       {
-        text: 'Symbol',
-        align: 'center',
+        text: 'Assets',
+        align: 'left',
         class: 'text-no-wrap',
-        value: 'balance.atoken_contract_ticker_symbol',
-        sortable: false,
-      },
-      {
-        text: 'Contract Name',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.atoken_contract_name',
-      },
-      {
-        text: 'Decimals',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.atoken_contract_decimals',
+        value: 'balance.asset_contract_ticker_symbol',
+        width: 200,
       },
       {
         text: 'Balance',
-        align: 'start',
+        align: 'left',
         class: 'text-no-wrap',
-        value: 'balance.atoken_balance',
-      },
-      // {
-      //   text: 'Contract Symbol',
-      //   align: 'start',
-      //   class: 'pt-3',
-      //   value: 'balance.asset_contract_ticker_symbol',
-      // },
-      {
-        text: 'Liq Rate',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.liquidity_rate',
+        value: 'balance.available_balance',
       },
       {
-        text: 'Quote Rate',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.quote_rate',
-      },
-      {
-        text: 'Quote',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.quote',
-      },
-      {
-        text: 'Borrow Balance',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.borrow_balance',
-      },
-      {
-        text: 'Borrow Rate',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.borrow_rate',
-      },
-      {
-        text: 'Borrow Quote',
-        align: 'start',
-        class: 'text-no-wrap',
-        value: 'balance.borrow_quote',
-      },
-      // {
-      //   text: 'Origination Fee',
-      //   align: 'start',
-      //   class: 'text-no-wrap',
-      //   value: 'balance.origination_fee',
-      // },
-      {
-        text: 'Supply',
-        align: 'start',
+        text: 'Supplied',
+        align: 'left',
         class: 'text-no-wrap',
         value: 'supply_position.supplied',
       },
       {
-        text: 'Borrow',
-        align: 'start',
+        text: 'Borrowed',
+        align: 'left',
         class: 'text-no-wrap',
-        value: 'borrow_position.supplied',
+        value: 'borrow_position.borrowed',
+      },
+      {
+        text: '',
+        align: 'center',
+        class: 'text-no-wrap',
+        value: 'actions',
+        sortable: false,
       },
     ]
   }
 
-  get ethereumBalance() {
-    return this._ethereumBalance
-  }
-
-  get polygonBalance() {
-    return this._polygonBalance
+  get balanceData() {
+    return this._balanceData
   }
 
   async getData(): Promise<void> {
-    this._ethereumBalance = await this._$store.dispatch(
-      'aave/getAaveBalances',
-      {
-        chainId: 1,
-        address: this.address,
-      }
-    )
-
-    this._polygonBalance = await this._$store.dispatch('aave/getAaveBalances', {
-      chainId: 137,
+    this._balanceData = await this._$store.dispatch('aave/getAaveBalances', {
+      chainId: this.chainId,
       address: this.address,
+      store: this._$store,
     })
   }
 
@@ -315,16 +253,19 @@ export class AaveAssets {
     return this._polygonAssets
   }
 
+  // Todo: add params to only get current selected chain.
   async getData(): Promise<void> {
     this._ethereumAssets = await this._$store.dispatch('aave/getAaveAssets', {
       chainId: 1,
     })
+
     this._polygonAssets = await this._$store.dispatch('aave/getAaveAssets', {
       chainId: 137,
     })
   }
 
-  setAltImg(event: any) {
-    event.target.src = require(`~/assets/images/generic/aave-generic.png`)
+  /** Returns an alternate image url**/
+  setAltImg(event: ErrorEvent) {
+    return Helper.setAltImg(event)
   }
 }

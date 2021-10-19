@@ -17,10 +17,6 @@
 
     <v-col cols="12">
       <v-row no-gutters>
-        <!--        <v-col cols="12">-->
-        <!--          <h1 class="text-h4">Portfolio</h1>-->
-        <!--        </v-col>-->
-
         <client-only>
           <v-row v-if="!showOverlay && balances" class="px-1" data-nosnippet>
             <v-col cols="12" md="6" lg="4" class="pa-1">
@@ -84,7 +80,7 @@
                     :network="network.network"
                     :icon="network.symbol"
                     :cols="balances.cols"
-                    :grid-data="balances.data[i]"
+                    :grid-data="balances.balances[i]"
                   ></balances-grid>
                 </client-only>
               </v-card>
@@ -101,7 +97,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import walletMiddleware from '~/middleware/wallet'
-import { Balances } from '~/models/balance'
+import { Balance } from '~/models/balance'
 import { UiState } from '~/store/ui'
 
 const BalancesGrid: any = () => ({
@@ -129,7 +125,7 @@ const BalancesGrid: any = () => ({
 })
 export default class Portfolio extends Vue {
   showOverlay = true
-  balances: Balances | null = null
+  balances: Balance | null = null
   address!: string
   theme!: UiState
 
@@ -149,11 +145,12 @@ export default class Portfolio extends Vue {
       })
     }
 
-    this.balances = Balances.getInstance(this.$store)
+    this.balances = Balance.getInstance(this.$store)
 
+    /** Allow time for rendering and getting instance of balance **/
     setTimeout(() => {
       this.showOverlay = false
-    }, 1500)
+    }, 2000)
   }
 }
 </script>
