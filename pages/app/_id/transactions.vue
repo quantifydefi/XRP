@@ -3,16 +3,16 @@
     <v-col v-if="transactionsHistory" cols="12">
       <v-card outlined tile>
         <v-card-title
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
           class="py-1 px-2 subtitle-1"
-          >Most Recent Transactions</v-card-title
-        >
+          >Most Recent Transactions
+        </v-card-title>
         <v-divider></v-divider>
         <client-only>
           <v-data-table
             id="recent-transactions"
             :style="{
-              backgroundColor: $vuetify.theme.themes[theme].appBg,
+              backgroundColor: $vuetify.theme.themes[theme].background,
             }"
             dense
             :headers="transactionsHistory.cols"
@@ -42,8 +42,8 @@
                   small
                   :color="item.successful ? 'primary' : 'red darken-4'"
                 >
-                  {{ item.successful ? 'mdi-check' : 'mdi-close' }}</v-icon
-                >
+                  {{ item.successful ? 'mdi-check' : 'mdi-close' }}
+                </v-icon>
               </div>
             </template>
 

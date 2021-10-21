@@ -24,12 +24,14 @@
                 tile
                 outlined
                 height="522"
-                :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+                :style="{
+                  backgroundColor: $vuetify.theme.themes[theme].background,
+                }"
               >
                 <v-card-title
                   class="pa-0 ma-0"
                   :style="{
-                    backgroundColor: $vuetify.theme.themes[theme].appBg,
+                    backgroundColor: $vuetify.theme.themes[theme].background,
                   }"
                 >
                   <v-col cols="6" class="d-flex">

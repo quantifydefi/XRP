@@ -1,11 +1,10 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
     <v-app-bar
       v-if="configs"
       app
-      tile
       class="text-no-wrap"
-      :color="$vuetify.theme.themes[theme].overlay"
+      :color="$vuetify.theme.themes[theme].background"
       elevation="0"
       :style="{
         marginTop: '-2px',
@@ -14,7 +13,7 @@
     >
       <v-btn
         v-if="$vuetify.breakpoint.mdAndDown"
-        class="mr-1 pt-1"
+        class="mr-1 mt-1"
         icon
         @click="toggleNavigationMenu"
       >
@@ -26,8 +25,7 @@
       <v-spacer />
 
       <v-btn
-        class="pt-1 subtitle-2 text-capitalize font-weight-regular"
-        tile
+        class="mt-1 subtitle-2 text-capitalize font-weight-regular"
         text
         color="primary"
         @click="initMetamask('/portfolio')"
@@ -47,8 +45,7 @@
       </v-btn>
 
       <v-btn
-        class="pt-1 subtitle-2 text-capitalize font-weight-regular"
-        tile
+        class="mt-1 subtitle-2 text-capitalize font-weight-regular"
         text
         color="primary"
         @click="initMetamask($route.path)"
@@ -69,7 +66,7 @@
       </v-btn>
 
       <!-- Network Menu -->
-      <v-menu offset-y tile>
+      <v-menu offset-y>
         <template #activator="{ on, attrs }">
           <v-btn
             class="
@@ -82,7 +79,6 @@
             style="border: 0"
             outlined
             color="primary"
-            tile
             dark
             v-bind="attrs"
             v-on="on"
@@ -101,7 +97,7 @@
                 /></v-avatar>
               </div>
 
-              <div v-if="$vuetify.breakpoint.mdAndUp" class="pl-2 pt-1 d-flex">
+              <div v-if="$vuetify.breakpoint.mdAndUp" class="pl-2 mt-1 d-flex">
                 <div>
                   {{ configs.networks.defaultNetwork.networkName }}
                 </div>
@@ -112,12 +108,14 @@
         </template>
         <v-list
           outlined
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
         >
           <v-list-item
             v-for="item in configs.networks.networkOptions"
             :key="item.chainId"
-            :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+            :style="{
+              backgroundColor: $vuetify.theme.themes[theme].background,
+            }"
             @click="changeNetwork(item)"
           >
             <v-list-item-title class="subtitle-2 font-weight-regular">
@@ -143,8 +141,7 @@
         <template #activator="{ on, attrs }">
           <div class="d-flex">
             <v-btn
-              class="pt-1 subtitle-2 text-capitalize font-weight-regular"
-              tile
+              class="mt-1 subtitle-2 text-capitalize font-weight-regular"
               text
               color="primary"
               v-bind="attrs"
@@ -164,9 +161,8 @@
         </template>
 
         <v-card
-          tile
           outlined
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
         >
           <v-row no-gutters class="px-3 py-1">
             <v-col cols="12">
@@ -204,7 +200,7 @@
             target="_blank"
             height="24"
             width="24"
-            class="mx-2"
+            class="mx-2 mt-1"
             v-bind="attrs"
             color="primary"
             v-on="on"
@@ -218,9 +214,8 @@
         </template>
 
         <v-card
-          tile
           outlined
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
         >
           <v-row no-gutters class="px-3 py-1">
             <v-col cols="12">

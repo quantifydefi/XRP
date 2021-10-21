@@ -2,7 +2,7 @@
   <v-card-title
     class="py-1 px-2"
     :class="!$vuetify.theme.dark ? 'grey lighten-3' : ''"
-    :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+    :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
   >
     <component
       :is="title === 'Daily Winners/Losers' ? 'h1' : 'span'"

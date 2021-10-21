@@ -4,7 +4,7 @@
     app
     left
     fixed
-    :color="$vuetify.theme.themes[theme].overlay"
+    :color="$vuetify.theme.themes[theme].background"
   >
     <template #prepend>
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
@@ -50,22 +50,22 @@
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
                 <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-lan</v-icon
-                >
+                  >mdi-lan
+                </v-icon>
               </v-list-item-icon>
             </template>
             <template #appendIcon>
               <v-list-item-icon class="mt-0 mr-0">
                 <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-chevron-down</v-icon
-                >
+                  >mdi-chevron-down
+                </v-icon>
               </v-list-item-icon>
             </template>
             <template #activator>
               <v-list-item-title
                 :style="{ color: $vuetify.theme.themes[theme].baseText }"
-                >Protocols</v-list-item-title
-              >
+                >Protocols
+              </v-list-item-title>
             </template>
 
             <v-list-item
@@ -110,22 +110,22 @@
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
                 <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-lan</v-icon
-                >
+                  >mdi-lan
+                </v-icon>
               </v-list-item-icon>
             </template>
             <template #appendIcon>
               <v-list-item-icon class="mt-0 mr-0">
                 <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-chevron-down</v-icon
-                >
+                  >mdi-chevron-down
+                </v-icon>
               </v-list-item-icon>
             </template>
             <template #activator>
               <v-list-item-title
                 :style="{ color: $vuetify.theme.themes[theme].baseText }"
-                >Research</v-list-item-title
-              >
+                >Research
+              </v-list-item-title>
             </template>
 
             <v-list-item
@@ -146,11 +146,13 @@
         <div class="pa-2" style="position: fixed; bottom: 0px; width: 100%">
           <div class="caption d-flex my-4 justify-center">
             <v-btn x-small icon @click="changeTheme">
-              <v-icon>{{
-                $vuetify.theme.dark
-                  ? 'mdi-white-balance-sunny'
-                  : 'mdi-weather-night'
-              }}</v-icon>
+              <v-icon
+                >{{
+                  $vuetify.theme.dark
+                    ? 'mdi-white-balance-sunny'
+                    : 'mdi-weather-night'
+                }}
+              </v-icon>
             </v-btn>
             <div class="caption ml-2">
               change to {{ $vuetify.theme.dark ? 'light' : 'dark' }} theme

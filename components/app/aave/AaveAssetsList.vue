@@ -3,13 +3,7 @@
     <v-col cols="12" class="pa-2">
       <v-row v-if="aaveAssets">
         <v-col cols="12" class="pa-1">
-          <v-card outlined tile>
-            <v-card-title
-              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
-              class="subtitle-1 pa-2"
-              >{{ $route.params.id == 1 ? 'Ethereum' : 'Polygon' }} Mainnet
-            </v-card-title>
-            <v-divider />
+          <v-card elevation="0">
             <v-data-table
               id="aave-assets"
               :headers="aaveAssets.cols"
@@ -21,7 +15,9 @@
               :items-per-page="20"
               :hide-default-footer="true"
               mobile-breakpoint="0"
-              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+              :style="{
+                backgroundColor: $vuetify.theme.themes[theme].background,
+              }"
             >
               <template #[`item.underlying.contract_ticker_symbol`]="{ item }">
                 <div class="text-no-wrap">

@@ -3,14 +3,16 @@
     <v-col class="pa-2" cols="12">
       <v-row v-if="aaveBalance">
         <v-col cols="12" class="pa-1 mt-1">
-          <v-card outlined tile>
+          <v-card elevation="0">
             <v-data-table
               id="aave-balances"
               :headers="aaveBalance.cols"
               :items="aaveBalance.balanceData"
               hide-default-footer
               mobile-breakpoint="0"
-              :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+              :style="{
+                backgroundColor: $vuetify.theme.themes[theme].background,
+              }"
             >
               <template
                 #[`item.balance.asset_contract_ticker_symbol`]="{ item }"

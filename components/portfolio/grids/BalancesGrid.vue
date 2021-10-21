@@ -3,7 +3,7 @@
     <div>
       <v-card-title
         class="pa-0 ma-0"
-        :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+        :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
       >
         <v-col cols="6" class="d-flex">
           <v-avatar size="32px">
@@ -23,7 +23,7 @@
 
       <v-data-table
         id="balances-grid"
-        :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+        :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
         dense
         :height="gridHeight - 32 + 'px'"
         :headers="cols"

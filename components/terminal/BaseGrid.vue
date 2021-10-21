@@ -2,7 +2,7 @@
   <client-only>
     <v-data-table
       id="base-grid"
-      :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
+      :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
       dense
       :headers="columnDefs"
       :items="rowData"
@@ -32,8 +32,8 @@
             :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
             style="text-decoration: none"
             :to="`/token/${item.pool_id}`"
-            >{{ item.token0_symbol }}-{{ item.token1_symbol }}</nuxt-link
-          >
+            >{{ item.token0_symbol }}-{{ item.token1_symbol }}
+          </nuxt-link>
         </div>
       </template>
 

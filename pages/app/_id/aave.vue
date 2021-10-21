@@ -23,12 +23,13 @@
             mandatory
             dense
             color="primary"
-            :style="{ backgroundColor: $vuetify.theme.themes[theme].appBg }"
-            tile
+            :style="{
+              backgroundColor: $vuetify.theme.themes[theme].background,
+            }"
           >
-            <v-btn width="100" small outlined> Market</v-btn>
+            <v-btn width="100" color="primary" outlined small>Market</v-btn>
 
-            <v-btn width="100" small outlined> Balance</v-btn>
+            <v-btn width="100" color="primary" outlined small>Balance</v-btn>
           </v-btn-toggle>
         </v-col>
 
