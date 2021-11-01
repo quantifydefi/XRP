@@ -22,8 +22,11 @@ export class Balance {
 
   private _$store: Store<any>
 
-  private _balances: BalanceData[] = []
-
+  private _ethereumBalance: BalanceData[] = []
+  private _binanceBalance: BalanceData[] = []
+  private _polygonBalance: BalanceData[] = []
+  private _fantomBalance: BalanceData[] = []
+  private _avalancheBalance: BalanceData[] = []
 
   private constructor(store: Store<any>) {
     this._$store = store
@@ -101,44 +104,79 @@ export class Balance {
     ]
   }
 
-  get balances() {
-    return this._balances
+  get ethereumBalance() {
+    return this._ethereumBalance
   }
 
+  get binanceBalance() {
+    return this._binanceBalance
+  }
+
+  get polygonBalance() {
+    return this._polygonBalance
+  }
+
+  get fanthomBalance() {
+    return this._fantomBalance
+  }
+
+  get avalancheBalance() {
+    return this._avalancheBalance
+  }
+
+  /** Fetches balances in the chain **/
+  async fetchChainBalance(chainId: ChainOptions) {
+    try {
+      return await this._$store.dispatch('balance/getBalances', {
+        chainId: chainId,
+        address: this._$store.state.wallet.address,
+        // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F'
+      })
+
+    } catch (err) {
+      return []
+      console.log(err)
+    }
+  }
+
+  /** Fetches Ethereum balances **/
+  async getEthereumBalance(): Promise<void> {
+    this._ethereumBalance = await this.fetchChainBalance(1)
+  }
+
+  /** Fetches Polygon balances**/
+  async getPolygonBalance(): Promise<void> {
+    this._polygonBalance = await this.fetchChainBalance(137)
+  }
 
   /** Fetches all balances for supported chains **/
   async getBalances(): Promise<void> {
     this.loading = true
-    const assets = []
-    try {
-      for (const network of this.networks) {
-        assets.push(
-          await this._$store.dispatch('balance/getBalances', {
-            chainId: network.chainId,
-            address: this._$store.state.wallet.address,
-            // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F'
-          })
-        )
-      }
-      this._balances = assets
-      this.loading = false
-    } catch {
-      this.loading = false
-      this._balances = []
 
+    try {
+      this._ethereumBalance = await this.fetchChainBalance(1)
+      this._binanceBalance = await this.fetchChainBalance(56)
+      this._polygonBalance = await this.fetchChainBalance(137)
+      this._fantomBalance = await this.fetchChainBalance(250)
+      this._avalancheBalance = await this.fetchChainBalance(43114)
+
+      this.loading = false
+    } catch (err) {
+      this.loading = false
+      console.log('Something went wrong with getting portfolio balance.')
     }
   }
-
 
   /** Returns the total balances for all supported chains **/
   get totalBalance() {
     let total = 0
 
-    for (const item of this.balances) {
-      for (const token of Object.values(item)) {
-        total += token.quote // total value
-      }
+    const assets = [...this._ethereumBalance, ...this._binanceBalance, ...this._polygonBalance, ...this._fantomBalance, ...this._avalancheBalance]
+
+    for (const item of assets) {
+      total += item.quote // total value
     }
+
     return Helper.priceFormatter(total)
   }
 

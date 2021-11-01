@@ -65,24 +65,77 @@
                 </v-card-title>
               </v-card>
             </v-col>
-            <v-col
-              v-for="(network, i) in balances.networks"
-              :key="network.chainId"
-              cols="12"
-              md="6"
-              lg="4"
-              class="pa-1"
-            >
+
+            <!--      Ethereum Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
               <v-card tile outlined height="522" style="border-bottom: none">
                 <client-only>
                   <balances-grid
                     :grid-height="435"
-                    :chain-id="network.chainId"
-                    :address="address"
-                    :network="network.network"
-                    :icon="network.symbol"
+                    network="Ethereum"
+                    icon="eth"
                     :cols="balances.cols"
-                    :grid-data="balances.balances[i]"
+                    :grid-data="balances.ethereumBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
+
+            <!--      Binance Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Binance"
+                    icon="bnb"
+                    :cols="balances.cols"
+                    :grid-data="balances.binanceBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
+
+            <!--      Polygon Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Polygon"
+                    icon="matic"
+                    :cols="balances.cols"
+                    :grid-data="balances.polygonBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
+
+            <!--      Fanthom Opera Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Fantom"
+                    icon="ftm"
+                    :cols="balances.cols"
+                    :grid-data="balances.fanthomBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
+
+            <!--      Avalanche Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Avalanche"
+                    icon="avax"
+                    :cols="balances.cols"
+                    :grid-data="balances.avalancheBalance"
                   ></balances-grid>
                 </client-only>
               </v-card>

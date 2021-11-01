@@ -62,7 +62,7 @@ import AaveAssetsList from '~/components/app/aave/AaveAssetsList.vue'
 })
 export default class Aave extends Vue {
   showOverlay = true
-  toggleAssets = 1
+  toggleAssets = 0
 
   mounted() {
     setTimeout(() => {

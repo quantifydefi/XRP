@@ -30,11 +30,11 @@ export const actions: ActionTree<AaveState, AaveState> = {
       let array: any | null = null
 
       if (chainId === 1) {
-        array = networkBalance.balances[0]
+        array = networkBalance.ethereumBalance
       }
 
       if (chainId === 137) {
-        array = networkBalance.balances[2]
+        array = networkBalance.polygonBalance
       }
 
       if (balances) {
@@ -102,10 +102,7 @@ export const actions: ActionTree<AaveState, AaveState> = {
         `https://api.covalenthq.com/v1/${chainId}/networks/aave_v2/assets/?key=${process.env.COVALENT_API_KEY}`
       )
 
-      return plainToClass(
-        AaveAssetData,
-        items.items.splice(0, 10) as AaveAssetData[]
-      )
+      return plainToClass(AaveAssetData, items.items as AaveAssetData[])
     } catch {
       return []
     }
