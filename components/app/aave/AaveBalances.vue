@@ -2,6 +2,26 @@
   <v-row no-gutters>
     <v-col class="pa-2" cols="12">
       <v-row v-if="aaveBalance">
+        <v-overlay
+          absolute
+          :value="aaveBalance.loading"
+          :opacity="1"
+          :color="$vuetify.theme.themes[theme].overlay"
+        >
+          <img
+            :src="'/img/logo/logo.svg'"
+            height="100"
+            width="100"
+            alt="logo"
+          />
+          <v-progress-linear
+            color="primary"
+            indeterminate
+            rounded
+            height="6"
+          ></v-progress-linear>
+        </v-overlay>
+
         <v-col cols="12" class="pa-1 mt-1">
           <v-card elevation="0">
             <v-data-table

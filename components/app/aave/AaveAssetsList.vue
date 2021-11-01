@@ -2,6 +2,26 @@
   <v-row no-gutters justify="center">
     <v-col cols="12" class="pa-2">
       <v-row v-if="aaveAssets">
+        <v-overlay
+          absolute
+          :value="aaveAssets.loading"
+          :opacity="1"
+          :color="$vuetify.theme.themes[theme].overlay"
+        >
+          <img
+            :src="'/img/logo/logo.svg'"
+            height="100"
+            width="100"
+            alt="logo"
+          />
+          <v-progress-linear
+            color="primary"
+            indeterminate
+            rounded
+            height="6"
+          ></v-progress-linear>
+        </v-overlay>
+
         <v-col cols="12" class="pa-1">
           <v-card elevation="0">
             <v-data-table
@@ -29,7 +49,7 @@
               <template #[`header.stable_borrow_apr`]>
                 <div>
                   <small class="grey--text">Stable</small>
-                  <div>Borrow APY</div>
+                  <div>Borrow APR</div>
                 </div>
               </template>
 
@@ -268,7 +288,13 @@ export default class Aave extends Vue {
     if (this.$route.params.id === '1' || this.$route.params.id === '137') {
       this.aaveAssets = new AaveAssets(this.$store)
 
-      await this.aaveAssets.getData()
+      if (this.$route.params.id === '1') {
+        await this.aaveAssets.getEthereumAssets()
+      }
+
+      if (this.$route.params.id === '137') {
+        await this.aaveAssets.getPolygonAssets()
+      }
     } else {
       await this.$router.push('/')
     }
