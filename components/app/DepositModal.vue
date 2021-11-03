@@ -1,5 +1,5 @@
 <template>
-  <div v-if="balances" id="deposit-modal" class="text-center">
+  <div v-if="data" id="deposit-modal" class="text-center">
     <v-dialog v-model="dialog" width="460" persistent>
       <v-card
         elevation="16"
@@ -34,15 +34,15 @@
                 >
                   <v-avatar class="mx-n2">
                     <img
-                      alt="aave logo"
-                      :src="data.logo_url"
-                      @error="balances.altImage($event)"
+                      alt="aave assets logo"
+                      :src="data.underlying.logo_url"
+                      @error="helper.setAltImg($event)"
                     />
                   </v-avatar>
                   <span
                     class="ml-4"
                     :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    >{{ data.asset_contract_ticker_symbol }}</span
+                    >{{ data.underlying.contract_symbol }}</span
                   >
                 </v-chip>
               </v-col>
@@ -77,17 +77,17 @@
                     style="font-family: Consolas, Monaco, monospace !important"
                   >
                     {{
-                      data.available_balance > 0
-                        ? data.available_balance.toFixed(4)
-                        : data.available_balance
+                      data.underlying.available_balance > 0
+                        ? data.underlying.available_balance.toFixed(4)
+                        : data.underlying.available_balance
                     }}
                   </span>
                 </span>
                 <v-spacer />
                 <span
                   v-if="
-                    data.available_balance > 0 &&
-                    data.available_balance > depositInput
+                    data.underlying.available_balance > 0 &&
+                    data.underlying.available_balance > depositInput
                   "
                   style="cursor: pointer"
                   class="
@@ -97,18 +97,18 @@
                     primary--text
                     text--lighten-1
                   "
-                  @click="depositInput = data.available_balance"
+                  @click="depositInput = data.underlying.available_balance"
                   >set max</span
                 >
                 <span
-                  v-if="depositInput * data.quote_rate > 0"
+                  v-if="depositInput * data.underlying.quote_rate > 0"
                   class="mr-3 subtitle-2 font-weight-regular"
                   :style="{
                     fontFamily: 'Consolas, Monaco, monospace !important',
                     color: $vuetify.theme.themes[theme].baseText,
                   }"
                 >
-                  ~{{ (depositInput * data.quote_rate).toFixed(4) }}
+                  ~{{ (depositInput * data.underlying.quote_rate).toFixed(4) }}
                   <small>USD</small></span
                 >
               </v-col>
@@ -116,10 +116,10 @@
           </v-card>
 
           <v-btn
-            :disabled="data.available_balance == 0"
+            :disabled="data.underlying.available_balance == 0"
             width="88%"
             elevation="0"
-            :outlined="data.available_balance !== 0"
+            :outlined="data.underlying.available_balance !== 0"
             color="grey darken-2"
             class="
               mt-2
@@ -134,13 +134,15 @@
             <span
               :style="{
                 color:
-                  data.available_balance > 0
+                  data.underlying.available_balance > 0
                     ? $vuetify.theme.themes[theme].baseText
                     : '',
               }"
             >
               {{
-                data.available_balance == 0 ? 'insufficient balance' : 'Deposit'
+                data.underlying.available_balance == 0
+                  ? 'insufficient balance'
+                  : 'Deposit'
               }}
             </span>
           </v-btn>
@@ -156,8 +158,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import { BalanceData, Balance } from '~/models/balance'
 import { DefiEvents } from '~/types/events'
+import { AaveAssetData } from '~/models/aave'
+import { Helper } from '~/models/helper'
 
 @Component({
   name: 'DepositModal',
@@ -168,10 +171,9 @@ import { DefiEvents } from '~/types/events'
   },
 })
 export default class DepositModal extends Vue {
+  helper = Helper
   dialog = false
-  data: BalanceData | null = null
-  balances: Balance | null = null
-
+  data: AaveAssetData | null = null
   depositInput: number | null = null
 
   /** on modal close, clear deposit input field **/
@@ -185,17 +187,11 @@ export default class DepositModal extends Vue {
   }
 
   mounted() {
-    this.balances = Balance.getInstance(this.$store)
-
     this.$root.$on(DefiEvents.toggleDepositModal, (data: any) => {
       console.log('received deposit event', data)
       this.dialog = !this.dialog
       this.data = data
     })
   }
-
-  // setAltImg(event: any) {
-  //   event.target.src = require(`~/assets/images/generic/aave-generic.png`)
-  // }
 }
 </script>

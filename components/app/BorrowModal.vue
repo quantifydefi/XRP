@@ -35,14 +35,14 @@
                   <v-avatar class="mx-n1">
                     <img
                       alt="aave logo"
-                      :src="data.logo_url"
+                      :src="data.logo_url || data.underlying.logo_url"
                       @error="balances.altImage($event)"
                     />
                   </v-avatar>
                   <span
                     class="ml-3"
                     :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    >{{ data.asset_contract_ticker_symbol }}</span
+                    >{{ data.underlying.contract_symbol }}</span
                   >
                 </v-chip>
               </v-col>
@@ -71,29 +71,25 @@
               >
                 <div class="caption ml-1 mt-4 mb-1">
                   Available:
-                  {{
-                    data.available_balance > 0
-                      ? '~' + data.available_balance.toFixed(4)
-                      : data.available_balance
-                  }}
+                  {{ data.supply_position.balance }}
                 </div>
                 <v-spacer />
 
                 <span
-                  v-if="borrowInput * data.quote_rate > 0"
+                  v-if="borrowInput * data.underlying.quote_rate > 0"
                   class="mr-1 mt-4 caption"
                   :style="{
                     fontFamily: 'Consolas, Monaco, monospace !important',
                     color: $vuetify.theme.themes[theme].baseText,
                   }"
                 >
-                  ~{{ (borrowInput * data.quote_rate).toFixed(4) }}
+                  ~{{ (borrowInput * data.underlying.quote_rate).toFixed(4) }}
                   <small>USD</small></span
                 >
                 <span
                   v-if="
-                    data.available_balance > 0 &&
-                    data.available_balance > borrowInput
+                    data.supply_position.balance > 0 &&
+                    data.supply_position.balance > borrowInput
                   "
                   style="cursor: pointer"
                   class="
@@ -104,7 +100,7 @@
                     text--lighten-1
                     mt-4
                   "
-                  @click="borrowInput = data.available_balance"
+                  @click="borrowInput = data.supply_position.balance"
                   >set max</span
                 >
               </v-col>

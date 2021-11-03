@@ -6,33 +6,23 @@ import { Helper } from '~/models/helper'
 import { ChainOptions } from '~/types/balance'
 
 export class AaveBalanceData implements AaveBalanceDataInterface {
-  balance!: {
-    available_balance: number
-    atoken_contract_address: string
-    atoken_contract_ticker_symbol: string
-    atoken_contract_name: string
-    atoken_contract_decimals: number
-    atoken_balance: number
-    asset_contract_address: string
-    asset_contract_ticker_symbol: string
-    asset_contract_decimals: number
+  underlying!: {
+    contract_decimals: number
+    contract_symbol: string
+    contract_address: string
     logo_url: string
-    liquidity_rate: number
+    available_balance: number
     quote_rate: number
-    quote: number
-    borrow_balance: number
-    borrow_rate: number
-    borrow_quote: number
   }
 
-  readonly supply_position!: {
+  supply_position!: {
     supplied: string
     balance: number
     balance_quote: number
     apy: number
   }
 
-  readonly borrow_position!: {
+  borrow_position!: {
     borrowed: string
     balance: number
     balance_quote: number
@@ -44,43 +34,38 @@ export class AaveAssetData implements AaveAssetDataInterface {
   underlying!: {
     contract_decimals: number
     contract_name: string
-    contract_ticker_symbol: string
+    contract_symbol: string
     contract_address: string
-    supports_erc: string[]
     logo_url: string
+    available_balance: number
     quote_rate: number
   }
 
-  atoken!: {
-    contract_decimals: number
-    contract_name: string
-    contract_ticker_symbol: string
-    contract_address: string
-    supports_erc: string[]
-    logo_url: string
+  supply_position!: {
+    supplied: string
+    balance: number
+    balance_quote: number
+    apy: number
+  }
+
+  borrow_position!: {
+    borrowed: string
+    balance: number
+    balance_quote: number
+    apr: number
   }
 
   variable_borrow_apr!: number
   stable_borrow_apr!: number
   supply_apy!: number
-  lending_pool_contract!: string
-  lending_pool_addresses_provider!: string
-  lending_pool_addresses_provider_registry!: string
-  lending_pool_collateral_manager!: string
-  lending_pool_configurator!: string
-  lending_rate_oracle!: string
-  price_oracle!: string
-  pool_admin!: string
-  emergency_admin!: string
-  protocol_data_provider!: string
-  weth_gateway!: string
-  collector_contract!: string
 }
 
 export class AaveBalance {
-  loading = false
-  address = ''
-  chainId = 1
+  loading: boolean = false
+  address: string = ''
+  chainId: number = 1
+
+  private static instance: AaveBalance
 
   private _$store: Store<any>
   private _balanceData: AaveBalanceData[] = []
@@ -91,20 +76,34 @@ export class AaveBalance {
     this.address = address
   }
 
+  // private constructor(store: Store<any>, chainId: number, address: string) {
+  //   this._$store = store
+  //   this.chainId = chainId
+  //   this.address = address
+  // }
+  //
+  // static getInstance(store: Store<any>, chainId: number, address: string) {
+  //   if (this.instance) {
+  //     return this.instance
+  //   }
+  //
+  //   this.instance = new AaveBalance(store, chainId, address)
+  //   return this.instance
+  // }
+
   get cols() {
     return [
       {
         text: 'Assets',
         align: 'left',
-        class: 'text-no-wrap',
-        value: 'balance.asset_contract_ticker_symbol',
-        width: 200,
+        class: 'text-no-wrap justify-content-between',
+        value: 'underlying.contract_symbol',
       },
       {
         text: 'Balance',
         align: 'left',
         class: 'text-no-wrap',
-        value: 'balance.available_balance',
+        value: 'underlying.available_balance',
       },
       {
         text: 'Supplied',
@@ -169,14 +168,12 @@ export class AaveAssets {
       {
         text: 'Assets',
         align: 'start',
-        value: 'underlying.contract_ticker_symbol',
-        width: 240,
+        value: 'underlying.contract_symbol',
       },
       {
-        text: 'Last Price',
+        text: 'Balance',
         align: 'left',
-        class: 'text-no-wrap',
-        value: 'underlying.quote_rate',
+        value: 'underlying.available_balance',
       },
       {
         text: 'Supply',
@@ -184,21 +181,21 @@ export class AaveAssets {
         value: 'supply_apy',
       },
       {
-        text: 'Borrow APY',
-        align: 'center',
-        value: 'variable_borrow_apr',
-      },
-      {
         text: 'Borrow APR',
         align: 'center',
         value: 'stable_borrow_apr',
       },
       {
+        text: 'Borrow APY',
+        align: 'center',
+        value: 'variable_borrow_apr',
+      },
+
+      {
         text: '',
         align: 'center',
         value: 'actions',
         sortable: false,
-        width: 310,
       },
     ]
   }
@@ -215,6 +212,9 @@ export class AaveAssets {
     try {
       return await this._$store.dispatch('aave/getAaveAssets', {
         chainId,
+        store: this._$store,
+        // address: this._$store.state.wallet.address,
+        address: '0xf705b9ba1908ca505537f309b08e6949c1b8f31f',
       })
     } catch (err) {
       return []

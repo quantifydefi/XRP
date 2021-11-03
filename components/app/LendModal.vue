@@ -35,14 +35,14 @@
                   <v-avatar class="mx-n2">
                     <img
                       alt="aave logo"
-                      :src="data.logo_url"
+                      :src="data.underlying.logo_url"
                       @error="balances.altImage($event)"
                     />
                   </v-avatar>
                   <span
                     class="ml-4"
                     :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    >{{ data.asset_contract_ticker_symbol }}</span
+                    >{{ data.underlying.contract_symbol }}</span
                   >
                 </v-chip>
               </v-col>
@@ -77,17 +77,17 @@
                     style="font-family: Consolas, Monaco, monospace !important"
                   >
                     {{
-                      data.available_balance > 0
-                        ? data.available_balance.toFixed(4)
-                        : data.available_balance
+                      data.underlying.available_balance > 0
+                        ? data.underlying.available_balance.toFixed(4)
+                        : data.underlying.available_balance
                     }}
                   </span>
                 </span>
                 <v-spacer />
                 <span
                   v-if="
-                    data.available_balance > 0 &&
-                    data.available_balance > lendInput
+                    data.underlying.available_balance > 0 &&
+                    data.underlying.available_balance > lendInput
                   "
                   style="cursor: pointer"
                   class="
@@ -97,7 +97,7 @@
                     primary--text
                     text--lighten-1
                   "
-                  @click="lendInput = data.available_balance"
+                  @click="lendInput = data.underlying.available_balance"
                   >set max</span
                 >
                 <span
@@ -108,7 +108,7 @@
                     color: $vuetify.theme.themes[theme].baseText,
                   }"
                 >
-                  ~{{ (lendInput * data.quote_rate).toFixed(4) }}
+                  ~{{ (lendInput * data.underlying.quote_rate).toFixed(4) }}
                   <small>USD</small></span
                 >
               </v-col>

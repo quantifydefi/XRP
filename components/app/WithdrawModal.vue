@@ -35,14 +35,14 @@
                   <v-avatar class="mx-n2">
                     <img
                       alt="aave logo"
-                      :src="data.logo_url"
+                      :src="data.underlying.logo_url"
                       @error="balances.altImage($event)"
                     />
                   </v-avatar>
                   <span
                     class="ml-4"
                     :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    >{{ data.asset_contract_ticker_symbol }}</span
+                    >{{ data.underlying.contract_symbol }}</span
                   >
                 </v-chip>
               </v-col>
@@ -76,18 +76,14 @@
                   <span
                     style="font-family: Consolas, Monaco, monospace !important"
                   >
-                    {{
-                      data.available_balance > 0
-                        ? data.available_balance.toFixed(4)
-                        : data.available_balance
-                    }}
+                    {{ data.supply_position.balance }}
                   </span>
                 </span>
                 <v-spacer />
                 <span
                   v-if="
-                    data.available_balance > 0 &&
-                    data.available_balance > withdrawInput
+                    data.supply_position.balance > 0 &&
+                    data.supply_position.balance > withdrawInput
                   "
                   style="cursor: pointer"
                   class="
@@ -97,7 +93,7 @@
                     primary--text
                     text--lighten-1
                   "
-                  @click="withdrawInput = data.available_balance"
+                  @click="withdrawInput = data.supply_position.balance"
                   >set max</span
                 >
                 <span
@@ -108,7 +104,9 @@
                     color: $vuetify.theme.themes[theme].baseText,
                   }"
                 >
-                  ~{{ (withdrawInput * data.quote_rate).toFixed(4) }}
+                  ~{{
+                    (withdrawInput * data.underlying.quote_rate).toFixed(4)
+                  }}
                   <small>USD</small></span
                 >
               </v-col>

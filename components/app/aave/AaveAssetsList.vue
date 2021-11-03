@@ -53,39 +53,58 @@
                 </div>
               </template>
 
-              <template #[`item.underlying.contract_ticker_symbol`]="{ item }">
-                <v-row class="text-no-wrap text-left py-3 overflow-hidden">
+              <template #[`item.underlying.contract_symbol`]="{ item }">
+                <v-row
+                  no-gutters
+                  class="text-no-wrap text-left py-3 overflow-hidden"
+                  style="min-width: 240px"
+                >
                   <v-col
                     cols="2"
                     style="
                       display: flex;
                       justify-content: center;
                       align-items: center;
-                      padding-left: 30px;
                     "
                   >
                     <v-avatar size="36">
                       <img
-                        :alt="`${item.underlying.contract_ticker_symbol} logo`"
+                        :alt="`${item.underlying.contract_symbol} logo`"
                         :src="item.underlying.logo_url"
                         @error="aaveAssets.setAltImg"
                       />
                     </v-avatar>
                   </v-col>
-                  <v-col cols="9" class="pl-5">
+                  <v-col cols="9" class="pl-3">
                     <div class="subtitle-2">
                       {{ item.underlying.contract_name }}
+                      <span class="subtitle-2 font-weight-regular">
+                        {{ item.underlying.contract_symbol }}</span
+                      >
                     </div>
-                    <div class="subtitle-2 font-weight-regular mt-n1">
-                      {{ item.underlying.contract_ticker_symbol }}
+
+                    <div class="subtitle-2 font-weight-regular text-no-wrap">
+                      {{ item.underlying.quote_rate.toFixed(2) }}
+                      <span class="caption">USD</span>
                     </div>
                   </v-col>
                 </v-row>
               </template>
 
-              <template #[`item.underlying.quote_rate`]="{ item }">
-                <div class="subtitle-2 text-no-wrap">
-                  {{ item.underlying.quote_rate.toFixed(2) }} <small>USD</small>
+              <template #[`item.underlying.available_balance`]="{ item }">
+                <div style="min-width: 70px">
+                  <div class="subtitle-2">
+                    {{ item.underlying.available_balance.toFixed(2) }}
+                  </div>
+                  <div class="text-no-wrap">
+                    {{
+                      (
+                        item.underlying.quote_rate *
+                        item.underlying.available_balance
+                      ).toFixed(2)
+                    }}
+                    <span class="caption">USD</span>
+                  </div>
                 </div>
               </template>
 
@@ -93,7 +112,7 @@
                 <div class="text-no-wrap">
                   <v-avatar size="32">
                     <img
-                      :alt="`${item.atoken.contract_ticker_symbol} logo`"
+                      :alt="`${item.atoken.contract_symbol} logo`"
                       :src="item.atoken.logo_url"
                       @error="aaveAssets.setAltImg"
                     />
@@ -105,14 +124,48 @@
               </template>
 
               <template #[`item.supply_apy`]="{ item }">
-                <div class="text-capitalize text-no-wrap">
+                <div class="text-no-wrap">
+                  <div v-if="item.supply_position.supplied" class="py-3">
+                    <div
+                      class="
+                        subtitle-2
+                        font-weight-regular
+                        text-capitalize text-no-wrap
+                      "
+                    >
+                      {{ item.supply_position.balance_quote.toFixed(2) }}
+                      <small>USD</small>
+                    </div>
+                    <div class="caption text-no-wrap">
+                      {{ item.supply_position.supplied }}
+                    </div>
+                    <div class="text-capitalize text-no-wrap">
+                      <v-chip
+                        small
+                        label
+                        color="grey darken-2"
+                        outlined
+                        class="mt-2 caption font-weight-medium rounded-0"
+                      >
+                        <span
+                          :style="{
+                            width: '70px',
+                            color: $vuetify.theme.themes[theme].baseText,
+                          }"
+                        >
+                          {{ (item.supply_position.apy * 100).toFixed(2) }}% APY
+                        </span>
+                      </v-chip>
+                    </div>
+                  </div>
+
                   <v-chip
+                    v-else
                     small
                     label
-                    tile
-                    color="grey darken-2"
                     outlined
-                    class="mt-1 caption font-weight-medium"
+                    color="grey darken-2"
+                    class="mt-2 caption font-weight-medium rounded-0"
                   >
                     <span
                       :style="{
@@ -131,9 +184,8 @@
                   small
                   label
                   outlined
-                  tile
                   color="grey darken-2"
-                  class="mt-1 caption font-weight-medium"
+                  class="mt-2 caption font-weight-medium rounded-0"
                 >
                   <span
                     :style="{
@@ -147,96 +199,138 @@
               </template>
 
               <template #[`item.stable_borrow_apr`]="{ item }">
-                <v-chip
-                  small
-                  label
-                  outlined
-                  tile
-                  color="grey darken-2"
-                  class="mt-1 caption font-weight-medium"
-                >
-                  <span
-                    :style="{
-                      width: '70px',
-                      color: $vuetify.theme.themes[theme].baseText,
-                    }"
+                <div class="text-no-wrap">
+                  <div v-if="item.borrow_position.apr" class="py-3">
+                    <div
+                      class="
+                        subtitle-2
+                        font-weight-regular
+                        text-capitalize text-no-wrap
+                      "
+                    >
+                      {{ item.borrow_position.balance_quote.toFixed(2) }}
+                      <small>USD</small>
+                    </div>
+                    <div class="caption text-capitalize text-no-wrap">
+                      {{ item.borrow_position.borrowed }}
+                    </div>
+                    <div class="text-capitalize text-no-wrap">
+                      <v-chip
+                        small
+                        label
+                        outlined
+                        color="grey darken-2"
+                        class="mt-2 caption font-weight-medium rounded-0"
+                      >
+                        <span
+                          :style="{
+                            width: '70px',
+                            color: $vuetify.theme.themes[theme].baseText,
+                          }"
+                        >
+                          {{ (item.borrow_position.apr * 100).toFixed(2) }}% APR
+                        </span>
+                      </v-chip>
+                    </div>
+                  </div>
+                  <v-chip
+                    v-else
+                    small
+                    label
+                    outlined
+                    color="grey darken-2"
+                    class="mt-2 caption font-weight-medium rounded-0"
                   >
-                    {{ (item.stable_borrow_apr * 100).toFixed(2) }}% APR
-                  </span>
-                </v-chip>
+                    <span
+                      :style="{
+                        width: '70px',
+                        color: $vuetify.theme.themes[theme].baseText,
+                      }"
+                    >
+                      {{ (item.stable_borrow_apr * 100).toFixed(2) }}% APR
+                    </span>
+                  </v-chip>
+                </div>
               </template>
 
               <template #[`item.actions`]="{ item }">
-                <div class="text-no-wrap">
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    class="my-1 mx-3 rounded-xl"
-                    outlined
-                    color="grey darken-2"
-                    @click="deposit(item)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                <v-row no-gutters class="text-no-wrap" style="min-width: 480px">
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      class="mt-3 mx-3 rounded-xl"
+                      outlined
+                      color="grey darken-2"
+                      @click="deposit(item)"
                     >
-                      Deposit
-                    </span>
-                  </v-btn>
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    class="my-1 mx-3 rounded-xl"
-                    outlined
-                    color="grey darken-2"
-                    @click="borrow(item)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Deposit
+                      </span>
+                    </v-btn>
+                  </v-col>
+
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      class="mt-3 mx-3 rounded-xl"
+                      outlined
+                      color="grey darken-2"
+                      @click="borrow(item)"
                     >
-                      Borrow
-                    </span>
-                  </v-btn>
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    class="my-1 mx-3 rounded-xl"
-                    outlined
-                    color="grey darken-2"
-                    @click="lend(item)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Borrow
+                      </span>
+                    </v-btn>
+                  </v-col>
+
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      class="mt-3 mx-3 rounded-xl"
+                      outlined
+                      color="grey darken-2"
+                      @click="lend(item)"
                     >
-                      Lend
-                    </span>
-                  </v-btn>
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    outlined
-                    class="my-1 mx-3 rounded-xl"
-                    color="grey darken-2"
-                    @click="withdraw(item)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Lend
+                      </span>
+                    </v-btn>
+                  </v-col>
+
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      outlined
+                      class="mt-3 mx-3 rounded-xl"
+                      color="grey darken-2"
+                      @click="withdraw(item)"
                     >
-                      Withdraw
-                    </span>
-                  </v-btn>
-                </div>
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Withdraw
+                      </span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </template>
             </v-data-table>
           </v-card>

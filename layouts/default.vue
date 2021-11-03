@@ -367,8 +367,10 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
   }) {
     if (this.configs) {
       this.configs.networks.defaultNetwork = network
+      const pages: string[] = ['app-id-aave', 'app-id-transactions']
+      const route: string = this.$route.name!
 
-      if (this.$route.name !== 'index') {
+      if (pages.includes(route)) {
         const path = this.$route.path.split('/')
         path[2] = network.chainId.toString()
 

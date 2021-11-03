@@ -34,10 +34,11 @@
                 backgroundColor: $vuetify.theme.themes[theme].background,
               }"
             >
-              <template
-                #[`item.balance.asset_contract_ticker_symbol`]="{ item }"
-              >
-                <v-row class="text-no-wrap text-left py-3">
+              <template #[`item.underlying.contract_symbol`]="{ item }">
+                <v-row
+                  class="text-no-wrap text-left py-3"
+                  style="min-width: 180px"
+                >
                   <v-col
                     cols="2"
                     style="
@@ -49,36 +50,37 @@
                   >
                     <v-avatar size="36">
                       <img
-                        :alt="`${item.balance.asset_contract_ticker_symbol} logo`"
-                        :src="item.balance.logo_url"
+                        :alt="`${item.underlying.logo_url} logo`"
+                        :src="item.underlying.logo_url"
                         @error="aaveBalance.setAltImg"
                       />
                     </v-avatar>
                   </v-col>
                   <v-col cols="9" class="pl-5">
                     <div class="subtitle-2">
-                      {{ item.balance.asset_contract_ticker_symbol }}
+                      {{ item.underlying.contract_symbol }}
                     </div>
                     <div class="subtitle-2 font-weight-regular mt-n1">
-                      {{ item.balance.quote_rate }} <small>USD</small>
+                      {{ item.underlying.quote_rate }} <small>USD</small>
                     </div>
                   </v-col>
                 </v-row>
               </template>
 
-              <template #[`item.balance.available_balance`]="{ item }">
-                <div>
+              <template #[`item.underlying.available_balance`]="{ item }">
+                <div style="min-width: 100px">
                   <div class="subtitle-2">
                     {{
-                      item.balance.available_balance > 0
-                        ? item.balance.available_balance.toFixed(4)
-                        : item.balance.available_balance
+                      item.underlying.available_balance > 0
+                        ? item.underlying.available_balance.toFixed(4)
+                        : item.underlying.available_balance
                     }}
                   </div>
                   <div>
                     {{
                       (
-                        item.balance.available_balance * item.balance.quote_rate
+                        item.underlying.available_balance *
+                        item.underlying.quote_rate
                       ).toFixed(2)
                     }}
                     <span class="caption">USD</span>
@@ -102,13 +104,12 @@
                     {{ item.supply_position.supplied }}
                   </div>
                   <div class="text-capitalize text-no-wrap">
-                    <v-btn
-                      x-small
-                      outlined
-                      tile
-                      width="80"
+                    <v-chip
+                      small
+                      label
                       color="grey darken-2"
-                      class="mt-1 caption"
+                      outlined
+                      class="mt-1 caption font-weight-medium rounded-0"
                     >
                       <span
                         :style="{
@@ -116,7 +117,7 @@
                         }"
                       >
                         {{ (item.supply_position.apy * 100).toFixed(2) }}% APY
-                      </span></v-btn
+                      </span></v-chip
                     >
                   </div>
                 </div>
@@ -138,13 +139,12 @@
                     {{ item.borrow_position.borrowed }}
                   </div>
                   <div class="text-capitalize text-no-wrap">
-                    <v-btn
-                      x-small
-                      outlined
-                      tile
-                      width="85"
+                    <v-chip
+                      small
+                      label
                       color="grey darken-2"
-                      class="mt-1 caption"
+                      outlined
+                      class="mt-1 caption font-weight-medium rounded-0"
                     >
                       <span
                         :style="{
@@ -152,83 +152,90 @@
                         }"
                       >
                         {{ (item.borrow_position.apr * 100).toFixed(2) }}% APR
-                      </span></v-btn
+                      </span></v-chip
                     >
                   </div>
                 </div>
               </template>
 
               <template #[`item.actions`]="{ item }">
-                <div class="text-no-wrap">
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    class="my-1 mx-3"
-                    outlined
-                    color="grey darken-2"
-                    @click="deposit(item.balance)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                <v-row no-gutters class="text-no-wrap" style="min-width: 480px">
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      class="mt-2 mx-3 rounded-xl"
+                      outlined
+                      color="grey darken-2"
+                      @click="deposit(item)"
                     >
-                      Deposit
-                    </span>
-                  </v-btn>
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    class="my-1 mx-3"
-                    outlined
-                    color="grey darken-2"
-                    @click="borrow(item.balance)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Deposit
+                      </span>
+                    </v-btn>
+                  </v-col>
+
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      class="mt-2 mx-3 rounded-xl"
+                      outlined
+                      color="grey darken-2"
+                      @click="borrow(item)"
                     >
-                      Borrow
-                    </span>
-                  </v-btn>
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    class="my-1 mx-3"
-                    outlined
-                    color="grey darken-2"
-                    @click="lend(item.balance)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Borrow
+                      </span>
+                    </v-btn>
+                  </v-col>
+
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      class="mt-2 mx-3 rounded-xl"
+                      outlined
+                      color="grey darken-2"
+                      @click="lend(item)"
                     >
-                      Lend
-                    </span>
-                  </v-btn>
-                  <v-btn
-                    tile
-                    small
-                    width="120"
-                    outlined
-                    class="my-1 mx-3"
-                    color="grey darken-2"
-                    @click="withdraw(item.balance)"
-                  >
-                    <span
-                      :style="{
-                        color: $vuetify.theme.themes[theme].baseText,
-                      }"
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Lend
+                      </span>
+                    </v-btn>
+                  </v-col>
+
+                  <v-col cols="3">
+                    <v-btn
+                      small
+                      width="110"
+                      outlined
+                      class="mt-2 mx-3 rounded-xl"
+                      color="grey darken-2"
+                      @click="withdraw(item)"
                     >
-                      Withdraw
-                    </span>
-                  </v-btn>
-                </div>
+                      <span
+                        :style="{
+                          color: $vuetify.theme.themes[theme].baseText,
+                        }"
+                      >
+                        Withdraw
+                      </span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </template>
             </v-data-table>
           </v-card>

@@ -174,14 +174,12 @@ const BalancesGrid: any = () => ({
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
-      address: (state: any) => state.wallet.address,
     }),
   },
 })
 export default class Portfolio extends Vue {
   showOverlay = true
   balances: Balance | null = null
-  address!: string
   theme!: UiState
 
   async mounted() {
