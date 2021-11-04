@@ -213,8 +213,8 @@ export class AaveAssets {
       return await this._$store.dispatch('aave/getAaveAssets', {
         chainId,
         store: this._$store,
-        // address: this._$store.state.wallet.address,
-        address: '0xf705b9ba1908ca505537f309b08e6949c1b8f31f',
+        address: this._$store.state.wallet.address,
+        // address: '0xf705b9ba1908ca505537f309b08e6949c1b8f31f',
       })
     } catch (err) {
       return []
