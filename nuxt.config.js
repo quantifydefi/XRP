@@ -63,8 +63,23 @@ export default {
         debug: { sendHitTask: true },
       },
     ],
+    '@nuxtjs/apollo',
     '@nuxtjs/sitemap', // must be last
   ],
+
+  // Apollo client setup
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint:
+          'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+      },
+      aaveV2: {
+        httpEndpoint:
+          'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
+      },
+    },
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {

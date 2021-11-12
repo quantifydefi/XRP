@@ -76,21 +76,6 @@ export class AaveBalance {
     this.address = address
   }
 
-  // private constructor(store: Store<any>, chainId: number, address: string) {
-  //   this._$store = store
-  //   this.chainId = chainId
-  //   this.address = address
-  // }
-  //
-  // static getInstance(store: Store<any>, chainId: number, address: string) {
-  //   if (this.instance) {
-  //     return this.instance
-  //   }
-  //
-  //   this.instance = new AaveBalance(store, chainId, address)
-  //   return this.instance
-  // }
-
   get cols() {
     return [
       {
