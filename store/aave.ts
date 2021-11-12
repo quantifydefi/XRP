@@ -1,12 +1,32 @@
 import type { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
+import gql from 'graphql-tag'
+import { RAY_UNITS } from '~/constants/decimals'
+
 import { AaveAssetData, AaveBalanceData, AaveBalance } from '~/models/aave'
 import { Balance, BalanceData } from '~/models/balance'
+
+const AAVE_V2_RESERVES_QUERY = gql`
+  query {
+    reserves(subgraphError: allow, where: { borrowingEnabled: true }) {
+      underlyingAsset
+      name
+      symbol
+      decimals
+      price {
+        id
+        priceInEth
+      }
+      liquidityRate
+      stableBorrowRate
+      variableBorrowRate
+    }
+  }
+`
 
 export const state = () => ({})
 export type AaveState = ReturnType<typeof state>
 export const mutations: MutationTree<AaveState> = {}
-
 export const actions: ActionTree<AaveState, AaveState> = {
   async getAaveBalances(
     _,
@@ -89,31 +109,34 @@ export const actions: ActionTree<AaveState, AaveState> = {
    * **/
   async getAaveAssets(
     _,
-    { chainId, store, address }
+    { chainId, store, address, apollo }
   ): Promise<AaveAssetData[]> {
     try {
       const aaveBalance = new AaveBalance(store, chainId, address)
-
       await aaveBalance.getData()
 
-      const {
-        data: { data: items },
-      } = await this.$axios.get(
-        `https://api.covalenthq.com/v1/${chainId}/networks/aave_v2/assets/?key=${process.env.COVALENT_API_KEY}`
-      )
+      const balanceInstance = Balance.getInstance(store)
+      let balances: BalanceData[] = []
 
       const assets = []
 
-      for (const asset of items.items) {
+      const {
+        data: { reserves },
+      } = await apollo.query({
+        client: 'aaveV2',
+        query: AAVE_V2_RESERVES_QUERY,
+      })
+
+      for (const asset of reserves) {
         const item: AaveAssetData = {
           underlying: {
-            contract_decimals: asset.underlying.contract_decimals,
-            contract_name: asset.underlying.contract_name,
-            contract_symbol: asset.underlying.contract_ticker_symbol,
-            contract_address: asset.underlying.contract_address,
-            logo_url: asset.underlying.logo_url,
+            contract_decimals: asset.decimals,
+            contract_name: asset.name,
+            contract_symbol: asset.symbol,
+            contract_address: asset.underlyingAsset,
+            logo_url: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${asset.symbol.toLowerCase()}.png`,
             available_balance: 0,
-            quote_rate: asset.underlying.quote_rate,
+            quote_rate: asset.price.priceInEth / 10 ** asset.decimals,
           },
           supply_position: {
             supplied: '',
@@ -127,14 +150,10 @@ export const actions: ActionTree<AaveState, AaveState> = {
             balance_quote: 0,
             apr: 0,
           },
-          variable_borrow_apr: asset.variable_borrow_apr,
-          stable_borrow_apr: asset.stable_borrow_apr,
-          supply_apy: asset.supply_apy,
+          variable_borrow_apr: asset.variableBorrowRate / 10 ** RAY_UNITS,
+          stable_borrow_apr: asset.stableBorrowRate / 10 ** RAY_UNITS,
+          supply_apy: asset.liquidityRate / 10 ** RAY_UNITS,
         }
-
-        const balanceInstance = Balance.getInstance(store)
-
-        let balances: BalanceData[] = []
 
         if (chainId === 1) {
           balances = balanceInstance.ethereumBalance
@@ -169,7 +188,9 @@ export const actions: ActionTree<AaveState, AaveState> = {
           }
         }
 
-        assets.push(item)
+        if (!item.underlying.contract_symbol.includes('Amm')) {
+          assets.push(item)
+        }
       }
 
       return plainToClass(AaveAssetData, assets as AaveAssetData[])
