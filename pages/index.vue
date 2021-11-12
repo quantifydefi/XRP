@@ -38,8 +38,9 @@
                     :class="$vuetify.breakpoint.smAndDown ? 'mt-n5 pt-0' : ''"
                     cols="12"
                     md="1"
-                    ><connect-to-wallet-button
-                  /></v-col>
+                  >
+                    <connect-to-wallet-button />
+                  </v-col>
                 </v-row>
               </client-only>
             </v-row>
@@ -57,13 +58,13 @@
           </v-col>
         </v-row>
         <v-row v-if="isButtonVisible" style="margin-top: 140px">
-          <v-col class="py-0"
-            ><p class="text-center">
+          <v-col class="py-0">
+            <p class="text-center">
               <v-btn depressed tile height="42" @click="goTo">
-                <v-icon size="42"> mdi-chevron-down </v-icon>
+                <v-icon size="42"> mdi-chevron-down</v-icon>
               </v-btn>
-            </p></v-col
-          >
+            </p>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>

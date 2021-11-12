@@ -141,11 +141,14 @@ export class AaveAssets {
   loading = false
 
   private _$store: Store<any>
+  private _$apollo: any
+
   private _ethereumAssets: AaveAssetData[] = []
   private _polygonAssets: AaveAssets[] = []
 
-  constructor(store: Store<any>) {
+  constructor(store: Store<any>, apollo: any) {
     this._$store = store
+    this._$apollo = apollo
   }
 
   get cols() {
@@ -200,6 +203,7 @@ export class AaveAssets {
         store: this._$store,
         address: this._$store.state.wallet.address,
         // address: '0xf705b9ba1908ca505537f309b08e6949c1b8f31f',
+        apollo: this._$apollo,
       })
     } catch (err) {
       return []

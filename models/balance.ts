@@ -169,6 +169,7 @@ export class Balance {
 
   /** Returns the total balances for all supported chains **/
   get totalBalance() {
+
     let total = 0
 
     const assets = [...this._ethereumBalance, ...this._binanceBalance, ...this._polygonBalance, ...this._fantomBalance, ...this._avalancheBalance]
@@ -178,6 +179,7 @@ export class Balance {
     }
 
     return Helper.priceFormatter(total)
+
   }
 
   /** Returns token image url **/

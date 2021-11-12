@@ -328,6 +328,10 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
   }
 
   async mounted() {
+    this.configs = appConfig
+
+    this.balances = Balance.getInstance(this.$store)
+
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)
@@ -351,10 +355,6 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
         }
       })
     }
-
-    this.configs = appConfig
-
-    this.balances = Balance.getInstance(this.$store)
 
     await this.balances.getBalances()
   }
