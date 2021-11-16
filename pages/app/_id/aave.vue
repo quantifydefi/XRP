@@ -35,6 +35,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
+
 import AaveBalances from '~/components/app/aave/AaveBalances.vue'
 import AaveAssetsList from '~/components/app/aave/AaveAssetsList.vue'
 

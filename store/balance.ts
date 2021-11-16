@@ -1,6 +1,7 @@
 import type { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { BalanceData } from '~/models/balance'
+import { CoinGeckoTokenData } from '~/models/tokenList'
 
 export const state = () => ({})
 export type BalanceState = ReturnType<typeof state>
@@ -8,9 +9,11 @@ export type BalanceState = ReturnType<typeof state>
 export const mutations: MutationTree<BalanceState> = {}
 
 export const actions: ActionTree<BalanceState, BalanceState> = {
-  async getBalances(_, { chainId, address }): Promise<BalanceData[]> {
+  async getBalances(
+    _,
+    { tokenList, chainId, address }
+  ): Promise<BalanceData[]> {
     const balancesData: BalanceData[] = []
-
     try {
       const {
         data: {
@@ -22,7 +25,11 @@ export const actions: ActionTree<BalanceState, BalanceState> = {
 
       if (balances) {
         for (const balance of balances) {
-          if (balance.type !== 'dust') {
+          const verifiedToken = tokenList.find((token: CoinGeckoTokenData) => {
+            return token.address === balance.contract_address
+          })
+
+          if (balance.type !== 'dust' && verifiedToken) {
             const balanceRounded =
               balance.balance / 10 ** balance.contract_decimals
 

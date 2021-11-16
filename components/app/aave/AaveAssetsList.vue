@@ -84,7 +84,7 @@
                     </div>
 
                     <div class="subtitle-2 font-weight-regular text-no-wrap">
-                      {{ item.underlying.quote_rate.toFixed(2) }}
+                      {{ item.underlying.quote_rate.toFixed(4) }}
                       <span class="caption">USD</span>
                     </div>
                   </v-col>
@@ -378,6 +378,8 @@ export default class Aave extends Vue {
   }
 
   async mounted() {
+    await this.$store.dispatch('rate/getEthUsdRate', { apollo: this.$apollo })
+
     /** If chain id is Ethereum or Polygon, get Aave market assets within the network **/
     if (this.$route.params.id === '1' || this.$route.params.id === '137') {
       this.aaveAssets = new AaveAssets(this.$store, this.$apollo)

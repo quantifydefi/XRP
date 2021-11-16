@@ -128,6 +128,7 @@ export class Balance {
   async fetchChainBalance(chainId: ChainOptions) {
     try {
       return await this._$store.dispatch('balance/getBalances', {
+        tokenList: this._$store.state.coinList.coinGeckoTokenList,
         chainId: chainId,
         address: this._$store.state.wallet.address,
         // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F'

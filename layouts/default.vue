@@ -328,6 +328,9 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
   }
 
   async mounted() {
+    /** Fetch CoinGecko supported tokens **/
+    await this.$store.dispatch('coinList/getCoinGeckoTokenList')
+
     this.configs = appConfig
 
     this.balances = Balance.getInstance(this.$store)

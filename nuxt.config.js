@@ -71,12 +71,12 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint:
-          'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+        httpEndpoint: 'https://graph.defiheatmap.com/query',
       },
       aaveV2: {
         httpEndpoint:
-          'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
+          'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+        // 'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
       },
     },
   },

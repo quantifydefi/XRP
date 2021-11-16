@@ -136,7 +136,8 @@ export const actions: ActionTree<AaveState, AaveState> = {
             contract_address: asset.underlyingAsset,
             logo_url: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${asset.symbol.toLowerCase()}.png`,
             available_balance: 0,
-            quote_rate: asset.price.priceInEth / 10 ** asset.decimals,
+            quote_rate:
+              asset.price.priceInEth / 10 ** 18 / store.state.rate.ethUsdRate,
           },
           supply_position: {
             supplied: '',
