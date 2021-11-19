@@ -7,7 +7,7 @@
       :color="$vuetify.theme.themes[theme].background"
       elevation="0"
       :style="{
-        marginTop: '-2px',
+        marginTop: '-1px',
         borderBottom: `1px solid ${$vuetify.theme.themes[theme].outline}`,
       }"
     >
@@ -19,8 +19,19 @@
       >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp"
-        >{{ pageTitle[$route.name] }}
+      <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">
+        <v-avatar
+          v-if="$route.name === 'app-id-aave' || $route.name === 'app-id-curve'"
+          size="28"
+          class="mr-2"
+        >
+          <img
+            :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${
+              protocolSrc[$route.name]
+            }.png`"
+          />
+        </v-avatar>
+        {{ pageTitle[$route.name] }}
       </v-toolbar-title>
       <v-spacer />
 
@@ -325,6 +336,12 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
     team: 'Our Team',
     'wallet-id': 'Portfolio',
     'app-id-aave': 'Aave v2',
+    'app-id-curve': 'Curve',
+  }
+
+  protocolSrc = {
+    'app-id-aave': 'aave',
+    'app-id-curve': 'crv',
   }
 
   async mounted() {
