@@ -31,9 +31,10 @@
       </v-card>
     </v-col>
     <v-overlay
+      absolute
       :opacity="1"
       :value="!isHeatmapReady"
-      :color="ui[ui.theme].overlayColor"
+      :color="$vuetify.theme.themes[theme].overlay"
     >
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
       <v-progress-linear
@@ -70,7 +71,7 @@ import { UiState } from '~/store/ui'
   computed: {
     ...mapState({
       // TODO: Add models for UI types
-      ui: (state: any) => state.ui,
+      theme: (state: any) => state.ui.theme,
     }),
   },
   head(): object {

@@ -1,273 +1,193 @@
 <template>
-  <v-row justify="center">
-    <v-col v-if="!etherData" cols="12">
-      <div class="text-center">
-        <v-progress-circular
-          indeterminate
-          size="40"
-          color="primary"
-          width="5"
-        />
-      </div>
-    </v-col>
+  <v-row no-gutters justify="center">
+    <v-overlay
+      :value="showOverlay"
+      :opacity="1"
+      absolute
+      :color="$vuetify.theme.themes[theme].overlay"
+    >
+      <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+      <v-progress-linear
+        color="primary"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-overlay>
 
-    <v-col v-if="etherData" cols="9">
-      <v-row>
-        <v-col cols="8">
-          <h1 class="text-h3">$ {{ $numberWithCommas(portfolioBalance) }}</h1>
-          <a
-            target="_blank"
-            class="text-h5 primary--text text-decoration-none"
-            :href="`https://etherscan.io/address/${address}`"
-          >
-            {{ address }}
-          </a>
-        </v-col>
-        <v-spacer />
-        <v-col
-          ><div class="text-right">
-            <v-btn text icon color="red" @click="disconnect">
-              <v-icon size="28">mdi-power-standby</v-icon>
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="6">
-          <v-card
-            height="310"
-            tile
-            outlined
-            :color="theme === 'dark' ? 'transparent' : ''"
-            :style="
-              theme === 'dark' ? 'border: 1px solid #424242 !important' : ''
-            "
-          >
-            <v-card-title>Ethereum Overview</v-card-title>
+    <v-col cols="12">
+      <v-row no-gutters>
+        <client-only>
+          <v-row v-if="!showOverlay && balances" class="px-1" data-nosnippet>
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card
+                tile
+                outlined
+                height="522"
+                :style="{
+                  backgroundColor: $vuetify.theme.themes[theme].background,
+                }"
+              >
+                <v-card-title
+                  class="pa-0 ma-0"
+                  :style="{
+                    backgroundColor: $vuetify.theme.themes[theme].background,
+                  }"
+                >
+                  <v-col cols="6" class="d-flex">
+                    <h1 class="title">My Assets</h1>
+                  </v-col>
 
-            <v-simple-table class="transparent">
-              <template #default>
-                <tbody>
-                  <tr>
-                    <td>Balance ETH</td>
-                    <td>{{ etherData.contract_balance }} Ether</td>
-                  </tr>
-                  <tr>
-                    <td>Balance USD</td>
-                    <td>$ {{ etherData.balance_usd.toFixed(4) }}</td>
-                  </tr>
+                  <v-col cols="6" class="text-right"
+                    ><h1 class="title">
+                      {{ balances.totalBalance }}
+                    </h1></v-col
+                  >
+                </v-card-title>
+                <v-divider />
 
-                  <tr>
-                    <td>Ethereum Price USD</td>
-                    <td>$ {{ etherData.eth_price_usd }}</td>
-                  </tr>
+                <v-card-title
+                  v-for="(item, i) in balances.networks"
+                  :key="i"
+                  class="pa-0 ma-0"
+                >
+                  <v-col cols="6" class="d-flex">
+                    <v-avatar size="26px">
+                      <v-img
+                        :src="balances.tokenImage(item.symbol)"
+                        :lazy-src="balances.tokenImage(item.symbol)"
+                      ></v-img>
+                    </v-avatar>
+                    <h1 class="subtitle-1 font-weight-medium pl-3">
+                      {{ item.network }}
+                    </h1>
+                  </v-col>
+                </v-card-title>
+              </v-card>
+            </v-col>
 
-                  <tr>
-                    <td>Gas Prices (GWEI)</td>
+            <!--      Ethereum Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Ethereum"
+                    icon="eth"
+                    :cols="balances.cols"
+                    :grid-data="balances.ethereumBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
 
-                    <td>
-                      <span>
-                        {{ gasPrice.slow }}
-                        <small class="grey--text text--lighten-1">Slow</small>
-                      </span>
+            <!--      Binance Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Binance"
+                    icon="bnb"
+                    :cols="balances.cols"
+                    :grid-data="balances.binanceBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
 
-                      <span class="mx-2">
-                        {{ gasPrice.average }}
-                        <small class="grey--text text--lighten-1"
-                          >Average</small
-                        >
-                      </span>
+            <!--      Polygon Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Polygon"
+                    icon="matic"
+                    :cols="balances.cols"
+                    :grid-data="balances.polygonBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
 
-                      <span>
-                        {{ gasPrice.fast }}
-                        <small class="grey--text text--lighten-1">Fast</small>
-                      </span>
-                    </td>
-                  </tr>
+            <!--      Fanthom Opera Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Fantom"
+                    icon="ftm"
+                    :cols="balances.cols"
+                    :grid-data="balances.fanthomBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
 
-                  <tr>
-                    <td>Uniswap Pool</td>
-                    <td>{{ etherData.token_pair }}</td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-card>
-        </v-col>
-        <v-col cols="6">
-          <v-card height="310" tile outlined>
-            <client-only>
-              <marketcap
-                :data="balances"
-                :tile-tooltip="heatmapConfig.blockSize.toolTip"
-                :data-field="heatmapConfig.blockSize.dataField"
-                :tile-body="heatmapConfig.blockSize.tile"
-                :chart-height="310"
-                :color-field="heatmapConfig.colorField"
-              />
-            </client-only>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-divider />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-card
-            v-if="balances"
-            height="100%"
-            tile
-            outlined
-            :color="theme === 'dark' ? 'transparent' : ''"
-          >
-            <v-btn-toggle v-model="table" tile color="primary" group mandatory>
-              <v-btn value="positions" class="px-2" height="38">
-                Positions
-              </v-btn>
-              <v-btn value="transactions" class="px-2" height="38">
-                Transactions
-              </v-btn>
-
-              <v-btn value="deposits" class="px-2" height="38"
-                >Deposits/Stakes
-              </v-btn>
-              <v-btn value="loans" class="px-2" height="38">
-                Loans/Debts
-              </v-btn>
-            </v-btn-toggle>
-            <client-only>
-              <balances-grid
-                v-if="table === 'positions'"
-                :data="balances"
-                :portfolio-balance="portfolioBalance"
-                :eth-price="etherData.eth_price_usd"
-              />
-              <transaction-grid v-if="table === 'transactions'" />
-              <adapters-grid v-if="table === 'deposits'" type="Deposit" />
-              <adapters-grid v-if="table === 'loans'" type="Debt" />
-            </client-only>
-          </v-card>
-        </v-col>
+            <!--      Avalanche Balances      -->
+            <v-col cols="12" md="6" lg="4" class="pa-1">
+              <v-card tile outlined height="522" style="border-bottom: none">
+                <client-only>
+                  <balances-grid
+                    :grid-height="435"
+                    network="Avalanche"
+                    icon="avax"
+                    :cols="balances.cols"
+                    :grid-data="balances.avalancheBalance"
+                  ></balances-grid>
+                </client-only>
+              </v-card>
+            </v-col>
+          </v-row>
+        </client-only>
       </v-row>
     </v-col>
   </v-row>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
-import Marketcap from '~/components/heatmap/Marketcap.vue'
-import BalancesGrid from '~/components/wallet/BalancesGrid.vue'
-import { HeatmapBalancesData } from '~/models/heatmap'
 import walletMiddleware from '~/middleware/wallet'
-import TransactionGrid from '~/components/wallet/TransactionGrid.vue'
-import AdaptersGrid from '~/components/wallet/AdaptersGrid.vue'
+import { Balance } from '~/models/balance'
+import { UiState } from '~/store/ui'
+
+const BalancesGrid: any = () => ({
+  component: new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(import('@/components/portfolio/grids/BalancesGrid.vue'))
+    }, 1)
+  }),
+})
 
 @Component({
-  name: 'Index',
-  components: { AdaptersGrid, TransactionGrid, BalancesGrid, Marketcap },
-  middleware: [walletMiddleware],
-  head(): object {
-    return {
-      title: 'DEX Portfolio Balances and History | Defi Heatmap',
-      meta: [
-        {
-          name: 'description',
-          hid: 'description',
-          content: 'Metamask Balance Summary from the Ethereum Blockchain',
-        },
-      ],
-    }
+  name: 'Portfolio',
+  components: {
+    BalancesGrid,
+    BaseGrid: () => import('~/components/terminal/BaseGrid.vue'),
   },
+  middleware: [walletMiddleware],
+
   computed: {
     ...mapState({
-      address: (state: any) => state.wallet.address,
-      balanceUsd: (state: any) => state.wallet.balanceUsd,
-      balances: (state: any) => state.wallet.balances,
-      adapters: (state: any) => state.wallet.adapters,
       theme: (state: any) => state.ui.theme,
-      ui: (state: any) => state.ui,
-      gasPrice: (state: any) => state.wallet.gasPrice,
     }),
   },
 })
-export default class Index extends Vue {
-  private heatmapConfig = {
-    colorField: 'color24h',
-    blockSize: {
-      dataField: 'balance_usd',
-      value: 'balanceUsd',
-      title: 'Balance USD',
-      tile: `[font-size: {fontSize}px font-weight: 400;]{token_symbol}[/]
-            [font-size: {fontSizeLev2}px; font-weight: 400;]
-            $ {balance_usd}
-            {time-data}`,
-
-      toolTip: `[bold]{token_name}[/]
-              ---------------------
-              Balance USD: $ {balance_usd} [font-size: 12px] | {eth_price_usd}/ETH[/]
-              Contract Balance: {contract_balance}
-              Price USD: $ {rate_usd}
-              Liquidity: $ {liquidityTransformed}m
-              Uniswap Pool: {token_pair}`,
-    },
-    timeFrame: {
-      value: '24h',
-      title: '1 Day',
-      tile: `{percent_change_liq_24h}% [font-size: {fontSizeLev3}px] 24h`,
-      colorField: 'color24h',
-    },
-  }
-
-  private table: 'positions' | 'transactions' | 'deposits' | 'loans' =
-    'positions'
-
-  balances!: HeatmapBalancesData[]
-  address!: string
-  gasPrices!: {
-    Fast: 0
-    Average: 0
-    Slow: 0
-  }
-
-  get etherData() {
-    return this.balances.find(
-      (item: HeatmapBalancesData) => item.token_symbol === 'ETH'
-    )
-  }
-
-  get portfolioBalance() {
-    return this.balances
-      .map((o) => o.balance_usd)
-      .reduce((a, c) => {
-        return a + c
-      })
-  }
-
-  get fastPrice() {
-    return this.gasPrices.Fast
-  }
-
-  get averagePrice() {
-    return this.gasPrices.Average
-  }
-
-  get slowPrice() {
-    return this.gasPrices.Slow
-  }
+export default class Portfolio extends Vue {
+  showOverlay = true
+  balances: Balance | null = null
+  theme!: UiState
 
   async mounted() {
-    this.gasPrices = await this.$store.dispatch('wallet/gasPrices')
-    await this.$store.dispatch('wallet/balances')
-    await this.$store.dispatch('wallet/getAdapters', { address: this.address })
-
     /**
      Listener for account change
      */
     const provider: any = await detectEthereumProvider()
+
     if (provider) {
       await provider.request({ method: 'eth_accounts' })
       provider.on('accountsChanged', (accounts: string[]) => {
@@ -277,12 +197,15 @@ export default class Index extends Vue {
         }
       })
     }
-  }
 
-  disconnect(): void {
-    this.$store.dispatch('wallet/metamaskLogout')
-    this.$router.push('/')
+    this.balances = Balance.getInstance(this.$store)
+
+    /** Allow time for rendering and getting instance of balance **/
+    setTimeout(() => {
+      this.showOverlay = false
+    }, 2000)
   }
 }
 </script>
+
 <style scoped></style>

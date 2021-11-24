@@ -22,6 +22,8 @@ const config = {
   },
 }
 
+config[runEnv].COVALENT_API_KEY = process.env.COVALENT_API_KEY
+
 console.log(config[runEnv])
 
 export default {
@@ -61,8 +63,23 @@ export default {
         debug: { sendHitTask: true },
       },
     ],
+    '@nuxtjs/apollo',
     '@nuxtjs/sitemap', // must be last
   ],
+
+  // Apollo client setup
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: 'https://graph.defiheatmap.com/query',
+      },
+      aaveV2: {
+        httpEndpoint:
+          'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+        // 'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
+      },
+    },
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
@@ -121,7 +138,15 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
-          background: colors.black,
+          background: '#121212',
+          bgAccent: colors.grey.darken4,
+          overlay: '#121212',
+          appBg: '#151A23',
+          baseText: '#fff',
+          outline: '#2F2F2F',
+          baseButton: colors.grey.darken4,
+          card: '#121212',
+          innerCard: '#151A23',
         },
 
         light: {
@@ -132,7 +157,15 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
-          background: colors.grey.lighten5,
+          background: '#fff',
+          bgAccent: '#fff',
+          overlay: '#fff',
+          appBg: colors.grey.lighten4,
+          baseText: colors.grey.darken3,
+          outline: '#E0E0E0',
+          baseButton: colors.white,
+          card: colors.grey.lighten2,
+          innerCard: colors.grey.lighten2,
         },
       },
     },
@@ -161,7 +194,10 @@ export default {
     },
   },
 
-  env: { baseURL: config[runEnv].BASE_URL, runEnv },
+  env: {
+    baseURL: config[runEnv].BASE_URL,
+    COVALENT_API_KEY: config[runEnv].COVALENT_API_KEY,
+  },
 
   server: { port: 3000, host: config[runEnv].SERVER_HOST },
 }

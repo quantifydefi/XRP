@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import * as Process from 'process'
 import type { ActionTree, MutationTree } from 'vuex'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { plainToClass } from 'class-transformer'
 import { HeatmapBalancesData } from '~/models/heatmap'
-import { Adapter, Trade } from '~/models/transaction'
+import { Adapter, Trade, TransactionData } from '~/models/transaction'
 
 export const state = () => ({
   isWalletConnected: false as boolean,
@@ -128,6 +129,22 @@ export const actions: ActionTree<WalletState, WalletState> = {
       commit('SET_GAS', { fast, average, slow })
     } catch {
       return null
+    }
+  },
+
+  async getTransactionsHistory({ commit }, { chainId, address }): Promise<any> {
+    try {
+      const {
+        data: {
+          data: { items: transactions },
+        },
+      } = await this.$axios.get(
+        `https://api.covalenthq.com/v1/${chainId}/address/${address}/transactions_v2/?no-logs=true&limit=20&key=${process.env.COVALENT_API_KEY}`
+      )
+
+      return plainToClass(TransactionData, transactions as TransactionData[])
+    } catch {
+      return []
     }
   },
 }

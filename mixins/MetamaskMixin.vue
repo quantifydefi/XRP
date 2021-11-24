@@ -5,7 +5,7 @@ import { Events } from '~/types/global'
 
 @Component({ name: 'MetamaskMixin' })
 export default class MetamaskMixin extends Vue {
-  private async initMetamask() {
+  async initMetamask(path: string) {
     try {
       if (typeof window.ethereum === 'undefined') {
         this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
@@ -35,7 +35,12 @@ export default class MetamaskMixin extends Vue {
           wallet: accounts[0],
           status: true,
         })
-        await this.$router.push(`/wallet/${accounts[0]}`)
+
+        if (path !== '/portfolio') {
+          await this.$router.push(path)
+        } else {
+          await this.$router.push(`/wallet/${accounts[0]}`)
+        }
       }
     } catch (error) {
       if (error instanceof Error) {

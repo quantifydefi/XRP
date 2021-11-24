@@ -36,8 +36,9 @@
 
     <v-overlay
       :opacity="1"
+      absolute
       :value="!isChartReady"
-      :color="ui[ui.theme].overlayColor"
+      :color="$vuetify.theme.themes[theme].overlay"
     >
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
       <v-progress-linear

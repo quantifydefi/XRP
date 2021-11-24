@@ -1,156 +1,151 @@
 <template>
   <v-row justify="center">
-    <v-col cols="12" sm="9">
-      <v-card class="pa-4" tile outlined>
-        <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
-          <v-col cols="auto" lg="4">
-            <h1 class="text-h4">Our Team</h1>
-            <p class="mt-2">
-              Our team's goal is empowering cryptocurrency enthusiasts and
-              traders for success. We know from our own trading experiences that
-              the crypto market is fast moving which demands reliable data and
-              tools. Our platforms provide content-rich resources that inform,
-              track, and simplify the trading process with superior visuals
-              displays. While each member has a varied skill set, we collaborate
-              to offer a fast platform with advanced interactive features. We
-              are a new site in active development, so we encourage feedback
-              from users regarding features they desire.
-            </p>
-          </v-col>
-          <v-col cols="auto" lg="8">
-            <v-row class="my-5">
-              <v-col
-                v-for="member in team"
-                :key="member._id"
-                cols="auto"
-                lg="6"
-                md="6"
-                sm="12"
-                width="200"
+    <v-col cols="12" md="11">
+      <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
+        <v-col cols="auto" lg="4">
+          <h1 class="text-h4">Our Team</h1>
+          <p class="mt-2">
+            Our team's goal is empowering cryptocurrency enthusiasts and traders
+            for success. We know from our own trading experiences that the
+            crypto market is fast moving which demands reliable data and tools.
+            Our platforms provide content-rich resources that inform, track, and
+            simplify the trading process with superior visuals displays. While
+            each member has a varied skill set, we collaborate to offer a fast
+            platform with advanced interactive features. We are a new site in
+            active development, so we encourage feedback from users regarding
+            features they desire.
+          </p>
+        </v-col>
+        <v-col cols="auto" lg="8">
+          <v-row class="my-5">
+            <v-col
+              v-for="member in team"
+              :key="member._id"
+              cols="auto"
+              lg="6"
+              md="6"
+              sm="12"
+              width="200"
+            >
+              <BioDialog
+                :is-visibility="member.bioIsVisible"
+                :name="member.name"
+                :job-title="member.jobTitle"
+                :bio="member.bio"
+                :thumbnail-url="member.thumbnailUrl"
+                :socials="member.socials"
+                @close-dialog="closeBio"
               >
-                <BioDialog
-                  :is-visibility="member.bioIsVisible"
-                  :name="member.name"
-                  :job-title="member.jobTitle"
-                  :bio="member.bio"
-                  :thumbnail-url="member.thumbnailUrl"
-                  :socials="member.socials"
-                  @close-dialog="closeBio"
+              </BioDialog>
+              <div class="d-flex justify-left">
+                <v-avatar
+                  :size="$vuetify.breakpoint.xs ? 65 : 80"
+                  :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
                 >
-                </BioDialog>
-                <div class="d-flex justify-left">
-                  <v-avatar
-                    :size="$vuetify.breakpoint.xs ? 65 : 80"
-                    :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+                  <img
+                    class="rounded-circle"
+                    :src="
+                      require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
+                    "
+                    alt="avatar"
+                  />
+                </v-avatar>
+
+                <div class="ml-6 mt-2">
+                  <h4 class="text-h6 v-clickable" @click="openBio(member._id)">
+                    {{ member.name }}
+                  </h4>
+                  <p class="text--secondary">
+                    {{ member.jobTitle }}
+                  </p>
+
+                  <a
+                    v-for="social in member.socials"
+                    :key="social.social"
+                    :href="social.link"
+                    target="_blank"
                   >
-                    <img
-                      class="rounded-circle"
-                      :src="
-                        require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
-                      "
-                      alt="avatar"
-                    />
-                  </v-avatar>
-
-                  <div class="ml-6 mt-2">
-                    <h4
-                      class="text-h6 v-clickable"
-                      @click="openBio(member._id)"
+                    <v-icon class="mt-n7 mr-3" size="20"
+                      >mdi-{{ social.icon }}</v-icon
                     >
-                      {{ member.name }}
-                    </h4>
-                    <p class="text--secondary">
-                      {{ member.jobTitle }}
-                    </p>
-
-                    <a
-                      v-for="social in member.socials"
-                      :key="social.social"
-                      :href="social.link"
-                      target="_blank"
-                    >
-                      <v-icon class="mt-n7 mr-3" size="20"
-                        >mdi-{{ social.icon }}</v-icon
-                      >
-                    </a>
-                  </div>
+                  </a>
                 </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
 
-        <v-divider></v-divider>
-        <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
-          <v-col cols="auto" lg="4" align="left">
-            <h1 class="text-h4">Our Advisors</h1>
-            <p class="mt-2">
-              Our Advisors are some of the top performers to work and interface
-              with financial trading systems. All have been significant
-              contributors at the New York Stock Exchange, they fully understand
-              how trading systems work and the features traders expect.
-            </p>
-          </v-col>
-          <v-col cols="auto" lg="8">
-            <v-row class="my-5">
-              <v-col
-                v-for="advisor in advisors"
-                :key="advisor.id"
-                cols="auto"
-                lg="6"
-                md="6"
-                sm="12"
-                width="200"
-              >
-                <BioDialog
-                  :is-visibility="advisor.bioIsVisible"
-                  :name="advisor.name"
-                  :job-title="advisor.jobTitle"
-                  :bio="advisor.bio"
-                  :thumbnail-url="advisor.thumbnailUrl"
-                  :socials="advisor.socials"
-                  @close-dialog="closeAdvisorBio"
-                ></BioDialog>
-                <div class="d-flex justify-left">
-                  <v-avatar
-                    :size="$vuetify.breakpoint.xs ? 65 : 80"
-                    :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+      <v-divider></v-divider>
+      <v-row :class="$vuetify.breakpoint.xs ? 'pa-5' : 'pa-10'">
+        <v-col cols="auto" lg="4" align="left">
+          <h1 class="text-h4">Our Advisors</h1>
+          <p class="mt-2">
+            Our Advisors are some of the top performers to work and interface
+            with financial trading systems. All have been significant
+            contributors at the New York Stock Exchange, they fully understand
+            how trading systems work and the features traders expect.
+          </p>
+        </v-col>
+        <v-col cols="12" lg="8">
+          <v-row class="my-5">
+            <v-col
+              v-for="advisor in advisors"
+              :key="advisor.id"
+              cols="auto"
+              lg="6"
+              md="6"
+              sm="12"
+              width="200"
+            >
+              <BioDialog
+                :is-visibility="advisor.bioIsVisible"
+                :name="advisor.name"
+                :job-title="advisor.jobTitle"
+                :bio="advisor.bio"
+                :thumbnail-url="advisor.thumbnailUrl"
+                :socials="advisor.socials"
+                @close-dialog="closeAdvisorBio"
+              ></BioDialog>
+              <div class="d-flex justify-left">
+                <v-avatar
+                  :size="$vuetify.breakpoint.xs ? 65 : 80"
+                  :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
+                >
+                  <img
+                    class="rounded-circle"
+                    :src="
+                      require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
+                    "
+                    alt="avatar"
+                  />
+                </v-avatar>
+
+                <div class="ml-6 mt-2">
+                  <h4
+                    class="text-h6 v-clickable"
+                    @click="openAdvisorBio(advisor._id)"
                   >
-                    <img
-                      class="rounded-circle"
-                      :src="
-                        require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
-                      "
-                      alt="avatar"
-                    />
-                  </v-avatar>
+                    {{ advisor.name }}
+                  </h4>
+                  <p class="text--secondary">{{ advisor.jobTitle }}</p>
 
-                  <div class="ml-6 mt-2">
-                    <h4
-                      class="text-h6 v-clickable"
-                      @click="openAdvisorBio(advisor._id)"
+                  <a
+                    v-for="social in advisor.socials"
+                    :key="social.social"
+                    :href="social.link"
+                    target="_blank"
+                  >
+                    <v-icon class="mt-n7 mr-3" size="20"
+                      >mdi-{{ social.icon }}</v-icon
                     >
-                      {{ advisor.name }}
-                    </h4>
-                    <p class="text--secondary">{{ advisor.jobTitle }}</p>
-
-                    <a
-                      v-for="social in advisor.socials"
-                      :key="social.social"
-                      :href="social.link"
-                      target="_blank"
-                    >
-                      <v-icon class="mt-n7 mr-3" size="20"
-                        >mdi-{{ social.icon }}</v-icon
-                      >
-                    </a>
-                  </div>
+                  </a>
                 </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -183,7 +178,7 @@ interface Team {
           name: 'description',
           hid: 'description',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
         // Open Graph
         {
@@ -193,7 +188,7 @@ interface Team {
         {
           name: 'og:description',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
         { name: 'og:type', content: 'website' },
         { name: 'og:url', content: process.env.BASE_URL },
@@ -213,7 +208,7 @@ interface Team {
         {
           name: 'twitter:description',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
         {
           name: 'twitter:image',
@@ -223,7 +218,7 @@ interface Team {
         {
           name: 'twitter:image:alt',
           content:
-            'The cryptocurrency team working to improve the crypto trading experience',
+            'The cryptocurrency team working to improve the crypto modal experience',
         },
       ],
     }
@@ -297,7 +292,7 @@ export default class OurTeam extends Vue {
           link: 'https://twitter.com/Alexclarkbarry',
         },
       ],
-      bio: 'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated trading bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
+      bio: 'Alex bought his first Bitcoins in 2016 while in college studying information security as a Computer Science major. Since then, he immersed himself in everything crypto and is an accomplished developer of automated modal bots. Shortly after making his first trades on Uniswap during the DeFi Summer of 2020, he dove headfirst into programming for Ethereum and is the driving force behind integrating Ethereum based products into our platform.',
     },
     {
       _id: 3,
@@ -400,21 +395,18 @@ export default class OurTeam extends Vue {
     },
     {
       _id: 2,
-      name: 'Harold Bott',
+      name: 'Jerry Raio',
       jobTitle: 'Advisor',
-      thumbnailUrl: 'harold',
+      thumbnailUrl: 'jerry',
       bioIsVisible: false,
       socials: [
         {
           icon: 'linkedin',
-          link: 'https://www.linkedin.com/in/haroldbott/',
-        },
-        {
-          icon: 'twitter',
-          link: 'https://twitter.com/haroldbott',
+          link: 'https://www.linkedin.com/in/jerry-raio-5556a814/',
         },
       ],
-      bio: "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop trading platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic trading for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency trading firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
+      bio: `<div>Jerry is the Founder, President and CEO of Arbor Lane Advisors, Inc., a financial services consulting firm with expertise in product development, product management, marketing, and distribution of investment products. His career on Wall Street spans over 30 years, mostly focused on the distribution of new issue Equity Capital Markets product to Financial Advisors and retail investors. Jerry was Head of Retail Origination at Wells Fargo Securities where he worked closely with asset management clients to structure, market and execute new closed end fund offerings. Jerry also had significant roles at Wachovia (now Wells Fargo), Morgan Stanley and Citigroup.  He serves on the board/advisory board of several firms including RiverNorth Capital Management closed-end funds, FLX Distribution and Qudos Technologies. </div>
+        <div class='mt-3'>Jerry holds multiple FINRA licenses including the following: Series 7 (General Securities Representative), 24 (General Principal) and 79 (Investment Banking Representative)</div>`,
     },
     {
       _id: 3,
@@ -429,6 +421,24 @@ export default class OurTeam extends Vue {
         },
       ],
       bio: 'Warren was the chief architect of the Technology and Operations divisions of the New York Stock Exchange. A senior Vice President leader with full responsibility for the software and hardware architecture of the NYSE enterprise systems.  Warren provided the vision and innovation guidance keeping NYSE as a technology leader. During his tenure, over 25+ years, the NYSE systems consistently had operational uptimes of over 99.99% due to his successful.',
+    },
+    {
+      _id: 4,
+      name: 'Harold Bott',
+      jobTitle: 'Advisor',
+      thumbnailUrl: 'harold',
+      bioIsVisible: false,
+      socials: [
+        {
+          icon: 'linkedin',
+          link: 'https://www.linkedin.com/in/haroldbott/',
+        },
+        {
+          icon: 'twitter',
+          link: 'https://twitter.com/haroldbott',
+        },
+      ],
+      bio: "Harold’s career started in 1993 at Goldman Sachs while a graduate student at the Columbia University School of Engineering and Applied Science. At Goldman, he worked with the government bond and repo desks to develop modal platforms. He was an angel investor in a Goldman colleague's startup, eGain Communications, now a public company. As Chief Information Officer at specialist firm Bear Wagner, lead the development of electronic modal for NYSE and ARCA equities. Promoted by JP Morgan (after acquiring Bear Wagner) to Executive Director before leaving to serve as a consultant for high frequency modal firms, including Getco. Harold received his BA in Music cum laude and throughout his career has worked as a professional musician.",
     },
   ]
 }
