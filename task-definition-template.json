@@ -1,32 +1,38 @@
 {
-  "family": "${CONTAINER_NAME}",
+  "executionRoleArn": "arn:aws:iam::488443597418:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "${CONTAINER_NAME}",
-      "image": "${IMAGE_NAME}",
-      "environment": [],
-      "essential": true,
-      "hostname": "${CONTAINER_NAME}",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "qc-defi-nuxt-server-production",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "qc-defi-nuxt-server"
+        }
+      },
       "portMappings": [
         {
-          "hostPort": 0,
+          "hostPort": 3000,
           "protocol": "tcp",
           "containerPort": 3000
         }
       ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "qc-defi-nuxt-server-${RUN_ENV}",
-          "awslogs-region": "us-west-2",
-          "awslogs-stream-prefix": "qc-defi-nuxt-server"
-        }
-      }
+      "image": "$IMAGE",
+      "name": "qc-defi-nuxt-server"
     }
   ],
-  "requiresCompatibilities": [
-    "EC2"
+  "placementConstraints": [],
+  "memory": "512",
+  "taskRoleArn": "arn:aws:iam::488443597418:role/ecsTaskExecutionRole",
+  "compatibilities": [
+    "EC2",
+    "FARGATE"
   ],
-  "cpu": "128",
-  "memory": "512"
+  "family": "qc-defi-nuxt-server",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "revision": 44,
 }
