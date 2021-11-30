@@ -17,7 +17,7 @@
           "containerPort": 3000
         }
       ],
-      "image": "$IMAGE",
+      "image": "$IMAGE_NAME",
       "name": "qc-defi-nuxt-server"
     }
   ],
