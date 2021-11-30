@@ -76,9 +76,7 @@ export class PortfolioBalance implements Balance {
         })
       },
       // Optional result hook
-      result({ data, loading, networkStatus }) {
-        // th  plainToClass(PortfolioBalance, data.balances as PortfolioBalance[])
-        console.log('We got some result!', data, loading, networkStatus)
+      result({ loading }) {
         this.configs.balanceLoading = loading
       },
       watchLoading(isLoading) {

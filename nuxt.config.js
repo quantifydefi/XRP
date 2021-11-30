@@ -35,7 +35,7 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  css: ['@/assets/css/global.css'],
 
   plugins: [
     '~/plugins/initConfigs.client.ts', // only in client side
@@ -181,7 +181,10 @@ export default {
     filenames: {
       chunk: ({ isDev }) => (isDev ? '[name].js' : '[id].[contenthash].js'),
     },
-    extractCSS: false,
+
+    extractCSS: {
+      ignoreOrder: false,
+    },
 
     extend(config, ctx) {
       // Run ESLint on save
