@@ -13,6 +13,8 @@ pipelines:
       - step:
           image: node:12.7.0-alpine
           name: Build Image
+          services:
+            - docker
           caches:
             - pip
             - docker
@@ -29,6 +31,8 @@ pipelines:
       - step:
           image: atlassian/default-image:2
           name: Deploy to ECS DeFi-Staging
+          services:
+            - docker
           deployment: staging
           caches:
             - pip
