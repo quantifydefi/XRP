@@ -9,7 +9,7 @@ definitions:
 
 pipelines:
   custom:
-    build-image-dev:
+    build-and-deploy-staging:
       - step:
           image: node:12.7.0-alpine
           name: Build Image
