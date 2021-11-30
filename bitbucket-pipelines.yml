@@ -26,10 +26,9 @@ pipelines:
             - docker build -t $IMAGE .
             - docker push $IMAGE
 
-    deploy-to-ecs-dev:
       - step:
           image: atlassian/default-image:2
-          name: Deploy to ECS Staging
+          name: Deploy to ECS DeFi-Staging
           deployment: staging
           caches:
             - pip
