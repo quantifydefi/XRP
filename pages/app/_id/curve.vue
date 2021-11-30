@@ -2,9 +2,6 @@
   <client-only>
     <v-data-table
       id="curve-assets"
-      :style="{
-        backgroundColor: $vuetify.theme.themes[theme].background,
-      }"
       :headers="cols"
       :items="poolList"
       mobile-breakpoint="0"
@@ -142,13 +139,7 @@
               outlined
               color="grey darken-2"
             >
-              <span
-                :style="{
-                  color: $vuetify.theme.themes[theme].baseText,
-                }"
-              >
-                Deposit
-              </span>
+              <span> Deposit </span>
             </v-btn>
           </v-col>
 

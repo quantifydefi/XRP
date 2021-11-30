@@ -10,6 +10,8 @@ export const state = () => ({
   isWalletConnected: false as boolean,
   address: null as unknown as string,
   // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+  totalBalance: '' as string,
+
   balances: [] as HeatmapBalancesData[],
   transactions: [] as Trade[],
   adapters: (null as unknown as Adapter[]) || null,
@@ -27,6 +29,10 @@ export const mutations: MutationTree<WalletState> = {
 
   SET_WALLET_STATUS: (state, status: boolean) => {
     state.isWalletConnected = status
+  },
+
+  SET_TOTAL_BALANCE: (state, balance: string) => {
+    state.totalBalance = balance
   },
 
   SET_TRANSACTIONS: (state, transactions: Trade[]) => {
@@ -146,5 +152,9 @@ export const actions: ActionTree<WalletState, WalletState> = {
     } catch {
       return []
     }
+  },
+
+  totalBalance({ commit }, balance) {
+    commit('SET_TOTAL_BALANCE', balance)
   },
 }

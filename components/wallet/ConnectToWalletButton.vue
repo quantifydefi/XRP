@@ -13,8 +13,8 @@
 <script lang="ts">
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
-import MetamaskMixin from '~/mixins/MetamaskMixin.vue'
+import { MetamaskConnector } from '~/models/wallet'
 
 @Component({ name: 'ConnectToWalletButton' })
-export default class ConnectToWalletButton extends mixins(MetamaskMixin) {}
+export default class ConnectToWalletButton extends mixins(MetamaskConnector) {}
 </script>

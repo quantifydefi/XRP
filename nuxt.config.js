@@ -11,10 +11,12 @@ const config = {
   development: {
     BASE_URL: process.env.BASE_URL_DEV,
     SERVER_HOST: process.env.SERVER_HOST_DEV,
+    BASE_GRAPHQL_SERVER: process.env.BASE_GRAPHQL_SERVER_DEV,
   },
   staging: {
     BASE_URL: process.env.BASE_URL_STAGING,
     SERVER_HOST: process.env.SERVER_HOST_STAGING,
+    BASE_GRAPHQL_SERVER: process.env.BASE_GRAPHQL_SERVER_STAGING,
   },
   production: {
     BASE_URL: process.env.BASE_URL_PROD,
@@ -36,6 +38,7 @@ export default {
   css: [],
 
   plugins: [
+    '~/plugins/initConfigs.client.ts', // only in client side
     '~/plugins/global/helpers.ts',
     '~/plugins/clientInit.client.js', // only in client side
   ],
@@ -71,7 +74,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'https://graph.defiheatmap.com/query',
+        httpEndpoint: config[runEnv].BASE_GRAPHQL_SERVER,
       },
       aaveV2: {
         httpEndpoint:
@@ -128,7 +131,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      // light: true,
+      // dark: true,
       themes: {
         dark: {
           primary: '#536af6',
@@ -138,15 +141,15 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
-          background: '#121212',
-          bgAccent: colors.grey.darken4,
-          overlay: '#121212',
-          appBg: '#151A23',
-          baseText: '#fff',
-          outline: '#2F2F2F',
-          baseButton: colors.grey.darken4,
-          card: '#121212',
-          innerCard: '#151A23',
+          // background: '#121212',
+          // bgAccent: colors.grey.darken4,
+          // overlay: '#121212',
+          // appBg: '#151A23',
+          // baseText: '#fff',
+          // outline: '#2F2F2F',
+          // baseButton: colors.grey.darken4,
+          // card: '#121212',
+          // innerCard: '#151A23',
         },
 
         light: {
@@ -157,15 +160,15 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
-          background: '#fff',
-          bgAccent: '#fff',
-          overlay: '#fff',
-          appBg: colors.grey.lighten4,
-          baseText: colors.grey.darken3,
-          outline: '#E0E0E0',
-          baseButton: colors.white,
-          card: colors.grey.lighten2,
-          innerCard: colors.grey.lighten2,
+          // background: '#fff',
+          // bgAccent: '#fff',
+          // overlay: '#fff',
+          // appBg: colors.grey.lighten4,
+          // baseText: colors.grey.darken3,
+          // outline: '#E0E0E0',
+          // baseButton: colors.white,
+          // card: colors.grey.lighten2,
+          // innerCard: colors.grey.lighten2,
         },
       },
     },

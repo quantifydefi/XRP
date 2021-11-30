@@ -153,7 +153,6 @@
 import { Vue, Component } from 'vue-property-decorator'
 import TokenSearch from '~/components/common/TokenSearch.vue'
 import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue'
-
 @Component({
   name: 'Index',
   components: { ConnectToWalletButton, TokenSearch },
@@ -309,6 +308,10 @@ export default class Index extends Vue {
   goTo() {
     this.$vuetify.goTo(1000)
     this.isButtonVisible = false
+  }
+
+  mounted() {
+    console.log('BBBBBBBBBBBBBBBBBBBBBBBBB')
   }
 }
 </script>

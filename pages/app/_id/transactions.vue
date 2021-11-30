@@ -2,18 +2,13 @@
   <v-row no-gutters justify="center">
     <v-col v-if="transactionsHistory" cols="12">
       <v-card outlined tile>
-        <v-card-title
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
-          class="py-1 px-2 subtitle-1"
+        <v-card-title class="py-1 px-2 subtitle-1"
           >Most Recent Transactions
         </v-card-title>
         <v-divider></v-divider>
         <client-only>
           <v-data-table
             id="recent-transactions"
-            :style="{
-              backgroundColor: $vuetify.theme.themes[theme].background,
-            }"
             dense
             :headers="transactionsHistory.cols"
             :items="transactionsHistory.data"

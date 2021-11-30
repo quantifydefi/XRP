@@ -1,94 +1,99 @@
 <template>
   <client-only>
-    <div>
-      <v-card-title
-        class="pa-0 ma-0"
-        :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
-      >
-        <v-col cols="6" class="d-flex">
-          <v-avatar size="32px">
+    <v-card tile outlined>
+      <v-card-title class="pa-0 ma-0">
+        <v-col class="d-flex">
+          <v-avatar size="24px">
             <v-img
-              :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${icon.toLowerCase()}.png`"
-              :lazy-src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${icon.toLowerCase()}.png`"
+              :src="balance.chainInfo(chains).logoUrl"
+              :lazy-src="balance.chainInfo(chains).logoUrl"
             ></v-img>
           </v-avatar>
-          <h1 class="title pl-3">{{ network }}</h1>
+          <h1 class="text-subtitle-1 pl-3 text-truncate">
+            {{ balance.chainInfo(chains).label }}
+          </h1>
         </v-col>
 
-        <v-col cols="6" class="text-right"
-          ><h1 class="title">{{ totalBalance }}</h1></v-col
+        <v-col cols="4" class="text-right"
+          ><h4
+            class="text-subtitle-1 text-truncate pink--text font-weight-medium"
+          >
+            {{ priceFormatter(balance.chainTotalBalance) }}
+          </h4></v-col
         >
       </v-card-title>
       <v-divider></v-divider>
-
       <v-data-table
         id="balances-grid"
-        :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
-        dense
-        :height="gridHeight - 32 + 'px'"
         :headers="cols"
-        :items="gridData"
+        :items="balance.items"
         :sort-desc="[true]"
-        :items-per-page="16"
+        :height="gridHeightLocal"
+        :items-per-page="10 * 10 ** 12"
         class="elevation-0"
         :mobile-breakpoint="0"
+        hide-default-footer
       >
-        <template #[`item.contract_ticker_symbol`]="{ item }">
+        <template #[`item.contractTickerSymbol`]="{ item }">
           <div style="width: 78px" class="text-no-wrap overflow-x-hidden">
             <v-avatar size="18" class="mr-2">
               <img
-                :alt="`${item.contract_ticker_symbol} logo`"
-                :src="item.logo_url"
+                :alt="`${item.contractTickerSymbol} logo`"
+                :src="item.logoUrl"
                 @error="setAltImg"
               />
             </v-avatar>
-            {{ item.contract_ticker_symbol }}
+            {{ item.contractTickerSymbol }}
           </div>
         </template>
 
         <template #[`item.balance`]="{ item }">
-          <span>{{ balanceFormatter(item.balance) }}</span>
+          <span :class="ui[theme].innerCardLighten">{{
+            balanceFormatter(item.balance)
+          }}</span>
+        </template>
+
+        <template #[`item.quoteRate`]="{ item }">
+          <span :class="ui[theme].innerCardLighten">{{
+            balanceFormatter(item.quoteRate)
+          }}</span>
         </template>
 
         <template #[`item.quote`]="{ item }">
-          <span>{{ priceFormatter(item.quote) }}</span>
+          <span :class="ui[theme].innerCardLighten">{{
+            priceFormatter(item.quote)
+          }}</span>
         </template>
       </v-data-table>
       <v-divider></v-divider>
-    </div>
+    </v-card>
   </client-only>
 </template>
 
 <script lang="ts">
 /* eslint-disable */
-import {Vue, Component, Prop} from 'vue-property-decorator'
-import {BalanceDataInterface} from '~/types/balance'
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import {Helper} from '~/models/helper'
-import {mapState} from "vuex";
+import type {PortfolioBalance} from "~/models/portfolio";
+import { mapState } from "vuex";
 
-@Component({
-  name: 'BalancesGrid',
-  computed: {
-    ...mapState({
+@Component({ name: 'BalancesGrid',
+  computed: { ...mapState({
+      chains: (state: any) => state.configs.chains,
+      ui: (state: any) => state.ui,
       theme: (state: any) => state.ui.theme,
     }),
-  },
-})
+  }})
 export default class BalancesGrid extends Vue {
   @Prop({default: 435}) readonly gridHeight!: number
-  @Prop({default: 'Ethereum'}) readonly network!: string
-  @Prop({default: 'eth'}) readonly icon!: string
   @Prop({default: []}) readonly cols!: any
-  @Prop({default: []}) readonly gridData!: BalanceDataInterface[]
+  @Prop({default: []}) readonly balance!: PortfolioBalance
 
+  private gridHeightLocal = this.gridHeight
 
-  get totalBalance(): string {
-    let balance: number = 0
-    for (let item of this.gridData) {
-      balance += item.quote
-    }
-
-    return Helper.priceFormatter(balance)
+  @Watch('gridHeight')
+  onGridHeightChange(newVal:number){
+    this.gridHeightLocal = newVal
   }
 
   priceFormatter(value: number) {
@@ -108,4 +113,12 @@ export default class BalancesGrid extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+  height: 32px;
+}
+
+.v-data-table tr:hover:not(.v-table__expanded__content) {
+}
+
+</style>

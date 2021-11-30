@@ -1,0 +1,11 @@
+overwrite: true
+schema:
+  #  - "https://graph.defiheatmap.com/query"
+  - "http://localhost:8080/query"
+documents: "apollo/**/*.graphql"
+generates:
+  types/apollo/graphql.d.ts:
+    - typescript-graphql-files-modules
+  types/apollo/types.ts:
+    - typescript
+    - typescript-operations

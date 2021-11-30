@@ -29,7 +29,8 @@
       "@nuxtjs/axios",
       "@types/jest",
       "@types/node",
-      "vue-apollo/types"
+      "vue-apollo/types",
+      "@nuxtjs/apollo"
     ]
   },
   "exclude": [

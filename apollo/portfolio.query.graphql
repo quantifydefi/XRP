@@ -1,0 +1,29 @@
+query BalancesGQL($chainIds: [String!]!, $address: String! ) {
+  balances(chainIds: $chainIds, address: $address) {
+    address
+    updatedAt
+    nextUpdateAt
+    quoteCurrency
+    chainId
+    pagination {
+      hasMore
+    }
+    items {
+      contractDecimals
+      contractName
+      contractTickerSymbol
+      contractAddress
+      supportsErc
+      logoUrl
+      lastTransferredAt
+      type
+      balance
+      balance24h
+      quoteRate
+      quoteRate24h
+      quote
+      quote24h
+      nftData
+    }
+  }
+}

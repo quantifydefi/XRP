@@ -1,0 +1,19 @@
+query GlobalStatsQueryGQL {
+  globalStats {
+    defiMarketCap
+    ethMarketCap
+    defiToEthRatio
+    tradingVolume24h
+    defiDominance
+    topCoinName
+    topCoinDefiDominance
+  }
+  chains {
+    name
+    chainId
+    isTestnet
+    dbSchemaName
+    label
+    logoUrl
+  }
+}

@@ -1,12 +1,5 @@
 <template>
-  <v-navigation-drawer
-    v-model="navigationDrawer"
-    app
-    left
-    fixed
-    width="220"
-    :color="$vuetify.theme.themes[theme].background"
-  >
+  <v-navigation-drawer v-model="navigationDrawer" app left fixed width="220">
     <template #prepend>
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-list-item two-line class="my-n1 ml-n2">
@@ -50,23 +43,16 @@
           >
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
-                <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-lan
-                </v-icon>
+                <v-icon>mdi-lan </v-icon>
               </v-list-item-icon>
             </template>
             <template #appendIcon>
               <v-list-item-icon class="mt-0 mr-0">
-                <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-chevron-down
-                </v-icon>
+                <v-icon>mdi-chevron-down </v-icon>
               </v-list-item-icon>
             </template>
             <template #activator>
-              <v-list-item-title
-                :style="{ color: $vuetify.theme.themes[theme].baseText }"
-                >Protocols
-              </v-list-item-title>
+              <v-list-item-title>Protocols </v-list-item-title>
             </template>
 
             <v-list-item
@@ -109,6 +95,14 @@
               >Bridge
               <small class="pl-2">coming soon...</small></v-list-item-title
             >
+          </v-list-item>
+
+          <v-list-item exact to="/portfolio/balances">
+            <v-list-item-icon>
+              <v-icon>mdi-history</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Balances</v-list-item-title>
           </v-list-item>
 
           <v-list-item

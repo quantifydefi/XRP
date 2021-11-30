@@ -1,24 +1,11 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
-    <v-app-bar
-      v-if="configs"
-      app
-      class="text-no-wrap"
-      :color="$vuetify.theme.themes[theme].background"
-      elevation="0"
-      :style="{
-        marginTop: '-1px',
-        borderBottom: `1px solid ${$vuetify.theme.themes[theme].outline}`,
-      }"
-    >
-      <v-btn
-        v-if="$vuetify.breakpoint.mdAndDown"
-        class="mr-1 mt-1"
-        icon
-        @click="toggleNavigationMenu"
-      >
+  <v-app>
+    <v-app-bar app class="text-no-wrap" elevation="0">
+      <v-btn v-if="$vuetify.breakpoint.mdAndDown" class="mr-1 mt-1" icon>
         <v-icon>mdi-menu</v-icon>
       </v-btn>
+
+      <!--      Change it to separate component-->
       <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">
         <v-avatar
           v-if="$route.name === 'app-id-aave' || $route.name === 'app-id-curve'"
@@ -36,116 +23,119 @@
       <v-spacer />
 
       <v-btn
+        v-if="totalBalance.length"
         class="mt-1 subtitle-2 text-capitalize font-weight-regular"
         text
-        color="primary"
-        @click="initMetamask('/portfolio')"
+        tile
+        depressed
+        color="transparent"
+        to="/portfolio/balances"
       >
-        <div :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }">
-          Balance —
-          <span
-            v-if="!walletConnected"
-            class="ml-1 subtitle-1 font-weight-medium border-bottom"
-            >{{ '$0.00' }}</span
-          >
-
-          <span v-else class="ml-1 subtitle-1 font-weight-medium border-bottom">
-            {{ balances.totalBalance }}
+        <span :class="ui[theme].headerTextClass">
+          <span class="ml-1 subtitle-1 font-weight-medium border-bottom">
+            Balance — {{ totalBalance }}
           </span>
-        </div>
+        </span>
       </v-btn>
 
-      <v-btn
-        class="mt-1 subtitle-2 text-capitalize font-weight-regular"
-        text
-        color="primary"
-        @click="initMetamask($route.path)"
-      >
-        <div :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }">
-          <v-icon>mdi-wallet</v-icon>
-          <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2">
-            {{
-              !walletConnected
-                ? 'connect wallet'
-                : `${address.slice(0, 5)}...${address.slice(
-                    address.length - 4,
-                    address.length
-                  )}`
-            }}
-          </span>
-        </div>
-      </v-btn>
-
-      <!-- Network Menu -->
-      <v-menu offset-y>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            class="
-              subtitle-2
-              font-weight-regular
-              text-capitalize
-              justify-start
-              elevation-0
-            "
-            style="border: 0"
-            outlined
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-row
-              no-gutters
-              :style="{
-                color: $vuetify.theme.themes[theme].baseText,
-                marginRight: '-5px',
-              }"
-            >
-              <div style="margin-top: 1px; margin-left: -5px">
-                <v-avatar size="20">
-                  <img
-                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${configs.networks.defaultNetwork.symbol}.png`"
-                /></v-avatar>
-              </div>
-
-              <div v-if="$vuetify.breakpoint.mdAndUp" class="pl-2 mt-1 d-flex">
-                <div>
-                  {{ configs.networks.defaultNetwork.networkName }}
-                </div>
-              </div>
-              <v-icon small class="pl-2">mdi-chevron-down</v-icon>
-            </v-row>
-          </v-btn>
-        </template>
-        <v-list
-          outlined
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
+      <client-only>
+        <v-menu
+          v-if="currentChain"
+          :close-on-content-click="false"
+          :nudge-width="500"
+          :nudge-left="0"
+          nudge-bottom="13"
+          offset-y
+          max-width="500"
         >
-          <v-list-item
-            v-for="item in configs.networks.networkOptions"
-            :key="item.chainId"
-            :style="{
-              backgroundColor: $vuetify.theme.themes[theme].background,
-            }"
-            @click="changeNetwork(item)"
-          >
-            <v-list-item-title class="subtitle-2 font-weight-regular">
-              <v-avatar size="20" class="mr-1">
-                <img
-                  :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.symbol}.png`"
-              /></v-avatar>
-              {{ item.networkName }}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+          <template #activator="{ on, attrs }">
+            <div class="d-flex">
+              <v-btn
+                width="280"
+                tile
+                class="text-capitalize text-subtitle-2"
+                depressed
+                color="transparent"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-row no-gutters>
+                  <v-col cols="2">
+                    <v-avatar size="18px">
+                      <v-img :src="currentChain.logoUrl" />
+                    </v-avatar>
+                  </v-col>
 
-      <!-- Gas Menu -->
-      <!--   Only show gas prices if chain id is ethereum -->
+                  <v-col class="text-left">
+                    {{ currentChain.label }}
+                  </v-col>
+                </v-row>
+
+                <v-icon right>mdi-chevron-down</v-icon>
+              </v-btn>
+            </div>
+          </template>
+
+          <v-card outlined tile width="600">
+            <v-row no-gutters>
+              <v-col>
+                <v-list dense>
+                  <v-subheader>MAIN NET</v-subheader>
+                  <v-list-item-group
+                    v-model="conf.selectedChainId"
+                    color="primary"
+                  >
+                    <v-list-item
+                      v-for="item in mainNetChains"
+                      :key="item.chainId"
+                      :value="item.chainId"
+                    >
+                      <v-list-item-avatar size="24">
+                        <v-img :src="item.logoUrl"></v-img>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.label"
+                        ></v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </v-col>
+              <v-col>
+                <v-list dense>
+                  <v-subheader>TEST NET</v-subheader>
+                  <v-list-item-group
+                    v-model="conf.selectedChainId"
+                    color="primary"
+                  >
+                    <v-list-item
+                      v-for="item in testNetChains"
+                      :key="item.chainId"
+                      :value="item.chainId"
+                    >
+                      <v-list-item-avatar size="24">
+                        <v-img s :src="item.logoUrl"></v-img>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.label"
+                        ></v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-menu>
+      </client-only>
+
       <v-menu
-        v-if="configs.networks.defaultNetwork.chainId === 1"
         :close-on-content-click="false"
         :nudge-width="300"
+        :nudge-left="200"
+        nudge-bottom="10"
         offset-y
         max-width="300"
       >
@@ -154,13 +144,15 @@
             <v-btn
               class="mt-1 subtitle-2 text-capitalize font-weight-regular"
               text
-              color="primary"
+              tile
+              :class="
+                ui[theme].headerTextClass +
+                ` subtitle-2 text-capitalize elevation-0`
+              "
               v-bind="attrs"
               v-on="on"
             >
-              <div
-                :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }"
-              >
+              <div>
                 <v-icon>mdi-gas-station</v-icon>
                 <span class="ml-1">
                   {{ gas.fast }}
@@ -171,10 +163,7 @@
           </div>
         </template>
 
-        <v-card
-          outlined
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
-        >
+        <v-card outlined tile>
           <v-row no-gutters class="px-3 py-1">
             <v-col cols="12">
               <div class="text-subtitle-2">Current Gas Prices</div>
@@ -203,52 +192,29 @@
         </v-card>
       </v-menu>
 
-      <!-- Search Menu -->
-      <v-menu :close-on-content-click="false" :nudge-width="300" offset-y>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            icon
-            target="_blank"
-            height="24"
-            width="24"
-            class="mx-2 mt-1"
-            v-bind="attrs"
-            color="primary"
-            v-on="on"
-          >
-            <v-icon
-              :color="$vuetify.theme.themes[theme].baseText"
-              class="pa-0 ma-0"
-              >mdi-magnify
-            </v-icon>
-          </v-btn>
-        </template>
-
-        <v-card
-          outlined
-          :style="{ backgroundColor: $vuetify.theme.themes[theme].background }"
-        >
-          <v-row no-gutters class="px-3 py-1">
-            <v-col cols="12">
-              <span class="text-subtitle-2">Search</span>
-            </v-col>
-            <v-col cols="12">
-              <span class="text-caption grey--text lighten-2">
-                Search Coins by name
-              </span></v-col
-            >
-          </v-row>
-          <v-divider class="my-1" />
-          <v-row no-gutters>
-            <v-col class="px-2">
-              <v-text-field
-                class="pa-0 ma-0"
-                prepend-inner-icon="mdi-magnify"
-              />
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-menu>
+      <!--      Wallet Menu-->
+      <v-btn
+        class="mt-1 subtitle-2 text-capitalize font-weight-regular"
+        text
+        tile
+        @click="initMetamask"
+      >
+        <div :class="ui[theme].headerTextClass">
+          <v-icon :color="walletConnected ? 'green' : 'orange'"
+            >mdi-wallet
+          </v-icon>
+          <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2">
+            {{
+              !walletConnected
+                ? 'connect wallet'
+                : `${address.slice(0, 5)}...${address.slice(
+                    address.length - 4,
+                    address.length
+                  )}`
+            }}
+          </span>
+        </div>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <v-container style="max-width: 3000px">
@@ -258,16 +224,6 @@
 
     <main-navigation-menu />
 
-    <!--    <v-footer-->
-    <!--      fixed-->
-    <!--      app-->
-    <!--      :color="$vuetify.theme.themes[theme].overlay"-->
-    <!--      :style="{-->
-    <!--        borderTop: `1px solid ${$vuetify.theme.themes[theme].outline}`,-->
-    <!--      }"-->
-    <!--    >-->
-    <!--      <span>Defi Heatmap &copy; {{ new Date().getFullYear() }}</span>-->
-    <!--    </v-footer>-->
     <notification ref="notificationComponent" />
 
     <deposit-modal></deposit-modal>
@@ -281,22 +237,20 @@
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
-import detectEthereumProvider from '@metamask/detect-provider'
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
 import { Events } from '~/types/global'
 import LayoutMixin from '~/mixins/LayoutMixin.vue'
-import MetamaskMixin from '~/mixins/MetamaskMixin.vue'
-import { EmitEvents } from '~/types/events'
 import { appConfig } from '~/models/app'
-import { ChainOptions } from '~/types/balance'
 import { AppConfigInterface } from '~/types/app'
 import { Balance } from '~/models/balance'
 import DepositModal from '~/components/app/DepositModal.vue'
 import BorrowModal from '~/components/app/BorrowModal.vue'
 import LendModal from '~/components/app/LendModal.vue'
 import WithdrawModal from '~/components/app/WithdrawModal.vue'
+import { MetamaskConnector } from '~/models/wallet'
+import { Config } from '~/models/config'
 
 @Component({
   name: 'Default',
@@ -312,25 +266,32 @@ import WithdrawModal from '~/components/app/WithdrawModal.vue'
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
+      ui: (state: any) => state.ui,
       gas: (state: any) => state.wallet.gasPrice,
       address: (state: any) => state.wallet.address,
       walletConnected: (state: any) => state.wallet.isWalletConnected,
+      totalBalance: (state: any) => state.wallet.totalBalance,
     }),
   },
 })
-export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
+export default class Default extends mixins(
+  LayoutMixin,
+  MetamaskConnector,
+  Config
+) {
   $refs!: { notificationComponent: any }
   walletConnected: any
 
   allowApiBar =
     process.env.runEnv === 'development' || process.env.runEnv === 'staging'
 
-  configs: AppConfigInterface | null = null
+  configs: AppConfigInterface | null = appConfig
   balances: Balance | null = null
 
   pageTitle = {
     index: 'Dashboard',
     terminal: 'Terminal',
+    'portfolio-balances': 'Balances',
     heatmap: 'Heatmap',
     'trading-101': 'Trading 101',
     team: 'Our Team',
@@ -346,61 +307,14 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
 
   async mounted() {
     /** Fetch CoinGecko supported tokens **/
-    await this.$store.dispatch('coinList/getCoinGeckoTokenList')
-
-    this.configs = appConfig
-
-    this.balances = Balance.getInstance(this.$store)
+    // await this.$store.dispatch('coinList/getCoinGeckoTokenList')
 
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)
       } catch {}
     })
-
     await this.$store.dispatch('wallet/gasPrices')
-
-    await this.initMetamask(this.$route.path)
-    /**
-     Listener for account change
-     */
-    const provider: any = await detectEthereumProvider()
-
-    if (provider) {
-      await provider.request({ method: 'eth_accounts' })
-      provider.on('accountsChanged', (accounts: string[]) => {
-        if (!accounts.length) {
-          this.$store.dispatch('wallet/metamaskLogout')
-          // this.$router.push('/')
-        }
-      })
-    }
-
-    await this.balances.getBalances()
-  }
-
-  /** On network change, redirect page to selected network. **/
-  changeNetwork(network: {
-    networkName: string
-    chainId: ChainOptions
-    symbol: string
-  }) {
-    if (this.configs) {
-      this.configs.networks.defaultNetwork = network
-      const pages: string[] = ['app-id-aave', 'app-id-transactions']
-      const route: string = this.$route.name!
-
-      if (pages.includes(route)) {
-        const path = this.$route.path.split('/')
-        path[2] = network.chainId.toString()
-
-        this.$router.push(path.join('/'))
-      }
-    }
-  }
-
-  toggleNavigationMenu() {
-    this.$root.$emit(EmitEvents.toggleNavigationMenu)
   }
 }
 </script>
@@ -412,7 +326,102 @@ export default class Default extends mixins(LayoutMixin, MetamaskMixin) {
 }
 
 .border-bottom {
-  border-bottom: 2px solid #536aff;
+  border-bottom: 3px solid #e91e63;
   padding-bottom: 3px;
+}
+
+//------------------ Global background---------------
+
+.theme--dark.v-application {
+  background-color: #121212;
+}
+
+.theme--light.v-application {
+  background-color: #fafafa;
+}
+
+// -------------- Header ---------------------------
+.theme--dark.v-app-bar.v-toolbar.v-sheet {
+  background-color: #121212;
+  margin-top: -1px;
+  border-bottom: 1px solid #2f2f2f;
+}
+
+.theme--light.v-app-bar.v-toolbar.v-sheet {
+  background-color: #fff;
+  margin-top: -1px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+// -------------- v-list ---------------------------
+.theme--dark.v-list {
+  background: #121212;
+}
+
+.theme--light.v-list {
+  background: #ffffff;
+}
+
+//------------------------ v-card-------------------------
+
+.theme--dark.v-card {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+//-------------------------- nav-bar---------------------------
+.theme--dark.v-navigation-drawer {
+  background-color: #121212;
+}
+
+// ---------------------------Data-Table---------------------
+
+.theme--dark.v-data-table {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+//----------------------------V-Menu--------------------------
+
+.v-menu__content {
+  overflow-y: inherit;
+  overflow-x: inherit;
+  contain: inherit;
+  max-height: 500px !important;
+  max-width: 100%;
+  text-align: left;
+}
+
+.theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: #e6e6e6;
+}
+
+.theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar-track {
+  background: #e6e6e6;
+  border-left: 1px solid #dadada;
+}
+
+.theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border: solid 1px #e6e6e6;
+  border-radius: 7px;
+}
+
+.theme--dark .v-card .v-data-table__wrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.theme--dark .v-card .v-data-table__wrapper::-webkit-scrollbar-track {
+  background: #202020;
+  border-left: 1px solid #2c2c2c;
+}
+
+.theme--dark .v-card .v-data-table__wrapper::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border: solid 1px #202020;
+  border-radius: 7px;
 }
 </style>
