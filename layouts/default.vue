@@ -131,73 +131,75 @@
         </v-menu>
       </client-only>
 
-      <v-menu
-        :close-on-content-click="false"
-        :nudge-width="300"
-        :nudge-left="200"
-        nudge-bottom="10"
-        offset-y
-        max-width="300"
-      >
-        <template #activator="{ on, attrs }">
-          <div class="d-flex">
-            <v-btn
-              class="mt-1 subtitle-2 text-capitalize font-weight-regular"
-              text
-              tile
-              :class="
-                ui[theme].headerTextClass +
-                ` subtitle-2 text-capitalize elevation-0`
-              "
-              v-bind="attrs"
-              v-on="on"
-            >
-              <div>
-                <v-icon>mdi-gas-station</v-icon>
-                <span class="ml-1">
-                  {{ gas.fast }}
-                </span>
-                <v-icon small>mdi-chevron-down</v-icon>
-              </div>
-            </v-btn>
-          </div>
-        </template>
+      <client-only>
+        <v-menu
+          v-if="gas"
+          :close-on-content-click="false"
+          :nudge-width="300"
+          :nudge-left="200"
+          nudge-bottom="10"
+          offset-y
+          max-width="300"
+        >
+          <template #activator="{ on, attrs }">
+            <div class="d-flex">
+              <v-btn
+                class="mt-1 subtitle-2 text-capitalize font-weight-regular"
+                text
+                tile
+                :class="
+                  ui[theme].headerTextClass +
+                  ` subtitle-2 text-capitalize elevation-0`
+                "
+                v-bind="attrs"
+                v-on="on"
+              >
+                <div>
+                  <v-icon>mdi-gas-station</v-icon>
+                  <span class="ml-1">
+                    {{ gas.fastGasPrice }}
+                  </span>
+                  <v-icon small>mdi-chevron-down</v-icon>
+                </div>
+              </v-btn>
+            </div>
+          </template>
 
-        <v-card outlined tile>
-          <v-row no-gutters class="px-3 py-1">
-            <v-col cols="12">
-              <div class="text-subtitle-2">Current Gas Prices</div>
-            </v-col>
-            <v-col cols="12">
-              <span class="text-caption grey--text lighten-2">
-                Gas fees on the Ethereum Network
-              </span></v-col
-            >
-          </v-row>
-          <v-divider class="my-1" />
-          <v-row no-gutters class="text-center caption pb-2">
-            <v-col>
-              <div>Fast</div>
-              <div class="subtitle-2">{{ gas.fast }} GWEI</div>
-            </v-col>
-            <v-col>
-              <div>Average</div>
-              <div class="subtitle-2">{{ gas.average }} GWEI</div>
-            </v-col>
-            <v-col>
-              <div>Slow</div>
-              <div class="subtitle-2">{{ gas.slow }} GWEI</div>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-menu>
-
+          <v-card outlined tile>
+            <v-row no-gutters class="px-3 py-1">
+              <v-col cols="12">
+                <div class="text-subtitle-2">Current Gas Prices</div>
+              </v-col>
+              <v-col cols="12">
+                <span class="text-caption grey--text lighten-2">
+                  Gas fees on the Ethereum Network
+                </span></v-col
+              >
+            </v-row>
+            <v-divider class="my-1" />
+            <v-row no-gutters class="text-center caption pb-2">
+              <v-col>
+                <div>Fast</div>
+                <div class="subtitle-2">{{ gas.fastGasPrice }} GWEI</div>
+              </v-col>
+              <v-col>
+                <div>Average</div>
+                <div class="subtitle-2">{{ gas.proposeGasPrice }} GWEI</div>
+              </v-col>
+              <v-col>
+                <div>Slow</div>
+                <div class="subtitle-2">{{ gas.safeGasPrice }} GWEI</div>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-menu>
+      </client-only>
       <!--      Wallet Menu-->
       <v-btn
         class="mt-1 subtitle-2 text-capitalize font-weight-regular"
         text
         tile
-        @click="initMetamask"
+        @click="connectToWallet"
       >
         <div :class="ui[theme].headerTextClass">
           <v-icon :color="walletConnected ? 'green' : 'orange'"
@@ -267,7 +269,7 @@ import { Config } from '~/models/config'
     ...mapState({
       theme: (state: any) => state.ui.theme,
       ui: (state: any) => state.ui,
-      gas: (state: any) => state.wallet.gasPrice,
+      gas: (state: any) => state.configs.gasStats,
       address: (state: any) => state.wallet.address,
       walletConnected: (state: any) => state.wallet.isWalletConnected,
       totalBalance: (state: any) => state.wallet.totalBalance,
@@ -329,99 +331,4 @@ export default class Default extends mixins(
   border-bottom: 3px solid #e91e63;
   padding-bottom: 3px;
 }
-
-////------------------ Global background---------------
-//
-//.theme--dark.v-application {
-//  background-color: #121212;
-//}
-//
-//.theme--light.v-application {
-//  background-color: #fafafa;
-//}
-//
-//// -------------- Header ---------------------------
-//.theme--dark.v-app-bar.v-toolbar.v-sheet {
-//  background-color: #121212;
-//  margin-top: -1px;
-//  border-bottom: 1px solid #2f2f2f;
-//}
-//
-//.theme--light.v-app-bar.v-toolbar.v-sheet {
-//  background-color: #fff;
-//  margin-top: -1px;
-//  border-bottom: 1px solid #e0e0e0;
-//}
-//
-//// -------------- v-list ---------------------------
-//.theme--dark.v-list {
-//  background: #121212;
-//}
-//
-//.theme--light.v-list {
-//  background: #ffffff;
-//}
-//
-////------------------------ v-card-------------------------
-//
-//.theme--dark.v-card {
-//  background-color: #121212;
-//  color: #ffffff;
-//}
-//
-////-------------------------- nav-bar---------------------------
-//.theme--dark.v-navigation-drawer {
-//  background-color: #121212;
-//}
-//
-//// ---------------------------Data-Table---------------------
-//
-//.theme--dark.v-data-table {
-//  background-color: transparent;
-//  color: #ffffff;
-//}
-//
-////----------------------------V-Menu--------------------------
-//
-//.v-menu__content {
-//  overflow-y: inherit;
-//  overflow-x: inherit;
-//  contain: inherit;
-//  max-height: 500px !important;
-//  max-width: 100%;
-//  text-align: left;
-//}
-//
-//.theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar {
-//  width: 10px;
-//  height: 10px;
-//  background-color: #e6e6e6;
-//}
-//
-//.theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar-track {
-//  background: #e6e6e6;
-//  border-left: 1px solid #dadada;
-//}
-//
-//.theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar-thumb {
-//  background: #b0b0b0;
-//  border: solid 1px #e6e6e6;
-//  border-radius: 7px;
-//}
-//
-//.theme--dark .v-card .v-data-table__wrapper::-webkit-scrollbar {
-//  width: 10px;
-//  height: 10px;
-//}
-//
-//.theme--dark .v-card .v-data-table__wrapper::-webkit-scrollbar-track {
-//  background: #202020;
-//  border-left: 1px solid #2c2c2c;
-//}
-//
-//.theme--dark .v-card .v-data-table__wrapper::-webkit-scrollbar-thumb {
-//  background: #3e3e3e;
-//  border: solid 1px #202020;
-//  border-radius: 7px;
-//}
 </style>

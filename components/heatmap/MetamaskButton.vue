@@ -167,7 +167,7 @@
           depressed
           :disabled="loading"
           class="mr-4 text-capitalize text-subtitle-2"
-          @click="initMetamask"
+          @click="con"
           >Metamask
           <v-icon right> mdi-wallet-outline</v-icon>
         </v-btn>

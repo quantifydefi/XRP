@@ -4,7 +4,7 @@
       class="mt-1 subtitle-2 text-capitalize font-weight-regular"
       text
       color="primary"
-      @click="initMetamask('/portfolio')"
+      @click="connectToWallet()"
     >
       <div class="white--text">
         Balance —
@@ -24,7 +24,7 @@
       class="mt-1 subtitle-2 text-capitalize font-weight-regular"
       text
       color="primary"
-      @click="initMetamask($route.path)"
+      @click="connectToWallet"
     >
       <div :style="{ color: `${$vuetify.theme.themes[theme].baseText}` }">
         <v-icon>mdi-wallet</v-icon>

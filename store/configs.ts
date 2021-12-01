@@ -4,6 +4,14 @@ import { Chain, GlobalStats } from '~/types/apollo/types'
 import { GlobalStatsQueryGQL } from '~/apollo/config.query.graphql'
 export const state = () => ({
   globalStats: null as GlobalStats | null,
+  gasStats: null as {
+    fastGasPrice: string
+    gasUsedRatio: string
+    lastBlock: string
+    proposeGasPrice: string
+    safeGasPrice: string
+    suggestBaseFee: string
+  } | null,
   currentChain: {
     chainId: '1',
     dbSchemaName: 'chain_eth_mainnet',
@@ -18,9 +26,10 @@ export const state = () => ({
 export type ConfigState = ReturnType<typeof state>
 
 export const mutations: MutationTree<ConfigState> = {
-  SET_CONFIG: (state, { globalStats, chains }) => {
+  SET_CONFIG: (state, { globalStats, chains, gasStats }) => {
     state.chains = chains
     state.globalStats = globalStats
+    state.gasStats = gasStats
   },
   SET_CHAIN: (state, chain: Chain) => {
     state.currentChain = chain

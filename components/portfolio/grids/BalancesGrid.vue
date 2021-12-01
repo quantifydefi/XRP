@@ -49,7 +49,7 @@
 
         <template #[`item.balance`]="{ item }">
           <span :class="ui[theme].innerCardLighten">{{
-            balanceFormatter(item.balance)
+            balanceFormatter(item.balance / Math.pow(10, item.contractDecimals))
           }}</span>
         </template>
 

@@ -5,7 +5,7 @@
     class="mb-7"
     block
     height="48"
-    @click="initMetamask"
+    @click="connectToWallet"
     >Connect To Wallet</v-btn
   >
 </template>

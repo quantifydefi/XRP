@@ -16,4 +16,7 @@ query GlobalStatsQueryGQL {
     label
     logoUrl
   }
+  gasStats{
+    lastBlock, safeGasPrice, proposeGasPrice, fastGasPrice, suggestBaseFee, gasUsedRatio
+  }
 }

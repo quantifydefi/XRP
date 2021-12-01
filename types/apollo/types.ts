@@ -182,7 +182,7 @@ export type CoinDetails = {
   publicNotice?: Maybe<Scalars['String']>;
   sentimentVotesDownPercentage?: Maybe<Scalars['Float']>;
   sentimentVotesUpPercentage?: Maybe<Scalars['Float']>;
-  statusUpdates?: Maybe<Array<Maybe<Scalars['String']>>>;
+  statusUpdates?: Maybe<Array<Maybe<Scalars['Map']>>>;
   symbol?: Maybe<Scalars['String']>;
   tickers?: Maybe<Array<Maybe<TickerData>>>;
 };
@@ -505,7 +505,7 @@ export type TodoXx = {
 export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: string, isTestnet: boolean, dbSchemaName: string, label: string, logoUrl: string }> };
+export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: string, isTestnet: boolean, dbSchemaName: string, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string } };
 
 export type BalancesGqlQueryVariables = Exact<{
   chainIds: Array<Scalars['String']> | Scalars['String'];
