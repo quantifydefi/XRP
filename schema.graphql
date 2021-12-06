@@ -88,7 +88,7 @@ type CoinDetails {
   publicNotice: String
   sentimentVotesDownPercentage: Float
   sentimentVotesUpPercentage: Float
-  statusUpdates: [String]
+  statusUpdates: [Map]
   symbol: String
   tickers: [TickerData]
 }
@@ -250,7 +250,7 @@ type ProtocolDetails {
 
 type Query {
   "Covalent Balances"
-  balances(address: String!, chainIds: [String!]!): [Balance!]!
+  balances(address: String!, chainIds: [Int!]!): [Balance!]!
   "Covalent Chains"
   chains: [Chain!]!
   "Coin Gaico Coin Details"
@@ -263,15 +263,43 @@ type Query {
   globalStats: GlobalStats!
   protocol(slug: String!): ProtocolDetails!
   protocols: [Protocol!]!
+  """
+
+  If tickers (a comma separated list of tickers
+  is present), only return the spot prices for these tokens.
+  """
+  spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
   supportedTokens(resource: [String!]!): [Token!]!
   ticker(product: String = "BTC-USD"): Ticker!
   todos: [Todo!]!
   tokenPair(poolId: String!): UniswapBalance!
   tokenResources: [String!]!
-  "Covalent Balances"
-  transactions(address: String!, chainId: String!, pageNumber: String!, pageSize: String!): Transactions
+  "Covalent Transactions"
+  transactions(address: String!, chainId: Int!, pageNumber: Int!, pageSize: Int!): Transactions
   uniswapBalances(numberOfTokens: Int = 1000): [UniswapBalance!]!
   uniswapChart(interval: chartIntervals!, poolId: String!): [UniswapChart!]!
+}
+
+"""
+
+Covalent Get Transactions for address
+https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+"""
+type SpotPrice {
+  items: [SpotPriceItem]!
+  pagination: Pagination
+  updatedAt: String!
+}
+
+type SpotPriceItem {
+  contractAddress: String!
+  contractDecimals: Int!
+  contractName: String!
+  contractTickerSymbol: String!
+  logoUrl: String!
+  quoteRate: Float!
+  rank: Int!
+  supportsErc: String!
 }
 
 type Ticker {
@@ -349,8 +377,9 @@ type TransactionItem {
 
 """
 
-Covalent Get Transactions for address
-https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
+query param, it returns a paginated list of all tickers sorted by market cap.
+https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
 """
 type Transactions {
   address: String!

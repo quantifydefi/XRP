@@ -1,4 +1,4 @@
-query BalancesGQL($chainIds: [String!]!, $address: String! ) {
+query BalancesGQL($chainIds: [Int!]!, $address: String! ) {
   balances(chainIds: $chainIds, address: $address) {
     address
     updatedAt

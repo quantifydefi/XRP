@@ -29,12 +29,17 @@ export type Query = {
   globalStats: GlobalStats;
   protocol: ProtocolDetails;
   protocols: Array<Protocol>;
+  /**
+   * If tickers (a comma separated list of tickers
+   *     is present), only return the spot prices for these tokens.
+   */
+  spotPrice?: Maybe<SpotPrice>;
   supportedTokens: Array<Token>;
   ticker: Ticker;
   todos: Array<Todo>;
   tokenPair: UniswapBalance;
   tokenResources: Array<Scalars['String']>;
-  /** Covalent Balances */
+  /** Covalent Transactions */
   transactions?: Maybe<Transactions>;
   uniswapBalances: Array<UniswapBalance>;
   uniswapChart: Array<UniswapChart>;
@@ -43,7 +48,7 @@ export type Query = {
 
 export type QueryBalancesArgs = {
   address: Scalars['String'];
-  chainIds: Array<Scalars['String']>;
+  chainIds: Array<Scalars['Int']>;
 };
 
 
@@ -54,6 +59,13 @@ export type QueryCoinDetailsArgs = {
 
 export type QueryProtocolArgs = {
   slug: Scalars['String'];
+};
+
+
+export type QuerySpotPriceArgs = {
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  tickers: Scalars['String'];
 };
 
 
@@ -74,9 +86,9 @@ export type QueryTokenPairArgs = {
 
 export type QueryTransactionsArgs = {
   address: Scalars['String'];
-  chainId: Scalars['String'];
-  pageNumber: Scalars['String'];
-  pageSize: Scalars['String'];
+  chainId: Scalars['Int'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
 };
 
 
@@ -356,6 +368,29 @@ export type Protocol = {
   url: Scalars['String'];
 };
 
+/**
+ * Covalent Get Transactions for address
+ * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+ */
+export type SpotPrice = {
+  __typename?: 'SpotPrice';
+  items: Array<Maybe<SpotPriceItem>>;
+  pagination?: Maybe<Pagination>;
+  updatedAt: Scalars['String'];
+};
+
+export type SpotPriceItem = {
+  __typename?: 'SpotPriceItem';
+  contractAddress: Scalars['String'];
+  contractDecimals: Scalars['Int'];
+  contractName: Scalars['String'];
+  contractTickerSymbol: Scalars['String'];
+  logoUrl: Scalars['String'];
+  quoteRate: Scalars['Float'];
+  rank: Scalars['Int'];
+  supportsErc: Scalars['String'];
+};
+
 export type Token = {
   __typename?: 'Token';
   address: Scalars['String'];
@@ -424,8 +459,9 @@ export type UniswapBalance = {
 };
 
 /**
- * Covalent Get Transactions for address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+ * Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
+ * query param, it returns a paginated list of all tickers sorted by market cap.
+ * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
  */
 export type Transactions = {
   __typename?: 'Transactions';
@@ -508,7 +544,7 @@ export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>
 export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: string, isTestnet: boolean, dbSchemaName: string, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string } };
 
 export type BalancesGqlQueryVariables = Exact<{
-  chainIds: Array<Scalars['String']> | Scalars['String'];
+  chainIds: Array<Scalars['Int']> | Scalars['Int'];
   address: Scalars['String'];
 }>;
 

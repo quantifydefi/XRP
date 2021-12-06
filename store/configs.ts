@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { ActionTree, MutationTree } from 'vuex'
+import { plainToClass } from 'class-transformer'
 import { Chain, GlobalStats } from '~/types/apollo/types'
 import { GlobalStatsQueryGQL } from '~/apollo/config.query.graphql'
+import { ChainItem, PortfolioBalance } from '~/models/portfolio'
 export const state = () => ({
   globalStats: null as GlobalStats | null,
   gasStats: null as {
@@ -20,18 +22,18 @@ export const state = () => ({
     logoUrl:
       'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
     name: 'eth-mainnet',
-  } as Chain,
-  chains: [] as Chain[],
+  } as ChainItem,
+  chains: [] as ChainItem[],
 })
 export type ConfigState = ReturnType<typeof state>
 
 export const mutations: MutationTree<ConfigState> = {
   SET_CONFIG: (state, { globalStats, chains, gasStats }) => {
-    state.chains = chains
+    state.chains = plainToClass(ChainItem, chains as ChainItem[])
     state.globalStats = globalStats
     state.gasStats = gasStats
   },
-  SET_CHAIN: (state, chain: Chain) => {
+  SET_CHAIN: (state, chain: ChainItem) => {
     state.currentChain = chain
   },
 }

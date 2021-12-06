@@ -40,7 +40,7 @@
                     multiple
                   >
                     <template v-for="item in mainNetChains">
-                      <v-list-item :key="item.chainId" :value="item.chainId">
+                      <v-list-item :key="item.chainId" :value="item.id">
                         <template #default="{ active }">
                           <v-list-item-avatar size="24">
                             <v-img :src="item.logoUrl"></v-img>
@@ -152,15 +152,13 @@
                     multiple
                   >
                     <template v-for="item in testNetChains">
-                      <v-list-item :key="item.chainId" :value="item.chainId">
+                      <v-list-item :key="item.chainId" :value="item.id">
                         <template #default="{ active }">
                           <v-list-item-avatar size="24">
                             <v-img :src="item.logoUrl"></v-img>
                           </v-list-item-avatar>
 
-                          <v-list-item-title
-                            v-text="item.label"
-                          ></v-list-item-title>
+                          <v-list-item-title v-text="item.label" />
 
                           <v-list-item-action>
                             <v-icon v-if="!active" color="grey lighten-1">

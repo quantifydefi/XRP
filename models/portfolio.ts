@@ -5,6 +5,20 @@ import { mapState } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { BalancesGQL } from '~/apollo/portfolio.query.graphql'
 import { Balance, BalanceItem, Chain } from '~/types/apollo/types'
+
+export class ChainItem implements Chain {
+  chainId!: string
+  dbSchemaName!: string
+  isTestnet!: boolean
+  label!: string
+  logoUrl!: string
+  name!: string
+
+  get id() {
+    return parseInt(this.chainId)
+  }
+}
+
 @Component({
   computed: {
     ...mapState({
@@ -15,17 +29,17 @@ import { Balance, BalanceItem, Chain } from '~/types/apollo/types'
   },
 })
 export class Portfolio extends Vue {
-  chains!: Chain[]
+  chains!: ChainItem[]
   walletAddress!: string
   isWalletConnected!: boolean
 
-  get mainNetChains(): Chain[] {
+  get mainNetChains(): ChainItem[] {
     return this.chains.filter((elem) => {
       return !elem.isTestnet
     })
   }
 
-  get testNetChains(): Chain[] {
+  get testNetChains(): ChainItem[] {
     return this.chains.filter((elem) => {
       return elem.isTestnet
     })
@@ -97,7 +111,7 @@ export class BalancesPortfolio extends Portfolio {
     toggleMainNetworks: false,
     toggleTestNetworks: false,
 
-    selectedMainNets: ['1', '137', '43114', '56', '1285', '30'],
+    selectedMainNets: [1, 56, 137, 43114, 250],
     cols: [
       {
         text: 'Token',

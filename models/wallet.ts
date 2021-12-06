@@ -46,7 +46,7 @@ export class MetamaskConnector extends Vue {
     }
   }
 
-  async mounted() {
+  /*  async mounted() {
     const { ethereum } = window
     this.ethereum = ethereum
     await this.connectToWallet()
@@ -64,5 +64,5 @@ export class MetamaskConnector extends Vue {
         })
       }
     })
-  }
+  } */
 }

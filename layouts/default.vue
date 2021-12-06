@@ -307,16 +307,13 @@ export default class Default extends mixins(
     'app-id-curve': 'crv',
   }
 
-  async mounted() {
+  mounted() {
     /** Fetch CoinGecko supported tokens **/
-    // await this.$store.dispatch('coinList/getCoinGeckoTokenList')
-
     this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)
       } catch {}
     })
-    await this.$store.dispatch('wallet/gasPrices')
   }
 }
 </script>
