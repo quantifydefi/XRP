@@ -2,9 +2,9 @@
 import type { ActionTree, MutationTree } from 'vuex'
 
 export const state = () => ({
-  isWalletConnected: true as boolean,
-  // address: null as unknown as string,
-  address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+  isWalletConnected: false as boolean,
+  address: null as unknown as string,
+  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
   totalBalance: '' as string,
 })
 export type WalletState = ReturnType<typeof state>
