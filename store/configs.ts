@@ -2,7 +2,7 @@
 import type { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { Chain, GlobalStats } from '~/types/apollo/types'
-import { GlobalStatsQueryGQL } from '~/apollo/config.query.graphql'
+import { GlobalStatsQueryGQL } from '~/apollo/curve/config.query.graphql'
 import { ChainItem, PortfolioBalance } from '~/models/portfolio'
 export const state = () => ({
   globalStats: null as GlobalStats | null,

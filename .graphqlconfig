@@ -9,6 +9,14 @@
           "user-agent": "JS GraphQL"
         },
         "introspect": false
+      },
+
+       "Curve Subgraph": {
+        "url": "https://api.thegraph.com/subgraphs/name/curvefi/curve",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": false
       }
     }
   }

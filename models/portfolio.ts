@@ -3,7 +3,7 @@ import 'reflect-metadata'
 import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { plainToClass } from 'class-transformer'
-import { BalancesGQL } from '~/apollo/portfolio.query.graphql'
+import { BalancesGQL } from '~/apollo/main/portfolio.query.graphql'
 import { Balance, BalanceItem, Chain } from '~/types/apollo/types'
 
 export class ChainItem implements Chain {

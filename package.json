@@ -10,7 +10,8 @@
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint": "eslint --ext .ts,.js,.vue .",
     "test": "jest",
-    "generate-types": "graphql-codegen --config codegen.yml"
+    "generate-types": "graphql-codegen --config codegen.yml",
+    "generate-curve-types": "graphql-codegen --config codegen.curve.yml"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.15",
