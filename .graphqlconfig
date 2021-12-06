@@ -1,17 +1,17 @@
 {
   "name": "Untitled GraphQL Schema",
-  "schemaPath": "schema.graphql",
   "extensions": {
     "endpoints": {
       "Default GraphQL Endpoint": {
+        "schemaPath": "main.schema.graphql",
         "url": "http://localhost:8080/query",
         "headers": {
           "user-agent": "JS GraphQL"
         },
         "introspect": false
       },
-
-       "Curve Subgraph": {
+      "Curve Subgraph": {
+         "schemaPath": "curve.schema.graphql",
         "url": "https://api.thegraph.com/subgraphs/name/curvefi/curve",
         "headers": {
           "user-agent": "JS GraphQL"

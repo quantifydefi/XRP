@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
-import { Chain, GlobalStats } from '~/types/apollo/types'
-import { GlobalStatsQueryGQL } from '~/apollo/curve/config.query.graphql'
+import { Chain, GlobalStats } from '~/types/apollo/main/types'
+import { GlobalStatsQueryGQL } from '~/apollo/main/config.query.graphql'
 import { ChainItem, PortfolioBalance } from '~/models/portfolio'
 export const state = () => ({
   globalStats: null as GlobalStats | null,

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { Chain } from '~/types/apollo/types'
+import { Chain } from '~/types/apollo/main/types'
 
 @Component
 export class Config extends Vue {
