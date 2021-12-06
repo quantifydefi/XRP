@@ -307,9 +307,9 @@ export default class Default extends mixins(
     'app-id-curve': 'crv',
   }
 
-  mounted() {
+  async mounted() {
     /** Fetch CoinGecko supported tokens **/
-    this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
+    await this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)
       } catch {}

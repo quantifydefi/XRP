@@ -16,9 +16,9 @@ export class MetamaskConnector extends Vue {
       })
       return accounts[0]
     } catch (error) {
-      this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
+      /*  this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
         text: `Something Went Wrong with Metamask`,
-      })
+      }) */
       return null
     }
   }
