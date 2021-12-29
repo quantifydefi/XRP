@@ -4,10 +4,7 @@
  */
 export default async (context) => {
   if (context.route.name === 'wallet-id') {
-    const { status } = await context.store.dispatch(
-      'wallet/isWalletConnected',
-      context
-    )
+    const { status } = await context.store.dispatch('wallet/isWalletConnected', context)
     if (!status) {
       context.redirect(process.env.baseURL)
     }

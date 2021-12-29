@@ -1,12 +1,5 @@
 <template>
-  <v-btn-toggle
-    v-model="range"
-    class="mx-1"
-    tile
-    color="primary"
-    mandatory
-    group
-  >
+  <v-btn-toggle v-model="range" class="mx-1" tile color="primary" mandatory group>
     <v-btn
       v-for="range in ranges"
       :key="range"

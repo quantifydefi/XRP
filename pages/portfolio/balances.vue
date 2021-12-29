@@ -24,9 +24,7 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <span class="primary--text mx-1 pr-2">
-                      MainNet Networks
-                    </span>
+                    <span class="primary--text mx-1 pr-2"> MainNet Networks </span>
                     <v-icon right>mdi-chevron-down</v-icon>
                   </v-btn>
                 </div>
@@ -34,11 +32,7 @@
 
               <v-card outlined tile width="350">
                 <v-list dense>
-                  <v-list-item-group
-                    v-model="configs.selectedMainNets"
-                    active-class="pink--text"
-                    multiple
-                  >
+                  <v-list-item-group v-model="configs.selectedMainNets" active-class="pink--text" multiple>
                     <template v-for="item in mainNetChains">
                       <v-list-item :key="item.chainId" :value="item.id">
                         <template #default="{ active }">
@@ -46,17 +40,11 @@
                             <v-img :src="item.logoUrl"></v-img>
                           </v-list-item-avatar>
 
-                          <v-list-item-title
-                            v-text="item.label"
-                          ></v-list-item-title>
+                          <v-list-item-title v-text="item.label"></v-list-item-title>
 
                           <v-list-item-action>
-                            <v-icon v-if="!active" color="grey lighten-1">
-                              mdi-star-outline
-                            </v-icon>
-                            <v-icon v-else color="yellow darken-3">
-                              mdi-star
-                            </v-icon>
+                            <v-icon v-if="!active" color="grey lighten-1"> mdi-star-outline </v-icon>
+                            <v-icon v-else color="yellow darken-3"> mdi-star </v-icon>
                           </v-list-item-action>
                         </template>
                       </v-list-item>
@@ -136,9 +124,7 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <span class="primary--text mx-1 pr-2">
-                      Test Net Networks
-                    </span>
+                    <span class="primary--text mx-1 pr-2"> Test Net Networks </span>
                     <v-icon right>mdi-chevron-down</v-icon>
                   </v-btn>
                 </div>
@@ -146,11 +132,7 @@
 
               <v-card outlined tile width="350">
                 <v-list dense>
-                  <v-list-item-group
-                    v-model="configs.selectedMainNets"
-                    active-class="pink--text"
-                    multiple
-                  >
+                  <v-list-item-group v-model="configs.selectedMainNets" active-class="pink--text" multiple>
                     <template v-for="item in testNetChains">
                       <v-list-item :key="item.chainId" :value="item.id">
                         <template #default="{ active }">
@@ -161,12 +143,8 @@
                           <v-list-item-title v-text="item.label" />
 
                           <v-list-item-action>
-                            <v-icon v-if="!active" color="grey lighten-1">
-                              mdi-star-outline
-                            </v-icon>
-                            <v-icon v-else color="yellow darken-3">
-                              mdi-star
-                            </v-icon>
+                            <v-icon v-if="!active" color="grey lighten-1"> mdi-star-outline </v-icon>
+                            <v-icon v-else color="yellow darken-3"> mdi-star </v-icon>
                           </v-list-item-action>
                         </template>
                       </v-list-item>
@@ -180,13 +158,7 @@
         <v-spacer />
         <v-col class="pb-0">
           <v-row class="d-flex justify-end">
-            <v-menu
-              :close-on-content-click="false"
-              :nudge-width="200"
-              :nudge-right="-200"
-              :nudge-bottom="5"
-              offset-y
-            >
+            <v-menu :close-on-content-click="false" :nudge-width="200" :nudge-right="-200" :nudge-bottom="5" offset-y>
               <template #activator="{ on, attrs }">
                 <v-btn
                   width="140"
@@ -204,19 +176,11 @@
 
               <v-card tile outlined height="60">
                 <v-card-text>
-                  <v-slider
-                    v-model="configs.gridHeight"
-                    :min="400"
-                    :max="1000"
-                  />
+                  <v-slider v-model="configs.gridHeight" :min="400" :max="1000" />
                 </v-card-text>
               </v-card>
             </v-menu>
-            <v-btn-toggle
-              v-model="configs.numberOfRows"
-              mandatory
-              background-color="transparent"
-            >
+            <v-btn-toggle v-model="configs.numberOfRows" mandatory background-color="transparent">
               <v-btn
                 v-for="(item, index) in configs.numOfRowsOptions"
                 :key="index"
@@ -235,16 +199,8 @@
       </v-row>
     </client-only>
     <v-row>
-      <v-col
-        v-for="item in balances"
-        :key="item.chainId"
-        :cols="configs.numberOfRows"
-      >
-        <balances-grid
-          :balance="item"
-          :cols="configs.cols"
-          :grid-height="configs.gridHeight"
-        />
+      <v-col v-for="item in balances" :key="item.chainId" :cols="configs.numberOfRows">
+        <balances-grid :balance="item" :cols="configs.cols" :grid-height="configs.gridHeight" />
       </v-col>
     </v-row>
   </div>
@@ -263,14 +219,8 @@ import { Helper } from '~/models/helper'
 export default class Balances extends mixins(BalancesPortfolio) {
   @Watch('balances')
   async onBalanceChange(newVal: PortfolioBalance[]) {
-    const totalBalance = newVal.reduce(
-      (n, { chainTotalBalance }) => n + chainTotalBalance,
-      0
-    )
-    await this.$store.dispatch(
-      'wallet/totalBalance',
-      Helper.priceFormatter(totalBalance)
-    )
+    const totalBalance = newVal.reduce((n, { chainTotalBalance }) => n + chainTotalBalance, 0)
+    await this.$store.dispatch('wallet/totalBalance', Helper.priceFormatter(totalBalance))
   }
 }
 </script>

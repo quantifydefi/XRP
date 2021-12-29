@@ -9,10 +9,7 @@ export type BalanceState = ReturnType<typeof state>
 export const mutations: MutationTree<BalanceState> = {}
 
 export const actions: ActionTree<BalanceState, BalanceState> = {
-  async getBalances(
-    _,
-    { tokenList, chainId, address }
-  ): Promise<BalanceData[]> {
+  async getBalances(_, { tokenList, chainId, address }): Promise<BalanceData[]> {
     const balancesData: BalanceData[] = []
     try {
       const {
@@ -30,8 +27,7 @@ export const actions: ActionTree<BalanceState, BalanceState> = {
           })
 
           if (balance.type !== 'dust' && verifiedToken) {
-            const balanceRounded =
-              balance.balance / 10 ** balance.contract_decimals
+            const balanceRounded = balance.balance / 10 ** balance.contract_decimals
 
             const tokenBalanceData: BalanceData = {
               contract_address: balance.contract_address,

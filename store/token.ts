@@ -14,10 +14,7 @@ export const actions: ActionTree<HeatmapState, HeatmapState> = {
     return plainToClass(Token, data.data as Token)
   },
 
-  async getTokenChart(
-    { commit },
-    { tokenId, timeRange }
-  ): Promise<ChartData[]> {
+  async getTokenChart({ commit }, { tokenId, timeRange }): Promise<ChartData[]> {
     const { data } = await this.$axios.get(`/api/defi/pair/${tokenId}/chart`, {
       params: { time_range: timeRange },
     })

@@ -11,15 +11,8 @@
       :sort-desc="[true]"
     >
       <template #[`item.name`]="{ item }">
-        <v-row
-          no-gutters
-          class="text-no-wrap text-left py-3 overflow-hidden"
-          style="min-width: 200px"
-        >
-          <v-col
-            cols="2"
-            style="display: flex; justify-content: center; align-items: center"
-          >
+        <v-row no-gutters class="text-no-wrap text-left py-3 overflow-hidden" style="min-width: 200px">
+          <v-col cols="2" style="display: flex; justify-content: center; align-items: center">
             <v-avatar v-if="item.coingeckoInfo" size="32">
               <img
                 :alt="` logo`"
@@ -45,14 +38,7 @@
                 color="grey darken-3"
                 >{{ item.referenceAsset }}
               </v-chip>
-              <v-chip
-                v-else
-                label
-                x-small
-                class="ml-2 text-uppercase rounded-0"
-                color="grey darken-3"
-                >USD
-              </v-chip>
+              <v-chip v-else label x-small class="ml-2 text-uppercase rounded-0" color="grey darken-3">USD </v-chip>
             </div>
 
             <div class="caption text-no-wrap">
@@ -132,25 +118,13 @@
       <template #[`item.actions`]>
         <v-row no-gutters class="text-no-wrap" style="min-width: 480px">
           <v-col cols="3">
-            <v-btn
-              small
-              width="110"
-              class="mt-3 mx-3 rounded-xl"
-              outlined
-              color="grey darken-2"
-            >
+            <v-btn small width="110" class="mt-3 mx-3 rounded-xl" outlined color="grey darken-2">
               <span> Deposit </span>
             </v-btn>
           </v-col>
 
           <v-col cols="3">
-            <v-btn
-              small
-              width="110"
-              class="mt-3 mx-3 rounded-xl"
-              outlined
-              color="grey darken-2"
-            >
+            <v-btn small width="110" class="mt-3 mx-3 rounded-xl" outlined color="grey darken-2">
               <span
                 :style="{
                   color: $vuetify.theme.themes[theme].baseText,
@@ -162,13 +136,7 @@
           </v-col>
 
           <v-col cols="3">
-            <v-btn
-              small
-              width="110"
-              class="mt-3 mx-3 rounded-xl"
-              outlined
-              color="grey darken-2"
-            >
+            <v-btn small width="110" class="mt-3 mx-3 rounded-xl" outlined color="grey darken-2">
               <span
                 :style="{
                   color: $vuetify.theme.themes[theme].baseText,
@@ -180,13 +148,7 @@
           </v-col>
 
           <v-col cols="3">
-            <v-btn
-              small
-              width="110"
-              outlined
-              class="mt-3 mx-3 rounded-xl"
-              color="grey darken-2"
-            >
+            <v-btn small width="110" outlined class="mt-3 mx-3 rounded-xl" color="grey darken-2">
               <span
                 :style="{
                   color: $vuetify.theme.themes[theme].baseText,

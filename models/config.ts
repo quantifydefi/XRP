@@ -7,20 +7,20 @@ import { Chain } from '~/types/apollo/main/types'
 export class Config extends Vue {
   conf = {
     toggleChainSelection: false as boolean,
-    selectedChainId: '1' as string,
+    selectedChainId: 1 as number,
   }
 
   chains: Chain[] = this.$store.state.configs.chains
 
   get mainNetChains(): Chain[] {
     return this.chains.filter((elem) => {
-      return !elem.isTestnet
+      return !elem.isTestNet
     })
   }
 
   get testNetChains(): Chain[] {
     return this.chains.filter((elem) => {
-      return elem.isTestnet
+      return elem.isTestNet
     })
   }
 
@@ -34,14 +34,13 @@ export class Config extends Vue {
     if (value === undefined) {
       this.conf.selectedChainId = old
     } else {
-      await this.$store.dispatch('configs/changeChain', value)
+      const chain = this._findChainById(value)
+      await this.$store.dispatch('configs/changeChain', chain)
     }
   }
 
-  private _findChainById(id: string): Chain | null {
-    const chain: Chain | undefined = this.chains.find(
-      (elem) => elem.chainId === id
-    )
+  private _findChainById(id: number): Chain | null {
+    const chain: Chain | undefined = this.chains.find((elem) => elem.chainId === id)
     if (chain) {
       return chain
     } else return null

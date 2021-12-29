@@ -1,8 +1,5 @@
 <template>
-  <v-app
-    id="inspire"
-    :style="{ background: $vuetify.theme.themes[theme].background }"
-  >
+  <v-app id="inspire" :style="{ background: $vuetify.theme.themes[theme].background }">
     <v-main>
       <v-container class="py-8 px-6" fluid>
         <nuxt />

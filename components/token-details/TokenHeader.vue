@@ -1,13 +1,7 @@
 <template>
   <v-row>
     <v-col cols="6" class="mt-4 pb-0">
-      <v-avatar
-        max-height="32"
-        style="bottom: 6px"
-        class="mx-0"
-        min-width="32"
-        width="32"
-      >
+      <v-avatar max-height="32" style="bottom: 6px" class="mx-0" min-width="32" width="32">
         <v-img
           :src="tokenData.coinImage(tokenData.token0_id)"
           :lazy-src="tokenData.coinImage(tokenData.token0_id)"
@@ -17,13 +11,7 @@
         />
       </v-avatar>
 
-      <v-avatar
-        max-height="32"
-        style="bottom: 6px"
-        class="mx-0"
-        min-width="32"
-        width="32"
-      >
+      <v-avatar max-height="32" style="bottom: 6px" class="mx-0" min-width="32" width="32">
         <v-img
           :src="tokenData.coinImage(tokenData.token1_id)"
           :lazy-src="tokenData.coinImage(tokenData.token1_id)"
@@ -40,9 +28,7 @@
       >
         {{ tokenData.token0_name }} - {{ tokenData.token1_name }}
 
-        <span class="text-h6">
-          | {{ tokenData.token0_symbol }}-{{ tokenData.token1_symbol }}</span
-        > </span
+        <span class="text-h6"> | {{ tokenData.token0_symbol }}-{{ tokenData.token1_symbol }}</span> </span
       ><br v-if="$vuetify.breakpoint.mdAndDown" />
     </v-col>
     <v-spacer />

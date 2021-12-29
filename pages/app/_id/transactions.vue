@@ -2,9 +2,7 @@
   <v-row no-gutters justify="center">
     <v-col v-if="transactionsHistory" cols="12">
       <v-card outlined tile>
-        <v-card-title class="py-1 px-2 subtitle-1"
-          >Most Recent Transactions
-        </v-card-title>
+        <v-card-title class="py-1 px-2 subtitle-1">Most Recent Transactions </v-card-title>
         <v-divider></v-divider>
         <client-only>
           <v-data-table
@@ -25,18 +23,13 @@
 
             <template #[`item.tx_hash`]="{ item }">
               <div class="text-no-wrap">
-                {{ item.tx_hash.slice(0, 12) }}...{{
-                  item.tx_hash.slice(54, item.tx_hash.length)
-                }}
+                {{ item.tx_hash.slice(0, 12) }}...{{ item.tx_hash.slice(54, item.tx_hash.length) }}
               </div>
             </template>
 
             <template #[`item.successful`]="{ item }">
               <div class="text-no-wrap">
-                <v-icon
-                  small
-                  :color="item.successful ? 'primary' : 'red darken-4'"
-                >
+                <v-icon small :color="item.successful ? 'primary' : 'red darken-4'">
                   {{ item.successful ? 'mdi-check' : 'mdi-close' }}
                 </v-icon>
               </div>
@@ -44,36 +37,26 @@
 
             <template #[`item.from_address`]="{ item }">
               <div class="text-no-wrap">
-                {{ item.from_address.slice(0, 10) }}...{{
-                  item.from_address.slice(31, item.from_address.length)
-                }}
+                {{ item.from_address.slice(0, 10) }}...{{ item.from_address.slice(31, item.from_address.length) }}
               </div>
             </template>
 
             <template #[`item.to_address`]="{ item }">
               <div class="text-no-wrap">
-                {{ item.to_address.slice(0, 10) }}...{{
-                  item.to_address.slice(31, item.to_address.length)
-                }}
+                {{ item.to_address.slice(0, 10) }}...{{ item.to_address.slice(31, item.to_address.length) }}
               </div>
             </template>
 
             <template #[`item.value`]="{ item }">
-              <div class="text-no-wrap">
-                {{ (item.value / 10 ** 18).toFixed(6) || '' }} ETH
-              </div>
+              <div class="text-no-wrap">{{ (item.value / 10 ** 18).toFixed(6) || '' }} ETH</div>
             </template>
 
             <template #[`item.value_quote`]="{ item }">
-              <div class="text-no-wrap">
-                ${{ item.value_quote.toFixed(4) || '' }}
-              </div>
+              <div class="text-no-wrap">${{ item.value_quote.toFixed(4) || '' }}</div>
             </template>
 
             <template #[`item.gas_quote`]="{ item }">
-              <div class="text-no-wrap">
-                ${{ item.gas_quote.toFixed(4) || '' }}
-              </div>
+              <div class="text-no-wrap">${{ item.gas_quote.toFixed(4) || '' }}</div>
             </template>
           </v-data-table>
         </client-only>
@@ -103,11 +86,7 @@ export default class Transactions extends Vue {
   async mounted() {
     const chainId = parseInt(this.$route.params.id)
 
-    this.transactionsHistory = new TransactionsHistory(
-      this.$store,
-      chainId,
-      this.address
-    )
+    this.transactionsHistory = new TransactionsHistory(this.$store, chainId, this.address)
     await this.transactionsHistory.getData()
   }
 }

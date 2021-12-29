@@ -28,10 +28,7 @@ export const state = () => ({})
 export type AaveState = ReturnType<typeof state>
 export const mutations: MutationTree<AaveState> = {}
 export const actions: ActionTree<AaveState, AaveState> = {
-  async getAaveBalances(
-    _,
-    { chainId, address, store }
-  ): Promise<AaveBalanceData[]> {
+  async getAaveBalances(_, { chainId, address, store }): Promise<AaveBalanceData[]> {
     const aaveBalances: AaveBalanceData[] = []
 
     try {
@@ -86,9 +83,7 @@ export const actions: ActionTree<AaveState, AaveState> = {
            * Iterates through portfolioBalance, and matches available balance (if any) to current aave asset
            ***/
           for (const item of portfolioBalance) {
-            if (
-              item.contract_address === aaveBalance.underlying.contract_address
-            ) {
+            if (item.contract_address === aaveBalance.underlying.contract_address) {
               aaveBalance.underlying.available_balance = item.balance
             }
           }
@@ -107,10 +102,7 @@ export const actions: ActionTree<AaveState, AaveState> = {
    *  Fetches all the market assets within the selected network (ie, Ethereum or Polygon).
    *  Also checks if you have any available balances compared to your portfolio
    * **/
-  async getAaveAssets(
-    _,
-    { chainId, store, address, apollo }
-  ): Promise<AaveAssetData[]> {
+  async getAaveAssets(_, { chainId, store, address, apollo }): Promise<AaveAssetData[]> {
     try {
       const aaveBalance = new AaveBalance(store, chainId, address)
       await aaveBalance.getData()
@@ -136,8 +128,7 @@ export const actions: ActionTree<AaveState, AaveState> = {
             contract_address: asset.underlyingAsset,
             logo_url: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${asset.symbol.toLowerCase()}.png`,
             available_balance: 0,
-            quote_rate:
-              asset.price.priceInEth / 10 ** 18 / store.state.rate.ethUsdRate,
+            quote_rate: asset.price.priceInEth / 10 ** 18 / store.state.rate.ethUsdRate,
           },
           supply_position: {
             supplied: '',
@@ -173,19 +164,12 @@ export const actions: ActionTree<AaveState, AaveState> = {
 
         /** For each element in balanceData, if any open borrow or supply balances, match with aave market asset **/
         for (const balance of aaveBalance.balanceData) {
-          if (
-            balance.underlying.contract_address ===
-            item.underlying.contract_address
-          ) {
+          if (balance.underlying.contract_address === item.underlying.contract_address) {
             item.supply_position = balance.supply_position
             item.borrow_position = balance.borrow_position
 
-            item.borrow_position.balance =
-              balance.borrow_position.balance /
-              10 ** item.underlying.contract_decimals
-            item.supply_position.balance =
-              balance.supply_position.balance /
-              10 ** item.underlying.contract_decimals
+            item.borrow_position.balance = balance.borrow_position.balance / 10 ** item.underlying.contract_decimals
+            item.supply_position.balance = balance.supply_position.balance / 10 ** item.underlying.contract_decimals
           }
         }
 

@@ -1,18 +1,8 @@
 <template>
   <v-row no-gutters justify="center">
-    <v-overlay
-      :value="showOverlay"
-      :opacity="1"
-      absolute
-      :color="$vuetify.theme.themes[theme].overlay"
-    >
+    <v-overlay :value="showOverlay" :opacity="1" absolute :color="$vuetify.theme.themes[theme].overlay">
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
-      <v-progress-linear
-        color="primary"
-        indeterminate
-        rounded
-        height="6"
-      ></v-progress-linear>
+      <v-progress-linear color="primary" indeterminate rounded height="6"></v-progress-linear>
     </v-overlay>
 
     <v-col cols="12">
@@ -46,11 +36,7 @@
                 </v-card-title>
                 <v-divider />
 
-                <v-card-title
-                  v-for="(item, i) in balances.networks"
-                  :key="i"
-                  class="pa-0 ma-0"
-                >
+                <v-card-title v-for="(item, i) in balances.networks" :key="i" class="pa-0 ma-0">
                   <v-col cols="6" class="d-flex">
                     <v-avatar size="26px">
                       <v-img

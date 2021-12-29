@@ -1,0 +1,19 @@
+#query TokenDetailsGQL($coinId: String! ) {
+#  coinDetails(coinId: $coinId) {
+#    id
+#    symbol
+#    name
+#    links
+#    marketCapRank
+#    lastUpdated
+#    marketData{
+#      currentPrice
+#      priceChange24hInCurrency
+#      high24h
+#      low24h
+#      marketCap
+#      totalVolume
+#      circulatingSupply
+#      maxSupply
+#    }
+#  }}

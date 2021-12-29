@@ -7,11 +7,7 @@
 
       <!--      Change it to separate component-->
       <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">
-        <v-avatar
-          v-if="$route.name === 'app-id-aave' || $route.name === 'app-id-curve'"
-          size="28"
-          class="mr-2"
-        >
+        <v-avatar v-if="$route.name === 'app-id-aave' || $route.name === 'app-id-curve'" size="28" class="mr-2">
           <img
             :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${
               protocolSrc[$route.name]
@@ -32,9 +28,7 @@
         to="/portfolio/balances"
       >
         <span :class="ui[theme].headerTextClass">
-          <span class="ml-1 subtitle-1 font-weight-medium border-bottom">
-            Balance — {{ totalBalance }}
-          </span>
+          <span class="ml-1 subtitle-1 font-weight-medium border-bottom"> Balance — {{ totalBalance }} </span>
         </span>
       </v-btn>
 
@@ -81,22 +75,13 @@
               <v-col>
                 <v-list dense>
                   <v-subheader>MAIN NET</v-subheader>
-                  <v-list-item-group
-                    v-model="conf.selectedChainId"
-                    color="primary"
-                  >
-                    <v-list-item
-                      v-for="item in mainNetChains"
-                      :key="item.chainId"
-                      :value="item.chainId"
-                    >
+                  <v-list-item-group v-model="conf.selectedChainId" color="primary">
+                    <v-list-item v-for="item in mainNetChains" :key="item.chainId" :value="item.chainId">
                       <v-list-item-avatar size="24">
                         <v-img :src="item.logoUrl"></v-img>
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title
-                          v-text="item.label"
-                        ></v-list-item-title>
+                        <v-list-item-title v-text="item.label"></v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
@@ -105,22 +90,13 @@
               <v-col>
                 <v-list dense>
                   <v-subheader>TEST NET</v-subheader>
-                  <v-list-item-group
-                    v-model="conf.selectedChainId"
-                    color="primary"
-                  >
-                    <v-list-item
-                      v-for="item in testNetChains"
-                      :key="item.chainId"
-                      :value="item.chainId"
-                    >
+                  <v-list-item-group v-model="conf.selectedChainId" color="primary">
+                    <v-list-item v-for="item in testNetChains" :key="item.chainId" :value="item.chainId">
                       <v-list-item-avatar size="24">
                         <v-img s :src="item.logoUrl"></v-img>
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title
-                          v-text="item.label"
-                        ></v-list-item-title>
+                        <v-list-item-title v-text="item.label"></v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
@@ -147,10 +123,7 @@
                 class="mt-1 subtitle-2 text-capitalize font-weight-regular"
                 text
                 tile
-                :class="
-                  ui[theme].headerTextClass +
-                  ` subtitle-2 text-capitalize elevation-0`
-                "
+                :class="ui[theme].headerTextClass + ` subtitle-2 text-capitalize elevation-0`"
                 v-bind="attrs"
                 v-on="on"
               >
@@ -171,9 +144,7 @@
                 <div class="text-subtitle-2">Current Gas Prices</div>
               </v-col>
               <v-col cols="12">
-                <span class="text-caption grey--text lighten-2">
-                  Gas fees on the Ethereum Network
-                </span></v-col
+                <span class="text-caption grey--text lighten-2"> Gas fees on the Ethereum Network </span></v-col
               >
             </v-row>
             <v-divider class="my-1" />
@@ -195,24 +166,14 @@
         </v-menu>
       </client-only>
       <!--      Wallet Menu-->
-      <v-btn
-        class="mt-1 subtitle-2 text-capitalize font-weight-regular"
-        text
-        tile
-        @click="connectToWallet"
-      >
+      <v-btn class="mt-1 subtitle-2 text-capitalize font-weight-regular" text tile @click="connectToWallet">
         <div :class="ui[theme].headerTextClass">
-          <v-icon :color="walletConnected ? 'green' : 'orange'"
-            >mdi-wallet
-          </v-icon>
+          <v-icon :color="walletConnected ? 'green' : 'orange'">mdi-wallet </v-icon>
           <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2">
             {{
               !walletConnected
                 ? 'connect wallet'
-                : `${address.slice(0, 5)}...${address.slice(
-                    address.length - 4,
-                    address.length
-                  )}`
+                : `${address.slice(0, 5)}...${address.slice(address.length - 4, address.length)}`
             }}
           </span>
         </div>
@@ -276,16 +237,11 @@ import { Config } from '~/models/config'
     }),
   },
 })
-export default class Default extends mixins(
-  LayoutMixin,
-  MetamaskConnector,
-  Config
-) {
+export default class Default extends mixins(LayoutMixin, MetamaskConnector, Config) {
   $refs!: { notificationComponent: any }
   walletConnected: any
 
-  allowApiBar =
-    process.env.runEnv === 'development' || process.env.runEnv === 'staging'
+  allowApiBar = process.env.runEnv === 'development' || process.env.runEnv === 'staging'
 
   configs: AppConfigInterface | null = appConfig
   balances: Balance | null = null
@@ -293,6 +249,7 @@ export default class Default extends mixins(
   pageTitle = {
     index: 'Dashboard',
     terminal: 'Terminal',
+    protocols: 'Protocols',
     'portfolio-balances': 'Balances',
     heatmap: 'Heatmap',
     'trading-101': 'Trading 101',

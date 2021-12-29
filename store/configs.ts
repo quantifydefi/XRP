@@ -15,13 +15,12 @@ export const state = () => ({
     suggestBaseFee: string
   } | null,
   currentChain: {
-    chainId: '1',
-    dbSchemaName: 'chain_eth_mainnet',
-    isTestnet: false,
+    name: 'Ethereum',
+    chainId: 1,
     label: 'Ethereum Mainnet',
-    logoUrl:
-      'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
-    name: 'eth-mainnet',
+    logoUrl: 'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
+    symbol: 'ETH',
+    isTestNet: false,
   } as ChainItem,
   chains: [] as ChainItem[],
 })

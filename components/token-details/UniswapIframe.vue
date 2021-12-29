@@ -5,14 +5,7 @@
       :src="`https://app.uniswap.org/#/swap?theme=${ui.theme}&outputCurrency=${quoteToken}`"
       height="730px"
       width="100%"
-      style="
-        background-color: black;
-        border: 0;
-        margin: 0 auto;
-        display: block;
-        border-radius: 10px;
-        max-width: 600px;
-      "
+      style="background-color: black; border: 0; margin: 0 auto; display: block; border-radius: 10px; max-width: 600px"
     />
   </v-card>
 </template>

@@ -5,13 +5,7 @@
         <h1 class="text-h4">Roadmap</h1>
         <client-only>
           <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
-            <v-timeline-item
-              v-for="(item, i) in items"
-              :key="i"
-              :color="item.color"
-              :icon="item.icon"
-              fill-dot
-            >
+            <v-timeline-item v-for="(item, i) in items" :key="i" :color="item.color" :icon="item.icon" fill-dot>
               <v-card tile outlined :color="item.color">
                 <v-card-title class="title"> {{ item.header }} </v-card-title>
                 <v-card-text>
@@ -39,8 +33,7 @@ import { Vue, Component } from 'vue-property-decorator'
         {
           name: 'description',
           hid: 'description',
-          content:
-            'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | Defi Heatmap',
+          content: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | Defi Heatmap',
         },
       ],
     }

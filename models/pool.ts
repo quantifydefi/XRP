@@ -1,4 +1,5 @@
-/* eslint-disable camelcase */
+/*
+/!* eslint-disable camelcase *!/
 import 'reflect-metadata'
 import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
@@ -159,5 +160,149 @@ export class BalancesPortfolio extends Portfolio {
   check() {
     console.log(this.balances, this.totalBalance)
     this.$apollo.queries.balances.refresh()
+  }
+}
+*/
+
+import { Component, Vue } from 'vue-property-decorator'
+import { CurvePoolsGQL } from '~/apollo/main/pools.query.graphql'
+import { CurvePool } from '~/types/apollo/main/types'
+import { Helper } from '~/models/helper'
+
+/* export class CurvePoolElem implements CurvePool {
+  id!: string
+  baseAPY!: number
+  coins!: CurveCoin[]
+  dailyVolume!: number
+  fee!: string
+  liquidityUsd!: number
+  name!: string
+  registryAddress!: string
+  rewards!: CurveRewards
+  swapAddress!: string
+  totalBalance!: number
+} */
+
+@Component({
+  name: 'CurvePools',
+  apollo: {
+    curvePools: {
+      prefetch: false,
+      query: CurvePoolsGQL,
+      deep: false,
+      result({ loading }) {
+        this.isPoolsLoading = loading
+      },
+      watchLoading(isLoading) {
+        this.loading = isLoading
+      },
+    },
+  },
+})
+export class CurvePools extends Vue {
+  curvePools: CurvePool[] | null = null
+  cols = [
+    {
+      text: 'Pool',
+      align: 'start',
+      value: 'pool',
+      class: ['px-2', 'text-truncate'],
+      // cellClass: ['px-2', 'text-truncate'],
+      // width: '35%',
+    },
+
+    {
+      text: 'Base vAPY',
+      align: 'start',
+      value: 'baseAPY',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: 'Rewards tAPR',
+      align: 'start',
+      value: 'rewards',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: 'Liquidity, USD',
+      align: 'start',
+      value: 'liquidityUsd',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: 'Daily Volume, USD',
+      align: 'start',
+      value: 'dailyVolume',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: 'Token Balance',
+      align: 'start',
+      value: 'totalBalance',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: 'Fee',
+      align: 'start',
+      value: 'fee',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: '',
+      align: 'right',
+      value: 'link',
+      class: ['px-2', 'text-truncate'],
+      width: 40,
+      cellClass: ['px-2', 'text-truncate'],
+    },
+
+    {
+      text: '',
+      align: 'right',
+      value: 'action',
+      class: ['px-2', 'text-truncate'],
+      cellClass: ['px-2', 'text-truncate'],
+    },
+  ]
+
+  isPoolsLoading = true
+
+  valueFormatter(value: number, maximumSignificantDigits: number = 6, minimumSignificantDigits: number = 6): string {
+    return new Intl.NumberFormat('en', {
+      maximumSignificantDigits,
+      minimumSignificantDigits,
+    }).format(value)
+  }
+
+  setAltImg(event: any) {
+    return Helper.setAltImg(event)
+  }
+
+  async copyAddressToClipboard(address: string) {
+    try {
+      await navigator.clipboard.writeText(address)
+    } catch (e) {}
+  }
+
+  navigateToExplorer(address: string) {
+    const url = `https://etherscan.io/address/${address}`
+    window.open(url)
+  }
+
+  invest(poolAddress: string) {
+    const pool: CurvePool | undefined = this.curvePools?.find((elem) => elem.id === poolAddress)
+    console.log(poolAddress, pool)
   }
 }

@@ -1,13 +1,5 @@
 <template>
-  <v-btn
-    tile
-    color="primary"
-    class="mb-7"
-    block
-    height="48"
-    @click="connectToWallet"
-    >Connect To Wallet</v-btn
-  >
+  <v-btn tile color="primary" class="mb-7" block height="48" @click="connectToWallet">Connect To Wallet</v-btn>
 </template>
 
 <script lang="ts">

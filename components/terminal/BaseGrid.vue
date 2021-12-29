@@ -14,18 +14,10 @@
       <template #[`item.token0_symbol`]="{ item }">
         <div class="text-no-wrap" style="width: 130px">
           <v-avatar size="17">
-            <img
-              :src="getTokenImage(item.token0_id)"
-              :alt="`${item.token0_symbol} logo`"
-              @error="setAltImg"
-            />
+            <img :src="getTokenImage(item.token0_id)" :alt="`${item.token0_symbol} logo`" @error="setAltImg" />
           </v-avatar>
           <v-avatar size="17">
-            <img
-              :src="getTokenImage(item.token1_id)"
-              :alt="`${item.token0_symbol} logo`"
-              @error="setAltImg"
-            />
+            <img :src="getTokenImage(item.token1_id)" :alt="`${item.token0_symbol} logo`" @error="setAltImg" />
           </v-avatar>
           <nuxt-link
             class="ml-2 coin-link"
@@ -38,10 +30,7 @@
       </template>
 
       <template #[`item.liquidity`]="{ item }">
-        <div
-          class="subtitle-2 font-weight-regular text-no-wrap"
-          style="width: 95px"
-        >
+        <div class="subtitle-2 font-weight-regular text-no-wrap" style="width: 95px">
           {{ calcReserveEthUsd(item.reserve_eth, item.eth_price_usd) }}
         </div>
       </template>
@@ -50,14 +39,9 @@
         <div
           style="width: 30px"
           class="subtitle-2 font-weight-regular text-left text-no-wrap"
-          :class="
-            Math.sign(item.percent_change_liq_24h) === -1
-              ? 'red--text accent-4'
-              : 'green--text'
-          "
+          :class="Math.sign(item.percent_change_liq_24h) === -1 ? 'red--text accent-4' : 'green--text'"
         >
-          {{ Math.sign(item.percent_change_liq_24h) === 1 ? '+' : ''
-          }}{{ item.percent_change_liq_24h }}%
+          {{ Math.sign(item.percent_change_liq_24h) === 1 ? '+' : '' }}{{ item.percent_change_liq_24h }}%
         </div>
       </template>
     </v-data-table>

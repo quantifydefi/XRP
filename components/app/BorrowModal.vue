@@ -39,22 +39,16 @@
                       @error="balances.altImage($event)"
                     />
                   </v-avatar>
-                  <span
-                    class="ml-3"
-                    :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    >{{ data.underlying.contract_symbol }}</span
-                  >
+                  <span class="ml-3" :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">{{
+                    data.underlying.contract_symbol
+                  }}</span>
                 </v-chip>
               </v-col>
 
               <v-col cols="8" class="mt-n3 text-right">
                 <input
                   v-model="borrowInput"
-                  style="
-                    font-family: Consolas, Monaco, monospace !important;
-                    width: 200px;
-                    text-align: right;
-                  "
+                  style="font-family: Consolas, Monaco, monospace !important; width: 200px; text-align: right"
                   class="text-h5 mt-3 mr-1 trade-font"
                   :class="$vuetify.theme.dark ? 'white--text ' : ''"
                   placeholder="0.0"
@@ -64,11 +58,7 @@
                 />
               </v-col>
 
-              <v-col
-                class="d-flex"
-                cols="12"
-                style="z-index: 2; margin-top: -35px"
-              >
+              <v-col class="d-flex" cols="12" style="z-index: 2; margin-top: -35px">
                 <div class="caption ml-1 mt-4 mb-1">
                   Available:
                   {{ data.supply_position.balance }}
@@ -83,23 +73,12 @@
                     color: $vuetify.theme.themes[theme].baseText,
                   }"
                 >
-                  ~{{ (borrowInput * data.underlying.quote_rate).toFixed(4) }}
-                  <small>USD</small></span
+                  ~{{ (borrowInput * data.underlying.quote_rate).toFixed(4) }} <small>USD</small></span
                 >
                 <span
-                  v-if="
-                    data.supply_position.balance > 0 &&
-                    data.supply_position.balance > borrowInput
-                  "
+                  v-if="data.supply_position.balance > 0 && data.supply_position.balance > borrowInput"
                   style="cursor: pointer"
-                  class="
-                    mr-1
-                    caption
-                    font-weight-regular
-                    primary--text
-                    text--lighten-1
-                    mt-4
-                  "
+                  class="mr-1 caption font-weight-regular primary--text text--lighten-1 mt-4"
                   @click="borrowInput = data.supply_position.balance"
                   >set max</span
                 >
@@ -121,18 +100,10 @@
             <!--              </v-col>-->
             <!--            </v-row>-->
 
-            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80"
-              >25%
-            </v-btn>
-            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80"
-              >50%
-            </v-btn>
-            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80"
-              >75%
-            </v-btn>
-            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80"
-              >100%
-            </v-btn>
+            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80">25% </v-btn>
+            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80">50% </v-btn>
+            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80">75% </v-btn>
+            <v-btn class="mx-1" small outlined color="grey lighten-1" width="80">100% </v-btn>
           </v-col>
         </v-row>
         <v-card-actions class="justify-center">

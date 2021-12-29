@@ -30,19 +30,9 @@
         />
       </v-card>
     </v-col>
-    <v-overlay
-      absolute
-      :opacity="1"
-      :value="!isHeatmapReady"
-      :color="$vuetify.theme.themes[theme].overlay"
-    >
+    <v-overlay absolute :opacity="1" :value="!isHeatmapReady" :color="$vuetify.theme.themes[theme].overlay">
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
-      <v-progress-linear
-        color="primary"
-        indeterminate
-        rounded
-        height="6"
-      ></v-progress-linear>
+      <v-progress-linear color="primary" indeterminate rounded height="6"></v-progress-linear>
     </v-overlay>
   </v-row>
 </template>
@@ -52,12 +42,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
 import { mapState } from 'vuex'
 import Marketcap from '../components/heatmap/Marketcap.vue'
-import {
-  HeatmapData,
-  HeatmapConfig,
-  DataValueOption,
-  HeatmapBalancesData,
-} from '~/models/heatmap'
+import { HeatmapData, HeatmapConfig, DataValueOption, HeatmapBalancesData } from '~/models/heatmap'
 import { Events } from '~/types/global'
 import MetamaskButton from '~/components/heatmap/MetamaskButton.vue'
 import { UiState } from '~/store/ui'
@@ -81,8 +66,7 @@ import { UiState } from '~/store/ui'
         {
           name: 'description',
           hid: 'description',
-          content:
-            'Top DeFi Cryptocurrency Investments on the Uniswap Exchange',
+          content: 'Top DeFi Cryptocurrency Investments on the Uniswap Exchange',
         },
       ],
     }
@@ -204,22 +188,14 @@ export default class Heatmap extends Vue {
   private heatmapDataFilterString = ''
 
   get filteredHeatmapData() {
-    if (
-      this.heatmapData.length > 0 &&
-      this.heatmapDataFilterString &&
-      this.heatmapDataFilterString.length > 1
-    ) {
+    if (this.heatmapData.length > 0 && this.heatmapDataFilterString && this.heatmapDataFilterString.length > 1) {
       if (this.heatmapData[0] instanceof HeatmapData) {
         return this.heatmapData.filter((elem: any) =>
-          elem.poolSymbol
-            .toLowerCase()
-            .includes(this.heatmapDataFilterString.toLowerCase())
+          elem.poolSymbol.toLowerCase().includes(this.heatmapDataFilterString.toLowerCase())
         )
       } else if (this.heatmapData[0] instanceof HeatmapBalancesData) {
         return this.heatmapData.filter((elem: any) =>
-          elem.token_symbol
-            .toLowerCase()
-            .includes(this.heatmapDataFilterString.toLowerCase())
+          elem.token_symbol.toLowerCase().includes(this.heatmapDataFilterString.toLowerCase())
         )
       }
     } else return this.heatmapData
@@ -236,9 +212,7 @@ export default class Heatmap extends Vue {
   }
 
   /** Get Initial Heatmap Data */
-  private async getHeatmapData({
-    numOfCoins,
-  }: { numOfCoins: number } | any): Promise<HeatmapData[] | []> {
+  private async getHeatmapData({ numOfCoins }: { numOfCoins: number } | any): Promise<HeatmapData[] | []> {
     try {
       return await this.$store.dispatch('heatmap/getHeatmapData', {
         numOfCoins,
@@ -249,11 +223,7 @@ export default class Heatmap extends Vue {
   }
 
   /** Handler id Ethereum Heatmap Data ready. Apply tole and tooltip templates for Ethereum heatmap */
-  private async balanceHeatmap({
-    address,
-  }: {
-    address: string
-  }): Promise<void> {
+  private async balanceHeatmap({ address }: { address: string }): Promise<void> {
     this.isHeatmapReady = false
     try {
       this.heatmapData = await this.$store.dispatch('heatmap/balanceHeatmap', {
@@ -279,14 +249,13 @@ export default class Heatmap extends Vue {
   }
 
   private applyConfigs(value: string) {
-    const found: DataValueOption | undefined =
-      this.heatmapConfig.blockSize.options[this.heatmapConfig.mode].find(
-        (elem) => elem.value === value
-      )
+    const found: DataValueOption | undefined = this.heatmapConfig.blockSize.options[this.heatmapConfig.mode].find(
+      (elem) => elem.value === value
+    )
     if (found) {
-      const timeData = this.heatmapConfig.timeFrame.options[
-        this.heatmapConfig.mode
-      ].find((elem) => elem.colorField === this.colorField)
+      const timeData = this.heatmapConfig.timeFrame.options[this.heatmapConfig.mode].find(
+        (elem) => elem.colorField === this.colorField
+      )
       if (timeData) {
         this.toolTip = found.toolTip
         this.tile = found.tile.replace('{time-data}', timeData.tile)
@@ -301,14 +270,12 @@ export default class Heatmap extends Vue {
   }
 
   onTimeFrameChange(value: string) {
-    const found = this.heatmapConfig.timeFrame.options[
-      this.heatmapConfig.mode
-    ].find((elem) => elem.value === value)
+    const found = this.heatmapConfig.timeFrame.options[this.heatmapConfig.mode].find((elem) => elem.value === value)
 
     if (found) {
-      const blockData = this.heatmapConfig.blockSize.options[
-        this.heatmapConfig.mode
-      ].find((elem) => elem.dataField === this.dataField)
+      const blockData = this.heatmapConfig.blockSize.options[this.heatmapConfig.mode].find(
+        (elem) => elem.dataField === this.dataField
+      )
 
       if (blockData) {
         this.tile = blockData.tile.replace('{time-data}', found.tile)

@@ -1,33 +1,23 @@
 <template>
   <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="2">
     <v-tabs color="primary" grow background-color="transparent">
-      <v-tab style="min-width: 60px; padding: 0 5px" @click="changeTab('pool')"
-        >Pair</v-tab
-      >
-      <v-tab
-        style="min-width: 60px; padding: 0 5px"
-        @click="changeTab('token0')"
+      <v-tab style="min-width: 60px; padding: 0 5px" @click="changeTab('pool')">Pair</v-tab>
+      <v-tab style="min-width: 60px; padding: 0 5px" @click="changeTab('token0')"
         >{{ tokenData.token0_symbol }}
 
         <v-tooltip v-if="isToken0Quote" top color="black">
           <template #activator="{ on, attrs }">
-            <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
-              mdi-cash-usd-outline
-            </v-icon>
+            <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on"> mdi-cash-usd-outline </v-icon>
           </template>
           <span>Quote Asset</span>
         </v-tooltip>
       </v-tab>
-      <v-tab
-        style="min-width: 60px; padding: 0 5px"
-        @click="changeTab('token1')"
+      <v-tab style="min-width: 60px; padding: 0 5px" @click="changeTab('token1')"
         >{{ tokenData.token1_symbol }}
 
         <v-tooltip v-if="isToken1Quote" top color="black">
           <template #activator="{ on, attrs }">
-            <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on">
-              mdi-cash-usd-outline
-            </v-icon>
+            <v-icon left v-bind="attrs" class="ml-1" size="22" v-on="on"> mdi-cash-usd-outline </v-icon>
           </template>
           <span>Quote Asset</span>
         </v-tooltip>
@@ -43,14 +33,8 @@
         :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
       >
         <v-card-text>
-          <div>
-            Liquidity {{ tokenData.token0_symbol }}-{{
-              tokenData.token1_symbol
-            }}
-          </div>
-          <p class="text-h5 text--primary mb-0">
-            ${{ $numberWithCommas(tokenData.reserveEthUsd) }}
-          </p>
+          <div>Liquidity {{ tokenData.token0_symbol }}-{{ tokenData.token1_symbol }}</div>
+          <p class="text-h5 text--primary mb-0">${{ $numberWithCommas(tokenData.reserveEthUsd) }}</p>
         </v-card-text>
       </v-card>
       <v-card
@@ -63,9 +47,7 @@
         <v-card-text>
           <div>All time Volume in USD</div>
 
-          <p class="text-h5 text--primary mb-0">
-            ${{ $numberWithCommas(tokenData.volume_usd / 10 ** 3) }}m
-          </p>
+          <p class="text-h5 text--primary mb-0">${{ $numberWithCommas(tokenData.volume_usd / 10 ** 3) }}m</p>
         </v-card-text>
       </v-card>
       <v-card
@@ -152,9 +134,7 @@
       >
         <v-card-text>
           <div>Ptc Change 1H</div>
-          <p class="text-h5 text--primary mb-0">
-            {{ tokenData.token0_percent_change_1h }}%
-          </p>
+          <p class="text-h5 text--primary mb-0">{{ tokenData.token0_percent_change_1h }}%</p>
         </v-card-text>
       </v-card>
 
@@ -167,9 +147,7 @@
       >
         <v-card-text>
           <div>Ptc Change 24H</div>
-          <p class="text-h5 text--primary mb-0">
-            {{ tokenData.token0_percent_change_24h }}%
-          </p>
+          <p class="text-h5 text--primary mb-0">{{ tokenData.token0_percent_change_24h }}%</p>
         </v-card-text>
       </v-card>
     </div>
@@ -213,9 +191,7 @@
       >
         <v-card-text>
           <div>Ptc Change 1H</div>
-          <p class="text-h5 text--primary mb-0">
-            {{ tokenData.token1_percent_change_1h }}%
-          </p>
+          <p class="text-h5 text--primary mb-0">{{ tokenData.token1_percent_change_1h }}%</p>
         </v-card-text>
       </v-card>
 
@@ -228,9 +204,7 @@
       >
         <v-card-text>
           <div>Ptc Change 24H</div>
-          <p class="text-h5 text--primary mb-0">
-            {{ tokenData.token1_percent_change_24h }}%
-          </p>
+          <p class="text-h5 text--primary mb-0">{{ tokenData.token1_percent_change_24h }}%</p>
         </v-card-text>
       </v-card>
     </div>
@@ -267,20 +241,7 @@ export default class LeftBar extends Vue {
 
   timeConverter(timestamp: number): string {
     const a = new Date(timestamp * 1000)
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const year = a.getFullYear()
     const month = months[a.getMonth()]
     const date = a.getDate()

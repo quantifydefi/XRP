@@ -18,13 +18,7 @@
         </v-card-title>
 
         <v-row v-if="data" justify="center">
-          <v-card
-            shaped
-            height="90"
-            width="88%"
-            outlined
-            :color="$vuetify.theme.themes[theme].innerCard"
-          >
+          <v-card shaped height="90" width="88%" outlined :color="$vuetify.theme.themes[theme].innerCard">
             <v-row class="ma-0">
               <v-col cols="4">
                 <v-chip
@@ -33,28 +27,18 @@
                   :color="$vuetify.theme.dark ? 'grey darken-2 ' : 'white'"
                 >
                   <v-avatar class="mx-n2">
-                    <img
-                      alt="aave logo"
-                      :src="data.underlying.logo_url"
-                      @error="balances.altImage($event)"
-                    />
+                    <img alt="aave logo" :src="data.underlying.logo_url" @error="balances.altImage($event)" />
                   </v-avatar>
-                  <span
-                    class="ml-4"
-                    :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    >{{ data.underlying.contract_symbol }}</span
-                  >
+                  <span class="ml-4" :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">{{
+                    data.underlying.contract_symbol
+                  }}</span>
                 </v-chip>
               </v-col>
 
               <v-col cols="8" class="mt-n3 text-right">
                 <input
                   v-model="lendInput"
-                  style="
-                    font-family: Consolas, Monaco, monospace !important;
-                    width: 200px;
-                    text-align: right;
-                  "
+                  style="font-family: Consolas, Monaco, monospace !important; width: 200px; text-align: right"
                   class="text-h5 ma-4 trade-font"
                   :class="$vuetify.theme.dark ? 'white--text ' : ''"
                   placeholder="0.0"
@@ -64,18 +48,12 @@
                 />
               </v-col>
 
-              <v-col
-                class="d-flex"
-                cols="12"
-                style="z-index: 2; margin-top: -35px"
-              >
+              <v-col class="d-flex" cols="12" style="z-index: 2; margin-top: -35px">
                 <span
                   :style="{ color: $vuetify.theme.themes[theme].baseText }"
                   class="ml-2 subtitle-2 font-weight-regular"
                   >Available Balance:
-                  <span
-                    style="font-family: Consolas, Monaco, monospace !important"
-                  >
+                  <span style="font-family: Consolas, Monaco, monospace !important">
                     {{
                       data.underlying.available_balance > 0
                         ? data.underlying.available_balance.toFixed(4)
@@ -85,18 +63,9 @@
                 </span>
                 <v-spacer />
                 <span
-                  v-if="
-                    data.underlying.available_balance > 0 &&
-                    data.underlying.available_balance > lendInput
-                  "
+                  v-if="data.underlying.available_balance > 0 && data.underlying.available_balance > lendInput"
                   style="cursor: pointer"
-                  class="
-                    mr-4
-                    subtitle-2
-                    font-weight-regular
-                    primary--text
-                    text--lighten-1
-                  "
+                  class="mr-4 subtitle-2 font-weight-regular primary--text text--lighten-1"
                   @click="lendInput = data.underlying.available_balance"
                   >set max</span
                 >
@@ -108,8 +77,7 @@
                     color: $vuetify.theme.themes[theme].baseText,
                   }"
                 >
-                  ~{{ (lendInput * data.underlying.quote_rate).toFixed(4) }}
-                  <small>USD</small></span
+                  ~{{ (lendInput * data.underlying.quote_rate).toFixed(4) }} <small>USD</small></span
                 >
               </v-col>
             </v-row>
@@ -120,13 +88,7 @@
             elevation="0"
             outlined
             color="grey darken-2"
-            class="
-              mt-2
-              text-capitalize
-              title
-              font-weight-regular
-              rounded-tl-xl rounded-br-xl
-            "
+            class="mt-2 text-capitalize title font-weight-regular rounded-tl-xl rounded-br-xl"
             x-large
             @click="lend"
           >

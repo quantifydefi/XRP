@@ -4,10 +4,7 @@
       <v-card-title class="pa-0 ma-0">
         <v-col class="d-flex">
           <v-avatar size="24px">
-            <v-img
-              :src="balance.chainInfo(chains).logoUrl"
-              :lazy-src="balance.chainInfo(chains).logoUrl"
-            ></v-img>
+            <v-img :src="balance.chainInfo(chains).logoUrl" :lazy-src="balance.chainInfo(chains).logoUrl"></v-img>
           </v-avatar>
           <h1 class="text-subtitle-1 pl-3 text-truncate">
             {{ balance.chainInfo(chains).label }}
@@ -15,14 +12,12 @@
         </v-col>
 
         <v-col cols="4" class="text-right"
-          ><h4
-            class="text-subtitle-1 text-truncate pink--text font-weight-medium"
-          >
+          ><h4 class="text-subtitle-1 text-truncate pink--text font-weight-medium">
             {{ priceFormatter(balance.chainTotalBalance) }}
           </h4></v-col
         >
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
       <v-data-table
         id="balances-grid"
         :headers="cols"
@@ -37,11 +32,7 @@
         <template #[`item.contractTickerSymbol`]="{ item }">
           <div style="width: 78px" class="text-no-wrap overflow-x-hidden">
             <v-avatar size="18" class="mr-2">
-              <img
-                :alt="`${item.contractTickerSymbol} logo`"
-                :src="item.logoUrl"
-                @error="setAltImg"
-              />
+              <img :alt="`${item.contractTickerSymbol} logo`" :src="item.logoUrl" @error="setAltImg" />
             </v-avatar>
             {{ item.contractTickerSymbol }}
           </div>
@@ -54,18 +45,14 @@
         </template>
 
         <template #[`item.quoteRate`]="{ item }">
-          <span :class="ui[theme].innerCardLighten">{{
-            balanceFormatter(item.quoteRate)
-          }}</span>
+          <span :class="ui[theme].innerCardLighten">{{ balanceFormatter(item.quoteRate) }}</span>
         </template>
 
         <template #[`item.quote`]="{ item }">
-          <span :class="ui[theme].innerCardLighten">{{
-            priceFormatter(item.quote)
-          }}</span>
+          <span :class="ui[theme].innerCardLighten">{{ priceFormatter(item.quote) }}</span>
         </template>
       </v-data-table>
-      <v-divider></v-divider>
+      <v-divider />
     </v-card>
   </client-only>
 </template>
@@ -83,7 +70,8 @@ import { mapState } from "vuex";
       ui: (state: any) => state.ui,
       theme: (state: any) => state.ui.theme,
     }),
-  }})
+  }
+})
 export default class BalancesGrid extends Vue {
   @Prop({default: 435}) readonly gridHeight!: number
   @Prop({default: []}) readonly cols!: any

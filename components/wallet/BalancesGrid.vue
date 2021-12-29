@@ -9,11 +9,7 @@
     item-class="px-1"
   >
     <template #[`item.token_pair`]="{ item }">
-      <a
-        target="_blank"
-        class="primary--text text-decoration-none"
-        :href="`/token/${item.pool_id}`"
-      >
+      <a target="_blank" class="primary--text text-decoration-none" :href="`/token/${item.pool_id}`">
         {{ item.token_pair }}</a
       >
     </template>
@@ -22,25 +18,17 @@
       {{ $numberWithCommas(item.contract_balance) }}
     </template>
 
-    <template #[`item.balance_usd`]="{ item }">
-      $ {{ $numberWithCommas(item.balance_usd) }}
-    </template>
+    <template #[`item.balance_usd`]="{ item }"> $ {{ $numberWithCommas(item.balance_usd) }} </template>
 
-    <template #[`item.holdings`]="{ item }">
-      {{ calculateHoldings(item.balance_usd) }} %
-    </template>
+    <template #[`item.holdings`]="{ item }"> {{ calculateHoldings(item.balance_usd) }} % </template>
 
-    <template #[`item.rate_usd`]="{ item }">
-      $ {{ $numberWithCommas(item.rate_usd) }}
-    </template>
+    <template #[`item.rate_usd`]="{ item }"> $ {{ $numberWithCommas(item.rate_usd) }} </template>
 
     <template #[`item.token_price`]="{ item }">
       {{ item.token_price.toFixed(4) }}
     </template>
 
-    <template #[`item.reserve_eth`]="{ item }">
-      $ {{ $numberWithCommas(item.reserve_eth * ethPrice) }}
-    </template>
+    <template #[`item.reserve_eth`]="{ item }"> $ {{ $numberWithCommas(item.reserve_eth * ethPrice) }} </template>
 
     <template #[`item.percent_change_liq_1h`]="{ item }">
       <v-icon :color="applyColor(item.percent_change_liq_1h).color">{{

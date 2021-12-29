@@ -17,11 +17,7 @@
       @input="goToPool"
     >
       <template #append>
-        <v-progress-circular
-          v-if="loading"
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
+        <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
       </template>
 
       <template #item="data">

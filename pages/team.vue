@@ -5,28 +5,17 @@
         <v-col cols="auto" lg="4">
           <h1 class="text-h4">Our Team</h1>
           <p class="mt-2">
-            Our team's goal is empowering cryptocurrency enthusiasts and traders
-            for success. We know from our own trading experiences that the
-            crypto market is fast moving which demands reliable data and tools.
-            Our platforms provide content-rich resources that inform, track, and
-            simplify the trading process with superior visuals displays. While
-            each member has a varied skill set, we collaborate to offer a fast
-            platform with advanced interactive features. We are a new site in
-            active development, so we encourage feedback from users regarding
-            features they desire.
+            Our team's goal is empowering cryptocurrency enthusiasts and traders for success. We know from our own
+            trading experiences that the crypto market is fast moving which demands reliable data and tools. Our
+            platforms provide content-rich resources that inform, track, and simplify the trading process with superior
+            visuals displays. While each member has a varied skill set, we collaborate to offer a fast platform with
+            advanced interactive features. We are a new site in active development, so we encourage feedback from users
+            regarding features they desire.
           </p>
         </v-col>
         <v-col cols="auto" lg="8">
           <v-row class="my-5">
-            <v-col
-              v-for="member in team"
-              :key="member._id"
-              cols="auto"
-              lg="6"
-              md="6"
-              sm="12"
-              width="200"
-            >
+            <v-col v-for="member in team" :key="member._id" cols="auto" lg="6" md="6" sm="12" width="200">
               <BioDialog
                 :is-visibility="member.bioIsVisible"
                 :name="member.name"
@@ -38,15 +27,10 @@
               >
               </BioDialog>
               <div class="d-flex justify-left">
-                <v-avatar
-                  :size="$vuetify.breakpoint.xs ? 65 : 80"
-                  :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
-                >
+                <v-avatar :size="$vuetify.breakpoint.xs ? 65 : 80" :class="$vuetify.breakpoint.xs ? '' : 'ml-5'">
                   <img
                     class="rounded-circle"
-                    :src="
-                      require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)
-                    "
+                    :src="require(`~/assets/images/team/${member.thumbnailUrl}.jpg`)"
                     alt="avatar"
                   />
                 </v-avatar>
@@ -59,15 +43,8 @@
                     {{ member.jobTitle }}
                   </p>
 
-                  <a
-                    v-for="social in member.socials"
-                    :key="social.social"
-                    :href="social.link"
-                    target="_blank"
-                  >
-                    <v-icon class="mt-n7 mr-3" size="20"
-                      >mdi-{{ social.icon }}</v-icon
-                    >
+                  <a v-for="social in member.socials" :key="social.social" :href="social.link" target="_blank">
+                    <v-icon class="mt-n7 mr-3" size="20">mdi-{{ social.icon }}</v-icon>
                   </a>
                 </div>
               </div>
@@ -81,23 +58,14 @@
         <v-col cols="auto" lg="4" align="left">
           <h1 class="text-h4">Our Advisors</h1>
           <p class="mt-2">
-            Our Advisors are some of the top performers to work and interface
-            with financial trading systems. All have been significant
-            contributors at the New York Stock Exchange, they fully understand
-            how trading systems work and the features traders expect.
+            Our Advisors are some of the top performers to work and interface with financial trading systems. All have
+            been significant contributors at the New York Stock Exchange, they fully understand how trading systems work
+            and the features traders expect.
           </p>
         </v-col>
         <v-col cols="12" lg="8">
           <v-row class="my-5">
-            <v-col
-              v-for="advisor in advisors"
-              :key="advisor.id"
-              cols="auto"
-              lg="6"
-              md="6"
-              sm="12"
-              width="200"
-            >
+            <v-col v-for="advisor in advisors" :key="advisor.id" cols="auto" lg="6" md="6" sm="12" width="200">
               <BioDialog
                 :is-visibility="advisor.bioIsVisible"
                 :name="advisor.name"
@@ -108,37 +76,22 @@
                 @close-dialog="closeAdvisorBio"
               ></BioDialog>
               <div class="d-flex justify-left">
-                <v-avatar
-                  :size="$vuetify.breakpoint.xs ? 65 : 80"
-                  :class="$vuetify.breakpoint.xs ? '' : 'ml-5'"
-                >
+                <v-avatar :size="$vuetify.breakpoint.xs ? 65 : 80" :class="$vuetify.breakpoint.xs ? '' : 'ml-5'">
                   <img
                     class="rounded-circle"
-                    :src="
-                      require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)
-                    "
+                    :src="require(`~/assets/images/team/${advisor.thumbnailUrl}.jpg`)"
                     alt="avatar"
                   />
                 </v-avatar>
 
                 <div class="ml-6 mt-2">
-                  <h4
-                    class="text-h6 v-clickable"
-                    @click="openAdvisorBio(advisor._id)"
-                  >
+                  <h4 class="text-h6 v-clickable" @click="openAdvisorBio(advisor._id)">
                     {{ advisor.name }}
                   </h4>
                   <p class="text--secondary">{{ advisor.jobTitle }}</p>
 
-                  <a
-                    v-for="social in advisor.socials"
-                    :key="social.social"
-                    :href="social.link"
-                    target="_blank"
-                  >
-                    <v-icon class="mt-n7 mr-3" size="20"
-                      >mdi-{{ social.icon }}</v-icon
-                    >
+                  <a v-for="social in advisor.socials" :key="social.social" :href="social.link" target="_blank">
+                    <v-icon class="mt-n7 mr-3" size="20">mdi-{{ social.icon }}</v-icon>
                   </a>
                 </div>
               </div>
@@ -177,8 +130,7 @@ interface Team {
         {
           name: 'description',
           hid: 'description',
-          content:
-            'The cryptocurrency team working to improve the crypto modal experience',
+          content: 'The cryptocurrency team working to improve the crypto modal experience',
         },
         // Open Graph
         {
@@ -187,15 +139,13 @@ interface Team {
         },
         {
           name: 'og:description',
-          content:
-            'The cryptocurrency team working to improve the crypto modal experience',
+          content: 'The cryptocurrency team working to improve the crypto modal experience',
         },
         { name: 'og:type', content: 'website' },
         { name: 'og:url', content: process.env.BASE_URL },
         {
           name: 'og:image',
-          content:
-            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
         },
 
         // Twitter Card
@@ -207,18 +157,15 @@ interface Team {
         },
         {
           name: 'twitter:description',
-          content:
-            'The cryptocurrency team working to improve the crypto modal experience',
+          content: 'The cryptocurrency team working to improve the crypto modal experience',
         },
         {
           name: 'twitter:image',
-          content:
-            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
         },
         {
           name: 'twitter:image:alt',
-          content:
-            'The cryptocurrency team working to improve the crypto modal experience',
+          content: 'The cryptocurrency team working to improve the crypto modal experience',
         },
       ],
     }

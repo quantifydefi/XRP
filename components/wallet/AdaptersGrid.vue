@@ -75,9 +75,7 @@ export default class AdaptersGrid extends Vue {
   ]
 
   get filtered() {
-    return this.adapters.filter(
-      (item: Adapter) => item.balance_type === this.type
-    )
+    return this.adapters.filter((item: Adapter) => item.balance_type === this.type)
   }
 }
 </script>

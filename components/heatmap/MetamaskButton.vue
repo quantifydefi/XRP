@@ -16,24 +16,14 @@
       </v-text-field>
     </v-col>
     <v-col class="pt-2 pb-0 px-0 mt-4">
-      <v-btn
-        tile
-        depressed
-        :disabled="loading || !isSearchButtonEnabled"
-        @click="getBalanceHeatmap"
-      >
+      <v-btn tile depressed :disabled="loading || !isSearchButtonEnabled" @click="getBalanceHeatmap">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-col>
     <v-col class="pt-2 pb-0 mt-4">
       <div class="d-flex justify-end align-right">
         <div>
-          <v-menu
-            v-model="filterMenuModel"
-            :close-on-content-click="false"
-            :nudge-width="200"
-            offset-y
-          >
+          <v-menu v-model="filterMenuModel" :close-on-content-click="false" :nudge-width="200" offset-y>
             <template #activator="{ on, attrs }">
               <v-btn tile depressed v-bind="attrs" v-on="on"
                 >Filter
@@ -44,12 +34,7 @@
               <v-list>
                 <v-list-item>
                   <v-list-item-content class="pb-0 mb-0">
-                    <v-text-field
-                      v-model="filterStringModel"
-                      label="Type Symbol Name"
-                      class="py-0 my-0"
-                      clearable
-                    />
+                    <v-text-field v-model="filterStringModel" label="Type Symbol Name" class="py-0 my-0" clearable />
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -79,15 +64,9 @@
               <v-list-item-group
                 v-model="numberOfCoinsModel"
                 color="primary"
-                @change="
-                  (v) => $emit('number-of-coins-change', numberOfCoinsValues[v])
-                "
+                @change="(v) => $emit('number-of-coins-change', numberOfCoinsValues[v])"
               >
-                <v-list-item
-                  v-for="item in numberOfCoinsValues"
-                  :key="item"
-                  link
-                >
+                <v-list-item v-for="item in numberOfCoinsValues" :key="item" link>
                   <v-list-item-title v-text="item"></v-list-item-title>
                 </v-list-item>
               </v-list-item-group>
@@ -174,15 +153,7 @@
 
         <v-tooltip v-else bottom color="black">
           <template #activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              :disabled="loading"
-              tile
-              depressed
-              class="mr-4"
-              v-on="on"
-              @click="exitMetamask"
-            >
+            <v-btn v-bind="attrs" :disabled="loading" tile depressed class="mr-4" v-on="on" @click="exitMetamask">
               <v-icon>mdi-exit-to-app</v-icon>
             </v-btn>
           </template>

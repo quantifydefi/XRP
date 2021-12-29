@@ -17,32 +17,23 @@ export type Query = {
   __typename?: 'Query';
   /** Covalent Balances */
   balances: Array<Balance>;
-  /** Covalent Chains */
   chains: Array<Chain>;
-  /** Coin Gaico Coin Details */
-  coinDetails: CoinDetails;
-  /** Coin Gaico Coin List */
-  coinList: Array<Maybe<CoinList>>;
+  /** Curve Pool  */
+  curvePools: Array<CurvePool>;
   /** Gas Stats for ETH */
   gasStats: EthGasStats;
   /** Global Staths for Coin Gaico */
   globalStats: GlobalStats;
-  protocol: ProtocolDetails;
-  protocols: Array<Protocol>;
+  protocol: Protocol;
+  /** Supported Protocols */
+  protocols: Array<Maybe<Protocol>>;
   /**
    * If tickers (a comma separated list of tickers
    *     is present), only return the spot prices for these tokens.
    */
   spotPrice?: Maybe<SpotPrice>;
-  supportedTokens: Array<Token>;
-  ticker: Ticker;
+  supportedTokens?: Maybe<Array<Token>>;
   todos: Array<Todo>;
-  tokenPair: UniswapBalance;
-  tokenResources: Array<Scalars['String']>;
-  /** Covalent Transactions */
-  transactions?: Maybe<Transactions>;
-  uniswapBalances: Array<UniswapBalance>;
-  uniswapChart: Array<UniswapChart>;
 };
 
 
@@ -52,13 +43,8 @@ export type QueryBalancesArgs = {
 };
 
 
-export type QueryCoinDetailsArgs = {
-  coinId: Scalars['String'];
-};
-
-
 export type QueryProtocolArgs = {
-  slug: Scalars['String'];
+  protocolId: Scalars['String'];
 };
 
 
@@ -66,40 +52,6 @@ export type QuerySpotPriceArgs = {
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
   tickers: Scalars['String'];
-};
-
-
-export type QuerySupportedTokensArgs = {
-  resource: Array<Scalars['String']>;
-};
-
-
-export type QueryTickerArgs = {
-  product?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryTokenPairArgs = {
-  poolId: Scalars['String'];
-};
-
-
-export type QueryTransactionsArgs = {
-  address: Scalars['String'];
-  chainId: Scalars['Int'];
-  pageNumber: Scalars['Int'];
-  pageSize: Scalars['Int'];
-};
-
-
-export type QueryUniswapBalancesArgs = {
-  numberOfTokens?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type QueryUniswapChartArgs = {
-  interval: ChartIntervals;
-  poolId: Scalars['String'];
 };
 
 /**
@@ -144,18 +96,154 @@ export type Pagination = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
-/**
- * Covalent get al Chains
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
- */
 export type Chain = {
   __typename?: 'Chain';
-  chainId: Scalars['String'];
-  dbSchemaName: Scalars['String'];
-  isTestnet: Scalars['Boolean'];
+  chainId: Scalars['Int'];
+  geckoId: Scalars['String'];
+  isTestNet: Scalars['Boolean'];
   label: Scalars['String'];
   logoUrl: Scalars['String'];
   name: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
+export type CurvePool = {
+  __typename?: 'CurvePool';
+  assetType: Scalars['String'];
+  baseAPY: Scalars['Float'];
+  coins: Array<CurveCoin>;
+  dailyVolume: Scalars['Float'];
+  fee: Scalars['String'];
+  id: Scalars['String'];
+  liquidityUsd: Scalars['Float'];
+  name: Scalars['String'];
+  registryAddress: Scalars['String'];
+  rewards: CurveRewards;
+  swapAddress: Scalars['String'];
+  totalBalance: Scalars['Float'];
+};
+
+export type CurveCoin = {
+  __typename?: 'CurveCoin';
+  balance: Scalars['String'];
+  balanceUSD: Scalars['Float'];
+  token?: Maybe<CurveToken>;
+};
+
+export type CurveToken = {
+  __typename?: 'CurveToken';
+  name: Scalars['String'];
+  symbol: Scalars['String'];
+  usdPrice: Scalars['Float'];
+};
+
+export type CurveRewards = {
+  __typename?: 'CurveRewards';
+  maxRewardPtc: Scalars['Float'];
+  rewardPtc: Scalars['Float'];
+};
+
+export type EthGasStats = {
+  __typename?: 'EthGasStats';
+  fastGasPrice: Scalars['String'];
+  gasUsedRatio: Scalars['String'];
+  lastBlock: Scalars['String'];
+  proposeGasPrice: Scalars['String'];
+  safeGasPrice: Scalars['String'];
+  suggestBaseFee: Scalars['String'];
+};
+
+export type GlobalStats = {
+  __typename?: 'GlobalStats';
+  defiDominance: Scalars['String'];
+  defiMarketCap: Scalars['String'];
+  defiToEthRatio: Scalars['String'];
+  ethMarketCap: Scalars['String'];
+  topCoinDefiDominance: Scalars['Float'];
+  topCoinName: Scalars['String'];
+  tradingVolume24h: Scalars['String'];
+};
+
+export type Protocol = {
+  __typename?: 'Protocol';
+  address: Scalars['String'];
+  balance: Scalars['Map'];
+  category: Scalars['String'];
+  chain: Scalars['String'];
+  chains: Array<Maybe<Scalars['String']>>;
+  description: Scalars['String'];
+  geckoId: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  symbol: Scalars['String'];
+  tokenAddresses: Array<Maybe<Scalars['String']>>;
+  twitter: Scalars['String'];
+  updatedAt: Scalars['Int'];
+  url: Scalars['String'];
+  usdTvl: Scalars['Map'];
+};
+
+/**
+ * Covalent Get Transactions for address
+ * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+ */
+export type SpotPrice = {
+  __typename?: 'SpotPrice';
+  items: Array<Maybe<SpotPriceItem>>;
+  pagination?: Maybe<Pagination>;
+  updatedAt: Scalars['String'];
+};
+
+export type SpotPriceItem = {
+  __typename?: 'SpotPriceItem';
+  contractAddress: Scalars['String'];
+  contractDecimals: Scalars['Int'];
+  contractName: Scalars['String'];
+  contractTickerSymbol: Scalars['String'];
+  logoUrl: Scalars['String'];
+  quoteRate: Scalars['Float'];
+  rank: Scalars['Int'];
+  supportsErc: Scalars['String'];
+};
+
+export type Token = {
+  __typename?: 'Token';
+  address: Scalars['String'];
+  chainKey: Scalars['String'];
+  coingeckoId: Scalars['String'];
+  ID: Scalars['ID'];
+  logoURI: Scalars['String'];
+  name: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
+export type Todo = {
+  __typename?: 'Todo';
+  done: Scalars['Boolean'];
+  id: Scalars['ID'];
+  text: Scalars['String'];
+  user: User;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createTodo: Todo;
+};
+
+
+export type MutationCreateTodoArgs = {
+  input: NewTodo;
+};
+
+export type NewTodo = {
+  text: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 /**
@@ -187,7 +275,7 @@ export type CoinDetails = {
   localization?: Maybe<Scalars['Map']>;
   marketCapRank?: Maybe<Scalars['Float']>;
   marketData?: Maybe<MarketData>;
-  name?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   platforms?: Maybe<Scalars['Map']>;
   publicInterestScore?: Maybe<Scalars['Float']>;
   publicInterestStats?: Maybe<Scalars['Map']>;
@@ -195,7 +283,7 @@ export type CoinDetails = {
   sentimentVotesDownPercentage?: Maybe<Scalars['Float']>;
   sentimentVotesUpPercentage?: Maybe<Scalars['Float']>;
   statusUpdates?: Maybe<Array<Maybe<Scalars['Map']>>>;
-  symbol?: Maybe<Scalars['String']>;
+  symbol: Scalars['String'];
   tickers?: Maybe<Array<Maybe<TickerData>>>;
 };
 
@@ -268,6 +356,13 @@ export type TickerData = {
   volume?: Maybe<Scalars['Float']>;
 };
 
+export type CoingeckoInfo = {
+  __typename?: 'CoingeckoInfo';
+  id: Scalars['String'];
+  referenceAssetID: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
 /**
  * Coin Gaico coin List
  * https://api.coingecko.com/api/v3/coins/list?include_platform=true
@@ -280,199 +375,22 @@ export type CoinList = {
   symbol: Scalars['String'];
 };
 
-export type EthGasStats = {
-  __typename?: 'EthGasStats';
-  fastGasPrice: Scalars['String'];
-  gasUsedRatio: Scalars['String'];
-  lastBlock: Scalars['String'];
-  proposeGasPrice: Scalars['String'];
-  safeGasPrice: Scalars['String'];
-  suggestBaseFee: Scalars['String'];
-};
-
-export type GlobalStats = {
-  __typename?: 'GlobalStats';
-  defiDominance: Scalars['String'];
-  defiMarketCap: Scalars['String'];
-  defiToEthRatio: Scalars['String'];
-  ethMarketCap: Scalars['String'];
-  topCoinDefiDominance: Scalars['Float'];
-  topCoinName: Scalars['String'];
-  tradingVolume24h: Scalars['String'];
-};
-
-/**
- * DeFi Lama Protocol by slug
- * Returns historical data on the TVL of a protocol along with
- * some basic data on it. The fields `tokensInUsd` and `tokens`
- * are only available for some protocols.
- * https://docs.llama.fi/api
- */
-export type ProtocolDetails = {
-  __typename?: 'ProtocolDetails';
+export type CurveCoins = {
+  __typename?: 'CurveCoins';
   address: Scalars['String'];
-  auditLinks: Array<Scalars['String']>;
-  auditNote: Scalars['String'];
-  audits: Scalars['String'];
-  category: Scalars['String'];
-  chain: Scalars['String'];
-  chains: Array<Scalars['String']>;
-  chainTvls: Scalars['Map'];
-  cmcId: Scalars['Int'];
-  description: Scalars['String'];
-  geckoId: Scalars['String'];
-  id: Scalars['ID'];
-  logo: Scalars['String'];
-  misrepresentedTokens: Scalars['Boolean'];
-  module: Scalars['String'];
-  name: Scalars['String'];
-  oracles: Array<Scalars['String']>;
-  symbol: Scalars['String'];
-  tvl?: Maybe<Array<Maybe<Scalars['Map']>>>;
-  twitter: Scalars['String'];
-  url: Scalars['String'];
-};
-
-/**
- * DeFi Lama Protocols
- * Returns basic information on all listed protocols, their
- * current TVL and the changes to it in the last hour/day/week.
- * https://docs.llama.fi/api
- */
-export type Protocol = {
-  __typename?: 'Protocol';
-  address: Scalars['String'];
-  auditNote: Scalars['String'];
-  audits: Scalars['String'];
-  category: Scalars['String'];
-  chain: Scalars['String'];
-  chains: Array<Scalars['String']>;
-  chainTvls?: Maybe<Scalars['Map']>;
-  change_1d: Scalars['Float'];
-  change_1h: Scalars['Float'];
-  change_7d: Scalars['Float'];
-  cmcId: Scalars['Int'];
-  description: Scalars['String'];
-  fdv: Scalars['Float'];
-  geckoId: Scalars['String'];
-  id: Scalars['ID'];
-  logo: Scalars['String'];
-  mcap: Scalars['Float'];
-  module: Scalars['String'];
-  name: Scalars['String'];
-  oracles: Array<Scalars['String']>;
-  slug: Scalars['String'];
-  symbol: Scalars['String'];
-  tvl: Scalars['Float'];
-  twitter: Scalars['String'];
-  url: Scalars['String'];
-};
-
-/**
- * Covalent Get Transactions for address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
- */
-export type SpotPrice = {
-  __typename?: 'SpotPrice';
-  items: Array<Maybe<SpotPriceItem>>;
-  pagination?: Maybe<Pagination>;
-  updatedAt: Scalars['String'];
-};
-
-export type SpotPriceItem = {
-  __typename?: 'SpotPriceItem';
-  contractAddress: Scalars['String'];
-  contractDecimals: Scalars['Int'];
-  contractName: Scalars['String'];
-  contractTickerSymbol: Scalars['String'];
-  logoUrl: Scalars['String'];
-  quoteRate: Scalars['Float'];
-  rank: Scalars['Int'];
-  supportsErc: Scalars['String'];
-};
-
-export type Token = {
-  __typename?: 'Token';
-  address: Scalars['String'];
-  chainId: Scalars['Float'];
-  decimals: Scalars['Float'];
-  ID: Scalars['ID'];
-  logoURI: Scalars['String'];
-  name: Scalars['String'];
-  source: Scalars['String'];
-  symbol: Scalars['String'];
-};
-
-export type Ticker = {
-  __typename?: 'Ticker';
+  coingeckoID: Scalars['String'];
+  decimals: Scalars['Int'];
   ID: Scalars['String'];
-  price: Scalars['Float'];
-  time: Scalars['Int'];
-  volume: Scalars['Float'];
+  symbol: Scalars['String'];
+  type: Scalars['String'];
+  wrappedCoinType: Scalars['String'];
 };
 
-export type Todo = {
-  __typename?: 'Todo';
-  done: Scalars['Boolean'];
-  id: Scalars['ID'];
-  text: Scalars['String'];
-  user: User;
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-};
-
-export type UniswapBalance = {
-  __typename?: 'UniswapBalance';
-  createdAtTimestamp: Scalars['Float'];
-  ethPriceUsd: Scalars['Float'];
-  excludePair: Scalars['Boolean'];
-  liquidityProviderCount: Scalars['Int'];
-  percentChangeLiq1h: Scalars['Float'];
-  percentChangeLiq24h: Scalars['Float'];
-  /** Pool ID from Uniswap */
-  poolId: Scalars['String'];
-  quoteAsset: Scalars['String'];
-  quoteCurrency: Scalars['String'];
-  reserveEth: Scalars['Float'];
-  reserveIndex: Scalars['Float'];
-  /** Token 0 ID from Uniswap */
-  token0Id: Scalars['String'];
-  token0Name: Scalars['String'];
-  token0PercentChange1h: Scalars['Float'];
-  token0PercentChange24h: Scalars['Float'];
-  token0Price: Scalars['Float'];
-  token0PriceUsd: Scalars['Float'];
-  token0Symbol: Scalars['String'];
-  token1Id: Scalars['String'];
-  token1Name: Scalars['String'];
-  token1PercentChange1h: Scalars['Float'];
-  token1PercentChange24h: Scalars['Float'];
-  token1Price: Scalars['Float'];
-  token1PriceUsd: Scalars['Float'];
-  token1Symbol: Scalars['String'];
-  txCount: Scalars['Int'];
-  volumeUsd: Scalars['Float'];
-};
-
-/**
- * Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
- * query param, it returns a paginated list of all tickers sorted by market cap.
- * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
- */
-export type Transactions = {
-  __typename?: 'Transactions';
-  address: Scalars['String'];
-  chainId: Scalars['Float'];
-  items?: Maybe<Array<TransactionItem>>;
-  nextUpdateAt: Scalars['String'];
-  pagination?: Maybe<Pagination>;
-  quoteCurrency: Scalars['String'];
-  someOtherKeys?: Maybe<Scalars['String']>;
-  updatedAt: Scalars['String'];
+export type TokenBalance = {
+  __typename?: 'TokenBalance';
+  address?: Maybe<Scalars['String']>;
+  symbol?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['Float']>;
 };
 
 export type TransactionItem = {
@@ -495,53 +413,37 @@ export type TransactionItem = {
   valueQuote?: Maybe<Scalars['Float']>;
 };
 
-export enum ChartIntervals {
-  Int_1D = 'int_1D',
-  Int_1M = 'int_1M',
-  Int_1Y = 'int_1Y',
-  Int_3M = 'int_3M',
-  Int_6M = 'int_6M',
-  Int_7D = 'int_7D'
-}
-
-export type UniswapChart = {
-  __typename?: 'UniswapChart';
-  ethPriceUsd: Scalars['Float'];
-  liquidityUsdMil: Scalars['Float'];
-  reserveEth: Scalars['Float'];
-  token0Price: Scalars['Float'];
-  token1Price: Scalars['Float'];
-  unixTime: Scalars['Int'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  createTodo: Todo;
-};
-
-
-export type MutationCreateTodoArgs = {
-  input: NewTodo;
-};
-
-export type NewTodo = {
-  text: Scalars['String'];
-  userId: Scalars['String'];
-};
-
-export type TodoXx = {
-  __typename?: 'TodoXX';
-  done: Scalars['Boolean'];
-  id: Scalars['ID'];
-  someOther: User;
-  text: Scalars['String'];
-  user: User;
+/**
+ * Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
+ * query param, it returns a paginated list of all tickers sorted by market cap.
+ * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
+ */
+export type Transactions = {
+  __typename?: 'Transactions';
+  address: Scalars['String'];
+  chainId: Scalars['Float'];
+  items?: Maybe<Array<TransactionItem>>;
+  nextUpdateAt: Scalars['String'];
+  pagination?: Maybe<Pagination>;
+  quoteCurrency: Scalars['String'];
+  someOtherKeys?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
 };
 
 export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: string, isTestnet: boolean, dbSchemaName: string, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string } };
+export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: number, isTestNet: boolean, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string } };
+
+export type AllProtocolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllProtocolsGqlQuery = { __typename?: 'Query', protocols: Array<{ __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null | undefined>, twitter: string } | null | undefined> };
+
+export type CurvePoolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null | undefined }> }> };
 
 export type BalancesGqlQueryVariables = Exact<{
   chainIds: Array<Scalars['Int']> | Scalars['Int'];
@@ -550,3 +452,10 @@ export type BalancesGqlQueryVariables = Exact<{
 
 
 export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null | undefined } | null | undefined, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null | undefined, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }> }> };
+
+export type ProtocolGqlQueryVariables = Exact<{
+  protocolId: Scalars['String'];
+}>;
+
+
+export type ProtocolGqlQuery = { __typename?: 'Query', protocol: { __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null | undefined>, twitter: string, balance: any, updatedAt: number, tokenAddresses: Array<string | null | undefined>, usdTvl: any } };

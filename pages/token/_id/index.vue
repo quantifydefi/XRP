@@ -12,9 +12,7 @@
             outlined
             height="100%"
             :color="theme === 'dark' ? 'transparent' : ''"
-            :style="
-              theme === 'dark' ? 'border: 1px solid #424242 !important' : ''
-            "
+            :style="theme === 'dark' ? 'border: 1px solid #424242 !important' : ''"
           >
             <chart
               :token-data="tokenData"
@@ -27,26 +25,14 @@
         </v-col>
 
         <v-col lg="3" sm="12" md="12">
-          <uniswap-iframe
-            :quote-token="tokenData[`${tokenData.quote_asset}_id`]"
-          />
+          <uniswap-iframe :quote-token="tokenData[`${tokenData.quote_asset}_id`]" />
         </v-col>
       </v-row>
     </v-col>
 
-    <v-overlay
-      :opacity="1"
-      absolute
-      :value="!isChartReady"
-      :color="$vuetify.theme.themes[theme].overlay"
-    >
+    <v-overlay :opacity="1" absolute :value="!isChartReady" :color="$vuetify.theme.themes[theme].overlay">
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
-      <v-progress-linear
-        color="primary"
-        indeterminate
-        rounded
-        height="6"
-      ></v-progress-linear>
+      <v-progress-linear color="primary" indeterminate rounded height="6"></v-progress-linear>
     </v-overlay>
   </v-row>
 </template>
@@ -81,8 +67,7 @@ import UniswapIframe from '~/components/token-details/UniswapIframe.vue'
         {
           name: 'description',
           hid: 'description',
-          content:
-            'Live prices | Interactive Chart | Simple and Easy to use Uniswap Interface',
+          content: 'Live prices | Interactive Chart | Simple and Easy to use Uniswap Interface',
         },
       ],
     }

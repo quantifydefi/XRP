@@ -1,16 +1,8 @@
 <template>
-  <v-snackbar
-    v-model="snackbar"
-    bottom
-    :timeout="timeout"
-    :multi-line="multiLine"
-    style="padding-bottom: 0"
-  >
+  <v-snackbar v-model="snackbar" bottom :timeout="timeout" :multi-line="multiLine" style="padding-bottom: 0">
     {{ text }}
     <template #action="{ attrs }">
-      <v-btn :color="buttonColor" text v-bind="attrs" @click="snackbar = false">
-        Close
-      </v-btn>
+      <v-btn :color="buttonColor" text v-bind="attrs" @click="snackbar = false"> Close </v-btn>
     </template>
   </v-snackbar>
 </template>

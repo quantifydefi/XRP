@@ -2,24 +2,9 @@
   <v-row no-gutters justify="center">
     <v-col cols="12" class="pa-2">
       <v-row v-if="aaveAssets">
-        <v-overlay
-          absolute
-          :value="aaveAssets.loading"
-          :opacity="1"
-          :color="$vuetify.theme.themes[theme].overlay"
-        >
-          <img
-            :src="'/img/logo/logo.svg'"
-            height="100"
-            width="100"
-            alt="logo"
-          />
-          <v-progress-linear
-            color="primary"
-            indeterminate
-            rounded
-            height="6"
-          ></v-progress-linear>
+        <v-overlay absolute :value="aaveAssets.loading" :opacity="1" :color="$vuetify.theme.themes[theme].overlay">
+          <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+          <v-progress-linear color="primary" indeterminate rounded height="6"></v-progress-linear>
         </v-overlay>
 
         <v-col cols="12" class="pa-1">
@@ -27,11 +12,7 @@
             <v-data-table
               id="aave-assets"
               :headers="aaveAssets.cols"
-              :items="
-                $route.params.id == 1
-                  ? aaveAssets.ethereumAssets
-                  : aaveAssets.polygonAssets
-              "
+              :items="$route.params.id == 1 ? aaveAssets.ethereumAssets : aaveAssets.polygonAssets"
               mobile-breakpoint="0"
               :style="{
                 backgroundColor: $vuetify.theme.themes[theme].background,
@@ -54,19 +35,8 @@
               </template>
 
               <template #[`item.underlying.contract_symbol`]="{ item }">
-                <v-row
-                  no-gutters
-                  class="text-no-wrap text-left py-3 overflow-hidden"
-                  style="min-width: 240px"
-                >
-                  <v-col
-                    cols="2"
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                    "
-                  >
+                <v-row no-gutters class="text-no-wrap text-left py-3 overflow-hidden" style="min-width: 240px">
+                  <v-col cols="2" style="display: flex; justify-content: center; align-items: center">
                     <v-avatar size="36">
                       <img
                         :alt="`${item.underlying.contract_symbol} logo`"
@@ -78,9 +48,7 @@
                   <v-col cols="9" class="pl-3">
                     <div class="subtitle-2">
                       {{ item.underlying.contract_name }}
-                      <span class="subtitle-2 font-weight-regular">
-                        {{ item.underlying.contract_symbol }}</span
-                      >
+                      <span class="subtitle-2 font-weight-regular"> {{ item.underlying.contract_symbol }}</span>
                     </div>
 
                     <div class="subtitle-2 font-weight-regular text-no-wrap">
@@ -97,12 +65,7 @@
                     {{ item.underlying.available_balance.toFixed(2) }}
                   </div>
                   <div class="text-no-wrap">
-                    {{
-                      (
-                        item.underlying.quote_rate *
-                        item.underlying.available_balance
-                      ).toFixed(2)
-                    }}
+                    {{ (item.underlying.quote_rate * item.underlying.available_balance).toFixed(2) }}
                     <span class="caption">USD</span>
                   </div>
                 </div>
@@ -126,13 +89,7 @@
               <template #[`item.supply_apy`]="{ item }">
                 <div class="text-no-wrap">
                   <div v-if="item.supply_position.supplied" class="py-3">
-                    <div
-                      class="
-                        subtitle-2
-                        font-weight-regular
-                        text-capitalize text-no-wrap
-                      "
-                    >
+                    <div class="subtitle-2 font-weight-regular text-capitalize text-no-wrap">
                       {{ item.supply_position.balance_quote.toFixed(2) }}
                       <small>USD</small>
                     </div>
@@ -180,13 +137,7 @@
               </template>
 
               <template #[`item.variable_borrow_apr`]="{ item }">
-                <v-chip
-                  small
-                  label
-                  outlined
-                  color="grey darken-2"
-                  class="mt-2 caption font-weight-medium rounded-0"
-                >
+                <v-chip small label outlined color="grey darken-2" class="mt-2 caption font-weight-medium rounded-0">
                   <span
                     :style="{
                       width: '70px',
@@ -201,13 +152,7 @@
               <template #[`item.stable_borrow_apr`]="{ item }">
                 <div class="text-no-wrap">
                   <div v-if="item.borrow_position.apr" class="py-3">
-                    <div
-                      class="
-                        subtitle-2
-                        font-weight-regular
-                        text-capitalize text-no-wrap
-                      "
-                    >
+                    <div class="subtitle-2 font-weight-regular text-capitalize text-no-wrap">
                       {{ item.borrow_position.balance_quote.toFixed(2) }}
                       <small>USD</small>
                     </div>

@@ -14,20 +14,14 @@
 
     <template #[`item.total_sent`]="{ item }">
       {{ parseFloat(item.input_token_quantity.toFixed(4)) }}
-      <span class="grey--text text--lighten-1 ml-1">
-        {{ item.input_token_name }} ({{ item.input_token_symbol }})</span
-      >
+      <span class="grey--text text--lighten-1 ml-1"> {{ item.input_token_name }} ({{ item.input_token_symbol }})</span>
     </template>
     <template #[`item.total_received`]="{ item }">
       {{ parseFloat(item.output_token_quantity.toFixed(4)) }}
-      <span class="grey--text text--lighten-1 ml-1"
-        >{{ item.output_token_name }} ({{ item.output_token_symbol }})</span
-      >
+      <span class="grey--text text--lighten-1 ml-1">{{ item.output_token_name }} ({{ item.output_token_symbol }})</span>
     </template>
 
-    <template #[`item.trade_value_usd`]="{ item }">
-      $ {{ item.trade_value_usd.toFixed(2) }}
-    </template>
+    <template #[`item.trade_value_usd`]="{ item }"> $ {{ item.trade_value_usd.toFixed(2) }} </template>
   </v-data-table>
 </template>
 
@@ -93,20 +87,7 @@ export default class TransactionGrid extends Vue {
 
   timeConverter(timestamp: number): string {
     const a = new Date(timestamp * 1000)
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const year = a.getFullYear()
     const month = months[a.getMonth()]
     const date = a.getDate()

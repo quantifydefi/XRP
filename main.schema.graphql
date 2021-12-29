@@ -38,18 +38,14 @@ type BalanceItem {
   type: String!
 }
 
-"""
-
-Covalent get al Chains
-https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
-"""
 type Chain {
-  chainId: String!
-  dbSchemaName: String!
-  isTestnet: Boolean!
+  chainId: Int!
+  geckoId: String!
+  isTestNet: Boolean!
   label: String!
   logoUrl: String!
   name: String!
+  symbol: String!
 }
 
 """
@@ -81,7 +77,7 @@ type CoinDetails {
   localization: Map
   marketCapRank: Float
   marketData: MarketData
-  name: String
+  name: String!
   platforms: Map
   publicInterestScore: Float
   publicInterestStats: Map
@@ -89,7 +85,7 @@ type CoinDetails {
   sentimentVotesDownPercentage: Float
   sentimentVotesUpPercentage: Float
   statusUpdates: [Map]
-  symbol: String
+  symbol: String!
   tickers: [TickerData]
 }
 
@@ -103,6 +99,56 @@ type CoinList {
   name: String!
   platforms: Map
   symbol: String!
+}
+
+type CoingeckoInfo {
+  id: String!
+  referenceAssetID: String!
+  symbol: String!
+}
+
+type CurveCoin {
+  balance: String!
+  balanceUSD: Float!
+  token: CurveToken
+}
+
+type CurveCoins {
+  ID: String!
+  address: String!
+  coingeckoID: String!
+  decimals: Int!
+  symbol: String!
+  type: String!
+  wrappedCoinType: String!
+}
+
+type CurvePool {
+  adminFee: String!
+  assetType: String!
+  baseAPY: Float!
+  coins: [CurveCoin!]!
+  dailyVolume: Float!
+  fee: String!
+  id: String!
+  liquidityUsd: Float!
+  name: String!
+  registryAddress: String!
+  rewards: CurveRewards!
+  swapAddress: String!
+  totalBalance: Float!
+  virtualPrice: String!
+}
+
+type CurveRewards {
+  maxRewardPtc: Float!
+  rewardPtc: Float!
+}
+
+type CurveToken {
+  name: String!
+  symbol: String!
+  usdPrice: Float!
 }
 
 type EthGasStats {
@@ -181,103 +227,45 @@ type Pagination {
   totalCount: Int
 }
 
-"""
-
-DeFi Lama Protocols
-Returns basic information on all listed protocols, their
-current TVL and the changes to it in the last hour/day/week.
-https://docs.llama.fi/api
-"""
 type Protocol {
   address: String!
-  auditNote: String!
-  audits: String!
+  balance: Map!
   category: String!
   chain: String!
-  chainTvls: Map
-  chains: [String!]!
-  change_1d: Float!
-  change_1h: Float!
-  change_7d: Float!
-  cmcId: Int!
-  description: String!
-  fdv: Float!
-  geckoId: String!
-  id: ID!
-  logo: String!
-  mcap: Float!
-  module: String!
-  name: String!
-  oracles: [String!]!
-  slug: String!
-  symbol: String!
-  tvl: Float!
-  twitter: String!
-  url: String!
-}
-
-"""
-
-DeFi Lama Protocol by slug
-Returns historical data on the TVL of a protocol along with
-some basic data on it. The fields `tokensInUsd` and `tokens`
-are only available for some protocols.
-https://docs.llama.fi/api
-"""
-type ProtocolDetails {
-  address: String!
-  auditLinks: [String!]!
-  auditNote: String!
-  audits: String!
-  category: String!
-  chain: String!
-  chainTvls: Map!
-  chains: [String!]!
-  cmcId: Int!
+  chains: [String]!
   description: String!
   geckoId: String!
-  id: ID!
-  logo: String!
-  misrepresentedTokens: Boolean!
-  module: String!
+  id: String!
   name: String!
-  oracles: [String!]!
   symbol: String!
-  tvl: [Map]
+  tokenAddresses: [String]!
   twitter: String!
+  updatedAt: Int!
   url: String!
+  usdTvl: Map!
 }
 
 type Query {
   "Covalent Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
-  "Covalent Chains"
   chains: [Chain!]!
-  "Coin Gaico Coin Details"
-  coinDetails(coinId: String!): CoinDetails!
-  "Coin Gaico Coin List"
-  coinList: [CoinList]!
+  "Curve Pool "
+  curvePools: [CurvePool!]!
   "Gas Stats for ETH"
   gasStats: EthGasStats!
   "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
-  protocol(slug: String!): ProtocolDetails!
-  protocols: [Protocol!]!
+  protocol(protocolId: String!): Protocol!
+  "Supported Protocols"
+  protocols: [Protocol]!
   """
 
   If tickers (a comma separated list of tickers
   is present), only return the spot prices for these tokens.
   """
   spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
-  supportedTokens(resource: [String!]!): [Token!]!
-  ticker(product: String = "BTC-USD"): Ticker!
+  supportedTokens: [Token!]
   todos: [Todo!]!
-  tokenPair(poolId: String!): UniswapBalance!
-  tokenResources: [String!]!
-  "Covalent Transactions"
-  transactions(address: String!, chainId: Int!, pageNumber: Int!, pageSize: Int!): Transactions
-  uniswapBalances(numberOfTokens: Int = 1000): [UniswapBalance!]!
-  uniswapChart(interval: chartIntervals!, poolId: String!): [UniswapChart!]!
 }
 
 """
@@ -300,13 +288,6 @@ type SpotPriceItem {
   quoteRate: Float!
   rank: Int!
   supportsErc: String!
-}
-
-type Ticker {
-  ID: String!
-  price: Float!
-  time: Int!
-  volume: Float!
 }
 
 type TickerData {
@@ -337,23 +318,20 @@ type Todo {
   user: User!
 }
 
-type TodoXX {
-  done: Boolean!
-  id: ID!
-  someOther: User!
-  text: String!
-  user: User!
-}
-
 type Token {
   ID: ID!
   address: String!
-  chainId: Float!
-  decimals: Float!
+  chainKey: String!
+  coingeckoId: String!
   logoURI: String!
   name: String!
-  source: String!
   symbol: String!
+}
+
+type TokenBalance {
+  address: String
+  symbol: String
+  value: Float
 }
 
 type TransactionItem {
@@ -392,59 +370,9 @@ type Transactions {
   updatedAt: String!
 }
 
-type UniswapBalance {
-  createdAtTimestamp: Float!
-  ethPriceUsd: Float!
-  excludePair: Boolean!
-  liquidityProviderCount: Int!
-  percentChangeLiq1h: Float!
-  percentChangeLiq24h: Float!
-  "Pool ID from Uniswap"
-  poolId: String!
-  quoteAsset: String!
-  quoteCurrency: String!
-  reserveEth: Float!
-  reserveIndex: Float!
-  "Token 0 ID from Uniswap"
-  token0Id: String!
-  token0Name: String!
-  token0PercentChange1h: Float!
-  token0PercentChange24h: Float!
-  token0Price: Float!
-  token0PriceUsd: Float!
-  token0Symbol: String!
-  token1Id: String!
-  token1Name: String!
-  token1PercentChange1h: Float!
-  token1PercentChange24h: Float!
-  token1Price: Float!
-  token1PriceUsd: Float!
-  token1Symbol: String!
-  txCount: Int!
-  volumeUsd: Float!
-}
-
-type UniswapChart {
-  ethPriceUsd: Float!
-  liquidityUsdMil: Float!
-  reserveEth: Float!
-  token0Price: Float!
-  token1Price: Float!
-  unixTime: Int!
-}
-
 type User {
   id: ID!
   name: String!
-}
-
-enum chartIntervals {
-  int_1D
-  int_1M
-  int_1Y
-  int_3M
-  int_6M
-  int_7D
 }
 
 input NewTodo {

@@ -9,18 +9,14 @@ export const state = () => ({
 })
 export type CurveState = ReturnType<typeof state>
 export const mutations: MutationTree<CurveState> = {
-  SET_STABLE_POOL_STATS: (state, stablePoolStats: any) =>
-    (state.stablePoolStats = stablePoolStats),
-  SET_CRYPTO_POOL_STATS: (state, cryptoPoolStats: any) =>
-    (state.cryptoPoolStats = cryptoPoolStats),
+  SET_STABLE_POOL_STATS: (state, stablePoolStats: any) => (state.stablePoolStats = stablePoolStats),
+  SET_CRYPTO_POOL_STATS: (state, cryptoPoolStats: any) => (state.cryptoPoolStats = cryptoPoolStats),
   SET_APYS_REWARDS: (state, apys: any) => (state.apys = apys),
 }
 export const actions: ActionTree<CurveState, CurveState> = {
   async stablePoolStats({ commit }) {
     try {
-      const { data } = await this.$axios.get(
-        'https://stats.curve.fi/raw-stats/apys.json'
-      )
+      const { data } = await this.$axios.get('https://stats.curve.fi/raw-stats/apys.json')
       commit('SET_STABLE_POOL_STATS', data)
     } catch (err) {
       console.log(err)
@@ -29,9 +25,7 @@ export const actions: ActionTree<CurveState, CurveState> = {
 
   async cryptoPoolStats({ commit }) {
     try {
-      const { data } = await this.$axios.get(
-        'https://stats.curve.fi/raw-stats-crypto/apys.json'
-      )
+      const { data } = await this.$axios.get('https://stats.curve.fi/raw-stats-crypto/apys.json')
       commit('SET_CRYPTO_POOL_STATS', data)
     } catch (err) {
       console.log(err)

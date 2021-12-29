@@ -2,7 +2,7 @@
 import 'reflect-metadata'
 import { Vue, Component } from 'vue-property-decorator'
 import { Events } from '~/types/global'
-
+declare const window: any
 @Component
 export class MetamaskConnector extends Vue {
   ethereum: any = null

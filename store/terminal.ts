@@ -9,10 +9,7 @@ export type TerminalState = ReturnType<typeof state>
 export const mutations: MutationTree<TerminalState> = {}
 
 export const actions: ActionTree<TerminalState, TerminalState> = {
-  async getTerminalData(
-    { commit },
-    { numOfCoins }
-  ): Promise<TerminalGridData[]> {
+  async getTerminalData({ commit }, { numOfCoins }): Promise<TerminalGridData[]> {
     const { data } = await this.$axios.get(
       // `/api/defi/heatmap/uniswap-heatmap`,
       `https://defiheatmap.com/api/defi/heatmap/uniswap-heatmap`,

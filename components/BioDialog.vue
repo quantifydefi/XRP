@@ -1,11 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog
-      v-model="isVisibility"
-      persistent
-      transition="dialog-bottom-transition"
-      width="700"
-    >
+    <v-dialog v-model="isVisibility" persistent transition="dialog-bottom-transition" width="700">
       <v-card class="text-center" tile outlined>
         <v-card-actions class="justify-end">
           <v-btn icon @click="$emit('close-dialog', thumbnailUrl)">
@@ -14,11 +9,7 @@
         </v-card-actions>
         <v-container class="pa-10">
           <v-avatar size="120">
-            <img
-              class="rounded-circle"
-              :src="require(`~/assets/images/team/${thumbnailUrl}.jpg`)"
-              alt="avatar"
-            />
+            <img class="rounded-circle" :src="require(`~/assets/images/team/${thumbnailUrl}.jpg`)" alt="avatar" />
           </v-avatar>
           <h4 class="text-h6 mt-6">
             {{ name }}
@@ -26,12 +17,7 @@
           <p class="text--secondary">
             {{ jobTitle }}
           </p>
-          <a
-            v-for="social in socials"
-            :key="social.social"
-            :href="social.link"
-            target="_blank"
-          >
+          <a v-for="social in socials" :key="social.social" :href="social.link" target="_blank">
             <v-icon class="mt-n7 mr-3" size="20">mdi-{{ social.icon }}</v-icon>
           </a>
           <div class="text-left" v-html="bio"></div>

@@ -8,14 +8,7 @@
     </template>
 
     <v-list tile>
-      <v-list-item
-        v-for="(item, index) in items"
-        :key="index"
-        dense
-        link
-        target="_blank"
-        :href="item.href"
-      >
+      <v-list-item v-for="(item, index) in items" :key="index" dense link target="_blank" :href="item.href">
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>

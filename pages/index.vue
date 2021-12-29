@@ -6,24 +6,15 @@
           <v-col cols="7">
             <v-row>
               <v-col cols="12">
-                <p class="v-heading text-h3 font-weight-regular">
-                  Quantify Crypto
-                </p>
+                <p class="v-heading text-h3 font-weight-regular">Quantify Crypto</p>
 
-                <p class="v-heading text-h3 font-weight-regular mb-8">
-                  Decentralized Finance Platform
-                </p>
+                <p class="v-heading text-h3 font-weight-regular mb-8">Decentralized Finance Platform</p>
 
                 <p class="text-uppercase">
                   <a
                     href="https://uniswap.org"
                     target="_blank"
-                    class="
-                      text-decoration-none
-                      font-weight-medium
-                      pink--text
-                      text--accent-2
-                    "
+                    class="text-decoration-none font-weight-medium pink--text text--accent-2"
                     >UNISWAP</a
                   >
                   TRADING INFERFACE, MARKET OVERVIEW AND PORTFOLIO MANAGEMENT
@@ -34,11 +25,7 @@
                   <v-col class="pb-0" cols="12" md="7">
                     <token-search />
                   </v-col>
-                  <v-col
-                    :class="$vuetify.breakpoint.smAndDown ? 'mt-n5 pt-0' : ''"
-                    cols="12"
-                    md="1"
-                  >
+                  <v-col :class="$vuetify.breakpoint.smAndDown ? 'mt-n5 pt-0' : ''" cols="12" md="1">
                     <connect-to-wallet-button />
                   </v-col>
                 </v-row>
@@ -72,22 +59,11 @@
     <v-row justify="center">
       <v-col cols="10">
         <v-row>
-          <v-col
-            ><p id="#features" class="text-center text-h3 mt-5">
-              Features
-            </p></v-col
-          >
+          <v-col><p id="#features" class="text-center text-h3 mt-5">Features</p></v-col>
         </v-row>
 
         <v-row align="center">
-          <v-col
-            v-for="item in featureItems"
-            :key="item.header"
-            cols="auto"
-            md="4"
-            sm="6"
-            style="width: 100%"
-          >
+          <v-col v-for="item in featureItems" :key="item.header" cols="auto" md="4" sm="6" style="width: 100%">
             <v-hover v-slot="{ hover }">
               <v-card
                 height="250"
@@ -117,14 +93,7 @@
         </v-row>
 
         <v-row align="center">
-          <v-col
-            v-for="item in items"
-            :key="item.header"
-            cols="auto"
-            md="4"
-            sm="6"
-            style="width: 100%"
-          >
+          <v-col v-for="item in items" :key="item.header" cols="auto" md="4" sm="6" style="width: 100%">
             <v-hover v-slot="{ hover }">
               <v-card
                 color="transparent"
@@ -163,8 +132,7 @@ import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue
         {
           name: 'description',
           hid: 'description',
-          content:
-            'Automated DEX trading with single click smart contract interface',
+          content: 'Automated DEX trading with single click smart contract interface',
         },
 
         // Open Graph
@@ -174,15 +142,13 @@ import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue
         },
         {
           name: 'og:description',
-          content:
-            'Automated DEX trading with single click smart contract interface',
+          content: 'Automated DEX trading with single click smart contract interface',
         },
         { name: 'og:type', content: 'website' },
         { name: 'og:url', content: process.env.baseURL },
         {
           name: 'og:image',
-          content:
-            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
         },
 
         // Twitter Card
@@ -194,18 +160,15 @@ import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue
         },
         {
           name: 'twitter:description',
-          content:
-            'Automated DEX trading with single click smart contract interface',
+          content: 'Automated DEX trading with single click smart contract interface',
         },
         {
           name: 'twitter:image',
-          content:
-            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
         },
         {
           name: 'twitter:image:alt',
-          content:
-            'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
         },
       ],
     }

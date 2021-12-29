@@ -2,24 +2,9 @@
   <v-row no-gutters>
     <v-col class="pa-2" cols="12">
       <v-row v-if="aaveBalance">
-        <v-overlay
-          absolute
-          :value="aaveBalance.loading"
-          :opacity="1"
-          :color="$vuetify.theme.themes[theme].overlay"
-        >
-          <img
-            :src="'/img/logo/logo.svg'"
-            height="100"
-            width="100"
-            alt="logo"
-          />
-          <v-progress-linear
-            color="primary"
-            indeterminate
-            rounded
-            height="6"
-          ></v-progress-linear>
+        <v-overlay absolute :value="aaveBalance.loading" :opacity="1" :color="$vuetify.theme.themes[theme].overlay">
+          <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
+          <v-progress-linear color="primary" indeterminate rounded height="6"></v-progress-linear>
         </v-overlay>
 
         <v-col cols="12" class="pa-1 mt-1">
@@ -35,18 +20,10 @@
               }"
             >
               <template #[`item.underlying.contract_symbol`]="{ item }">
-                <v-row
-                  class="text-no-wrap text-left py-3"
-                  style="min-width: 180px"
-                >
+                <v-row class="text-no-wrap text-left py-3" style="min-width: 180px">
                   <v-col
                     cols="2"
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      padding-left: 30px;
-                    "
+                    style="display: flex; justify-content: center; align-items: center; padding-left: 30px"
                   >
                     <v-avatar size="36">
                       <img
@@ -77,12 +54,7 @@
                     }}
                   </div>
                   <div>
-                    {{
-                      (
-                        item.underlying.available_balance *
-                        item.underlying.quote_rate
-                      ).toFixed(2)
-                    }}
+                    {{ (item.underlying.available_balance * item.underlying.quote_rate).toFixed(2) }}
                     <span class="caption">USD</span>
                   </div>
                 </div>
@@ -90,13 +62,7 @@
 
               <template #[`item.supply_position.supplied`]="{ item }">
                 <div class="py-3">
-                  <div
-                    class="
-                      subtitle-2
-                      font-weight-regular
-                      text-capitalize text-no-wrap
-                    "
-                  >
+                  <div class="subtitle-2 font-weight-regular text-capitalize text-no-wrap">
                     {{ item.supply_position.balance_quote.toFixed(2) }}
                     <small>USD</small>
                   </div>
@@ -125,13 +91,7 @@
 
               <template #[`item.borrow_position.borrowed`]="{ item }">
                 <div class="py-3">
-                  <div
-                    class="
-                      subtitle-2
-                      font-weight-regular
-                      text-capitalize text-no-wrap
-                    "
-                  >
+                  <div class="subtitle-2 font-weight-regular text-capitalize text-no-wrap">
                     {{ item.borrow_position.balance_quote.toFixed(2) }}
                     <small>USD</small>
                   </div>

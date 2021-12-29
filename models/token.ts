@@ -1,9 +1,5 @@
 /* eslint-disable camelcase */
-import {
-  ChartDataInterface,
-  SearchPoolInterface,
-  TokenInterface,
-} from '~/types/token'
+import { ChartDataInterface, SearchPoolInterface, TokenInterface } from '~/types/token'
 
 export class Token implements TokenInterface {
   readonly base_asset!: string
@@ -52,9 +48,7 @@ export class Token implements TokenInterface {
   }
 
   static isQuoteToken(symbol: string, token: Token | any): boolean {
-    const key: any = Object.keys(token).find(
-      (key: any) => token[key] === symbol
-    )
+    const key: any = Object.keys(token).find((key: any) => token[key] === symbol)
     return key.split('_')[0] === token.quote_asset
   }
 }

@@ -11,8 +11,7 @@ query GlobalStatsQueryGQL {
   chains {
     name
     chainId
-    isTestnet
-    dbSchemaName
+    isTestNet
     label
     logoUrl
   }

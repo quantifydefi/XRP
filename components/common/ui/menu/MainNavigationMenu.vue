@@ -10,9 +10,7 @@
           <v-list-item-content>
             <v-list-item-title class="text-h6 font-weight-regular">
               EVM
-              <small class="grey--text text--lighten-1 ml-1 text-caption">
-                Beta
-              </small>
+              <small class="grey--text text--lighten-1 ml-1 text-caption"> Beta </small>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -33,10 +31,7 @@
           </v-list-item>
 
           <v-list-group
-            v-if="
-              config.networks.defaultNetwork.chainId === 1 ||
-              config.networks.defaultNetwork.chainId === 137
-            "
+            v-if="config.networks.defaultNetwork.chainId === 1 || config.networks.defaultNetwork.chainId === 137"
             :value="true"
             no-action
             color="primary"
@@ -55,11 +50,7 @@
               <v-list-item-title>Protocols </v-list-item-title>
             </template>
 
-            <v-list-item
-              exact
-              :to="`/app/${config.networks.defaultNetwork.chainId}/aave`"
-              class="ml-n6"
-            >
+            <v-list-item exact :to="`/app/${config.networks.defaultNetwork.chainId}/aave`" class="ml-n6">
               <v-list-item-icon>
                 <v-avatar size="24">
                   <img
@@ -70,16 +61,10 @@
               <v-list-item-title>Aave v2</v-list-item-title>
             </v-list-item>
 
-            <v-list-item
-              exact
-              :to="`/app/${config.networks.defaultNetwork.chainId}/curve`"
-              class="ml-n6"
-            >
+            <v-list-item exact :to="`/app/${config.networks.defaultNetwork.chainId}/curve`" class="ml-n6">
               <v-list-item-icon>
                 <v-avatar size="24">
-                  <img
-                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/crv.png`"
-                  />
+                  <img :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/crv.png`" />
                 </v-avatar>
               </v-list-item-icon>
               <v-list-item-title>Curve</v-list-item-title>
@@ -91,10 +76,15 @@
               <v-icon>mdi-bridge</v-icon>
             </v-list-item-icon>
 
-            <v-list-item-title
-              >Bridge
-              <small class="pl-2">coming soon...</small></v-list-item-title
-            >
+            <v-list-item-title>Bridge <small class="pl-2">coming soon...</small></v-list-item-title>
+          </v-list-item>
+
+          <v-list-item to="/protocols">
+            <v-list-item-icon>
+              <v-icon>mdi-lan</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Protocols</v-list-item-title>
           </v-list-item>
 
           <v-list-item exact to="/portfolio/balances">
@@ -105,10 +95,7 @@
             <v-list-item-title>Balances</v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-            exact
-            :to="`/app/${config.networks.defaultNetwork.chainId}/transactions`"
-          >
+          <v-list-item exact :to="`/app/${config.networks.defaultNetwork.chainId}/transactions`">
             <v-list-item-icon>
               <v-icon>mdi-history</v-icon>
             </v-list-item-icon>
@@ -119,32 +106,19 @@
           <v-list-group :value="true" no-action color="primary">
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
-                <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-lan
-                </v-icon>
+                <v-icon :color="$vuetify.theme.themes[theme].baseText">mdi-lan </v-icon>
               </v-list-item-icon>
             </template>
             <template #appendIcon>
               <v-list-item-icon class="mt-0 mr-0">
-                <v-icon :color="$vuetify.theme.themes[theme].baseText"
-                  >mdi-chevron-down
-                </v-icon>
+                <v-icon :color="$vuetify.theme.themes[theme].baseText">mdi-chevron-down </v-icon>
               </v-list-item-icon>
             </template>
             <template #activator>
-              <v-list-item-title
-                :style="{ color: $vuetify.theme.themes[theme].baseText }"
-                >Research
-              </v-list-item-title>
+              <v-list-item-title :style="{ color: $vuetify.theme.themes[theme].baseText }">Research </v-list-item-title>
             </template>
 
-            <v-list-item
-              v-for="item in navigationMenu"
-              :key="item.title"
-              class="ml-n6"
-              :to="item.to"
-              :href="item.href"
-            >
+            <v-list-item v-for="item in navigationMenu" :key="item.title" class="ml-n6" :to="item.to" :href="item.href">
               <v-list-item-icon>
                 <v-icon> {{ item.icon }}</v-icon>
               </v-list-item-icon>
@@ -156,24 +130,14 @@
         <div class="pa-2" style="position: fixed; bottom: 0px; width: 100%">
           <div class="caption d-flex my-4 justify-center">
             <v-btn x-small icon @click="changeTheme">
-              <v-icon
-                >{{
-                  $vuetify.theme.dark
-                    ? 'mdi-white-balance-sunny'
-                    : 'mdi-weather-night'
-                }}
-              </v-icon>
+              <v-icon>{{ $vuetify.theme.dark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }} </v-icon>
             </v-btn>
-            <div class="caption ml-2">
-              change to {{ $vuetify.theme.dark ? 'light' : 'dark' }} theme
-            </div>
+            <div class="caption ml-2">change to {{ $vuetify.theme.dark ? 'light' : 'dark' }} theme</div>
           </div>
 
           <v-divider />
 
-          <div class="caption text-center mt-2">
-            EVM &copy; {{ new Date().getFullYear() }}
-          </div>
+          <div class="caption text-center mt-2">EVM &copy; {{ new Date().getFullYear() }}</div>
         </div>
       </v-list>
     </client-only>

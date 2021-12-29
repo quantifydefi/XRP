@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="mainTreemap"
-    :style="{ width: '100%', height: `${chartHeight}px` }"
-  ></div>
+  <div ref="mainTreemap" :style="{ width: '100%', height: `${chartHeight}px` }"></div>
 </template>
 
 <script lang="ts">
@@ -104,26 +101,14 @@ export default class Marketcap extends Vue {
       let fontSizeLev2: any = null
       /** Try catch block for default and userAddress heatmap types */
       try {
-        fontSize =
-          target.availableWidth /
-          (target.dataItem.dataContext.dataContext.poolSymbol.length * 0.7)
+        fontSize = target.availableWidth / (target.dataItem.dataContext.dataContext.poolSymbol.length * 0.7)
         fontSizeLev2 =
-          (target.availableWidth /
-            (target.dataItem.dataContext.dataContext.token0_price_usd.toString()
-              .length *
-              0.5)) *
+          (target.availableWidth / (target.dataItem.dataContext.dataContext.token0_price_usd.toString().length * 0.5)) *
           0.75
       } catch {
-        fontSize =
-          target.availableWidth /
-          (target.dataItem.dataContext.dataContext.token_symbol.length *
-            0.7 *
-            1.5)
+        fontSize = target.availableWidth / (target.dataItem.dataContext.dataContext.token_symbol.length * 0.7 * 1.5)
         fontSizeLev2 =
-          (target.availableWidth /
-            target.dataItem.dataContext.dataContext.balance_usd.toString()
-              .length) *
-          0.85
+          (target.availableWidth / target.dataItem.dataContext.dataContext.balance_usd.toString().length) * 0.85
       }
 
       if (target.availableHeight < fontSize * 2) {

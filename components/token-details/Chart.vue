@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      ref="chartDiv"
-      :style="{ width: '100%', height: `${chartHeight}px` }"
-    ></div>
+    <div ref="chartDiv" :style="{ width: '100%', height: `${chartHeight}px` }"></div>
     <v-divider />
     <chart-time-range
       :ranges="chartConfig.timeRange"
@@ -131,13 +128,9 @@ export default class Chart extends Vue {
     token0Series.yAxis = valueAxisToken0
     token0Series.dataFields.dateX = 'date'
     token0Series.dataFields.valueY = 'token0_price'
-    token0Series.tooltipText =
-      `PTC: {valueY.changePercent.formatNumber('[#ffffff]+#.00|[#ffffff]#.##|0')}%[/]
+    token0Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#ffffff]+#.00|[#ffffff]#.##|0')}%[/]
                             ETH: {token0_price}
-                            USD: {token0_price_usd} {}{eth_price_usd}/ETH`.replace(
-        '{}',
-        '$'
-      )
+                            USD: {token0_price_usd} {}{eth_price_usd}/ETH`.replace('{}', '$')
     token0Series.name = this.token0Symbol
     token0Series.tooltip.getFillFromObject = false
     token0Series.tooltip.background.strokeWidth = 0
@@ -152,13 +145,9 @@ export default class Chart extends Vue {
     token1Series.yAxis = valueAxisToken1
     token1Series.dataFields.dateX = 'date'
     token1Series.dataFields.valueY = 'token1_price'
-    token1Series.tooltipText =
-      `PTC: {valueY.changePercent.formatNumber('[#ffffff]+#.00|[#ffffff]#.##|0')}% [/]
+    token1Series.tooltipText = `PTC: {valueY.changePercent.formatNumber('[#ffffff]+#.00|[#ffffff]#.##|0')}% [/]
                             ETH: {token1_price}
-                            USD: {token1_price_usd} {}{eth_price_usd}/ETH`.replace(
-        '{}',
-        '$'
-      )
+                            USD: {token1_price_usd} {}{eth_price_usd}/ETH`.replace('{}', '$')
     token1Series.name = this.token1Symbol
     token1Series.tooltip.getFillFromObject = false
     token1Series.tooltip.background.strokeWidth = 0

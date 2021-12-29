@@ -1,0 +1,32 @@
+query AllProtocolsGQL{
+  protocols {
+    id
+    name
+    address
+    symbol
+    url
+    description
+    chain
+    geckoId
+    category
+    chains
+    twitter
+  }
+}
+
+query CurvePoolsGQL{
+  curvePools{
+    id,
+    name,
+    assetType,
+    fee,
+    adminFee
+    totalBalance
+    registryAddress
+    rewards{rewardPtc, maxRewardPtc}
+    dailyVolume,
+    liquidityUsd
+    baseAPY,
+    coins{balance, balanceUSD, token{symbol, name, usdPrice}}
+  }
+}

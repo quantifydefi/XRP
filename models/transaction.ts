@@ -2,11 +2,7 @@
 import 'reflect-metadata'
 import { Store } from 'vuex'
 
-import {
-  AdapterInterface,
-  TransactionInterface,
-  TransactionHistoryInterface,
-} from '~/types/transactions'
+import { AdapterInterface, TransactionInterface, TransactionHistoryInterface } from '~/types/transactions'
 
 export class Trade implements TransactionInterface {
   input_token_id!: string
@@ -124,13 +120,10 @@ export class TransactionsHistory {
   async getData() {
     try {
       this.loading = true
-      this._data = await this._$store.dispatch(
-        'wallet/getTransactionsHistory',
-        {
-          chainId: this.chainId,
-          address: this.address,
-        }
-      )
+      this._data = await this._$store.dispatch('wallet/getTransactionsHistory', {
+        chainId: this.chainId,
+        address: this.address,
+      })
       this.loading = false
     } catch (error) {
       this._data = []

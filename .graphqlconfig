@@ -12,7 +12,7 @@
       },
       "Curve Subgraph": {
          "schemaPath": "curve.schema.graphql",
-        "url": "https://api.thegraph.com/subgraphs/name/curvefi/curve",
+        "url": "https://thegraph.defiheatmap.com/subgraphs/name/curvefi",
         "headers": {
           "user-agent": "JS GraphQL"
         },
