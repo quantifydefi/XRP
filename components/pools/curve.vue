@@ -60,8 +60,8 @@
                             <td>{{ coin.token.symbol }}</td>
                             <td>{{ valueFormatter(coin.balance) }}</td>
                             <td>{{ valueFormatter(coin.token.usdPrice, 3, 3) }}</td>
-                            <td>{{ valueFormatter(coin.balanceUSD, 4, 4) }}</td>
-                            <td>{{ valueFormatter((coin.balance / item.totalBalance) * 100, 4, 4) }} %</td>
+                            <td>${{ valueFormatter(coin.balanceUSD, 4, 4) }}</td>
+                            <td>{{ valueFormatter((coin.balanceUSD / item.liquidityUsd) * 100, 4, 4) }} %</td>
                           </tr>
                         </tbody>
                       </template>
