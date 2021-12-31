@@ -1,0 +1,39 @@
+query AaveReservesGQL {
+  reserves {
+    underlyingAsset
+    name
+    symbol
+    decimals
+    price {
+      priceInEth
+    }
+    liquidityRate
+    stableBorrowRate
+    variableBorrowRate
+
+    aEmissionPerSecond
+    vEmissionPerSecond
+    sEmissionPerSecond
+
+    totalATokenSupply
+    totalCurrentVariableDebt
+  }
+}
+
+query AaveReserves {
+  reserves {
+    name
+    underlyingAsset
+
+    liquidityRate
+    stableBorrowRate
+    variableBorrowRate
+
+    aEmissionPerSecond
+    vEmissionPerSecond
+    sEmissionPerSecond
+
+    totalATokenSupply
+    totalCurrentVariableDebt
+  }
+}

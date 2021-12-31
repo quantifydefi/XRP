@@ -109,6 +109,7 @@ export type Chain = {
 
 export type CurvePool = {
   __typename?: 'CurvePool';
+  adminFee: Scalars['String'];
   assetType: Scalars['String'];
   baseAPY: Scalars['Float'];
   coins: Array<CurveCoin>;
@@ -121,6 +122,7 @@ export type CurvePool = {
   rewards: CurveRewards;
   swapAddress: Scalars['String'];
   totalBalance: Scalars['Float'];
+  virtualPrice: Scalars['String'];
 };
 
 export type CurveCoin = {
@@ -443,7 +445,7 @@ export type AllProtocolsGqlQuery = { __typename?: 'Query', protocols: Array<{ __
 export type CurvePoolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null | undefined }> }> };
+export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, adminFee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null | undefined }> }> };
 
 export type BalancesGqlQueryVariables = Exact<{
   chainIds: Array<Scalars['Int']> | Scalars['Int'];

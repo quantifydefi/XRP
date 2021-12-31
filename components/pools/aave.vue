@@ -1,17 +1,18 @@
 <template>
   <v-card tile outlined height="100%">
-    <v-skeleton-loader v-if="isPoolsLoading" type="table-heading,table-tbody,table-tbody" />
+    <!--    {{ aaveMainNetPools }}-->
+    <!--    <v-skeleton-loader v-if="isPoolsLoading" type="table-heading,table-tbody,table-tbody" />-->
     <v-data-table
-      v-if="!isPoolsLoading && curvePools.length"
+      v-if="aaveMainNetPools.length"
       id="curve-pools-grid"
-      :headers="cols"
-      :items="curvePools"
+      :headers="config.cols"
+      :items="aaveMainNetPools"
       :sort-desc="[true]"
       height="100%"
       :items-per-page="10"
       class="elevation-0"
     >
-      <template #[`item.pool`]="{ item }">
+      <!--      <template #[`item.pool`]="{ item }">
         <div class="my-1">
           <v-row no-gutters align="center">
             <v-col cols="4">
@@ -26,7 +27,7 @@
             <v-col>
               <v-row no-gutters>
                 <v-col>
-                  <span class="text-capitalize font-weight-bold pink--text">{{ item.name.toUpperCase() }}</span>
+                  <span class="text-capitalize font-weight-bold pink&#45;&#45;text">{{ item.name.toUpperCase() }}</span>
                   <v-chip v-if="item.assetType.length > 0" x-small label class="text-caption ml-1" color="transparent">
                     {{ item.assetType }}
                   </v-chip>
@@ -169,7 +170,7 @@
 
       <template #[`item.action`]="{ item }">
         <v-btn tile depressed small @click="invest(item.id)">Invest</v-btn>
-      </template>
+      </template>-->
     </v-data-table>
   </v-card>
 </template>
@@ -178,19 +179,18 @@
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
-import { CurvePools } from '~/models/pool'
+import { AavePools } from '~/models/pool'
 
 @Component({
-  name: 'CurvePool',
+  name: 'AavePool',
   computed: {
     ...mapState({
-      currentChain: (state: any) => state.configs.currentChain,
       ui: (state: any) => state.ui,
       theme: (state: any) => state.ui.theme,
     }),
   },
 })
-export default class CurvePool extends mixins(CurvePools) {}
+export default class AavePool extends mixins(AavePools) {}
 </script>
 
 <style scoped></style>

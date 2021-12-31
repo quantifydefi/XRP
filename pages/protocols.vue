@@ -224,6 +224,7 @@
         <v-row v-if="config.currentSelection === 'pool'" justify="center">
           <v-col cols="12">
             <curve-pools v-if="currentProtocolId === '3'" />
+            <aave-pool v-if="currentProtocolId === '111'" />
           </v-col>
         </v-row>
       </v-col>
@@ -239,10 +240,11 @@ import { Protocols } from '~/models/protocols'
 import BalancesGrid from '~/components/portfolio/grids/BalancesGrid.vue'
 import { Helper } from '~/models/helper'
 import CurvePools from '~/components/pools/curve.vue'
+import AavePool from '~/components/pools/aave.vue'
 
 @Component({
   name: 'Protocol',
-  components: { CurvePools, BalancesGrid },
+  components: { AavePool, CurvePools, BalancesGrid },
   computed: {
     ...mapState({
       currentChain: (state: any) => state.configs.currentChain,

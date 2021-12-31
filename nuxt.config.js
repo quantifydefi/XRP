@@ -76,10 +76,15 @@ export default {
       default: {
         httpEndpoint: config[runEnv].BASE_GRAPHQL_SERVER,
       },
-      aaveV2: {
-        httpEndpoint:
-          'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
-        // 'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
+      aaveV2Mainnet: {
+        // httpEndpoint: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
+        httpEndpoint: 'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
+      },
+      aaveV2Kovan: {
+        httpEndpoint: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2-kovan',
+      },
+      curve: {
+        httpEndpoint: 'https://api.thegraph.com/subgraphs/name/curvefi/curve',
       },
     },
   },
@@ -102,9 +107,7 @@ export default {
     },
     routes: async () => {
       axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false })
-      const { data } = await axios.get(
-        `${config[runEnv].BASE_URL}/api/defi/heatmap/uniswap-heatmap?num_of_coins=100`
-      )
+      const { data } = await axios.get(`${config[runEnv].BASE_URL}/api/defi/heatmap/uniswap-heatmap?num_of_coins=100`)
       return data.data.map((v) => `/token/${v.pool_id}`)
     },
   },
@@ -134,7 +137,6 @@ export default {
       // dark: true,
       themes: {
         dark: {
-
           primary: '#536af6',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
