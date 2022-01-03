@@ -13,6 +13,7 @@ declare module '*/pools.query.graphql' {
   const defaultDocument: DocumentNode;
   export const AllProtocolsGQL: DocumentNode;
 export const CurvePoolsGQL: DocumentNode;
+export const UsdPriceGQL: DocumentNode;
 
   export default defaultDocument;
 }

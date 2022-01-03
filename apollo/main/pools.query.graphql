@@ -30,3 +30,8 @@ query CurvePoolsGQL{
     coins{balance, balanceUSD, token{symbol, name, usdPrice}}
   }
 }
+
+
+query UsdPriceGQL{
+  recentPrices
+}

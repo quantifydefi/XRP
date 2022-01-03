@@ -1,25 +1,25 @@
 <template>
   <v-card tile outlined height="100%">
-    <!--    {{ aaveMainNetPools }}-->
-    <!--    <v-skeleton-loader v-if="isPoolsLoading" type="table-heading,table-tbody,table-tbody" />-->
+    <v-skeleton-loader v-if="isPoolsLoading" type="table-heading,table-tbody,table-tbody" />
     <v-data-table
       v-if="aaveMainNetPools.length"
       id="curve-pools-grid"
       :headers="config.cols"
-      :items="aaveMainNetPools"
+      :items="aaveMainPoolsFiltered"
+      :sort-by="['usdBalance']"
       :sort-desc="[true]"
       height="100%"
       :items-per-page="10"
       class="elevation-0"
     >
-      <!--      <template #[`item.pool`]="{ item }">
+      <template #[`item.symbol`]="{ item }">
         <div class="my-1">
           <v-row no-gutters align="center">
-            <v-col cols="4">
-              <v-avatar v-for="(coin, i) in item.coins" :key="i" size="24" class="mr-2">
+            <v-col cols="3">
+              <v-avatar size="24" class="mr-2">
                 <img
                   :alt="`${item.symbol} logo`"
-                  :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${coin.token.symbol.toLowerCase()}.png`"
+                  :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.symbol.toLowerCase()}.png`"
                   @error="setAltImg"
                 />
               </v-avatar>
@@ -27,54 +27,12 @@
             <v-col>
               <v-row no-gutters>
                 <v-col>
-                  <span class="text-capitalize font-weight-bold pink&#45;&#45;text">{{ item.name.toUpperCase() }}</span>
-                  <v-chip v-if="item.assetType.length > 0" x-small label class="text-caption ml-1" color="transparent">
-                    {{ item.assetType }}
-                  </v-chip>
+                  <span class="text-capitalize font-weight-bold pink--text">{{ item.name }}</span>
                 </v-col>
               </v-row>
               <v-row no-gutters>
                 <v-col>
-                  <span v-for="(coin, i) in item.coins" :key="i" :class="[ui[theme].innerCardLighten, 'text-caption']">
-                    {{ coin.token.symbol }} <span v-if="i < item.coins.length - 1" class="mx-1"> |</span>
-                  </span>
-
-                  <v-tooltip bottom>
-                    <template #activator="{ on, attrs }">
-                      <v-btn icon color="grey" x-small v-bind="attrs" v-on="on">
-                        <v-icon size="14">mdi-information-outline</v-icon>
-                      </v-btn>
-                    </template>
-
-                    <v-simple-table dense>
-                      <template #default>
-                        <thead>
-                          <tr>
-                            <th>Symbol</th>
-                            <th>Token Balances</th>
-                            <th>USD Price</th>
-                            <th>USD Balance</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(coin, i) in item.coins" :key="i">
-                            <td>{{ coin.token.symbol }}</td>
-                            <td>{{ valueFormatter(coin.balance) }}</td>
-                            <td>{{ valueFormatter(coin.token.usdPrice, 3, 3) }}</td>
-                            <td>${{ valueFormatter(coin.balanceUSD, 4, 4) }}</td>
-                            <td>{{ valueFormatter((coin.balanceUSD / item.liquidityUsd) * 100, 4, 4) }} %</td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-
-                    <div class="mt-2 ml-4">
-                      <span class="font-weight-bold">Total Balance: {{ valueFormatter(item.totalBalance) }}</span>
-                    </div>
-                    <div class="ml-4">
-                      <span class="font-weight-bold">Liquidity: ${{ valueFormatter(item.liquidityUsd) }}</span>
-                    </div>
-                  </v-tooltip>
+                  <span :class="[ui[theme].innerCardLighten, 'text-caption']"> {{ item.symbol }} </span>
                 </v-col>
               </v-row>
             </v-col>
@@ -82,95 +40,45 @@
         </div>
       </template>
 
-      <template #[`item.baseAPY`]="{ item }">
-        <span :class="ui[theme].innerCardLighten">{{ item.baseAPY.toFixed(2) }} % </span>
+      <template #[`item.tokenBalance`]="{ item }">
+        <span :class="[ui[theme].innerCardLighten]">{{ valueFormatter(item.tokenBalance / 10 ** 6, 4, 2) }} M</span>
       </template>
 
-      <template #[`item.rewards`]="{ item }">
-        <div :class="ui[theme].innerCardLighten">
-          <span>{{ item.rewards.rewardPtc.toFixed(2) }} % </span>
-          <span class="mx-1"> - </span>
-          <span>{{ item.rewards.maxRewardPtc.toFixed(2) }} % </span>
-        </div>
+      <template #[`item.usdBalance`]="{ item }">
+        <span>${{ (item.usdBalance / 10 ** 6).toFixed(2) }} M</span>
       </template>
 
-      <template #[`item.liquidityUsd`]="{ item }">
-        <span :class="ui[theme].innerCardLighten">${{ valueFormatter(item.liquidityUsd / 10 ** 6) }} M</span>
-      </template>
-
-      <template #[`item.dailyVolume`]="{ item }">
+      <template #[`item.availableBalance`]>
         <div>
-          <span>${{ valueFormatter(item.dailyVolume / 10 ** 6) }} M</span>
+          <div class="subtitle-2">0</div>
+          <div class="text-no-wrap">
+            0.00
+            <span class="caption">USD</span>
+          </div>
         </div>
       </template>
 
-      <template #[`item.totalBalance`]="{ item }">
-        <div :class="ui[theme].innerCardLighten">
-          <span>{{ valueFormatter(item.totalBalance / 10 ** 6) }} M</span>
-        </div>
+      <template #[`item.depositAPY`]="{ item }">
+        <span :class="[ui[theme].innerCardLighten]">{{ (item.depositAPY * 100).toFixed(2) }} %</span>
       </template>
 
-      <template #[`item.fee`]="{ item }">
-        <v-row align="center">
-          <v-col>
-            <span> {{ (parseFloat(item.fee) * 100).toFixed(2) }}% </span>
-
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn icon color="grey" v-bind="attrs" x-small class="mb-1 ml-1" v-on="on">
-                  <v-icon>mdi-information-outline</v-icon>
-                </v-btn>
-              </template>
-
-              <div class="mt-2 ml-4">
-                <span class="font-weight-bold">
-                  Admin Fee: {{ (parseFloat(item.adminFee) * 100).toFixed(2) }}% of
-                  {{ (parseFloat(item.fee) * 100).toFixed(2) }}%
-                </span>
-              </div>
-            </v-tooltip>
-          </v-col>
-        </v-row>
+      <template #[`item.variableBorrowAPY`]="{ item }">
+        <span :class="[ui[theme].innerCardLighten]">{{ (item.variableBorrowAPY * 100).toFixed(2) }} %</span>
       </template>
 
-      <template #[`item.link`]="{ item }">
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              v-bind="attrs"
-              x-small
-              class="mb-1 ml-1"
-              icon
-              v-on="on"
-              @click="copyAddressToClipboard(item.id)"
-            >
-              <v-icon size="18">mdi-content-copy</v-icon>
-            </v-btn>
-          </template>
-          Copy Pool Address
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              v-bind="attrs"
-              x-small
-              class="mb-1 ml-1"
-              icon
-              v-on="on"
-              @click="navigateToExplorer(item.id)"
-            >
-              <v-icon size="18">mdi-open-in-new</v-icon>
-            </v-btn>
-          </template>
-          Open Pool in Etherscan
-        </v-tooltip>
+      <template #[`item.stableBorrowAPY`]="{ item }">
+        <span :class="[ui[theme].innerCardLighten]">{{ (item.stableBorrowAPY * 100).toFixed(2) }} %</span>
       </template>
 
-      <template #[`item.action`]="{ item }">
-        <v-btn tile depressed small @click="invest(item.id)">Invest</v-btn>
-      </template>-->
+      <template #[`item.totalBorrowBalance`]="{ item }">
+        <span :class="[ui[theme].innerCardLighten]">
+          {{ valueFormatter(item.totalBorrowBalance / 10 ** 6, 3, 3) }} M
+        </span>
+      </template>
+
+      <template #[`item.totalBorrowBalanceUsd`]="{ item }">
+        <span>${{ (item.totalBorrowBalanceUsd / 10 ** 6).toFixed(2) }} M</span>
+      </template>
     </v-data-table>
   </v-card>
 </template>

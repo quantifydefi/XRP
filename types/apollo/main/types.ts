@@ -27,6 +27,8 @@ export type Query = {
   protocol: Protocol;
   /** Supported Protocols */
   protocols: Array<Maybe<Protocol>>;
+  /** Recent Usd Prices  */
+  recentPrices: Scalars['Map'];
   /**
    * If tickers (a comma separated list of tickers
    *     is present), only return the spot prices for these tokens.
@@ -446,6 +448,11 @@ export type CurvePoolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, adminFee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null | undefined }> }> };
+
+export type UsdPriceGqlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsdPriceGqlQuery = { __typename?: 'Query', recentPrices: any };
 
 export type BalancesGqlQueryVariables = Exact<{
   chainIds: Array<Scalars['Int']> | Scalars['Int'];

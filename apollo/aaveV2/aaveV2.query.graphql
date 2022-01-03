@@ -4,6 +4,7 @@ query AaveReservesGQL {
     name
     symbol
     decimals
+    totalLiquidity
     price {
       priceInEth
     }
@@ -17,6 +18,7 @@ query AaveReservesGQL {
 
     totalATokenSupply
     totalCurrentVariableDebt
+    totalPrincipalStableDebt
   }
 }
 

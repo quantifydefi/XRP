@@ -1,10 +1,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
-import { CurvePoolsGQL } from '~/apollo/main/pools.query.graphql'
+import { CurvePoolsGQL, UsdPriceGQL } from '~/apollo/main/pools.query.graphql'
 import { CurvePool } from '~/types/apollo/main/types'
 import { Helper } from '~/models/helper'
 import { PriceOracleAsset, Reserve } from '~/types/apollo/aaveV2/types'
 import { AaveReservesGQL } from '~/apollo/aaveV2/aaveV2.query.graphql'
+import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 
 @Component({
   name: 'CurvePools',
@@ -192,9 +193,9 @@ class AavePool implements Reserve {
   totalATokenSupply!: string
   totalCurrentVariableDebt!: string
   totalDeposits!: number
-  totalLiquidity!: number
+  totalLiquidity!: string
   totalLiquidityAsCollateral!: number
-  totalPrincipalStableDebt!: number
+  totalPrincipalStableDebt!: string
   totalScaledVariableDebt!: number
   underlyingAsset!: string
   usageAsCollateralEnabled!: boolean
@@ -209,6 +210,41 @@ class AavePool implements Reserve {
   variableBorrowRate!: string
   variableRateSlope1!: number
   variableRateSlope2!: number
+  usdPrice: number = 0
+
+  get depositAPY(): number {
+    const depositAPR: number = parseFloat(this.liquidityRate) / RAY_UNITS
+    return (1 + depositAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  }
+
+  get variableBorrowAPY(): number {
+    const variableBorrowAPR: number = parseFloat(this.variableBorrowRate) / RAY_UNITS
+    return (1 + variableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  }
+
+  get stableBorrowAPY(): number {
+    const stableBorrowAPR: number = parseFloat(this.stableBorrowRate) / RAY_UNITS
+    return (1 + stableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  }
+
+  get tokenBalance(): number {
+    return parseFloat(this.totalLiquidity) / 10 ** this.decimals
+  }
+
+  get usdBalance(): number {
+    return this.tokenBalance * this.usdPrice
+  }
+
+  get totalBorrowBalance() {
+    return (
+      parseFloat(this.totalCurrentVariableDebt) / 10 ** this.decimals +
+      parseFloat(this.totalPrincipalStableDebt) / 10 ** this.decimals
+    )
+  }
+
+  get totalBorrowBalanceUsd() {
+    return this.totalBorrowBalance * this.usdPrice
+  }
 }
 
 @Component({
@@ -223,18 +259,23 @@ class AavePool implements Reserve {
         this.isPoolsLoading = loading
       },
       update: ({ reserves }) => {
-        const res: AavePool[] = plainToClass(AavePool, reserves as AavePool[])
-        console.log(res)
-        return res
+        return plainToClass(AavePool, reserves as AavePool[])
       },
       watchLoading(isLoading) {
         this.loading = isLoading
       },
     },
+    recentPrices: {
+      prefetch: false,
+      query: UsdPriceGQL,
+      deep: false,
+    },
   },
 })
 export class AavePools extends Vue {
   aaveMainNetPools: AavePool[] = []
+  recentPrices: { [k: string]: number } = {}
+
   config = {
     cols: [
       {
@@ -242,13 +283,36 @@ export class AavePools extends Vue {
         align: 'left',
         class: 'text-no-wrap justify-content-between',
         value: 'symbol',
+        width: '20%',
       },
       {
-        text: 'Balance',
+        text: 'Token Balance',
+        align: 'left',
+        class: 'text-no-wrap justify-content-between',
+        value: 'tokenBalance',
+      },
+
+      {
+        text: 'Balance, USD',
         align: 'left',
         class: 'text-no-wrap',
-        value: 'availableBalance',
+        value: 'usdBalance',
       },
+
+      {
+        text: 'Borrow Balance',
+        align: 'left',
+        class: 'text-no-wrap',
+        value: 'totalBorrowBalance',
+      },
+
+      {
+        text: 'Borrow Balance, USD',
+        align: 'left',
+        class: 'text-no-wrap',
+        value: 'totalBorrowBalanceUsd',
+      },
+
       {
         text: 'Supply APY',
         align: 'center',
@@ -267,6 +331,7 @@ export class AavePools extends Vue {
         class: 'text-no-wrap',
         value: 'stableBorrowAPY',
       },
+
       {
         text: '',
         align: 'center',
@@ -278,6 +343,19 @@ export class AavePools extends Vue {
   }
 
   isPoolsLoading = true
+
+  get aaveMainPoolsFiltered() {
+    const poolFilter = this.aaveMainNetPools.filter((elem) => {
+      return !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp'))
+    })
+    poolFilter.forEach((elem: AavePool) => {
+      elem.usdPrice = this.recentPrices[elem.symbol] || 0
+      elem.name = elem.symbol === 'WETH' ? 'Ethereum' : elem.name
+      elem.symbol = elem.symbol === 'WETH' ? 'ETH' : elem.symbol
+    })
+
+    return poolFilter
+  }
 
   valueFormatter(value: number, maximumSignificantDigits: number = 6, minimumSignificantDigits: number = 6): string {
     return new Intl.NumberFormat('en', {

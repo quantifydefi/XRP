@@ -258,6 +258,8 @@ type Query {
   protocol(protocolId: String!): Protocol!
   "Supported Protocols"
   protocols: [Protocol]!
+  "Recent Usd Prices "
+  recentPrices: Map!
   """
 
   If tickers (a comma separated list of tickers

@@ -7248,7 +7248,7 @@ export type SubscriptionWethreservesArgs = {
 export type AaveReservesGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AaveReservesGqlQuery = { __typename?: 'Query', reserves: Array<{ __typename?: 'Reserve', underlyingAsset: any, name: string, symbol: string, decimals: number, liquidityRate: any, stableBorrowRate: any, variableBorrowRate: any, aEmissionPerSecond: any, vEmissionPerSecond: any, sEmissionPerSecond: any, totalATokenSupply: any, totalCurrentVariableDebt: any, price: { __typename?: 'PriceOracleAsset', priceInEth: any } }> };
+export type AaveReservesGqlQuery = { __typename?: 'Query', reserves: Array<{ __typename?: 'Reserve', underlyingAsset: any, name: string, symbol: string, decimals: number, totalLiquidity: any, liquidityRate: any, stableBorrowRate: any, variableBorrowRate: any, aEmissionPerSecond: any, vEmissionPerSecond: any, sEmissionPerSecond: any, totalATokenSupply: any, totalCurrentVariableDebt: any, totalPrincipalStableDebt: any, price: { __typename?: 'PriceOracleAsset', priceInEth: any } }> };
 
 export type AaveReservesQueryVariables = Exact<{ [key: string]: never; }>;
 
