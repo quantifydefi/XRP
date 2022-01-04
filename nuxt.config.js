@@ -35,7 +35,7 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: ['@/assets/css/global.css'],
+  css: [],
 
   plugins: [
     '~/plugins/initConfigs.client.ts', // only in client side

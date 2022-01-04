@@ -136,7 +136,7 @@ class AavePool implements Reserve {
   aIncentivesLastUpdateTimestamp!: number
   aToken!: any
   aTokenIncentivesIndex!: number
-  availableLiquidity!: number
+  availableLiquidity!: string
   averageStableRate!: number
   baseLTVasCollateral!: number
   baseVariableBorrowRate!: number
@@ -201,7 +201,7 @@ class AavePool implements Reserve {
   usageAsCollateralEnabled!: boolean
   usageAsCollateralHistory!: Array<any>
   userReserves!: Array<any>
-  utilizationRate!: number
+  utilizationRate!: string
   vEmissionPerSecond!: string
   vIncentivesLastUpdateTimestamp!: number
   vToken!: any
@@ -212,19 +212,28 @@ class AavePool implements Reserve {
   variableRateSlope2!: number
   usdPrice: number = 0
 
-  get depositAPY(): number {
-    const depositAPR: number = parseFloat(this.liquidityRate) / RAY_UNITS
-    return (1 + depositAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  get depositAPR(): number {
+    return parseFloat(this.liquidityRate) / RAY_UNITS
   }
 
-  get variableBorrowAPY(): number {
-    const variableBorrowAPR: number = parseFloat(this.variableBorrowRate) / RAY_UNITS
-    return (1 + variableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  get depositAPY(): number {
+    return (1 + this.depositAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  }
+
+  get stableBorrowAPR(): number {
+    return parseFloat(this.stableBorrowRate) / RAY_UNITS
   }
 
   get stableBorrowAPY(): number {
-    const stableBorrowAPR: number = parseFloat(this.stableBorrowRate) / RAY_UNITS
-    return (1 + stableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+    return (1 + this.stableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+  }
+
+  get variableBorrowAPR(): number {
+    return parseFloat(this.variableBorrowRate) / RAY_UNITS
+  }
+
+  get variableBorrowAPY(): number {
+    return (1 + this.variableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
   }
 
   get tokenBalance(): number {
@@ -244,6 +253,22 @@ class AavePool implements Reserve {
 
   get totalBorrowBalanceUsd() {
     return this.totalBorrowBalance * this.usdPrice
+  }
+
+  get availableLiquidityBalance() {
+    return parseFloat(this.availableLiquidity) / 10 ** this.decimals
+  }
+
+  get availableLiquidityUsd() {
+    return this.availableLiquidityBalance * this.usdPrice
+  }
+
+  get reserveSizeUsd() {
+    return this.totalBorrowBalanceUsd + this.availableLiquidityUsd
+  }
+
+  get utilizationRatePtc() {
+    return parseFloat(this.utilizationRate) * 100
   }
 }
 
@@ -281,9 +306,9 @@ export class AavePools extends Vue {
       {
         text: 'Assets',
         align: 'left',
-        class: 'text-no-wrap justify-content-between',
+        class: 'text-no-wrap',
         value: 'symbol',
-        width: '20%',
+        width: '250',
       },
       {
         text: 'Token Balance',
@@ -314,7 +339,7 @@ export class AavePools extends Vue {
       },
 
       {
-        text: 'Supply APY',
+        text: 'Deposit APY',
         align: 'center',
         class: 'text-no-wrap',
         value: 'depositAPY',
@@ -334,10 +359,11 @@ export class AavePools extends Vue {
 
       {
         text: '',
-        align: 'center',
-        class: 'text-no-wrap',
-        value: 'actions',
+        align: 'right',
+        value: 'link',
         sortable: false,
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
     ],
   }

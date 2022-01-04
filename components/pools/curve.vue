@@ -38,7 +38,7 @@
                     {{ coin.token.symbol }} <span v-if="i < item.coins.length - 1" class="mx-1"> |</span>
                   </span>
 
-                  <v-tooltip bottom>
+                  <v-tooltip right color="black">
                     <template #activator="{ on, attrs }">
                       <v-btn icon color="grey" x-small v-bind="attrs" v-on="on">
                         <v-icon size="14">mdi-information-outline</v-icon>

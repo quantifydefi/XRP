@@ -1,11 +1,13 @@
 query AaveReservesGQL {
   reserves {
+    id
     underlyingAsset
     name
     symbol
     decimals
     totalLiquidity
     price {
+      id
       priceInEth
     }
     liquidityRate
@@ -15,7 +17,8 @@ query AaveReservesGQL {
     aEmissionPerSecond
     vEmissionPerSecond
     sEmissionPerSecond
-
+    availableLiquidity
+    utilizationRate
     totalATokenSupply
     totalCurrentVariableDebt
     totalPrincipalStableDebt
