@@ -13,7 +13,6 @@ query AaveReservesGQL {
     liquidityRate
     stableBorrowRate
     variableBorrowRate
-
     aEmissionPerSecond
     vEmissionPerSecond
     sEmissionPerSecond

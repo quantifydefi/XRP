@@ -5,6 +5,32 @@ schema {
   mutation: Mutation
 }
 
+type AavePool {
+  aEmissionPerSecond: String!
+  availableLiquidity: String!
+  decimals: Int!
+  id: String!
+  liquidityRate: String!
+  name: String!
+  price: AavePoolPrice!
+  sEmissionPerSecond: String!
+  stableBorrowRate: String!
+  symbol: String!
+  totalATokenSupply: String!
+  totalCurrentVariableDebt: String!
+  totalLiquidity: String!
+  totalPrincipalStableDebt: String!
+  underlyingAsset: String!
+  utilizationRate: String!
+  vEmissionPerSecond: String!
+  variableBorrowRate: String!
+}
+
+type AavePoolPrice {
+  id: String!
+  priceInEth: String!
+}
+
 """
 
 Covalent Get Balances for address
@@ -246,6 +272,8 @@ type Protocol {
 }
 
 type Query {
+  "Aave Pool "
+  aavePools(chainId: Int!): [AavePool!]!
   "Covalent Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chains: [Chain!]!

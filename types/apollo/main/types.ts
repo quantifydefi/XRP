@@ -15,6 +15,8 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Aave Pool  */
+  aavePools: Array<AavePool>;
   /** Covalent Balances */
   balances: Array<Balance>;
   chains: Array<Chain>;
@@ -39,6 +41,11 @@ export type Query = {
 };
 
 
+export type QueryAavePoolsArgs = {
+  chainId: Scalars['Int'];
+};
+
+
 export type QueryBalancesArgs = {
   address: Scalars['String'];
   chainIds: Array<Scalars['Int']>;
@@ -54,6 +61,34 @@ export type QuerySpotPriceArgs = {
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
   tickers: Scalars['String'];
+};
+
+export type AavePool = {
+  __typename?: 'AavePool';
+  aEmissionPerSecond: Scalars['String'];
+  availableLiquidity: Scalars['String'];
+  decimals: Scalars['Int'];
+  id: Scalars['String'];
+  liquidityRate: Scalars['String'];
+  name: Scalars['String'];
+  price: AavePoolPrice;
+  sEmissionPerSecond: Scalars['String'];
+  stableBorrowRate: Scalars['String'];
+  symbol: Scalars['String'];
+  totalATokenSupply: Scalars['String'];
+  totalCurrentVariableDebt: Scalars['String'];
+  totalLiquidity: Scalars['String'];
+  totalPrincipalStableDebt: Scalars['String'];
+  underlyingAsset: Scalars['String'];
+  utilizationRate: Scalars['String'];
+  variableBorrowRate: Scalars['String'];
+  vEmissionPerSecond: Scalars['String'];
+};
+
+export type AavePoolPrice = {
+  __typename?: 'AavePoolPrice';
+  id: Scalars['String'];
+  priceInEth: Scalars['String'];
 };
 
 /**
@@ -448,6 +483,13 @@ export type CurvePoolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, adminFee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null | undefined }> }> };
+
+export type AavePoolGqlQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+}>;
+
+
+export type AavePoolGqlQuery = { __typename?: 'Query', aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: string, liquidityRate: string, stableBorrowRate: string, variableBorrowRate: string, aEmissionPerSecond: string, vEmissionPerSecond: string, sEmissionPerSecond: string, availableLiquidity: string, utilizationRate: string, totalATokenSupply: string, totalCurrentVariableDebt: string, totalPrincipalStableDebt: string, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: string } }> };
 
 export type UsdPriceGqlQueryVariables = Exact<{ [key: string]: never; }>;
 

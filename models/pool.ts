@@ -1,10 +1,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
-import { CurvePoolsGQL, UsdPriceGQL } from '~/apollo/main/pools.query.graphql'
-import { CurvePool } from '~/types/apollo/main/types'
+import { mapState } from 'vuex'
+import { CurvePoolsGQL, UsdPriceGQL, AavePoolGQL } from '~/apollo/main/pools.query.graphql'
+import { CurvePool, AavePool, AavePoolPrice } from '~/types/apollo/main/types'
 import { Helper } from '~/models/helper'
-import { PriceOracleAsset, Reserve } from '~/types/apollo/aaveV2/types'
-import { AaveReservesGQL } from '~/apollo/aaveV2/aaveV2.query.graphql'
+// import { PriceOracleAsset, Reserve } from '~/types/apollo/aaveV2/types'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 
 @Component({
@@ -131,85 +131,25 @@ export class CurvePools extends Vue {
   }
 }
 
-class AavePool implements Reserve {
+class AavePoolCl implements AavePool {
   aEmissionPerSecond!: string
-  aIncentivesLastUpdateTimestamp!: number
-  aToken!: any
-  aTokenIncentivesIndex!: number
   availableLiquidity!: string
-  averageStableRate!: number
-  baseLTVasCollateral!: number
-  baseVariableBorrowRate!: number
-  borrowHistory!: Array<any>
-  borrowingEnabled!: boolean
-  configurationHistory!: Array<any>
   decimals!: number
-  depositHistory!: Array<any>
-  deposits!: Array<any>
-  flashLoanHistory!: Array<any>
   id!: string
-  isActive!: boolean
-  isFrozen!: boolean
-  lastUpdateTimestamp!: number
-  lifetimeBorrows!: number
-  lifetimeCurrentVariableDebt!: number
-  lifetimeDepositorsInterestEarned!: number
-  lifetimeFlashLoanPremium!: number
-  lifetimeFlashLoans!: number
-  lifetimeLiquidated!: number
-  lifetimeLiquidity!: number
-  lifetimePrincipalStableDebt!: number
-  lifetimeRepayments!: number
-  lifetimeReserveFactorAccrued!: number
-  lifetimeScaledVariableDebt!: number
-  lifetimeWithdrawals!: number
-  liquidationCallHistory!: Array<any>
-  liquidityIndex!: number
   liquidityRate!: string
   name!: string
-  optimalUtilisationRate!: number
-  originationFeeLiquidationHistory!: Array<any>
-  paramsHistory!: Array<any>
-  pool!: any
-  price!: PriceOracleAsset
-  rebalanceStableBorrowRateHistory!: Array<any>
-  redeemUnderlyingHistory!: Array<any>
-  repayHistory!: Array<any>
-  reserveFactor!: number
-  reserveInterestRateStrategy!: any
-  reserveLiquidationBonus!: number
-  reserveLiquidationThreshold!: number
+  price!: AavePoolPrice
   sEmissionPerSecond!: string
-  sIncentivesLastUpdateTimestamp!: number
-  sToken!: any
-  sTokenIncentivesIndex!: number
   stableBorrowRate!: string
-  stableBorrowRateEnabled!: boolean
-  stableDebtLastUpdateTimestamp!: number
-  stableRateSlope1!: number
-  stableRateSlope2!: number
-  swapHistory!: Array<any>
   symbol!: string
   totalATokenSupply!: string
   totalCurrentVariableDebt!: string
-  totalDeposits!: number
   totalLiquidity!: string
-  totalLiquidityAsCollateral!: number
   totalPrincipalStableDebt!: string
-  totalScaledVariableDebt!: number
   underlyingAsset!: string
-  usageAsCollateralEnabled!: boolean
-  usageAsCollateralHistory!: Array<any>
-  userReserves!: Array<any>
   utilizationRate!: string
   vEmissionPerSecond!: string
-  vIncentivesLastUpdateTimestamp!: number
-  vToken!: any
-  vTokenIncentivesIndex!: number
-  variableBorrowIndex!: number
   variableBorrowRate!: string
-  variableRateSlope1!: number
-  variableRateSlope2!: number
   usdPrice: number = 0
 
   get depositAPR(): number {
@@ -274,17 +214,26 @@ class AavePool implements Reserve {
 
 @Component({
   name: 'AavePools',
+  computed: {
+    ...mapState({
+      chainId: (state: any) => state.configs.currentChain.chainId,
+    }),
+  },
   apollo: {
-    aaveMainNetPools: {
-      client: 'aaveV2Mainnet',
+    aavePools: {
       prefetch: false,
-      query: AaveReservesGQL,
+      query: AavePoolGQL,
       deep: false,
+      variables() {
+        return {
+          chainId: this.chainId,
+        }
+      },
       result({ loading }) {
         this.isPoolsLoading = loading
       },
-      update: ({ reserves }) => {
-        return plainToClass(AavePool, reserves as AavePool[])
+      update: ({ aavePools }) => {
+        return plainToClass(AavePoolCl, aavePools as AavePool[])
       },
       watchLoading(isLoading) {
         this.loading = isLoading
@@ -298,7 +247,7 @@ class AavePool implements Reserve {
   },
 })
 export class AavePools extends Vue {
-  aaveMainNetPools: AavePool[] = []
+  aavePools: AavePoolCl[] = []
   recentPrices: { [k: string]: number } = {}
 
   config = {
@@ -306,55 +255,63 @@ export class AavePools extends Vue {
       {
         text: 'Assets',
         align: 'left',
-        class: 'text-no-wrap',
         value: 'symbol',
         width: '250',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
       {
         text: 'Token Balance',
         align: 'left',
-        class: 'text-no-wrap justify-content-between',
         value: 'tokenBalance',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
 
       {
         text: 'Balance, USD',
         align: 'left',
-        class: 'text-no-wrap',
         value: 'usdBalance',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
 
       {
         text: 'Borrow Balance',
         align: 'left',
-        class: 'text-no-wrap',
         value: 'totalBorrowBalance',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
 
       {
         text: 'Borrow Balance, USD',
         align: 'left',
-        class: 'text-no-wrap',
         value: 'totalBorrowBalanceUsd',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
 
       {
         text: 'Deposit APY',
         align: 'center',
-        class: 'text-no-wrap',
         value: 'depositAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
       {
         text: 'Variable Borrow APY',
         align: 'center',
-        class: 'text-no-wrap',
         value: 'variableBorrowAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
       {
         text: 'Stable Borrow APY',
         align: 'center',
-        class: 'text-no-wrap',
         value: 'stableBorrowAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
       },
 
       {
@@ -371,10 +328,10 @@ export class AavePools extends Vue {
   isPoolsLoading = true
 
   get aaveMainPoolsFiltered() {
-    const poolFilter = this.aaveMainNetPools.filter((elem) => {
+    const poolFilter = this.aavePools.filter((elem: AavePoolCl) => {
       return !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp'))
     })
-    poolFilter.forEach((elem: AavePool) => {
+    poolFilter.forEach((elem: AavePoolCl) => {
       elem.usdPrice = this.recentPrices[elem.symbol] || 0
       elem.name = elem.symbol === 'WETH' ? 'Ethereum' : elem.name
       elem.symbol = elem.symbol === 'WETH' ? 'ETH' : elem.symbol

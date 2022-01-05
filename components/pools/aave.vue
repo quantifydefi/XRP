@@ -2,14 +2,14 @@
   <v-card tile outlined height="100%">
     <v-skeleton-loader v-if="isPoolsLoading" type="table-tbody,table-tbody" />
     <v-data-table
-      v-if="aaveMainNetPools.length"
+      v-if="!isPoolsLoading"
       id="curve-pools-grid"
       :headers="config.cols"
       :items="aaveMainPoolsFiltered"
       :sort-by="['usdBalance']"
       :sort-desc="[true]"
       height="100%"
-      :items-per-page="10"
+      :items-per-page="20"
       class="elevation-0"
     >
       <template #[`item.symbol`]="{ item }">

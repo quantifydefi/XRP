@@ -31,6 +31,29 @@ query CurvePoolsGQL{
   }
 }
 
+query AavePoolGQL($chainId: Int!){
+  aavePools(chainId: $chainId){
+    id
+    underlyingAsset
+    name
+    symbol
+    decimals
+    totalLiquidity
+    price{id,priceInEth}
+    liquidityRate
+    stableBorrowRate
+    variableBorrowRate
+    aEmissionPerSecond
+    vEmissionPerSecond
+    sEmissionPerSecond
+    availableLiquidity
+    utilizationRate
+    totalATokenSupply
+    totalCurrentVariableDebt
+    totalPrincipalStableDebt
+  }
+}
+
 
 query UsdPriceGQL{
   recentPrices
