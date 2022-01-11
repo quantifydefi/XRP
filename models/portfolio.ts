@@ -86,7 +86,8 @@ export class PortfolioBalance implements Balance {
         })
       },
       // Optional result hook
-      result({ loading }) {
+      result({ loading, data }) {
+        console.log(loading, data)
         this.configs.balanceLoading = loading
       },
       watchLoading(isLoading) {
@@ -98,6 +99,7 @@ export class PortfolioBalance implements Balance {
 export class BalancesPortfolio extends Portfolio {
   balances: PortfolioBalance[] = []
   walletAddress!: string
+  loading = false
 
   configs = {
     // loading

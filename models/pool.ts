@@ -1,11 +1,11 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
 import { mapState } from 'vuex'
 import { CurvePoolsGQL, UsdPriceGQL, AavePoolGQL } from '~/apollo/main/pools.query.graphql'
 import { CurvePool, AavePool, AavePoolPrice } from '~/types/apollo/main/types'
 import { Helper } from '~/models/helper'
-// import { PriceOracleAsset, Reserve } from '~/types/apollo/aaveV2/types'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
+import { AavePoolAction, aaveActions, aaveActionTypes } from '~/models/web3'
 
 @Component({
   name: 'CurvePools',
@@ -24,8 +24,8 @@ import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
   },
 })
 export class CurvePools extends Vue {
-  curvePools: CurvePool[] = []
-  cols = [
+  readonly curvePools: CurvePool[] = []
+  readonly cols = [
     {
       text: 'Pool',
       align: 'start',
@@ -131,7 +131,7 @@ export class CurvePools extends Vue {
   }
 }
 
-class AavePoolCl implements AavePool {
+export class AavePoolCl implements AavePool {
   aEmissionPerSecond!: string
   availableLiquidity!: string
   decimals!: number
@@ -235,9 +235,6 @@ class AavePoolCl implements AavePool {
       update: ({ aavePools }) => {
         return plainToClass(AavePoolCl, aavePools as AavePool[])
       },
-      watchLoading(isLoading) {
-        this.loading = isLoading
-      },
     },
     recentPrices: {
       prefetch: false,
@@ -247,10 +244,11 @@ class AavePoolCl implements AavePool {
   },
 })
 export class AavePools extends Vue {
-  aavePools: AavePoolCl[] = []
-  recentPrices: { [k: string]: number } = {}
+  @Ref('poolAction') readonly poolAction!: AavePoolAction
 
-  config = {
+  readonly aavePools: AavePoolCl[] = []
+  private recentPrices: { [k: string]: number } = {}
+  readonly config = {
     cols: [
       {
         text: 'Assets',
@@ -260,13 +258,13 @@ export class AavePools extends Vue {
         class: ['px-2', 'text-truncate'],
         cellClass: ['px-2', 'text-truncate'],
       },
-      {
-        text: 'Token Balance',
-        align: 'left',
-        value: 'tokenBalance',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+      // {
+      //   text: 'Token Balance',
+      //   align: 'left',
+      //   value: 'tokenBalance',
+      //   class: ['px-2', 'text-truncate'],
+      //   cellClass: ['px-2', 'text-truncate'],
+      // },
 
       {
         text: 'Balance, USD',
@@ -276,13 +274,13 @@ export class AavePools extends Vue {
         cellClass: ['px-2', 'text-truncate'],
       },
 
-      {
-        text: 'Borrow Balance',
-        align: 'left',
-        value: 'totalBorrowBalance',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+      // {
+      //   text: 'Borrow Balance',
+      //   align: 'left',
+      //   value: 'totalBorrowBalance',
+      //   class: ['px-2', 'text-truncate'],
+      //   cellClass: ['px-2', 'text-truncate'],
+      // },
 
       {
         text: 'Borrow Balance, USD',
@@ -313,6 +311,14 @@ export class AavePools extends Vue {
         class: ['px-2', 'text-truncate'],
         cellClass: ['px-2', 'text-truncate'],
       },
+      {
+        text: '',
+        value: 'action',
+        width: 300,
+        sortable: false,
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
 
       {
         text: '',
@@ -325,6 +331,7 @@ export class AavePools extends Vue {
     ],
   }
 
+  readonly aaveActions = aaveActions
   isPoolsLoading = true
 
   get aaveMainPoolsFiltered() {
@@ -341,10 +348,7 @@ export class AavePools extends Vue {
   }
 
   valueFormatter(value: number, maximumSignificantDigits: number = 6, minimumSignificantDigits: number = 6): string {
-    return new Intl.NumberFormat('en', {
-      maximumSignificantDigits,
-      minimumSignificantDigits,
-    }).format(value)
+    return new Intl.NumberFormat('en', { maximumSignificantDigits, minimumSignificantDigits }).format(value)
   }
 
   setAltImg(event: any) {
@@ -360,5 +364,12 @@ export class AavePools extends Vue {
   navigateToExplorer(address: string) {
     const url = `https://etherscan.io/address/${address}`
     window.open(url)
+  }
+
+  async invest(poolAddress: string, action: aaveActionTypes) {
+    const pool: AavePoolCl | undefined = this.aavePools.find((elem) => elem.id === poolAddress)
+    if (pool) {
+      await this.poolAction.init(pool, action)
+    }
   }
 }

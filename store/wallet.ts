@@ -10,12 +10,9 @@ export const state = () => ({
 export type WalletState = ReturnType<typeof state>
 
 export const mutations: MutationTree<WalletState> = {
-  SET_ADDRESS: (state, address: string) => {
-    state.address = address
-  },
-
-  SET_WALLET_STATUS: (state, status: boolean) => {
+  SET_WALLET_STATUS: (state, { status, wallet }) => {
     state.isWalletConnected = status
+    state.address = wallet
   },
 
   SET_TOTAL_BALANCE: (state, balance: string) => {
@@ -24,9 +21,12 @@ export const mutations: MutationTree<WalletState> = {
 }
 
 export const actions: ActionTree<WalletState, WalletState> = {
-  connectToWallet({ commit }, { wallet, status }) {
-    commit('SET_ADDRESS', wallet)
-    commit('SET_WALLET_STATUS', status)
+  connectToWallet({ commit }, { status, wallet }) {
+    commit('SET_WALLET_STATUS', { status, wallet })
+  },
+
+  disconnectToWallet({ commit }) {
+    commit('SET_WALLET_STATUS', { status: false, wallet: null })
   },
 
   totalBalance({ commit }, balance) {

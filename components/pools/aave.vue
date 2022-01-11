@@ -12,6 +12,19 @@
       :items-per-page="20"
       class="elevation-0"
     >
+      <template #header.tokenBalance="{ header }">
+        {{ header.text }}
+        <v-tooltip top color="black">
+          <template #activator="{ on, attrs }">
+            <v-btn icon color="grey" x-small v-bind="attrs" v-on="on">
+              <v-icon size="14">mdi-information-outline</v-icon>
+            </v-btn>
+          </template>
+          Total Token Balance
+        </v-tooltip>
+      </template>
+
+      <!--      Cols-->
       <template #[`item.symbol`]="{ item }">
         <div class="my-1">
           <v-row no-gutters align="center">
@@ -244,7 +257,23 @@
           Open Pool in Etherscan
         </v-tooltip>
       </template>
+
+      <template #[`item.action`]="{ item }">
+        <v-btn
+          v-for="action in aaveActions"
+          :key="action.value"
+          text
+          rounded
+          x-small
+          outlined
+          color="pink"
+          @click="invest(item.id, action.value)"
+        >
+          {{ action.text }}
+        </v-btn>
+      </template>
     </v-data-table>
+    <aave-pool-actions ref="poolAction" />
   </v-card>
 </template>
 
@@ -262,6 +291,7 @@ import { AavePools } from '~/models/pool'
       theme: (state: any) => state.ui.theme,
     }),
   },
+  components: { AavePoolActions: () => import('~/components/pools/aave-pool-actions.vue') },
 })
 export default class AavePool extends mixins(AavePools) {}
 </script>

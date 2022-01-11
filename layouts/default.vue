@@ -166,7 +166,7 @@
         </v-menu>
       </client-only>
       <!--      Wallet Menu-->
-      <v-btn class="mt-1 subtitle-2 text-capitalize font-weight-regular" text tile @click="connectToWallet">
+      <v-btn class="mt-1 subtitle-2 text-capitalize font-weight-regular" text tile @click="openMetamaskDialog()">
         <div :class="ui[theme].headerTextClass">
           <v-icon :color="walletConnected ? 'green' : 'orange'">mdi-wallet </v-icon>
           <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2">

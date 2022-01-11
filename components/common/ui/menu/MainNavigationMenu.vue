@@ -30,7 +30,7 @@
             <v-list-item-title> Dashboard</v-list-item-title>
           </v-list-item>
 
-          <v-list-group
+          <!--          <v-list-group
             v-if="config.networks.defaultNetwork.chainId === 1 || config.networks.defaultNetwork.chainId === 137"
             :value="true"
             no-action
@@ -69,7 +69,7 @@
               </v-list-item-icon>
               <v-list-item-title>Curve</v-list-item-title>
             </v-list-item>
-          </v-list-group>
+          </v-list-group>-->
 
           <v-list-item exact disabled>
             <v-list-item-icon>

@@ -40,7 +40,6 @@ export default {
   plugins: [
     '~/plugins/initConfigs.client.ts', // only in client side
     '~/plugins/global/helpers.ts',
-    '~/plugins/clientInit.client.js', // only in client side
   ],
 
   components: true,

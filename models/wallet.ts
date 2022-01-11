@@ -1,7 +1,10 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
-import { Vue, Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
+// import { ethers } from 'ethers'
+// import { ethers } from 'ethers'
 import { Events } from '~/types/global'
+
 declare const window: any
 @Component
 export class MetamaskConnector extends Vue {
@@ -9,16 +12,11 @@ export class MetamaskConnector extends Vue {
 
   async ethereunAccount(): Promise<string | null> {
     try {
-      // Will open the MetaMask UI
-      // You should disable this button while the request is pending!
       const accounts = await this.ethereum.request({
         method: 'eth_requestAccounts',
       })
       return accounts[0]
     } catch (error) {
-      /*  this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-        text: `Something Went Wrong with Metamask`,
-      }) */
       return null
     }
   }
@@ -37,32 +35,67 @@ export class MetamaskConnector extends Vue {
           wallet: account,
           status: true,
         })
-      }
+      } else await this.$store.dispatch('wallet/disconnectToWallet')
     } else {
-      this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
-        text: `Metamask Is not Installed. Please install Metamask extension for your browser`,
-      })
+      setTimeout(() => {
+        this.$root.$emit(Events.GLOBAL_NOTIFICATION, {
+          text: `Metamask Is not Installed. Please install Metamask extension for your browser`,
+        })
+      }, 2000)
       window.open('https://metamask.io/')
+    }
+  }
+
+  async openMetamaskDialog() {
+    try {
+      await this.ethereum.request({ method: 'eth_requestAccounts' })
+    } catch (e) {
+      // eslint-disable-next-line no-self-assign
+      window.location = window.location
     }
   }
 
   async mounted() {
     const { ethereum } = window
     this.ethereum = ethereum
+    // this.provider = new ethers.providers.Web3Provider(ethereum, 'any')
+    // this.signer = this.provider.getSigner()
     await this.connectToWallet()
 
-    this.ethereum.on('accountsChanged', (accounts: string[]) => {
-      if (accounts.length === 0) {
-        this.$store.dispatch('wallet/connectToWallet', {
-          wallet: null,
-          status: false,
-        })
-      } else {
-        this.$store.dispatch('wallet/connectToWallet', {
-          wallet: accounts[0],
-          status: true,
-        })
-      }
+    if (this.isMetaMaskInstalled) {
+      this.ethereum.on('accountsChanged', async (accounts: string[]) => {
+        if (accounts.length === 0) {
+          await this.$store.dispatch('wallet/disconnectToWallet')
+        } else {
+          await this.$store.dispatch('wallet/connectToWallet', {
+            wallet: accounts[0],
+            status: true,
+          })
+        }
+      })
+    }
+    /*
+    this.ethereum.on('chainChanged', (hexString: string) => {
+      console.log('Chain Changed', parseInt(hexString, 16))
     })
+    try {
+      await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] })
+    } catch (error) {
+      console.log(error)
+    } */
   }
+
+  /*  async mounted() {
+    const { ethereum } = window
+    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+    const signer = provider.getSigner()
+    const userAddress = await signer.getAddress()
+    console.log(userAddress)
+    // const userAddress = await signer.getAddress()
+
+    ethereum.on('accountsChanged', async (accounts: string[]) => {
+      const userAddress = await signer.getAddress()
+      console.log(accounts, userAddress)
+    })
+  } */
 }

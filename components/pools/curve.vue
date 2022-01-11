@@ -1,6 +1,6 @@
 <template>
   <v-card tile outlined height="100%">
-    <v-skeleton-loader v-if="isPoolsLoading" type="table-heading,table-tbody,table-tbody" />
+    <v-skeleton-loader v-if="isPoolsLoading" type="table-tbody,table-tbody" />
     <v-data-table
       v-if="!isPoolsLoading && curvePools.length"
       id="curve-pools-grid"

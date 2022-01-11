@@ -47,7 +47,6 @@ input:focus {
 }
 
 
-
 //Global background
 
 .theme--dark.v-application {
@@ -151,6 +150,7 @@ tbody {
   //border-bottom: 1px solid #68686d !important;
   color: white;
 }
+
 //
 //.theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr:last-child > th {
 //  border-bottom: 1px solid #BABFC4 !important;
@@ -162,3 +162,8 @@ tbody {
 //.v-data-table--dense > .v-data-table__wrapper > table > tfoot > tr > td {
 //  height: 23.2px !important;
 //}
+
+
+.theme--dark.v-tabs > .v-tabs-bar {
+  background-color: #121212;
+}

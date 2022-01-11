@@ -1,7 +1,13 @@
 <template>
   <div>
-    <!--    <v-btn @click="check">Check</v-btn>-->
-    <client-only>
+    <v-row v-if="loading">
+      <v-col v-for="i in 5" :key="i" cols="4">
+        <v-card height="640" tile outlined>
+          <v-skeleton-loader type="table-tbody,table-tbody" />
+        </v-card>
+      </v-col>
+    </v-row>
+    <client-only v-if="!loading">
       <v-row class="px-2 mt-1 mb-3">
         <v-col cols="4" class="pb-0">
           <v-row align="center">
@@ -104,7 +110,7 @@
               </v-card>
             </v-menu>
 
-            <v-menu
+            <!--            <v-menu
               v-if="mainNetChains"
               :close-on-content-click="false"
               :nudge-width="500"
@@ -124,7 +130,7 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <span class="primary--text mx-1 pr-2"> Test Net Networks </span>
+                    <span class="primary&#45;&#45;text mx-1 pr-2"> Test Net Networks </span>
                     <v-icon right>mdi-chevron-down</v-icon>
                   </v-btn>
                 </div>
@@ -132,7 +138,7 @@
 
               <v-card outlined tile width="350">
                 <v-list dense>
-                  <v-list-item-group v-model="configs.selectedMainNets" active-class="pink--text" multiple>
+                  <v-list-item-group v-model="configs.selectedMainNets" active-class="pink&#45;&#45;text" multiple>
                     <template v-for="item in testNetChains">
                       <v-list-item :key="item.chainId" :value="item.id">
                         <template #default="{ active }">
@@ -152,7 +158,7 @@
                   </v-list-item-group>
                 </v-list>
               </v-card>
-            </v-menu>
+            </v-menu>-->
           </v-row>
         </v-col>
         <v-spacer />
@@ -198,7 +204,7 @@
         </v-col>
       </v-row>
     </client-only>
-    <v-row>
+    <v-row v-if="!loading">
       <v-col v-for="item in balances" :key="item.chainId" :cols="configs.numberOfRows">
         <balances-grid :balance="item" :cols="configs.cols" :grid-height="configs.gridHeight" />
       </v-col>
