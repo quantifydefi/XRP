@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <v-row v-if="loading">
-      <v-col v-for="i in 5" :key="i" cols="4">
-        <v-card height="640" tile outlined>
-          <v-skeleton-loader type="table-tbody,table-tbody" />
-        </v-card>
-      </v-col>
-    </v-row>
-    <client-only v-if="!loading">
-      <v-row class="px-2 mt-1 mb-3">
+  <client-only>
+    <div>
+      <v-row v-if="loading">
+        <v-col v-for="i in 5" :key="i" cols="4">
+          <v-card height="640" tile outlined>
+            <v-skeleton-loader type="table-tbody,table-tbody" />
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row v-else class="px-2 mt-1 mb-3">
         <v-col cols="4" class="pb-0">
           <v-row align="center">
             <v-menu
@@ -203,13 +203,13 @@
           </v-row>
         </v-col>
       </v-row>
-    </client-only>
-    <v-row v-if="!loading">
-      <v-col v-for="item in balances" :key="item.chainId" :cols="configs.numberOfRows">
-        <balances-grid :balance="item" :cols="configs.cols" :grid-height="configs.gridHeight" />
-      </v-col>
-    </v-row>
-  </div>
+      <v-row v-if="!loading">
+        <v-col v-for="item in balances" :key="item.chainId" :cols="configs.numberOfRows">
+          <balances-grid :balance="item" :cols="configs.cols" :grid-height="configs.gridHeight" />
+        </v-col>
+      </v-row>
+    </div>
+  </client-only>
 </template>
 
 <script lang="ts">
