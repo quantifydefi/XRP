@@ -1,11 +1,11 @@
 import { Component, Ref, Vue } from 'vue-property-decorator'
 import { plainToClass } from 'class-transformer'
 import { mapState } from 'vuex'
-import { CurvePoolsGQL, UsdPriceGQL, AavePoolGQL } from '~/apollo/main/pools.query.graphql'
-import { CurvePool, AavePool, AavePoolPrice } from '~/types/apollo/main/types'
+import { AavePoolGQL, CurvePoolsGQL } from '~/apollo/main/pools.query.graphql'
+import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio, CurvePool } from '~/types/apollo/main/types'
 import { Helper } from '~/models/helper'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
-import { AavePoolAction, aaveActions, aaveActionTypes } from '~/models/web3'
+import { aaveActions, aaveActionTypes, AavePoolAction } from '~/models/web3'
 
 @Component({
   name: 'CurvePools',
@@ -150,7 +150,9 @@ export class AavePoolCl implements AavePool {
   utilizationRate!: string
   vEmissionPerSecond!: string
   variableBorrowRate!: string
-  usdPrice: number = 0
+  addresses!: AaveAddress
+  portfolio!: AavePortfolio
+  usdPrice!: number
 
   get depositAPR(): number {
     return parseFloat(this.liquidityRate) / RAY_UNITS
@@ -217,6 +219,7 @@ export class AavePoolCl implements AavePool {
   computed: {
     ...mapState({
       chainId: (state: any) => state.configs.currentChain.chainId,
+      userWalletAddress: (state: any) => state.wallet.address,
     }),
   },
   apollo: {
@@ -227,37 +230,65 @@ export class AavePoolCl implements AavePool {
       variables() {
         return {
           chainId: this.chainId,
+          userWallet: this.userWalletAddress || '',
         }
       },
       result({ loading }) {
         this.isPoolsLoading = loading
       },
-      update: ({ aavePools }) => {
-        return plainToClass(AavePoolCl, aavePools as AavePool[])
+      update: ({ aavePools }) => plainToClass(AavePoolCl, aavePools as AavePool[]),
+      watchLoading(isLoading) {
+        this.isPoolsLoading = isLoading
       },
-    },
-    recentPrices: {
-      prefetch: false,
-      query: UsdPriceGQL,
-      deep: false,
     },
   },
 })
 export class AavePools extends Vue {
   @Ref('poolAction') readonly poolAction!: AavePoolAction
-
   readonly aavePools: AavePoolCl[] = []
-  private recentPrices: { [k: string]: number } = {}
   readonly config = {
     cols: [
       {
         text: 'Assets',
         align: 'left',
         value: 'symbol',
-        width: '250',
+        width: '230',
         class: ['px-2', 'text-truncate'],
         cellClass: ['px-2', 'text-truncate'],
       },
+
+      {
+        text: 'Your Balance',
+        align: 'left',
+        value: 'walletTokenBal',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Your Deposits',
+        align: 'left',
+        value: 'deposits',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Your Borrows',
+        align: 'left',
+        value: 'borrows',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      // {
+      //   text: 'Your Balance USD',
+      //   align: 'left',
+      //   value: 'walletTokenBalUsd',
+      //   class: ['px-2', 'text-truncate'],
+      //   cellClass: ['px-2', 'text-truncate'],
+      // },
+
       // {
       //   text: 'Token Balance',
       //   align: 'left',
@@ -284,7 +315,7 @@ export class AavePools extends Vue {
 
       {
         text: 'Borrow Balance, USD',
-        align: 'left',
+        align: 'center',
         value: 'totalBorrowBalanceUsd',
         class: ['px-2', 'text-truncate'],
         cellClass: ['px-2', 'text-truncate'],
@@ -335,16 +366,13 @@ export class AavePools extends Vue {
   isPoolsLoading = true
 
   get aaveMainPoolsFiltered() {
-    const poolFilter = this.aavePools.filter((elem: AavePoolCl) => {
-      return !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp'))
-    })
-    poolFilter.forEach((elem: AavePoolCl) => {
-      elem.usdPrice = this.recentPrices[elem.symbol] || 0
-      elem.name = elem.symbol === 'WETH' ? 'Ethereum' : elem.name
-      elem.symbol = elem.symbol === 'WETH' ? 'ETH' : elem.symbol
-    })
+    return this.aavePools.filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
+  }
 
-    return poolFilter
+  async transactionResult(status: 'error' | 'success') {
+    if (status === 'success') {
+      await this.$apollo.queries.aavePools.refetch()
+    }
   }
 
   valueFormatter(value: number, maximumSignificantDigits: number = 6, minimumSignificantDigits: number = 6): string {

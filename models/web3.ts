@@ -1,4 +1,4 @@
-import { Component, Ref, Watch, Vue } from 'vue-property-decorator'
+import { Component, Ref, Watch, Vue, Emit } from 'vue-property-decorator'
 import { BigNumber, ethers, Signer } from 'ethers'
 import lendingPoolAbi from '../constracts/abi/aave/lendingPoolAbi.json'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
@@ -19,7 +19,6 @@ export const aaveActions: { text: string; value: aaveActionTypes }[] = [
 export class AavePoolAction extends Vue {
   @Ref('depositForm') readonly depositForm!: any
 
-  //
   provider: any = null
   signer!: Signer
 
@@ -332,13 +331,14 @@ export class AavePoolAction extends Vue {
     this.loading = false
   }
 */
-
+  @Emit('transaction-result')
   transactionResult(status: 'error' | 'success', message: string) {
     this.alert = true
     this.message = { status, message }
     this.values.inputNum.value = 0
     this.loading = false
     this.values.inputNum.disabled = false
+    return status
   }
 
   async deposit() {
@@ -354,10 +354,7 @@ export class AavePoolAction extends Vue {
     }
     const depositResp = await this._DEPOSIT_METAMASK_CALL()
     if (!depositResp) {
-      return this.transactionResult(
-        'error',
-        `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
-      )
+      return this.transactionResult('error', `Something went wrong.`)
     }
     return this.transactionResult('success', 'Transaction completed successfully')
   }
@@ -367,10 +364,7 @@ export class AavePoolAction extends Vue {
     this.values.inputNum.disabled = true
     const borrowResp = await this._BORROW_METAMASK_CALL()
     if (!borrowResp) {
-      return this.transactionResult(
-        'error',
-        `Something went wrong. Make sure you have  ${this.pool?.symbol} in your deposits`
-      )
+      return this.transactionResult('error', `Something went wrong.`)
     }
     return this.transactionResult('success', 'Transaction completed successfully')
   }
@@ -398,10 +392,7 @@ export class AavePoolAction extends Vue {
     }
     const repay = await this._REPAY_METAMASK_CALL()
     if (!repay) {
-      return this.transactionResult(
-        'error',
-        `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
-      )
+      return this.transactionResult('error', `Something went wrong.`)
     }
     return this.transactionResult('success', 'Transaction completed successfully')
   }

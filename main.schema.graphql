@@ -5,13 +5,25 @@ schema {
   mutation: Mutation
 }
 
+type AaveAddress {
+  aTokenAddress: String!
+  aTokenSymbol: String!
+  address: String!
+  decimals: Int!
+  stableDebtTokenAddress: String!
+  symbol: String!
+  variableDebtTokenAddress: String!
+}
+
 type AavePool {
   aEmissionPerSecond: String!
+  addresses: AaveAddress!
   availableLiquidity: String!
   decimals: Int!
   id: String!
   liquidityRate: String!
   name: String!
+  portfolio: AavePortfolio!
   price: AavePoolPrice!
   sEmissionPerSecond: String!
   stableBorrowRate: String!
@@ -21,6 +33,7 @@ type AavePool {
   totalLiquidity: String!
   totalPrincipalStableDebt: String!
   underlyingAsset: String!
+  usdPrice: Float!
   utilizationRate: String!
   vEmissionPerSecond: String!
   variableBorrowRate: String!
@@ -29,6 +42,13 @@ type AavePool {
 type AavePoolPrice {
   id: String!
   priceInEth: String!
+}
+
+type AavePortfolio {
+  stableBorrow: Float!
+  totalDeposits: Float!
+  variableBorrow: Float!
+  walletBal: Float!
 }
 
 """
@@ -273,7 +293,7 @@ type Protocol {
 
 type Query {
   "Aave Pool "
-  aavePools(chainId: Int!): [AavePool!]!
+  aavePools(chainId: Int!, userWallet: String = ""): [AavePool!]!
   "Covalent Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chains: [Chain!]!

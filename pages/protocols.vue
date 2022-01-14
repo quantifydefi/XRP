@@ -17,7 +17,7 @@
     <v-divider class="mb-4 mt-2" />
 
     <v-row v-if="protocol" no-gutters justify="center">
-      <v-col cols="10">
+      <v-col cols="11">
         <v-row>
           <!--          1st Column General Details-->
           <v-col>
@@ -99,7 +99,7 @@
     </v-row>
 
     <v-row v-if="protocol" justify="center" class="mt-6">
-      <v-col cols="10">
+      <v-col cols="11">
         <v-row>
           <v-col class="py-0 my-0 text-right">
             <v-btn-toggle v-model="config.currentSelection" mandatory>

@@ -183,6 +183,27 @@
         </div>
       </template>
 
+      <template #[`item.walletTokenBal`]="{ item }">
+        <div>{{ item.portfolio.walletBal.toLocaleString() }}</div>
+        <div :class="[ui[theme].innerCardLighten]">
+          ${{ (item.portfolio.walletBal * item.usdPrice).toLocaleString() }}
+        </div>
+      </template>
+
+      <template #[`item.deposits`]="{ item }">
+        <div>{{ item.portfolio.totalDeposits.toLocaleString() }}</div>
+        <div :class="[ui[theme].innerCardLighten]">
+          ${{ (item.portfolio.totalDeposits * item.usdPrice).toLocaleString() }}
+        </div>
+      </template>
+
+      <template #[`item.borrows`]="{ item }">
+        <div>{{ item.portfolio.variableBorrow.toLocaleString() }}</div>
+        <div :class="[ui[theme].innerCardLighten]">
+          ${{ (item.portfolio.variableBorrow * item.usdPrice).toLocaleString() }}
+        </div>
+      </template>
+
       <template #[`item.tokenBalance`]="{ item }">
         <span :class="[ui[theme].innerCardLighten]">{{ valueFormatter(item.tokenBalance / 10 ** 6, 4, 2) }} M</span>
       </template>
@@ -273,7 +294,7 @@
         </v-btn>
       </template>
     </v-data-table>
-    <aave-pool-actions ref="poolAction" />
+    <aave-pool-actions ref="poolAction" @transaction-result="transactionResult" />
   </v-card>
 </template>
 
