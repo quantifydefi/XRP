@@ -1,6 +1,7 @@
-import { Component, Ref, Watch, Vue, Emit } from 'vue-property-decorator'
+import { Component, Ref, Watch, Vue } from 'vue-property-decorator'
 import { BigNumber, ethers, Signer } from 'ethers'
 import lendingPoolAbi from '../constracts/abi/aave/lendingPoolAbi.json'
+import wethGatewayAbi from '../constracts/abi/aave/wethGatewayAbi.json'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
 import { AavePoolCl } from '~/models/pool'
 import { Helper } from '~/models/helper'
@@ -19,12 +20,15 @@ export const aaveActions: { text: string; value: aaveActionTypes }[] = [
 export class AavePoolAction extends Vue {
   @Ref('depositForm') readonly depositForm!: any
 
+  //
   provider: any = null
   signer!: Signer
 
   // AAve landing pool address
   // https://docs.aave.com/developers/deployed-contracts/deployed-contracts
-  AAVE_LANDING_POOL_ADDRESS = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9'
+  AAVE_LENDING_POOL_ADDRESS = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9'
+  AAVE_WETH_GATEWAY_ADDRESS = '0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04'
+  AWETH_ADDRESS = '0x030ba81f1c18d280636f32af80b9aad02cf0854e'
   MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
   dialog = false
@@ -147,7 +151,26 @@ export class AavePoolAction extends Vue {
         const walletAddress = await this.signer.getAddress()
         const checkApprove = await tokenInstance.populateTransaction.allowance(
           walletAddress,
-          this.AAVE_LANDING_POOL_ADDRESS
+          this.AAVE_LENDING_POOL_ADDRESS
+        )
+        const approved = await this.provider.call(checkApprove)
+        return parseInt(approved)
+      } catch (err) {
+        console.log(err)
+        return 0
+      }
+    }
+    return 0
+  }
+
+  private async _CHECK_ALLOWED_SPENDING_WETH_METAMASK_CALL(): Promise<number> {
+    if (this.pool) {
+      try {
+        const tokenInstance = new ethers.Contract(this.AWETH_ADDRESS, erc20Abi, this.signer)
+        const walletAddress = await this.signer.getAddress()
+        const checkApprove = await tokenInstance.populateTransaction.allowance(
+          walletAddress,
+          this.AAVE_WETH_GATEWAY_ADDRESS
         )
         const approved = await this.provider.call(checkApprove)
         return parseInt(approved)
@@ -163,7 +186,26 @@ export class AavePoolAction extends Vue {
     if (this.pool) {
       try {
         const erc20 = new ethers.Contract(this.pool.underlyingAsset, erc20Abi, this.signer)
-        const approveERC20 = await erc20.populateTransaction.approve(this.AAVE_LANDING_POOL_ADDRESS, this.MAX_UINT256)
+        const approveERC20 = await erc20.populateTransaction.approve(this.AAVE_LENDING_POOL_ADDRESS, this.MAX_UINT256)
+        const txGasLimit = await this.provider.estimateGas(approveERC20)
+        const txGasPrice = await this.provider.getGasPrice()
+        approveERC20.gasLimit = txGasLimit
+        approveERC20.gasPrice = txGasPrice
+        const approveResult = await this.signer.sendTransaction(approveERC20)
+        return await approveResult.wait()
+      } catch (error) {
+        console.log(error)
+        return null
+      }
+    }
+    return null
+  }
+
+  private async _APPROVE_SPENDING_WETH_METAMASK_CALL(): Promise<object | null> {
+    if (this.pool) {
+      try {
+        const erc20 = new ethers.Contract(this.AWETH_ADDRESS, erc20Abi, this.signer)
+        const approveERC20 = await erc20.populateTransaction.approve(this.AAVE_WETH_GATEWAY_ADDRESS, this.MAX_UINT256)
         const txGasLimit = await this.provider.estimateGas(approveERC20)
         const txGasPrice = await this.provider.getGasPrice()
         approveERC20.gasLimit = txGasLimit
@@ -181,7 +223,7 @@ export class AavePoolAction extends Vue {
   private async _DEPOSIT_METAMASK_CALL(): Promise<object | null> {
     if (this.pool) {
       try {
-        const lendingPoolContract = new ethers.Contract(this.AAVE_LANDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
+        const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
         const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
         const walletAddress = await this.signer.getAddress()
         const depositCall = await lendingPoolContract.populateTransaction.deposit(
@@ -204,10 +246,37 @@ export class AavePoolAction extends Vue {
     return null
   }
 
+  private async _DEPOSIT_ETH_METAMASK_CALL(): Promise<object | null> {
+    if (this.pool) {
+      try {
+        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
+        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
+        const walletAddress = await this.signer.getAddress()
+        const depositCall = await wethGatewayContract.populateTransaction.depositETH(
+          this.AAVE_LENDING_POOL_ADDRESS,
+          walletAddress,
+          0
+        )
+        const txGasLimit = await this.provider.estimateGas(depositCall)
+        const txGasPrice = await this.provider.getGasPrice()
+        const txValue = amount
+        depositCall.gasLimit = txGasLimit
+        depositCall.gasPrice = txGasPrice
+        depositCall.value = txValue
+        const depositResult = await this.signer.sendTransaction(depositCall)
+        return await depositResult.wait()
+      } catch (error) {
+        console.log(error)
+        return null
+      }
+    }
+    return null
+  }
+
   private async _BORROW_METAMASK_CALL() {
     if (this.pool) {
       try {
-        const lendingPoolContract = new ethers.Contract(this.AAVE_LANDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
+        const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
         const walletAddress = await this.signer.getAddress()
         const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
         const borrowCall = await lendingPoolContract.populateTransaction.borrow(
@@ -228,12 +297,37 @@ export class AavePoolAction extends Vue {
         return null
       }
     }
+    return null
+  }
+
+  private async _BORROW_ETH_METAMASK_CALL(): Promise<object | null> {
+    if (this.pool) {
+      try {
+        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
+        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
+        const borrowCall = await wethGatewayContract.populateTransaction.borrowETH(
+          this.AAVE_LENDING_POOL_ADDRESS,
+          amount,
+          2, // variable rate
+          0 // referral code
+        )
+        const txGasLimit = await this.provider.estimateGas(borrowCall)
+        const txGasPrice = await this.provider.getGasPrice()
+        borrowCall.gasLimit = txGasLimit
+        borrowCall.gasPrice = txGasPrice
+        const txResult = await this.signer.sendTransaction(borrowCall)
+        return await txResult.wait()
+      } catch (err) {
+        return null
+      }
+    }
+    return null
   }
 
   private async _REPAY_METAMASK_CALL() {
     if (this.pool) {
       try {
-        const lendingPoolContract = new ethers.Contract(this.AAVE_LANDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
+        const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
         const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
         const walletAddress = await this.signer.getAddress()
         const repayCall = await lendingPoolContract.populateTransaction.repay(
@@ -257,14 +351,63 @@ export class AavePoolAction extends Vue {
     }
   }
 
+  private async _REPAY_ETH_METAMASK_CALL(): Promise<object | null> {
+    if (this.pool) {
+      try {
+        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
+        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
+        const walletAddress = await this.signer.getAddress()
+        const repayCall = await wethGatewayContract.populateTransaction.repayETH(
+          this.AAVE_LENDING_POOL_ADDRESS,
+          amount,
+          2, // variable rate
+          walletAddress
+        )
+        const txGasLimit = await this.provider.estimateGas(repayCall)
+        const txGasPrice = await this.provider.getGasPrice()
+        repayCall.gasLimit = txGasLimit
+        repayCall.gasPrice = txGasPrice
+        const txResult = await this.signer.sendTransaction(repayCall)
+        return await txResult.wait()
+      } catch (err) {
+        return null
+      }
+    }
+    return null
+  }
+
   private async _WITHDRAW_METAMASK_CALL() {
     if (this.pool) {
       try {
-        const lendingPoolContract = new ethers.Contract(this.AAVE_LANDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
+        const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
         const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
         const walletAddress = await this.signer.getAddress()
         const withdrawCall = await lendingPoolContract.populateTransaction.withdraw(
           this.pool.underlyingAsset,
+          amount,
+          walletAddress
+        )
+        const txGasLimit = await this.provider.estimateGas(withdrawCall)
+        const txGasPrice = await this.provider.getGasPrice()
+        withdrawCall.gasLimit = txGasLimit
+        withdrawCall.gasPrice = txGasPrice
+        const txResult = await this.signer.sendTransaction(withdrawCall)
+        return await txResult.wait()
+      } catch (err) {
+        console.log(err)
+        return null
+      }
+    }
+  }
+
+  private async _WITHDRAW_ETH_METAMASK_CALL() {
+    if (this.pool) {
+      try {
+        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
+        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
+        const walletAddress = await this.signer.getAddress()
+        const withdrawCall = await wethGatewayContract.populateTransaction.withdrawETH(
+          this.AAVE_LENDING_POOL_ADDRESS,
           amount,
           walletAddress
         )
@@ -331,69 +474,132 @@ export class AavePoolAction extends Vue {
     this.loading = false
   }
 */
-  @Emit('transaction-result')
+
   transactionResult(status: 'error' | 'success', message: string) {
     this.alert = true
     this.message = { status, message }
     this.values.inputNum.value = 0
     this.loading = false
     this.values.inputNum.disabled = false
-    return status
   }
 
   async deposit() {
     this.loading = true
     this.values.inputNum.disabled = true
-    const allowedSpending = await this._CHECK_ALLOWED_SPENDING_METAMASK_CALL()
-    if (allowedSpending < this.values.inputNum.value) {
-      const resp = await this._APPROVE_SPENDING_METAMASK_CALL()
-      if (!resp) {
-        this.transactionResult('error', `Cant Approve Spending`)
-        return
+    console.log(this.pool?.symbol)
+    if (this.pool && this.pool.symbol !== 'ETH') {
+      const allowedSpending = await this._CHECK_ALLOWED_SPENDING_METAMASK_CALL()
+      if (allowedSpending < this.values.inputNum.value) {
+        const resp = await this._APPROVE_SPENDING_METAMASK_CALL()
+        if (!resp) {
+          this.transactionResult('error', `Cant Approve Spending`)
+          return
+        }
       }
+      const depositResp = await this._DEPOSIT_METAMASK_CALL()
+      if (!depositResp) {
+        return this.transactionResult(
+          'error',
+          `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
+        )
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
+    } else {
+      const depositResp = await this._DEPOSIT_ETH_METAMASK_CALL()
+      if (!depositResp) {
+        return this.transactionResult(
+          'error',
+          `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
+        )
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
     }
-    const depositResp = await this._DEPOSIT_METAMASK_CALL()
-    if (!depositResp) {
-      return this.transactionResult('error', `Something went wrong.`)
-    }
-    return this.transactionResult('success', 'Transaction completed successfully')
   }
 
   async borrow() {
     this.loading = true
     this.values.inputNum.disabled = true
-    const borrowResp = await this._BORROW_METAMASK_CALL()
-    if (!borrowResp) {
-      return this.transactionResult('error', `Something went wrong.`)
+    if (this.pool && this.pool.symbol !== 'ETH') {
+      const borrowResp = await this._BORROW_METAMASK_CALL()
+      if (!borrowResp) {
+        return this.transactionResult(
+          'error',
+          `Something went wrong. Make sure you have  ${this.pool?.symbol} in your deposits`
+        )
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
+    } else {
+      const borrowResp = await this._BORROW_ETH_METAMASK_CALL()
+      if (!borrowResp) {
+        return this.transactionResult(
+          'error',
+          `Something went wrong. Make sure you have  ${this.pool?.symbol} in your deposits`
+        )
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
     }
-    return this.transactionResult('success', 'Transaction completed successfully')
   }
 
   async withdraw() {
     this.loading = true
     this.values.inputNum.disabled = true
-    const borrowResp = await this._WITHDRAW_METAMASK_CALL()
-    if (!borrowResp) {
-      return this.transactionResult('error', `Something went wrong`)
+
+    if (this.pool && this.pool.symbol !== 'ETH') {
+      const borrowResp = await this._WITHDRAW_METAMASK_CALL()
+      if (!borrowResp) {
+        return this.transactionResult('error', `Something went wrong`)
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
+    } else {
+      const allowedSpending = await this._CHECK_ALLOWED_SPENDING_WETH_METAMASK_CALL()
+      if (allowedSpending < this.values.inputNum.value) {
+        const resp = await this._APPROVE_SPENDING_WETH_METAMASK_CALL()
+        if (!resp) {
+          this.transactionResult('error', `Cant Approve Spending`)
+          return
+        }
+        const withdrawResp = await this._WITHDRAW_ETH_METAMASK_CALL()
+        if (!withdrawResp) {
+          return this.transactionResult(
+            'error',
+            `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
+          )
+        }
+        return this.transactionResult('success', 'Transaction completed successfully')
+      }
     }
-    return this.transactionResult('success', 'Transaction completed successfully')
   }
 
   async repay() {
     this.loading = true
     this.values.inputNum.disabled = true
-    const allowedSpending = await this._CHECK_ALLOWED_SPENDING_METAMASK_CALL()
-    if (allowedSpending < this.values.inputNum.value) {
-      const resp = await this._APPROVE_SPENDING_METAMASK_CALL()
-      if (!resp) {
-        this.transactionResult('error', `Cant Approve Spending`)
-        return
+
+    if (this.pool && this.pool.symbol !== 'ETH') {
+      const allowedSpending = await this._CHECK_ALLOWED_SPENDING_METAMASK_CALL()
+      if (allowedSpending < this.values.inputNum.value) {
+        const resp = await this._APPROVE_SPENDING_METAMASK_CALL()
+        if (!resp) {
+          this.transactionResult('error', `Cant Approve Spending`)
+          return
+        }
       }
+      const repay = await this._REPAY_METAMASK_CALL()
+      if (!repay) {
+        return this.transactionResult(
+          'error',
+          `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
+        )
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
+    } else {
+      const repay = await this._REPAY_ETH_METAMASK_CALL()
+      if (!repay) {
+        return this.transactionResult(
+          'error',
+          `Something went wrong. Make sure you have enough ${this.pool?.symbol} in your wallet`
+        )
+      }
+      return this.transactionResult('success', 'Transaction completed successfully')
     }
-    const repay = await this._REPAY_METAMASK_CALL()
-    if (!repay) {
-      return this.transactionResult('error', `Something went wrong.`)
-    }
-    return this.transactionResult('success', 'Transaction completed successfully')
   }
 }
