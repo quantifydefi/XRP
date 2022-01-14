@@ -246,6 +246,8 @@ export class AavePoolCl implements AavePool {
 export class AavePools extends Vue {
   @Ref('poolAction') readonly poolAction!: AavePoolAction
   readonly aavePools: AavePoolCl[] = []
+  readonly aaveActions = aaveActions
+  isPoolsLoading = true
   readonly config = {
     cols: [
       {
@@ -361,9 +363,6 @@ export class AavePools extends Vue {
       },
     ],
   }
-
-  readonly aaveActions = aaveActions
-  isPoolsLoading = true
 
   get aaveMainPoolsFiltered() {
     return this.aavePools.filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
