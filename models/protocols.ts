@@ -53,10 +53,10 @@ export class Protocols extends Vue {
     isProtocolsLoading: false,
     isCurrentProtocolLoading: false,
     tokenOrPoolOptions: [
-      { text: 'Tokens', value: 'token' },
       { text: 'Liquidity Pools', value: 'pool' },
+      { text: 'Tokens', value: 'token' },
     ],
-    currentSelection: 'token' as 'token' | 'pool',
+    currentSelection: 'pool' as 'token' | 'pool',
     tokenListCols: [
       {
         text: 'Name',

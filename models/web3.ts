@@ -35,9 +35,31 @@ export class AavePoolAction extends Vue {
   loading = false
   loadingWalletTokenBalance = false
   pool: AavePoolCl | null = null
+  healthFactor: number = 0
+  totalCollateral: number = 0
+  totalBorrowed: number = 0
+  maxLTV: number = 0
   actionType: aaveActionTypes = 'deposit'
   alert = false
-  message = { status: 'success', message: '' }
+  alertMessage = { status: 'success', message: '' }
+  messages = {
+    maxLTV: {
+      title: 'Loan to Value (LTV) Ratio',
+      text: 'The Maximum Loan-to-Value ratio represents the maximum borrowing power of a specific collateral. For example, if a collateral has a LTV of 75%, the user can borrow up to 0.75 worth of ETH in the principal currency for every 1 ETH worth of collateral.',
+    },
+    liquidationThreshold: {
+      title: 'Liquidation threshold',
+      text: 'This represents the threshold at which a borrow position will be considered undercollateralized and subject to liquidation for each collateral. For example, if a collateral has a liquidation threshold of 80%, it means that the loan will be liquidated when the debt value is worth 80% of the collateral value.',
+    },
+    liquidationPenalty: {
+      title: 'Liquidation penalty',
+      text: 'When a liquidation occurs, liquidators repay part or all of the outstanding borrowed amount on behalf of the borrower. In return, they can buy the collateral at a discount and keep the difference as a bonus!',
+    },
+    healthFactor: {
+      title: 'Health Factor',
+      text: 'The health factor represents the safety of your loan derived from the proportion of collateral versus amount borrowed. Keep it above 1 to avoid liquidation.',
+    },
+  }
 
   readonly actions = aaveActions
 
@@ -92,44 +114,154 @@ export class AavePoolAction extends Vue {
       disabled: false as boolean,
       placeholder: 'Number Of tokens',
       rules: {
-        required: (v: string) => !!v || 'Number  is required',
-        mustBeNumber: (v: string) => {
-          return !isNaN(parseFloat(v)) || 'Must be Number'
-        },
-        musBeMoreThen0: (v: string) => {
-          return parseFloat(v) > 0 || 'Must be more then 0'
-        },
+        required: (v: string) => !!v || 'Number is required',
+        mustBeNumber: (v: string) => !isNaN(parseFloat(v)) || 'Must be Number',
+        musBeMoreThen0: () => this.values.inputNum.value > 0 || 'Must be more then 0',
       },
     },
   }
 
-  get allowedToDeposit(): number {
+  get allowedToBorrow() {
     if (this.pool) {
-      if (this.pool?.symbol === 'USDC') {
-        return this._allowedToDeposit * 10 ** 12
+      return ((this.totalCollateral * this.maxLTV) / 100 - this.totalBorrowed) / this.pool.usdPrice || 0
+    } else return 0
+  }
+
+  get uiTables() {
+    if (this.pool) {
+      return {
+        deposit: {
+          basicStats: [
+            { name: 'Utilization rate', value: this.pool.utilizationRatePtc.toFixed(2) + '%' },
+            {
+              name: 'Available liquidity',
+              value: `${this.pool.availableLiquidityBalance.toLocaleString()} ${this.pool.symbol}`,
+            },
+            { name: 'Deposit APY', value: (this.pool.depositAPY * 100).toFixed(2) + '%' },
+            {
+              name: 'Used As Collateral',
+              value: this.pool.usageAsCollateralEnabled ? 'Yes' : 'No',
+              class: this.pool.usageAsCollateralEnabled
+                ? ['font-weight-bold', 'green--text']
+                : ['font-weight-bold', 'red--text'],
+            },
+          ],
+          reserves: [
+            { name: 'Asset price', value: '$ ' + this.pool.usdPrice.toFixed(2) + ' USD' },
+            { name: 'Maximum LTV', value: this.pool.loanToValue + '%', isTooltip: true, tooltip: this.messages.maxLTV },
+            {
+              name: 'Liquidation Threshold',
+              value: this.pool.liquidationThreshold > 0 ? this.pool.liquidationThreshold + ' %' : '-',
+              isTooltip: true,
+              tooltip: this.messages.liquidationThreshold,
+            },
+            {
+              name: 'Liquidation Penalty',
+              value: this.pool.liquidationPenalty > 0 ? this.pool.liquidationPenalty + ' %' : '-',
+              isTooltip: true,
+              tooltip: this.messages.liquidationPenalty,
+            },
+          ],
+          wallet: [
+            { name: 'Your balance in Aave', value: this.pool.portfolio.totalDeposits.toLocaleString() },
+            {
+              name: 'Your wallet balance',
+              value: this.pool.portfolio.walletBal.toLocaleString() + ' ' + this.pool.symbol,
+            },
+            { name: 'Health Factor', value: this.healthFactor > 0 ? this.healthFactor.toLocaleString() : '-' },
+          ],
+        },
+        borrow: {
+          basicStats: [
+            { name: 'Utilization rate', value: this.pool.utilizationRatePtc.toFixed(2) + '%' },
+            {
+              name: 'Available liquidity',
+              value: `${this.pool.availableLiquidityBalance.toLocaleString()} ${this.pool.symbol}`,
+            },
+            { name: 'Asset price', value: '$ ' + this.pool.usdPrice.toFixed(2) + ' USD' },
+          ],
+
+          reserves: [
+            { name: 'Stable borrow APY', value: (this.pool.stableBorrowAPY * 100).toFixed(2) + '%' },
+            { name: 'Variable borrow APY', value: (this.pool.variableBorrowAPY * 100).toFixed(2) + '%' },
+          ],
+
+          wallet: [
+            { name: 'You Borrowed', value: '$ ' + this.totalBorrowed.toLocaleString() + ' USD' },
+            { name: 'Total collateral', value: '$ ' + this.totalCollateral.toLocaleString() + ' USD' },
+            { name: 'Health Factor', value: this.healthFactor > 0 ? this.healthFactor.toLocaleString() : '-' },
+            { name: 'Loan to value', value: this.maxLTV > 0 ? this.maxLTV.toFixed(2) + '%' : '-' },
+          ],
+        },
+
+        repay: {
+          basicStats: [
+            { name: 'You borrowed', value: this.pool.portfolio.variableBorrow },
+            { name: 'Wallet balance', value: this.pool.portfolio.walletBal },
+          ],
+          stats: [
+            {
+              name: 'Liquidation Threshold',
+              value: this.healthFactor > 0 ? this.healthFactor.toLocaleString() : '-',
+              isTooltip: true,
+              tooltip: this.messages.healthFactor,
+            },
+
+            {
+              name: 'Loan to Value',
+              value: this.maxLTV > 0 ? this.maxLTV.toFixed(2) + '%' : '-',
+              isTooltip: true,
+              tooltip: this.messages.maxLTV,
+            },
+          ],
+        },
+        withdraw: {
+          stats: [
+            { name: 'Your balance in Aave', value: this.pool.portfolio.totalDeposits + ` ${this.pool.symbol}` },
+            {
+              name: 'Liquidation Threshold',
+              value: this.healthFactor > 0 ? this.healthFactor.toLocaleString() : '-',
+              isTooltip: true,
+              tooltip: this.messages.healthFactor,
+            },
+
+            {
+              name: 'Loan to Value',
+              value: this.maxLTV > 0 ? this.maxLTV.toFixed(2) + '%' : '-',
+              isTooltip: true,
+              tooltip: this.messages.maxLTV,
+            },
+          ],
+        },
       }
-      return this._allowedToDeposit
-    }
-    return 0
+    } else return null
   }
 
   /**
    * Accept aave pool and  instantiate landing pool contracts
    * @param  pool Aave Pool from backend subgraph API with additional computed properties
    * @param  action Aave Action
+   * @param  totalCollateral Aave total Collateral deposits in USD
+   * @param  healthFactor Computed healthFactor, https://docs.aave.com/risk/asset-risk/risk-parameters
+   * @param totalBorrowed Aave total borrowed in USD
+   * @param maxLTV MAX LTV from pool
    */
-  async init(pool: AavePoolCl, action: aaveActionTypes) {
+  init(
+    pool: AavePoolCl,
+    healthFactor: number = 0,
+    totalCollateral: number = 0,
+    totalBorrowed: number = 0,
+    maxLTV: number = 0,
+    action: aaveActionTypes
+  ) {
     this.actionType = action
     this._allowedToDeposit = 0
     this.pool = pool
+    this.healthFactor = healthFactor
+    this.totalCollateral = totalCollateral
+    this.totalBorrowed = totalBorrowed
+    this.maxLTV = maxLTV
     this.dialog = true
-
-    // Getting current wallet balance of the token we trying to deposit
-    this.loadingWalletTokenBalance = true
-    this.values.inputNum.disabled = true
-    this._allowedToDeposit = await this._WALLET_BALANCE_METAMASK_CALL()
-    this.loadingWalletTokenBalance = false
-    this.values.inputNum.disabled = false
   }
 
   setAltImg(event: any) {
@@ -477,7 +609,7 @@ export class AavePoolAction extends Vue {
   @Emit('transaction-result')
   transactionResult(status: 'error' | 'success', message: string): string {
     this.alert = true
-    this.message = { status, message }
+    this.alertMessage = { status, message }
     this.values.inputNum.value = 0
     this.loading = false
     this.values.inputNum.disabled = false

@@ -153,6 +153,11 @@ export class AavePoolCl implements AavePool {
   addresses!: AaveAddress
   portfolio!: AavePortfolio
   usdPrice!: number
+  baseLTVasCollateral!: string
+  reserveLiquidationBonus!: string
+  reserveLiquidationThreshold!: string
+  totalLiquidityAsCollateral!: string
+  usageAsCollateralEnabled!: boolean
 
   get depositAPR(): number {
     return parseFloat(this.liquidityRate) / RAY_UNITS
@@ -211,6 +216,18 @@ export class AavePoolCl implements AavePool {
 
   get utilizationRatePtc() {
     return parseFloat(this.utilizationRate) * 100
+  }
+
+  get loanToValue() {
+    return parseFloat(this.baseLTVasCollateral) / 100
+  }
+
+  get liquidationThreshold() {
+    return parseFloat(this.reserveLiquidationThreshold) / 100
+  }
+
+  get liquidationPenalty() {
+    return parseFloat(this.reserveLiquidationBonus) / 100 - 100
   }
 }
 
@@ -283,6 +300,15 @@ export class AavePools extends Vue {
         cellClass: ['px-2', 'text-truncate'],
       },
 
+      {
+        text: '',
+        value: 'action',
+        width: 300,
+        sortable: false,
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
       // {
       //   text: 'Your Balance USD',
       //   align: 'left',
@@ -344,14 +370,6 @@ export class AavePools extends Vue {
         class: ['px-2', 'text-truncate'],
         cellClass: ['px-2', 'text-truncate'],
       },
-      {
-        text: '',
-        value: 'action',
-        width: 300,
-        sortable: false,
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
 
       {
         text: '',
@@ -372,6 +390,47 @@ export class AavePools extends Vue {
     if (status === 'success') {
       await this.$apollo.queries.aavePools.refetch()
     }
+  }
+
+  get totalCollateral(): number {
+    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    return collateralPools.reduce((a, b) => a + b.usdPrice * b.portfolio.totalDeposits, 0)
+  }
+
+  get totalBorrowed(): number {
+    return this.aavePools.reduce((a, b) => a + b.usdPrice * b.portfolio.variableBorrow, 0)
+  }
+
+  get healthFactor(): number {
+    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralOnLiqThreshold = collateralPools.reduce(
+      (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.liquidationThreshold) / 100,
+      0
+    )
+
+    return collateralOnLiqThreshold / this.totalBorrowed || 0
+  }
+
+  get maxTLV(): number {
+    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralOnLTV = collateralPools.reduce(
+      (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.loanToValue) / 100,
+      0
+    )
+    return (collateralOnLTV / this.totalCollateral) * 100 || 0
+  }
+
+  get currentLTV(): number {
+    return (this.totalBorrowed / this.totalCollateral) * 100 || 0
+  }
+
+  get liquidationThreshold(): number {
+    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralOnLTV = collateralPools.reduce(
+      (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.liquidationThreshold) / 100,
+      0
+    )
+    return (collateralOnLTV / this.totalCollateral) * 100 || 0
   }
 
   valueFormatter(value: number, maximumSignificantDigits: number = 6, minimumSignificantDigits: number = 6): string {
@@ -396,7 +455,7 @@ export class AavePools extends Vue {
   async invest(poolAddress: string, action: aaveActionTypes) {
     const pool: AavePoolCl | undefined = this.aavePools.find((elem) => elem.id === poolAddress)
     if (pool) {
-      await this.poolAction.init(pool, action)
+      await this.poolAction.init(pool, this.healthFactor, this.totalCollateral, this.totalBorrowed, this.maxTLV, action)
     }
   }
 }

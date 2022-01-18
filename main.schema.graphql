@@ -19,20 +19,25 @@ type AavePool {
   aEmissionPerSecond: String!
   addresses: AaveAddress!
   availableLiquidity: String!
+  baseLTVasCollateral: String!
   decimals: Int!
   id: String!
   liquidityRate: String!
   name: String!
   portfolio: AavePortfolio!
   price: AavePoolPrice!
+  reserveLiquidationBonus: String!
+  reserveLiquidationThreshold: String!
   sEmissionPerSecond: String!
   stableBorrowRate: String!
   symbol: String!
   totalATokenSupply: String!
   totalCurrentVariableDebt: String!
   totalLiquidity: String!
+  totalLiquidityAsCollateral: String!
   totalPrincipalStableDebt: String!
   underlyingAsset: String!
+  usageAsCollateralEnabled: Boolean!
   usdPrice: Float!
   utilizationRate: String!
   vEmissionPerSecond: String!

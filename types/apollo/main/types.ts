@@ -29,20 +29,25 @@ export type AavePool = {
   aEmissionPerSecond: Scalars['String'];
   addresses: AaveAddress;
   availableLiquidity: Scalars['String'];
+  baseLTVasCollateral: Scalars['String'];
   decimals: Scalars['Int'];
   id: Scalars['String'];
   liquidityRate: Scalars['String'];
   name: Scalars['String'];
   portfolio: AavePortfolio;
   price: AavePoolPrice;
+  reserveLiquidationBonus: Scalars['String'];
+  reserveLiquidationThreshold: Scalars['String'];
   sEmissionPerSecond: Scalars['String'];
   stableBorrowRate: Scalars['String'];
   symbol: Scalars['String'];
   totalATokenSupply: Scalars['String'];
   totalCurrentVariableDebt: Scalars['String'];
   totalLiquidity: Scalars['String'];
+  totalLiquidityAsCollateral: Scalars['String'];
   totalPrincipalStableDebt: Scalars['String'];
   underlyingAsset: Scalars['String'];
+  usageAsCollateralEnabled: Scalars['Boolean'];
   usdPrice: Scalars['Float'];
   utilizationRate: Scalars['String'];
   vEmissionPerSecond: Scalars['String'];
@@ -357,7 +362,7 @@ export type Query = {
 
 export type QueryAavePoolsArgs = {
   chainId: Scalars['Int'];
-  userWallet: Scalars['String'];
+  userWallet?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -513,7 +518,7 @@ export type AavePoolGqlQueryVariables = Exact<{
 }>;
 
 
-export type AavePoolGqlQuery = { __typename?: 'Query', aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: string, liquidityRate: string, stableBorrowRate: string, variableBorrowRate: string, aEmissionPerSecond: string, vEmissionPerSecond: string, sEmissionPerSecond: string, availableLiquidity: string, utilizationRate: string, totalATokenSupply: string, totalCurrentVariableDebt: string, totalPrincipalStableDebt: string, usdPrice: number, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: string }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string }, portfolio: { __typename?: 'AavePortfolio', walletBal: number, totalDeposits: number, stableBorrow: number, variableBorrow: number } }> };
+export type AavePoolGqlQuery = { __typename?: 'Query', aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: string, liquidityRate: string, stableBorrowRate: string, variableBorrowRate: string, aEmissionPerSecond: string, vEmissionPerSecond: string, sEmissionPerSecond: string, availableLiquidity: string, utilizationRate: string, totalATokenSupply: string, totalCurrentVariableDebt: string, totalPrincipalStableDebt: string, usdPrice: number, totalLiquidityAsCollateral: string, baseLTVasCollateral: string, reserveLiquidationThreshold: string, reserveLiquidationBonus: string, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: string }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string }, portfolio: { __typename?: 'AavePortfolio', walletBal: number, totalDeposits: number, stableBorrow: number, variableBorrow: number } }> };
 
 export type UsdPriceGqlQueryVariables = Exact<{ [key: string]: never; }>;
 

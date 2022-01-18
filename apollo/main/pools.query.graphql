@@ -66,6 +66,11 @@ query AavePoolGQL($chainId: Int!, $userWallet: String!){
       variableBorrow
     }
     usdPrice
+    totalLiquidityAsCollateral
+    baseLTVasCollateral
+    reserveLiquidationThreshold
+    reserveLiquidationBonus
+    usageAsCollateralEnabled
   }
 }
 

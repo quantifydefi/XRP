@@ -1,6 +1,44 @@
 <template>
   <v-card tile outlined height="100%">
     <v-skeleton-loader v-if="isPoolsLoading" type="table-tbody,table-tbody" />
+
+    <!--    <v-col>
+      <v-simple-table>
+        <template #default>
+          <tbody>
+            <tr>
+              <td :class="[ui[theme].innerCardLighten]">Total Collateral</td>
+              <td>{{ totalCollateral }}</td>
+            </tr>
+
+            <tr>
+              <td :class="[ui[theme].innerCardLighten]">Total Borrowed</td>
+              <td>{{ totalBorrowed }}</td>
+            </tr>
+
+            <tr>
+              <td :class="[ui[theme].innerCardLighten]">Health Factor</td>
+              <td>{{ healthFactor }}</td>
+            </tr>
+
+            <tr>
+              <td :class="[ui[theme].innerCardLighten]">Max LTV</td>
+              <td>{{ maxTLV }}</td>
+            </tr>
+
+            <tr>
+              <td :class="[ui[theme].innerCardLighten]">Current LTV</td>
+              <td>{{ currentLTV }}</td>
+            </tr>
+            <tr>
+              <td :class="[ui[theme].innerCardLighten]">Liquidation Threshold</td>
+              <td>{{ liquidationThreshold }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-col>-->
+
     <v-data-table
       v-if="!isPoolsLoading"
       id="curve-pools-grid"
@@ -172,6 +210,35 @@
                               </tbody>
                             </template>
                           </v-simple-table>
+                        </v-col>
+                      </v-row>
+
+                      <v-divider class="mb-3" />
+
+                      <v-row no-gutters justify="center" class="text-center">
+                        <v-col>
+                          <div>Maximum LTV</div>
+                          <div class="font-weight-bold">{{ item.loanToValue > 0 ? item.loanToValue + ' %' : '-' }}</div>
+                        </v-col>
+                        <v-col>
+                          <div>Liquidation threshold</div>
+                          <div class="font-weight-bold">
+                            {{ item.liquidationThreshold > 0 ? item.liquidationThreshold + ' %' : '-' }}
+                          </div>
+                        </v-col>
+                        <v-col>
+                          <div>Liquidation Penalty</div>
+                          <div class="font-weight-bold">
+                            {{ item.liquidationPenalty > 0 ? item.liquidationPenalty + ' %' : '-' }}
+                          </div>
+                        </v-col>
+                        <v-col>
+                          <div>Used as collateral</div>
+                          <div
+                            :class="['font-weight-bold', item.usageAsCollateralEnabled ? 'green--text' : 'red--text']"
+                          >
+                            {{ item.usageAsCollateralEnabled ? 'Yes' : 'No' }}
+                          </div>
                         </v-col>
                       </v-row>
                     </div>
