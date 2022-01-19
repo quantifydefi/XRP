@@ -433,6 +433,27 @@ export class AavePools extends Vue {
     return (collateralOnLTV / this.totalCollateral) * 100 || 0
   }
 
+  get portfolioComposition() {
+    const wallet: Record<string, any> = { name: 'Your Wallet Composition', data: [] }
+    const deposits: Record<string, any> = { name: 'Deposits Composition', data: [] }
+    const borrows: Record<string, any> = { name: 'Borrows Composition', data: [] }
+
+    this.aavePools
+      .filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
+      .forEach((elem) => {
+        if (elem.portfolio.walletBal > 0) {
+          wallet.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.walletBal * elem.usdPrice })
+        }
+        if (elem.portfolio.totalDeposits > 0) {
+          deposits.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.totalDeposits * elem.usdPrice })
+        }
+        if (elem.portfolio.variableBorrow > 0) {
+          borrows.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.variableBorrow * elem.usdPrice })
+        }
+      })
+    return [wallet, deposits, borrows]
+  }
+
   valueFormatter(value: number, maximumSignificantDigits: number = 6, minimumSignificantDigits: number = 6): string {
     return new Intl.NumberFormat('en', { maximumSignificantDigits, minimumSignificantDigits }).format(value)
   }
