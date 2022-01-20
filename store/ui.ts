@@ -11,32 +11,11 @@ export const state = () => ({
     // header
     headerTextClass: 'white--text',
     innerCardLighten: 'grey--text text--lighten-1',
-
-    //
-    // background: '#121212',
-    // bgAccent: 'grey darken-4',
-    // overlay: '#121212',
-    // appBg: '#151A23',
-    // baseText: '#fff',
-    // outline: '#2F2F2F',
-    // baseButton: 'grey darken-4',
-    // card: '#121212',
-    // innerCard: '#151A23',
   },
   light: {
     overlayColor: 'grey lighten-4',
-    // header
     headerTextClass: 'black--text',
     innerCardLighten: 'black--text',
-    // background: '#fff',
-    // bgAccent: '#fff',
-    // overlay: '#fff',
-    // appBg: 'grey lighten-4',
-    // baseText: 'grey darken-3',
-    // outline: '#E0E0E0',
-    // baseButton: 'white',
-    // card: 'grey lighten-2',
-    // innerCard: 'grey lighten-2',
   },
 })
 export type UiState = ReturnType<typeof state>

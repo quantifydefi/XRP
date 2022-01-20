@@ -326,6 +326,28 @@ export class AavePools extends Vue {
       // },
 
       {
+        text: 'Deposit APY',
+        align: 'center',
+        value: 'depositAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+      {
+        text: 'Variable Borrow APY',
+        align: 'center',
+        value: 'variableBorrowAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+      {
+        text: 'Stable Borrow APY',
+        align: 'center',
+        value: 'stableBorrowAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
         text: 'Balance, USD',
         align: 'left',
         value: 'usdBalance',
@@ -348,29 +370,6 @@ export class AavePools extends Vue {
         class: ['px-2', 'text-truncate'],
         cellClass: ['px-2', 'text-truncate'],
       },
-
-      {
-        text: 'Deposit APY',
-        align: 'center',
-        value: 'depositAPY',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-      {
-        text: 'Variable Borrow APY',
-        align: 'center',
-        value: 'variableBorrowAPY',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-      {
-        text: 'Stable Borrow APY',
-        align: 'center',
-        value: 'stableBorrowAPY',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-
       {
         text: '',
         align: 'right',

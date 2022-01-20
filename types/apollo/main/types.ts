@@ -500,7 +500,7 @@ export type User = {
 export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: number, isTestNet: boolean, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string } };
+export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: number, isTestNet: boolean, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string }, protocols: Array<{ __typename?: 'Protocol', name: string, symbol: string, id: string } | null | undefined> };
 
 export type AllProtocolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 

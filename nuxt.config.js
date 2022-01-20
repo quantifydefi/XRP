@@ -39,7 +39,7 @@ export default {
 
   plugins: [
     '~/plugins/initConfigs.client.ts', // only in client side
-    '~/plugins/global/helpers.ts',
+    '~/plugins/typer.client.ts',
   ],
 
   components: true,
@@ -204,7 +204,7 @@ export default {
 
   env: {
     baseURL: config[runEnv].BASE_URL,
-    COVALENT_API_KEY: config[runEnv].COVALENT_API_KEY,
+    amChartLicense: process.env.AMCHARTS_LICENSE,
   },
 
   server: { port: 3000, host: config[runEnv].SERVER_HOST },

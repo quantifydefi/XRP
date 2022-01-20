@@ -25,7 +25,7 @@ input:focus {
 }
 
 
-// Sceleton
+// SLoading skeleton
 
 .theme--dark.v-skeleton-loader .v-skeleton-loader__actions,
 .theme--dark.v-skeleton-loader .v-skeleton-loader__article,
@@ -142,27 +142,9 @@ tbody {
   }
 }
 
-//.v-data-table > .v-data-table__wrapper > table > thead > tr:last-child > th {
-//  font-size: 13px !important;
-//}
-//
 .theme--dark.v-data-table > .v-data-table__wrapper > table > thead > tr:last-child > th {
-  //border-bottom: 1px solid #68686d !important;
   color: white;
 }
-
-//
-//.theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr:last-child > th {
-//  border-bottom: 1px solid #BABFC4 !important;
-//
-//}
-//
-//.v-data-table--dense > .v-data-table__wrapper > table > tbody > tr > td,
-//.v-data-table--dense > .v-data-table__wrapper > table > thead > tr > td,
-//.v-data-table--dense > .v-data-table__wrapper > table > tfoot > tr > td {
-//  height: 23.2px !important;
-//}
-
 
 .theme--dark.v-tabs > .v-tabs-bar {
   background-color: #121212;

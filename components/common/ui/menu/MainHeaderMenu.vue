@@ -166,8 +166,6 @@ import { Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { mixins } from 'vue-class-component'
 import { MetamaskConnector } from '~/models/wallet'
-import { appConfig } from '~/models/app'
-import { Balance } from '~/models/balance'
 @Component({
   name: 'MainHeaderMenu',
   computed: {
@@ -179,12 +177,5 @@ import { Balance } from '~/models/balance'
     }),
   },
 })
-export default class MainHeaderMenu extends mixins(MetamaskConnector) {
-  balances: Balance | null = null
-  configs = appConfig
-
-  /*  mounted() {
-    await this.balances.getBalances()
-  } */
-}
+export default class MainHeaderMenu extends mixins(MetamaskConnector) {}
 </script>

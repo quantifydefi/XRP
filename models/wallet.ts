@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
 import { Component, Vue } from 'vue-property-decorator'
-// import { ethers } from 'ethers'
-// import { ethers } from 'ethers'
 import { Events } from '~/types/global'
 
 declare const window: any

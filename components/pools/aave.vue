@@ -1,57 +1,72 @@
 <template>
   <v-row>
-    <v-col cols="3">
-      <v-card outlined tile height="100%" class="pa-2">
-        <span class="text-subtitle-1">Aave Information</span>
-        <v-simple-table>
-          <template #default>
-            <tbody class="text-subtitle-1">
-              <tr>
-                <td :class="[ui[theme].innerCardLighten]">Total Collateral</td>
-                <td>{{ '$ ' + totalCollateral.toLocaleString() + ' USD' }}</td>
-              </tr>
+    <v-col v-if="isPoolsLoading">
+      <v-row>
+        <v-col v-for="i in 4" :key="i">
+          <v-card height="240" tile outlined>
+            <v-skeleton-loader type="table-heading, image" height="240" />
+          </v-card>
+        </v-col>
 
-              <tr>
-                <td :class="[ui[theme].innerCardLighten]">Total Borrowed</td>
-                <td>{{ '$ ' + totalBorrowed.toLocaleString() + ' USD' }}</td>
-              </tr>
-
-              <tr>
-                <td :class="[ui[theme].innerCardLighten]">Health Factor</td>
-                <td>{{ healthFactor.toFixed(2) + ' %' }}</td>
-              </tr>
-
-              <tr>
-                <td :class="[ui[theme].innerCardLighten]">Max LTV</td>
-                <td>{{ maxTLV.toFixed(2) + ' %' }}</td>
-              </tr>
-
-              <tr>
-                <td :class="[ui[theme].innerCardLighten]">Current LTV</td>
-                <td>{{ currentLTV.toFixed(2) + ' %' }}</td>
-              </tr>
-              <tr>
-                <td :class="[ui[theme].innerCardLighten]">Liquidation Threshold</td>
-                <td>{{ liquidationThreshold.toFixed(2) + ' %' }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-card>
+        <v-col cols="12">
+          <v-card height="100%" tile outlined>
+            <v-skeleton-loader type="table-tbody, table-tbody" />
+          </v-card>
+        </v-col>
+      </v-row>
     </v-col>
-    <v-col v-for="(item, index) in portfolioComposition" :key="index">
-      <v-card tile outlined height="100%" class="pa-2">
-        <span class="text-subtitle-1">{{ item.name }}</span>
-        <aave-composition-chart :data="item.data" />
-      </v-card>
-    </v-col>
+    <v-col v-if="!isPoolsLoading" cols="12">
+      <v-row>
+        <v-col lg="3" md="6" cols="12">
+          <v-card outlined tile height="100%" class="pa-2">
+            <span class="text-subtitle-1">Aave Information</span>
+            <v-simple-table>
+              <template #default>
+                <tbody class="text-subtitle-1">
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Total Collateral</td>
+                    <td>{{ '$ ' + totalCollateral.toLocaleString() + ' USD' }}</td>
+                  </tr>
 
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Total Borrowed</td>
+                    <td>{{ '$ ' + totalBorrowed.toLocaleString() + ' USD' }}</td>
+                  </tr>
+
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Health Factor</td>
+                    <td>{{ healthFactor.toFixed(2) + ' %' }}</td>
+                  </tr>
+
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Max LTV</td>
+                    <td>{{ maxTLV.toFixed(2) + ' %' }}</td>
+                  </tr>
+
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Current LTV</td>
+                    <td>{{ currentLTV.toFixed(2) + ' %' }}</td>
+                  </tr>
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Liquidation Threshold</td>
+                    <td>{{ liquidationThreshold.toFixed(2) + ' %' }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-card>
+        </v-col>
+        <v-col v-for="(item, index) in portfolioComposition" :key="index" lg="3" md="6" cols="12">
+          <v-card tile outlined height="100%" class="pa-2">
+            <span class="text-subtitle-1">{{ item.name }}</span>
+            <aave-composition-chart :data="item.data" />
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-col>
     <v-col cols="12">
-      <v-card tile outlined height="100%">
-        <v-skeleton-loader v-if="isPoolsLoading" type="table-tbody,table-tbody" />
-
+      <v-card v-if="!isPoolsLoading" tile outlined height="100%">
         <v-data-table
-          v-if="!isPoolsLoading"
           id="curve-pools-grid"
           :headers="config.cols"
           :items="aaveMainPoolsFiltered"

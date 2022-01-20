@@ -3,7 +3,7 @@ import type { ActionTree, MutationTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { Chain, GlobalStats } from '~/types/apollo/main/types'
 import { GlobalStatsQueryGQL } from '~/apollo/main/config.query.graphql'
-import { ChainItem, PortfolioBalance } from '~/models/portfolio'
+import { ChainItem } from '~/models/portfolio'
 export const state = () => ({
   globalStats: null as GlobalStats | null,
   gasStats: null as {
@@ -23,14 +23,16 @@ export const state = () => ({
     isTestNet: false,
   } as ChainItem,
   chains: [] as ChainItem[],
+  protocols: [] as { name: string; symbol: string; id: string }[],
 })
 export type ConfigState = ReturnType<typeof state>
 
 export const mutations: MutationTree<ConfigState> = {
-  SET_CONFIG: (state, { globalStats, chains, gasStats }) => {
+  SET_CONFIG: (state, { globalStats, chains, protocols, gasStats }) => {
     state.chains = plainToClass(ChainItem, chains as ChainItem[])
     state.globalStats = globalStats
     state.gasStats = gasStats
+    state.protocols = protocols
   },
   SET_CHAIN: (state, chain: ChainItem) => {
     state.currentChain = chain

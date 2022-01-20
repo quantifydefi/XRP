@@ -1,6 +1,6 @@
 <template>
   <v-card tile outlined height="100%">
-    <v-skeleton-loader v-if="isPoolsLoading" type="table-tbody,table-tbody" />
+    <v-skeleton-loader v-if="isPoolsLoading" type="table-tbody,table-tbody,table-tbody" />
     <v-data-table
       v-if="!isPoolsLoading && curvePools.length"
       id="curve-pools-grid"
@@ -8,7 +8,7 @@
       :items="curvePools"
       :sort-desc="[true]"
       height="100%"
-      :items-per-page="10"
+      :items-per-page="20"
       class="elevation-0"
     >
       <template #[`item.pool`]="{ item }">
@@ -165,10 +165,6 @@
           </template>
           Open Pool in Etherscan
         </v-tooltip>
-      </template>
-
-      <template #[`item.action`]="{ item }">
-        <v-btn tile depressed small @click="invest(item.id)">Invest</v-btn>
       </template>
     </v-data-table>
   </v-card>

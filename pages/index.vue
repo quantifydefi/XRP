@@ -1,114 +1,45 @@
 <template>
   <div class="mb-4">
-    <v-row justify="center" style="height: 800px; margin-top: 100px">
-      <v-col cols="10">
-        <v-row align="center">
-          <v-col cols="7">
-            <v-row>
-              <v-col cols="12">
-                <p class="v-heading text-h3 font-weight-regular">Quantify Crypto</p>
-
-                <p class="v-heading text-h3 font-weight-regular mb-8">Decentralized Finance Platform</p>
-
-                <p class="text-uppercase">
-                  <a
-                    href="https://uniswap.org"
-                    target="_blank"
-                    class="text-decoration-none font-weight-medium pink--text text--accent-2"
-                    >UNISWAP</a
-                  >
-                  TRADING INFERFACE, MARKET OVERVIEW AND PORTFOLIO MANAGEMENT
-                </p>
-              </v-col>
-              <client-only>
-                <v-row>
-                  <v-col class="pb-0" cols="12" md="7">
-                    <token-search />
-                  </v-col>
-                  <v-col :class="$vuetify.breakpoint.smAndDown ? 'mt-n5 pt-0' : ''" cols="12" md="1">
-                    <connect-to-wallet-button />
-                  </v-col>
-                </v-row>
-              </client-only>
-            </v-row>
-          </v-col>
-
-          <v-col cols="5">
-            <div style="height: 550px">
-              <v-img
-                max-width="600"
-                :src="'/img/landing/Lovepik_com-828897720-25D Business Blockchain Bitcoin Gradient Elements.png'"
-                :lazy-src="'/img/landing/Lovepik_com-828897720-25D Business Blockchain Bitcoin Gradient Elements.png'"
-                max-height="550"
-              />
-            </div>
-          </v-col>
-        </v-row>
-        <v-row v-if="isButtonVisible" style="margin-top: 140px">
-          <v-col class="py-0">
-            <p class="text-center">
-              <v-btn depressed tile height="42" @click="goTo">
-                <v-icon size="42"> mdi-chevron-down</v-icon>
-              </v-btn>
-            </p>
-          </v-col>
-        </v-row>
+    <v-row justify="center" style="margin-top: 100px">
+      <v-col cols="8" class="text-center">
+        <div class="v-heading text-h2">Quantify Crypto</div>
+        <div class="v-heading text-h3 font-weight-light mt-3 grey--text">
+          Platform for Decentralized finance with verity of features:
+        </div>
+        <div class="mt-4">
+          <client-only>
+            <vue-typer
+              class="v-heading text-h3 font-weight-light"
+              erase-style="backspace"
+              :text="animatedFeatures"
+              :repeat="Infinity"
+              :shuffle="true"
+              initial-action="erasing"
+              :pre-type-delay="70"
+              :type-delay="70"
+              :pre-erase-delay="2000"
+              :erase-delay="70"
+              :erase-on-complete="false"
+              caret-animation="smooth"
+            ></vue-typer>
+          </client-only>
+        </div>
       </v-col>
     </v-row>
 
     <v-row justify="center">
       <v-col cols="10">
         <v-row>
-          <v-col><p id="#features" class="text-center text-h3 mt-5">Features</p></v-col>
+          <v-col><div class="text-h4 mt-5">Roadmap</div></v-col>
         </v-row>
 
-        <v-row align="center">
-          <v-col v-for="item in featureItems" :key="item.header" cols="auto" md="4" sm="6" style="width: 100%">
-            <v-hover v-slot="{ hover }">
-              <v-card
-                height="250"
-                tile
-                outlined
-                class="px-5"
-                :class="{ 'on-hover': hover }"
-                :elevation="hover ? 10 : 0"
-                color="transparent"
-              >
-                <p class="text-center mt-5">
-                  <v-icon color="primary" size="50">{{ item.icon }}</v-icon>
-                </p>
-                <p class="text-center text-h5" v-text="item.header" />
-                <p class="text-center" v-text="item.desc" />
-              </v-card>
-            </v-hover>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-
-    <v-row justify="center">
-      <v-col cols="10">
         <v-row>
-          <v-col><p class="text-center text-h3 mt-5">Roadmap</p></v-col>
-        </v-row>
-
-        <v-row align="center">
-          <v-col v-for="item in items" :key="item.header" cols="auto" md="4" sm="6" style="width: 100%">
+          <v-col v-for="item in items" :key="item.header" cols="auto" md="4" sm="6">
             <v-hover v-slot="{ hover }">
-              <v-card
-                color="transparent"
-                height="250"
-                tile
-                outlined
-                class="px-5"
-                :class="{ 'on-hover': hover }"
-                :elevation="hover ? 10 : 0"
-              >
-                <p class="text-center mt-5">
-                  <v-icon color="primary" size="50">{{ item.icon }}</v-icon>
-                </p>
-                <p class="text-center text-h5 mt-5" v-text="item.header" />
-                <p class="text-center mt-5" v-text="item.desc" />
+              <v-card height="100%" tile outlined class="text-center pa-2" :elevation="hover ? 10 : 0">
+                <v-icon color="primary" size="36">{{ item.icon }}</v-icon>
+                <p class="text-h5 mt-5" v-text="item.header" />
+                <p class="mt-5 grey--text" v-text="item.desc" />
               </v-card>
             </v-hover>
           </v-col>
@@ -121,10 +52,10 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import TokenSearch from '~/components/common/TokenSearch.vue'
-import ConnectToWalletButton from '~/components/wallet/ConnectToWalletButton.vue'
+
 @Component({
   name: 'Index',
-  components: { ConnectToWalletButton, TokenSearch },
+  components: { TokenSearch },
   head(): object {
     return {
       title: 'Uniswap Trading | Metamask | DeFi Heatmap',
@@ -231,6 +162,31 @@ export default class Index extends Vue {
     {
       color: 'primary lighten-2',
       icon: 'mdi-star',
+      header: 'Portfolio Visualization',
+      desc: '',
+    },
+
+    {
+      color: 'primary lighten-2',
+      icon: 'mdi-star',
+      header: 'Interactive trading Using recent blockchain data',
+      desc: '',
+    },
+    {
+      color: 'primary lighten-2',
+      icon: 'mdi-star',
+      header: 'Support of the Latest DeFi Protocols',
+      desc: '',
+    },
+    {
+      color: 'primary lighten-2',
+      icon: 'mdi-star',
+      header: 'Latest Blockchain Data',
+      desc: '',
+    },
+    {
+      color: 'primary lighten-2',
+      icon: 'mdi-star',
       header: 'Metamask Wallet Connector',
       desc: 'Connect to your Metamask wallet with a single click',
     },
@@ -266,15 +222,17 @@ export default class Index extends Vue {
     },
   ]
 
+  get animatedFeatures() {
+    return this.featureItems.map((elem) => elem.header)
+  }
+
   isButtonVisible = true
-
-  goTo() {
-    this.$vuetify.goTo(1000)
-    this.isButtonVisible = false
-  }
-
-  mounted() {
-    console.log('BBBBBBBBBBBBBBBBBBBBBBBBB')
-  }
 }
 </script>
+
+<style lang="scss">
+.vue-typer .custom.char.typed {
+  color: #e91e63ff;
+  align-items: center;
+}
+</style>

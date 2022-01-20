@@ -20,22 +20,17 @@
     <v-divider></v-divider>
 
     <client-only>
-      <v-list v-if="config" dense>
+      <v-list dense>
         <v-list-item-group color="primary" style="width: 255px">
           <v-list-item exact to="/">
             <v-list-item-icon>
               <v-icon>mdi-apps</v-icon>
             </v-list-item-icon>
 
-            <v-list-item-title> Dashboard</v-list-item-title>
+            <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
 
-          <!--          <v-list-group
-            v-if="config.networks.defaultNetwork.chainId === 1 || config.networks.defaultNetwork.chainId === 137"
-            :value="true"
-            no-action
-            color="primary"
-          >
+          <v-list-group :value="true" no-action color="primary">
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
                 <v-icon>mdi-lan </v-icon>
@@ -50,41 +45,29 @@
               <v-list-item-title>Protocols </v-list-item-title>
             </template>
 
-            <v-list-item exact :to="`/app/${config.networks.defaultNetwork.chainId}/aave`" class="ml-n6">
+            <v-list-item
+              v-for="item in protocols"
+              :key="item.id"
+              exact
+              class="ml-n6"
+              :to="`/protocols?protocol=${item.id}`"
+            >
               <v-list-item-icon>
                 <v-avatar size="24">
-                  <img
-                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/aave.png`"
+                  <v-img
+                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.symbol.toLowerCase()}.png`"
                   />
                 </v-avatar>
               </v-list-item-icon>
-              <v-list-item-title>Aave v2</v-list-item-title>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
             </v-list-item>
-
-            <v-list-item exact :to="`/app/${config.networks.defaultNetwork.chainId}/curve`" class="ml-n6">
-              <v-list-item-icon>
-                <v-avatar size="24">
-                  <img :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/crv.png`" />
-                </v-avatar>
-              </v-list-item-icon>
-              <v-list-item-title>Curve</v-list-item-title>
-            </v-list-item>
-          </v-list-group>-->
-
+          </v-list-group>
           <v-list-item exact disabled>
             <v-list-item-icon>
               <v-icon>mdi-bridge</v-icon>
             </v-list-item-icon>
 
             <v-list-item-title>Bridge <small class="pl-2">coming soon...</small></v-list-item-title>
-          </v-list-item>
-
-          <v-list-item to="/protocols">
-            <v-list-item-icon>
-              <v-icon>mdi-lan</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-title>Protocols</v-list-item-title>
           </v-list-item>
 
           <v-list-item exact to="/portfolio/balances">
@@ -95,27 +78,27 @@
             <v-list-item-title>Balances</v-list-item-title>
           </v-list-item>
 
-          <v-list-item exact :to="`/app/${config.networks.defaultNetwork.chainId}/transactions`">
-            <v-list-item-icon>
-              <v-icon>mdi-history</v-icon>
-            </v-list-item-icon>
+          <!--          <v-list-item exact>-->
+          <!--            <v-list-item-icon>-->
+          <!--              <v-icon>mdi-history</v-icon>-->
+          <!--            </v-list-item-icon>-->
 
-            <v-list-item-title> Transaction History</v-list-item-title>
-          </v-list-item>
+          <!--            <v-list-item-title> Transaction History</v-list-item-title>-->
+          <!--          </v-list-item>-->
 
           <v-list-group :value="true" no-action color="primary">
             <template #prependIcon>
               <v-list-item-icon class="mt-0">
-                <v-icon :color="$vuetify.theme.themes[theme].baseText">mdi-lan </v-icon>
+                <v-icon>mdi-lan </v-icon>
               </v-list-item-icon>
             </template>
             <template #appendIcon>
               <v-list-item-icon class="mt-0 mr-0">
-                <v-icon :color="$vuetify.theme.themes[theme].baseText">mdi-chevron-down </v-icon>
+                <v-icon>mdi-chevron-down </v-icon>
               </v-list-item-icon>
             </template>
             <template #activator>
-              <v-list-item-title :style="{ color: $vuetify.theme.themes[theme].baseText }">Research </v-list-item-title>
+              <v-list-item-title>Research </v-list-item-title>
             </template>
 
             <v-list-item v-for="item in navigationMenu" :key="item.title" class="ml-n6" :to="item.to" :href="item.href">
@@ -148,25 +131,22 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { EmitEvents } from '~/types/events'
-import { appConfig } from '~/models/app'
 import { ThemeOptions } from '~/types/ui'
-import { AppConfigInterface } from '~/types/app'
 
 @Component({
   name: 'MainNavigationMenu',
   computed: {
     ...mapState({
       theme: (state: any) => state.ui.theme,
+      protocols: (state: any) => state.configs.protocols,
     }),
   },
 })
 export default class MainNavigationMenu extends Vue {
   navigationDrawer: boolean = true
-  config: AppConfigInterface | null = null
-
   $cookies!: Record<string, any>
   $vuetify!: any
-
+  protocols!: { name: string; symbol: string; id: string }[]
   navigationMenu: {
     icon: string
     title: string
@@ -214,8 +194,6 @@ export default class MainNavigationMenu extends Vue {
   }
 
   mounted() {
-    this.config = appConfig
-
     this.$root.$on(EmitEvents.toggleNavigationMenu, () => {
       this.navigationDrawer = !this.navigationDrawer
     })

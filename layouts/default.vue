@@ -7,13 +7,6 @@
 
       <!--      Change it to separate component-->
       <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">
-        <v-avatar v-if="$route.name === 'app-id-aave' || $route.name === 'app-id-curve'" size="28" class="mr-2">
-          <img
-            :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${
-              protocolSrc[$route.name]
-            }.png`"
-          />
-        </v-avatar>
         {{ pageTitle[$route.name] }}
       </v-toolbar-title>
       <v-spacer />
@@ -70,7 +63,7 @@
             </div>
           </template>
 
-          <v-card outlined tile width="600">
+          <v-card outlined tile width="300">
             <v-row no-gutters>
               <v-col>
                 <v-list dense>
@@ -79,21 +72,6 @@
                     <v-list-item v-for="item in mainNetChains" :key="item.chainId" :value="item.chainId">
                       <v-list-item-avatar size="24">
                         <v-img :src="item.logoUrl"></v-img>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title v-text="item.label"></v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-col>
-              <v-col>
-                <v-list dense>
-                  <v-subheader>TEST NET</v-subheader>
-                  <v-list-item-group v-model="conf.selectedChainId" color="primary">
-                    <v-list-item v-for="item in testNetChains" :key="item.chainId" :value="item.chainId">
-                      <v-list-item-avatar size="24">
-                        <v-img s :src="item.logoUrl"></v-img>
                       </v-list-item-avatar>
                       <v-list-item-content>
                         <v-list-item-title v-text="item.label"></v-list-item-title>
@@ -165,6 +143,7 @@
           </v-card>
         </v-menu>
       </client-only>
+
       <!--      Wallet Menu-->
       <v-btn class="mt-1 subtitle-2 text-capitalize font-weight-regular" text tile @click="openMetamaskDialog()">
         <div :class="ui[theme].headerTextClass">
@@ -186,13 +165,7 @@
     </v-main>
 
     <main-navigation-menu />
-
     <notification ref="notificationComponent" />
-
-    <deposit-modal></deposit-modal>
-    <borrow-modal></borrow-modal>
-    <lend-modal></lend-modal>
-    <withdraw-modal></withdraw-modal>
   </v-app>
 </template>
 
@@ -205,23 +178,12 @@ import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
 import { Events } from '~/types/global'
 import LayoutMixin from '~/mixins/LayoutMixin.vue'
-import { appConfig } from '~/models/app'
-import { AppConfigInterface } from '~/types/app'
-import { Balance } from '~/models/balance'
-import DepositModal from '~/components/app/DepositModal.vue'
-import BorrowModal from '~/components/app/BorrowModal.vue'
-import LendModal from '~/components/app/LendModal.vue'
-import WithdrawModal from '~/components/app/WithdrawModal.vue'
 import { MetamaskConnector } from '~/models/wallet'
 import { Config } from '~/models/config'
 
 @Component({
   name: 'Default',
   components: {
-    WithdrawModal,
-    LendModal,
-    BorrowModal,
-    DepositModal,
     ApiMenuHeader,
     Notification,
     MainNavigationMenu,
@@ -240,11 +202,7 @@ import { Config } from '~/models/config'
 export default class Default extends mixins(LayoutMixin, MetamaskConnector, Config) {
   $refs!: { notificationComponent: any }
   walletConnected: any
-
   allowApiBar = process.env.runEnv === 'development' || process.env.runEnv === 'staging'
-
-  configs: AppConfigInterface | null = appConfig
-  balances: Balance | null = null
 
   pageTitle = {
     index: 'Dashboard',
@@ -257,11 +215,6 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
     'wallet-id': 'Portfolio',
     'app-id-aave': 'Aave v2',
     'app-id-curve': 'Curve',
-  }
-
-  protocolSrc = {
-    'app-id-aave': 'aave',
-    'app-id-curve': 'crv',
   }
 
   async mounted() {

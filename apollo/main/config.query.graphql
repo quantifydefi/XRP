@@ -18,4 +18,9 @@ query GlobalStatsQueryGQL {
   gasStats{
     lastBlock, safeGasPrice, proposeGasPrice, fastGasPrice, suggestBaseFee, gasUsedRatio
   }
+  protocols{
+    name
+    symbol
+    id
+  }
 }
