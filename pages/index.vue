@@ -12,13 +12,12 @@
               class="v-heading text-h3 font-weight-light"
               erase-style="backspace"
               :text="animatedFeatures"
-              :repeat="Infinity"
-              :shuffle="true"
+              :shuffle="false"
               initial-action="erasing"
               :pre-type-delay="70"
               :type-delay="70"
               :pre-erase-delay="2000"
-              :erase-delay="70"
+              :erase-delay="250"
               :erase-on-complete="false"
               caret-animation="smooth"
             ></vue-typer>
@@ -234,5 +233,13 @@ export default class Index extends Vue {
 .vue-typer .custom.char.typed {
   color: #e91e63ff;
   align-items: center;
+}
+.vue-typer .custom.caret {
+  animation: rocking 1s ease-in-out 0s infinite;
+}
+.vue-typer .custom.caret {
+  width: 5px;
+  background-color: #e91e63ff;
+  margin-right: 50px;
 }
 </style>
