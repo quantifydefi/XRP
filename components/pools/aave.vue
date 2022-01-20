@@ -383,13 +383,13 @@
               v-for="action in aaveActions"
               :key="action.value"
               text
-              rounded
-              x-small
               outlined
               color="pink"
+              class="pa-1 ma-1"
+              height="26"
               @click="invest(item.id, action.value)"
             >
-              {{ action.text }}
+              <span class="text-caption">{{ action.text }}</span>
             </v-btn>
           </template>
         </v-data-table>
