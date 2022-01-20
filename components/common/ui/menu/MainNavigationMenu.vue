@@ -9,7 +9,7 @@
 
           <v-list-item-content>
             <v-list-item-title class="text-h6 font-weight-regular">
-              EVM
+              EVMx
               <small class="grey--text text--lighten-1 ml-1 text-caption"> Beta </small>
             </v-list-item-title>
           </v-list-item-content>
@@ -120,7 +120,7 @@
 
           <v-divider />
 
-          <div class="caption text-center mt-2">EVM &copy; {{ new Date().getFullYear() }}</div>
+          <div class="caption text-center mt-2">EVMx &copy; {{ new Date().getFullYear() }}</div>
         </div>
       </v-list>
     </client-only>

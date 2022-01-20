@@ -1,23 +1,24 @@
 <template>
   <div class="mb-4">
     <v-row justify="center" style="margin-top: 100px">
-      <v-col cols="8" class="text-center">
-        <div class="v-heading text-h2">Quantify Crypto</div>
-        <div class="v-heading text-h3 font-weight-light mt-3 grey--text">
-          Platform for Decentralized finance with verity of features:
+      <v-col cols="11" class="text-center">
+        <h1 class="v-heading text-h2 font-weight-regular">EVMx <span class="title">[Beta]</span></h1>
+        <div class="v-heading text-h4 font-weight-light mt-3 grey--text">
+          Platform for Decentralized finance with variety of features:
         </div>
         <div class="mt-4">
           <client-only>
             <vue-typer
-              class="v-heading text-h3 font-weight-light"
-              erase-style="backspace"
+              class="v-heading text-h4 font-weight-light"
               :text="animatedFeatures"
+              :repeat="Infinity"
               :shuffle="false"
-              initial-action="erasing"
+              initial-action="typing"
               :pre-type-delay="70"
-              :type-delay="70"
+              :type-delay="100"
               :pre-erase-delay="2000"
               :erase-delay="250"
+              erase-style="clear"
               :erase-on-complete="false"
               caret-animation="smooth"
             ></vue-typer>
@@ -26,17 +27,22 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center">
+    <v-row justify="center" class="pt-16">
       <v-col cols="10">
         <v-row>
-          <v-col><div class="text-h4 mt-5">Roadmap</div></v-col>
+          <v-col>
+            <div class="text-h4 mt-5">Roadmap</div>
+          </v-col>
         </v-row>
 
-        <v-row>
-          <v-col v-for="item in items" :key="item.header" cols="auto" md="4" sm="6">
+        <v-row justify="center">
+          <v-col v-for="item in items" :key="item.header" cols="12" md="4" sm="6">
             <v-hover v-slot="{ hover }">
-              <v-card height="100%" tile outlined class="text-center pa-2" :elevation="hover ? 10 : 0">
-                <v-icon color="primary" size="36">{{ item.icon }}</v-icon>
+              <v-card height="100%" tile outlined class="pa-2 text-center" :elevation="hover ? 10 : 0">
+                <v-avatar size="40" class="mt-3" :color="$vuetify.theme.dark ? 'grey darken-4' : 'grey lighten-3'">
+                  <v-icon size="30" color="primary">{{ item.icon }}</v-icon>
+                </v-avatar>
+
                 <p class="text-h5 mt-5" v-text="item.header" />
                 <p class="mt-5 grey--text" v-text="item.desc" />
               </v-card>
@@ -127,7 +133,7 @@ export default class Index extends Vue {
     },
     {
       color: 'primary lighten-2',
-      icon: 'mdi-currency-usd-circle',
+      icon: 'mdi-currency-usd',
       header: 'Uniswap Screener',
       desc: 'Daily and hourly trends for tokens and token pairs.',
     },

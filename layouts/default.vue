@@ -25,49 +25,32 @@
         </span>
       </v-btn>
 
+      <!--  Network Menu    -->
       <client-only>
-        <v-menu
-          v-if="currentChain"
-          :close-on-content-click="false"
-          :nudge-width="500"
-          :nudge-left="0"
-          nudge-bottom="13"
-          offset-y
-          max-width="500"
-        >
+        <v-menu v-if="currentChain" :close-on-content-click="false" nudge-bottom="13" offset-y>
           <template #activator="{ on, attrs }">
-            <div class="d-flex">
+            <v-badge dot overlap :color="address ? 'green' : 'red'" class="mr-2">
               <v-btn
-                width="280"
-                tile
-                class="text-capitalize text-subtitle-2"
-                depressed
-                color="transparent"
+                fab
+                x-small
+                width="30"
+                height="30"
+                elevation="1"
+                :color="$vuetify.theme.dark ? 'grey darken-4' : 'grey lighten-4'"
+                class="mt-1 mr-2"
                 v-bind="attrs"
                 v-on="on"
               >
-                <v-row no-gutters>
-                  <v-col cols="2">
-                    <v-avatar size="18px">
-                      <v-img :src="currentChain.logoUrl" />
-                    </v-avatar>
-                  </v-col>
-
-                  <v-col class="text-left">
-                    {{ currentChain.label }}
-                  </v-col>
-                </v-row>
-
-                <v-icon right>mdi-chevron-down</v-icon>
+                <v-avatar size="26"><v-img :src="currentChain.logoUrl"></v-img></v-avatar>
               </v-btn>
-            </div>
+            </v-badge>
           </template>
 
-          <v-card outlined tile width="300">
+          <v-card outlined tile>
             <v-row no-gutters>
               <v-col>
                 <v-list dense>
-                  <v-subheader>MAIN NET</v-subheader>
+                  <v-subheader>Select Network</v-subheader>
                   <v-list-item-group v-model="conf.selectedChainId" color="primary">
                     <v-list-item v-for="item in mainNetChains" :key="item.chainId" :value="item.chainId">
                       <v-list-item-avatar size="24">
@@ -98,7 +81,7 @@
           <template #activator="{ on, attrs }">
             <div class="d-flex">
               <v-btn
-                class="mt-1 subtitle-2 text-capitalize font-weight-regular"
+                class="mt-1 subtitle-2 px-2 text-capitalize font-weight-regular"
                 text
                 tile
                 :class="ui[theme].headerTextClass + ` subtitle-2 text-capitalize elevation-0`"
@@ -145,21 +128,24 @@
       </client-only>
 
       <!--      Wallet Menu-->
-      <v-btn class="mt-1 subtitle-2 text-capitalize font-weight-regular" text tile @click="openMetamaskDialog()">
-        <div :class="ui[theme].headerTextClass">
-          <v-icon :color="walletConnected ? 'green' : 'orange'">mdi-wallet </v-icon>
-          <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2">
-            {{
-              !walletConnected
-                ? 'connect wallet'
-                : `${address.slice(0, 5)}...${address.slice(address.length - 4, address.length)}`
-            }}
-          </span>
-        </div>
-      </v-btn>
+      <client-only>
+        <v-btn class="mt-1 px-2 subtitle-2 text-capitalize font-weight-regular" text tile @click="openMetamaskDialog()">
+          <div :class="ui[theme].headerTextClass">
+            <v-icon v-if="!walletConnected" :color="walletConnected ? 'green' : 'orange'">mdi-wallet </v-icon>
+            <v-avatar v-else tile size="24" class="rounded"><v-img :src="iconSrc"></v-img></v-avatar>
+            <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2">
+              {{
+                !walletConnected
+                  ? 'connect wallet'
+                  : `${address.slice(0, 5)}...${address.slice(address.length - 4, address.length)}`
+              }}
+            </span>
+          </div>
+        </v-btn>
+      </client-only>
     </v-app-bar>
     <v-main>
-      <v-container style="max-width: 3000px">
+      <v-container fluid>
         <nuxt />
       </v-container>
     </v-main>
@@ -173,6 +159,8 @@
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
+import { create } from 'blockies-ts'
+
 import Notification from '../components/common/Notification.vue'
 import ApiMenuHeader from '../components/common/ApiMenuHeader.vue'
 import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
@@ -200,6 +188,7 @@ import { Config } from '~/models/config'
   },
 })
 export default class Default extends mixins(LayoutMixin, MetamaskConnector, Config) {
+  address!: any
   $refs!: { notificationComponent: any }
   walletConnected: any
   allowApiBar = process.env.runEnv === 'development' || process.env.runEnv === 'staging'
@@ -215,6 +204,10 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
     'wallet-id': 'Portfolio',
     'app-id-aave': 'Aave v2',
     'app-id-curve': 'Curve',
+  }
+
+  get iconSrc() {
+    return create({ seed: this.address }).toDataURL()
   }
 
   async mounted() {
