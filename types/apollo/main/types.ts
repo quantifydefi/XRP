@@ -338,6 +338,8 @@ export type Query = {
   aavePools: Array<AavePool>;
   /** Covalent Balances */
   balances: Array<Balance>;
+  chainLinkAddresses: Scalars['Map'];
+  chainLinkPrice: Scalars['Map'];
   chains: Array<Chain>;
   /** Curve Pool  */
   curvePools: Array<CurvePool>;
@@ -369,6 +371,12 @@ export type QueryAavePoolsArgs = {
 export type QueryBalancesArgs = {
   address: Scalars['String'];
   chainIds: Array<Scalars['Int']>;
+};
+
+
+export type QueryChainLinkPriceArgs = {
+  chainId?: Scalars['Int'];
+  pairs?: Array<Scalars['String']>;
 };
 
 
@@ -501,6 +509,11 @@ export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>
 
 
 export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: number, isTestNet: boolean, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string }, protocols: Array<{ __typename?: 'Protocol', name: string, symbol: string, id: string } | null | undefined> };
+
+export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
 
 export type AllProtocolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 

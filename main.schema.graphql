@@ -301,6 +301,8 @@ type Query {
   aavePools(chainId: Int!, userWallet: String = ""): [AavePool!]!
   "Covalent Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
+  chainLinkAddresses: Map!
+  chainLinkPrice(chainId: Int! = 1, pairs: [String!]! = []): Map!
   chains: [Chain!]!
   "Curve Pool "
   curvePools: [CurvePool!]!

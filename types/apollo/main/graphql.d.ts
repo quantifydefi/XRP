@@ -3,6 +3,7 @@ declare module '*/config.query.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
   export const GlobalStatsQueryGQL: DocumentNode;
+export const RecentPricesGQL: DocumentNode;
 
   export default defaultDocument;
 }

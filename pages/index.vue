@@ -1,6 +1,7 @@
 <template>
   <div class="mb-4">
-    <v-row justify="center" style="margin-top: 100px">
+    <!--    <v-row justify="center" style="margin-top: 100px">-->
+    <v-row justify="center" class="mt-4">
       <v-col cols="11" class="text-center">
         <h1 class="v-heading text-h2 font-weight-regular">EVMx <span class="title">[Beta]</span></h1>
         <div class="v-heading text-h4 font-weight-light mt-3 grey--text">
@@ -27,7 +28,15 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center" class="pt-16">
+    <v-row>
+      <client-only>
+        <v-col>
+          <recent-prices-chart />
+        </v-col>
+      </client-only>
+    </v-row>
+
+    <v-row justify="center">
       <v-col cols="10">
         <v-row>
           <v-col>
@@ -57,10 +66,10 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import TokenSearch from '~/components/common/TokenSearch.vue'
-
+import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
 @Component({
   name: 'Index',
-  components: { TokenSearch },
+  components: { TokenSearch, RecentPricesChart },
   head(): object {
     return {
       title: 'Uniswap Trading | Metamask | DeFi Heatmap',

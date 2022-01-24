@@ -24,3 +24,7 @@ query GlobalStatsQueryGQL {
     id
   }
 }
+
+query RecentPricesGQL{
+  recentPrices
+}
