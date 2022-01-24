@@ -1,6 +1,5 @@
 <template>
   <div class="mb-4">
-    <!--    <v-row justify="center" style="margin-top: 100px">-->
     <v-row justify="center" class="mt-4">
       <v-col cols="11" class="text-center">
         <h1 class="v-heading text-h2 font-weight-regular">EVMx <span class="title">[Beta]</span></h1>
