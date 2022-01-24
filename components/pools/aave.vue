@@ -22,7 +22,7 @@
             <span class="text-subtitle-1">Aave Information</span>
             <v-simple-table>
               <template #default>
-                <tbody class="text-subtitle-1">
+                <tbody class="text-subtitle-1 text-no-wrap">
                   <tr>
                     <td :class="[ui[theme].innerCardLighten]">Total Collateral</td>
                     <td>{{ '$ ' + totalCollateral.toLocaleString() + ' USD' }}</td>
