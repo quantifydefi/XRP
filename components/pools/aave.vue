@@ -16,7 +16,7 @@
       </v-row>
     </v-col>
     <v-col v-if="!isPoolsLoading" cols="12">
-      <v-row>
+      <v-row v-if="isWalletConnected">
         <v-col lg="3" md="6" cols="12">
           <v-card outlined tile height="100%" class="pa-2">
             <span class="text-subtitle-1">Aave Information</span>
@@ -411,6 +411,7 @@ import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
     ...mapState({
       ui: (state: any) => state.ui,
       theme: (state: any) => state.ui.theme,
+      isWalletConnected: (state: any) => state.wallet.isWalletConnected,
     }),
   },
   components: {

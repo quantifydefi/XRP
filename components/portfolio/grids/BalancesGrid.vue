@@ -101,10 +101,4 @@ export default class BalancesGrid extends Vue {
 }
 </script>
 
-<style lang="scss">
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-  height: 32px;
-}
-
-
-</style>
+<style lang="scss"></style>
