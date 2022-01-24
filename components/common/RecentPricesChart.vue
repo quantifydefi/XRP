@@ -6,13 +6,10 @@
 import { Vue, Component, Ref, Watch, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { RecentPricesGQL } from '~/apollo/main/config.query.graphql'
-
 let am4core: any = null
-// let am4themesDark: any = null
 let forceDirected: any = null
 if (process.browser) {
   am4core = require('@amcharts/amcharts4/core')
-  // am4themesDark = require('@amcharts/amcharts4/themes/dark')
   forceDirected = require('@amcharts/amcharts4/plugins/forceDirected')
 }
 
