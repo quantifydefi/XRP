@@ -106,12 +106,5 @@ export default class BalancesGrid extends Vue {
   height: 32px;
 }
 
-.theme--dark.v-data-table {
-  background-color: transparent;
-  color: #ffffff;
-}
-
-.v-data-table tr:hover:not(.v-table__expanded__content) {
-}
 
 </style>
