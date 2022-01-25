@@ -110,7 +110,7 @@ export default class BalancesChart extends Vue {
     pieSeries.slices.template.events.on('toggled', (ev: any) => {
       if (ev.target.isActive) {
         // Untoggle other slices
-        pieSeries.slices.each(function (slice) {
+        pieSeries.slices.each((slice: any) => {
           if (slice !== ev.target) {
             slice.isActive = false
           }
