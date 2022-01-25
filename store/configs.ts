@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { ActionTree, MutationTree } from 'vuex'
+import type { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { Chain, GlobalStats } from '~/types/apollo/main/types'
 import { GlobalStatsQueryGQL } from '~/apollo/main/config.query.graphql'
@@ -53,4 +53,7 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
   changeChain({ commit }, chain: Chain) {
     commit('SET_CHAIN', chain)
   },
+}
+export const getters: GetterTree<ConfigState, ConfigState> = {
+  chainInfo: (state: any) => (chainId: number) => state.chains.find((elem: Chain) => elem.chainId === chainId),
 }

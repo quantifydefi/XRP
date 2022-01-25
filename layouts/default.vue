@@ -207,11 +207,10 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
   }
 
   get iconSrc() {
-    return create({ seed: this.address }).toDataURL()
+    return process.client ? create({ seed: this.address }).toDataURL() : ''
   }
 
   async mounted() {
-    /** Fetch CoinGecko supported tokens **/
     await this.$root.$on(Events.GLOBAL_NOTIFICATION, (data: any) => {
       try {
         this.$refs.notificationComponent.openNotification(data.text)

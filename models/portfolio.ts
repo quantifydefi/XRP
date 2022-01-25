@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { BalancesGQL } from '~/apollo/main/portfolio.query.graphql'
 import { Balance, BalanceItem, Chain } from '~/types/apollo/main/types'
@@ -25,25 +25,16 @@ export class ChainItem implements Chain {
     ...mapState({
       chains: (state: any) => state.configs.chains,
       walletAddress: (state: any) => state.wallet.address,
-      isWalletConnected: (state: any) => state.wallet.isWalletConnected,
     }),
+    ...mapGetters({ chainInfo: 'configs/chainInfo' }),
   },
 })
 export class Portfolio extends Vue {
   chains!: ChainItem[]
-  walletAddress!: string
-  isWalletConnected!: boolean
+  chainInfo!: (number: number) => Chain
 
   get mainNetChains(): ChainItem[] {
-    return this.chains.filter((elem) => {
-      return !elem.isTestNet
-    })
-  }
-
-  get testNetChains(): ChainItem[] {
-    return this.chains.filter((elem) => {
-      return elem.isTestNet
-    })
+    return this.chains.filter((elem) => !elem.isTestNet)
   }
 }
 
@@ -57,13 +48,6 @@ export class PortfolioBalance implements Balance {
 
   get chainTotalBalance() {
     return this.items.reduce((n, { quote }) => n + quote, 0)
-  }
-
-  chainInfo(chains: Chain[]): Chain | null {
-    const chain: Chain | undefined = chains.find((elem) => elem.chainId === this.chainId)
-    if (chain) {
-      return chain
-    } else return null
   }
 }
 
@@ -87,7 +71,7 @@ export class PortfolioBalance implements Balance {
       },
       // Optional result hook
       result({ loading, data }) {
-        console.log(loading, data)
+        console.log(data)
         this.configs.balanceLoading = loading
       },
       watchLoading(isLoading) {
@@ -98,9 +82,7 @@ export class PortfolioBalance implements Balance {
 })
 export class BalancesPortfolio extends Portfolio {
   balances: PortfolioBalance[] = []
-  walletAddress!: string
   loading = false
-
   configs = {
     // loading
     balanceLoading: true as boolean,
@@ -148,18 +130,26 @@ export class BalancesPortfolio extends Portfolio {
     ],
   }
 
-  get selectedChainIds() {
-    return this.chains.map((obj) => {
-      return obj.chainId
-    })
-  }
-
   get totalBalance() {
     return this.balances.reduce((n, { chainTotalBalance }) => n + chainTotalBalance, 0)
   }
 
-  check() {
-    console.log(this.balances, this.totalBalance)
-    this.$apollo.queries.balances.refresh()
+  get chartData(): { category: string; value: number; breakdown: Record<string, any> }[] {
+    const chartData: { category: string; value: number; breakdown: Record<string, any> }[] = []
+    this.balances.forEach((elem) => {
+      const breakDown: { category: string; value: number }[] = []
+      elem.items.forEach((bal) => {
+        const val = bal.quote
+        if (val > 1 / 10 ** 6) {
+          breakDown.push({ category: `${bal.contractTickerSymbol.slice(0, 16)}`, value: val })
+        }
+      })
+      chartData.push({
+        category: this.chainInfo(elem.chainId).name,
+        value: elem.chainTotalBalance,
+        breakdown: breakDown.sort((a, b) => (a.value < b.value ? 1 : -1)),
+      })
+    })
+    return chartData
   }
 }

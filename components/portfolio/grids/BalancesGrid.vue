@@ -1,21 +1,19 @@
 <template>
   <client-only>
     <v-card tile outlined>
-      <v-card-title class="pa-0 ma-0">
+      <v-card-title v-if="chainInfo(chainId)" class="pa-0 ma-0">
         <v-col class="d-flex">
           <v-avatar size="24px">
-            <v-img :src="balance.chainInfo(chains).logoUrl" :lazy-src="balance.chainInfo(chains).logoUrl"></v-img>
+            <v-img :src="chainInfo(chainId).logoUrl" :lazy-src="chainInfo(chainId).logoUrl"></v-img>
           </v-avatar>
-          <h1 class="text-subtitle-1 pl-3 text-truncate">
-            {{ balance.chainInfo(chains).label }}
-          </h1>
+          <h1 class="text-subtitle-1 pl-3 text-truncate">{{ chainInfo(chainId).label }}</h1>
         </v-col>
 
-        <v-col cols="4" class="text-right"
-          ><h4 class="text-subtitle-1 text-truncate pink--text font-weight-medium">
+        <v-col cols="4" class="text-right">
+          <h4 class="text-subtitle-1 text-truncate pink--text font-weight-medium">
             {{ priceFormatter(balance.chainTotalBalance) }}
-          </h4></v-col
-        >
+          </h4>
+        </v-col>
       </v-card-title>
       <v-divider />
       <v-data-table
@@ -62,7 +60,7 @@
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import {Helper} from '~/models/helper'
 import type {PortfolioBalance} from "~/models/portfolio";
-import { mapState } from "vuex";
+import { mapState , mapGetters} from "vuex";
 
 @Component({ name: 'BalancesGrid',
   computed: { ...mapState({
@@ -70,10 +68,12 @@ import { mapState } from "vuex";
       ui: (state: any) => state.ui,
       theme: (state: any) => state.ui.theme,
     }),
+    ...mapGetters({chainInfo:'configs/chainInfo'})
   }
 })
 export default class BalancesGrid extends Vue {
   @Prop({default: 435}) readonly gridHeight!: number
+  @Prop({default: 1}) readonly chainId!: number
   @Prop({default: []}) readonly cols!: any
   @Prop({default: []}) readonly balance!: PortfolioBalance
 
