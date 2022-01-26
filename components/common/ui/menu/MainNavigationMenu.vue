@@ -3,8 +3,8 @@
     <template #prepend>
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-list-item two-line class="ml-n2" style="margin-top: -1px">
-          <v-avatar size="38">
-            <img :src="'/img/logo/evmx.svg'" />
+          <v-avatar size="32">
+            <img :src="'/img/logo/evmx2.svg'" />
           </v-avatar>
 
           <v-list-item-content>
