@@ -2,14 +2,14 @@
   <v-navigation-drawer v-model="navigationDrawer" app left fixed width="220">
     <template #prepend>
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
-        <v-list-item two-line class="my-n1 ml-n2">
-          <v-list-item-avatar size="38">
-            <img :src="'/img/logo/logo.svg'" />
-          </v-list-item-avatar>
+        <v-list-item two-line class="ml-n2" style="margin-top: -1px">
+          <v-avatar size="38">
+            <img :src="'/img/logo/evmx.svg'" />
+          </v-avatar>
 
           <v-list-item-content>
-            <v-list-item-title class="text-h6 font-weight-regular">
-              EVMx
+            <v-list-item-title class="text-h6 font-weight-regular pl-3">
+              EVMX
               <small class="grey--text text--lighten-1 ml-1 text-caption"> Beta </small>
             </v-list-item-title>
           </v-list-item-content>
@@ -120,7 +120,7 @@
 
           <v-divider />
 
-          <div class="caption text-center mt-2">EVMx &copy; {{ new Date().getFullYear() }}</div>
+          <div class="caption text-center mt-2">EVMX &copy; {{ new Date().getFullYear() }}</div>
         </div>
       </v-list>
     </client-only>

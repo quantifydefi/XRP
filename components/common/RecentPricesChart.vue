@@ -73,17 +73,37 @@ export default class RecentPricesChart extends Vue {
       'MANA',
       'UNI',
       'DPI',
-      'RAI',
+      // 'RAI',
       'BUSD',
       'PAX',
-      'REN',
+      // 'REN',
       'ENJ',
       'GUSD',
-      'ZRX',
-      'AMPL',
+      // 'ZRX',
+      // 'AMPL',
       'BAL',
     ]
-    const tokens: Record<string, any>[] = []
+
+    const nftCollection = [
+      {
+        name: 'OpenSea',
+        image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/opensea.png',
+      },
+      {
+        name: 'The Sandbox',
+        image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/sand.png',
+      },
+      {
+        name: 'Bored Ape Yacht Club',
+        image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/bayc.png',
+      },
+      {
+        name: 'CryptoPunks',
+        image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/cryptopunk.png',
+      },
+    ]
+
+    const tokens: Record<string, any>[] = [...nftCollection]
     for (const [key, value] of Object.entries(this.recentPrices)) {
       if (supportedTokens.includes(key)) {
         tokens.push({
@@ -94,7 +114,7 @@ export default class RecentPricesChart extends Vue {
         })
       }
     }
-    return [{ name: 'QC', value: 1, image: '/img/logo/logo.svg', children: tokens }]
+    return [{ name: 'QC', value: 1, image: '/img/logo/evmx.svg', children: tokens.sort(() => 0.5 - Math.random()) }]
   }
 
   private renderChart() {
@@ -117,6 +137,18 @@ export default class RecentPricesChart extends Vue {
     series.nodes.template.label.fill = am4core.color('#e91e63ff')
     series.nodes.template.label.dy = 5
     series.nodes.template.tooltipText = '{name}: [bold]' + '$' + '{price}[/]'
+
+    // Overrides regular tooltipText with just the name of the NFT Collection since it has no value and is not a token.
+    series.nodes.template.adapter.add('tooltipText', (text: any, target: any) => {
+      if (target.dataItem) {
+        if (target.dataItem.value === 1) {
+          return text
+        } else {
+          return '{name}'
+        }
+      }
+    })
+
     series.fontSize = 12
     series.minRadius = 30
     series.maxRadius = 30
