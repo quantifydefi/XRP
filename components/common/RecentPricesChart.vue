@@ -62,7 +62,7 @@ export default class RecentPricesChart extends Vue {
       'WBTC',
       'LINK',
       'AAVE',
-      'TUSD',
+      // 'TUSD',
       'MKR',
       'FEI',
       'CRV',
@@ -100,6 +100,10 @@ export default class RecentPricesChart extends Vue {
       {
         name: 'CryptoPunks',
         image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/cryptopunk.png',
+      },
+      {
+        name: 'WorldOfWomen',
+        image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/worldofwomen.png',
       },
     ]
 
