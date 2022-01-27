@@ -55,5 +55,5 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
   },
 }
 export const getters: GetterTree<ConfigState, ConfigState> = {
-  chainInfo: (state: any) => (chainId: number) => state.chains.find((elem: Chain) => elem.chainId === chainId),
+  chainInfo: (state: any) => (chainId: number) => state.chains.find((elem: Chain) => elem.chainId === chainId) || null,
 }

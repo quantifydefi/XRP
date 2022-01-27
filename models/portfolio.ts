@@ -31,7 +31,7 @@ export class ChainItem implements Chain {
 })
 export class Portfolio extends Vue {
   chains!: ChainItem[]
-  chainInfo!: (number: number) => Chain
+  chainInfo!: (number: number) => Chain | null
 
   get mainNetChains(): ChainItem[] {
     return this.chains.filter((elem) => !elem.isTestNet)
@@ -91,7 +91,7 @@ export class BalancesPortfolio extends Portfolio {
     toggleMainNetworks: false,
     toggleTestNetworks: false,
 
-    selectedMainNets: [1, 56, 137, 43114, 250],
+    selectedMainNets: [1, 56, 137, 250],
     cols: [
       {
         text: 'Token',
@@ -122,8 +122,8 @@ export class BalancesPortfolio extends Portfolio {
         width: 90,
       },
     ],
-    gridHeight: 435 as number,
-    numberOfRows: '4',
+    gridHeight: 450 as number,
+    numberOfRows: '6',
     numOfRowsOptions: [
       { icon: 'mdi-curtains-closed', col: '6' },
       { icon: 'mdi-view-week', col: '4' },
@@ -144,11 +144,14 @@ export class BalancesPortfolio extends Portfolio {
           breakDown.push({ category: `${bal.contractTickerSymbol.slice(0, 16)}`, value: val })
         }
       })
-      chartData.push({
-        category: this.chainInfo(elem.chainId).name,
-        value: elem.chainTotalBalance,
-        breakdown: breakDown.sort((a, b) => (a.value < b.value ? 1 : -1)),
-      })
+      const info = this.chainInfo(elem.chainId)
+      if (info) {
+        chartData.push({
+          category: info.name,
+          value: elem.chainTotalBalance,
+          breakdown: breakDown.sort((a, b) => (a.value < b.value ? 1 : -1)),
+        })
+      }
     })
     return chartData
   }
