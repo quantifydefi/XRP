@@ -118,7 +118,14 @@ export default class RecentPricesChart extends Vue {
         })
       }
     }
-    return [{ name: 'QC', value: 1, image: '/img/logo/evmx2.svg', children: tokens.sort(() => 0.5 - Math.random()) }]
+    return [
+      {
+        name: 'QC',
+        value: 1,
+        image: `/img/logo/evmx-dark.svg`,
+        children: tokens.sort(() => 0.5 - Math.random()),
+      },
+    ]
   }
 
   private renderChart() {

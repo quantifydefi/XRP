@@ -3,12 +3,10 @@
     <template #prepend>
       <nuxt-link to="/" style="color: inherit; text-decoration: none">
         <v-list-item two-line class="ml-n2" style="margin-top: -1px">
-          <v-avatar size="32">
-            <img :src="'/img/logo/evmx2.svg'" />
-          </v-avatar>
+          <v-avatar size="38"> <v-img :src="`/img/logo/evmx-${theme}.svg`" /> </v-avatar>
 
           <v-list-item-content>
-            <v-list-item-title class="text-h6 font-weight-regular pl-3">
+            <v-list-item-title class="text-h6 font-weight-regular pl-2">
               EVMX
               <small class="grey--text text--lighten-1 ml-1 text-caption"> Beta </small>
             </v-list-item-title>
