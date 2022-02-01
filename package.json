@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.23",
-    "@metamask/detect-provider": "^1.1.0",
+    "@metamask/detect-provider": "^1.2.0",
     "@nuxtjs/apollo": "^4.0.1-rc.5",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
