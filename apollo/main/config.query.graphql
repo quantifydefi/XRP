@@ -28,3 +28,7 @@ query GlobalStatsQueryGQL {
 query RecentPricesGQL{
   recentPrices
 }
+
+query ChainlinkEthUsdPriceGQL {
+  chainLinkPrice(pairs:["ETH-USD"])
+}

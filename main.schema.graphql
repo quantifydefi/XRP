@@ -224,6 +224,7 @@ type GlobalStats {
 type LogEvent {
   blockHeight: Int!
   blockSignedAt: String!
+  decoded: LogEventDecoded!
   logOffset: Int!
   rawLogData: String!
   rawLogTopics: [String]!
@@ -236,6 +237,20 @@ type LogEvent {
   senderName: String!
   txHash: String!
   txOffset: Int!
+}
+
+type LogEventDecoded {
+  name: String!
+  params: [LogEventParams!]!
+  signature: String!
+}
+
+type LogEventParams {
+  decoded: Boolean!
+  indexed: Boolean!
+  name: String!
+  type: String!
+  value: String!
 }
 
 type MarketData {

@@ -198,6 +198,7 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
     terminal: 'Terminal',
     protocols: 'Protocols',
     'portfolio-balances': 'Balances',
+    'portfolio-transactions': 'Transactions',
     heatmap: 'Heatmap',
     'trading-101': 'Trading 101',
     team: 'Our Team',

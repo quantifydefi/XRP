@@ -78,13 +78,13 @@
             <v-list-item-title>Balances</v-list-item-title>
           </v-list-item>
 
-          <!--          <v-list-item exact>-->
-          <!--            <v-list-item-icon>-->
-          <!--              <v-icon>mdi-history</v-icon>-->
-          <!--            </v-list-item-icon>-->
+          <v-list-item exact to="/portfolio/transactions">
+            <v-list-item-icon>
+              <v-icon>mdi-transcribe</v-icon>
+            </v-list-item-icon>
 
-          <!--            <v-list-item-title> Transaction History</v-list-item-title>-->
-          <!--          </v-list-item>-->
+            <v-list-item-title> Transactions</v-list-item-title>
+          </v-list-item>
 
           <v-list-group :value="true" no-action color="primary">
             <template #prependIcon>

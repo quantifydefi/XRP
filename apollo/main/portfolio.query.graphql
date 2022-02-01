@@ -64,3 +64,55 @@ query ProtocolGQL($protocolId: String!){
     usdTvl
   }
 }
+
+
+query CovalentTransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pageSize: Int!) {
+  transactions(
+    chainId: $chainId,
+    address: $address,
+    pageNumber: $pageNumber, pageSize: $pageSize
+  ) {
+    address
+    updatedAt
+    nextUpdateAt
+    quoteCurrency
+    chainId
+    items {
+      blockSignedAt
+      blockHeight
+      txHash
+      successful
+      fromAddress
+      fromAddressLabel
+      toAddress
+      toAddressLabel
+      value
+      valueQuote
+      gasOffered
+      gasSpent
+      gasPrice
+      gasQuote
+      gasQuoteRate
+      logEvents {
+        senderContractDecimals
+        senderName
+        senderContractTickerSymbol
+        senderAddress
+        senderAddressLabel
+        senderLogoUrl
+        decoded {
+          name
+          signature
+          params {
+            name
+            type
+            indexed
+            decoded
+            value
+          }
+        }
+      }
+    }
+  }
+}
+
