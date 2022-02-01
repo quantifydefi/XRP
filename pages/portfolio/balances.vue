@@ -136,6 +136,54 @@ import BalancesChart from '~/components/portfolio/BalancesChart.vue'
     ...mapState({ ui: (state: any) => state.ui, theme: (state: any) => state.ui.theme }),
     ...mapGetters({ chainInfo: 'configs/chainInfo' }),
   },
+  head(): object {
+    return {
+      title: 'DeFi Asset Management | EVM Ethereum Virtual Machine',
+      meta: [
+        {
+          name: 'description',
+          hid: 'description',
+          content: 'DeFi balances for Ethereum Mainnet, Matic, Binance Smart Chain, Fantom Opera and more',
+        },
+
+        // Open Graph
+        {
+          name: 'og:title',
+          content: 'DeFi Asset Management | EVM Ethereum Virtual Machine',
+        },
+        {
+          name: 'og:description',
+          content: 'DeFi balances for Ethereum Mainnet, Matic, Binance Smart Chain, Fantom Opera and more',
+        },
+        { name: 'og:type', content: 'website' },
+        { name: 'og:url', content: process.env.baseURL },
+        {
+          name: 'og:image',
+          content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXBalancesPage.jpg',
+        },
+
+        // Twitter Card
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@Quantify_Crypto' },
+        {
+          name: 'twitter:title',
+          content: 'DeFi Asset Management | EVM Ethereum Virtual Machine',
+        },
+        {
+          name: 'twitter:description',
+          content: 'DeFi balances for Ethereum Mainnet, Matic, Binance Smart Chain, Fantom Opera and more',
+        },
+        {
+          name: 'twitter:image',
+          content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXBalancesPage.jpg',
+        },
+        {
+          name: 'twitter:image:alt',
+          content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXBalancesPage.jpg',
+        },
+      ],
+    }
+  },
 })
 export default class Balances extends mixins(BalancesPortfolio) {
   @Watch('balances')
