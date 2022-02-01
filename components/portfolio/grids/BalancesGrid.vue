@@ -19,7 +19,7 @@
       <v-data-table
         id="balances-grid"
         :headers="cols"
-        :items="balance.items"
+        :items="balance.filteredItems"
         :sort-desc="[true]"
         :height="gridHeightLocal"
         :items-per-page="10 * 10 ** 12"

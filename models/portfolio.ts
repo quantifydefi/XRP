@@ -49,6 +49,13 @@ export class PortfolioBalance implements Balance {
   get chainTotalBalance() {
     return this.items.reduce((n, { quote }) => n + quote, 0)
   }
+
+  /**
+   * Balances more than 0
+   * */
+  get filteredItems() {
+    return this.items.filter((el) => el.quote > 0)
+  }
 }
 
 @Component({
@@ -70,8 +77,7 @@ export class PortfolioBalance implements Balance {
         })
       },
       // Optional result hook
-      result({ loading, data }) {
-        console.log(data)
+      result({ loading }) {
         this.configs.balanceLoading = loading
       },
       watchLoading(isLoading) {

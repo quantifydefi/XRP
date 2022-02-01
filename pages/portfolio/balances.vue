@@ -49,62 +49,17 @@
               </v-card>
             </v-col>
           </v-row>
-          <v-row class="px-2 my-3">
-            <v-col cols="4" class="pb-0">
-              <v-row align="center">
-                <v-menu
-                  v-if="mainNetChains"
-                  :close-on-content-click="false"
-                  :nudge-width="500"
-                  :nudge-left="0"
-                  offset-y
-                  max-width="280"
-                >
-                  <template #activator="{ on, attrs }">
-                    <div class="d-flex">
-                      <v-btn
-                        width="200"
-                        tile
-                        class="text-capitalize text-subtitle-2"
-                        depressed
-                        color="transparent"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <span class="primary--text mx-1 pr-2"> MainNet Networks </span>
-                        <v-icon right>mdi-chevron-down</v-icon>
-                      </v-btn>
-                    </div>
-                  </template>
-
-                  <v-card outlined tile width="350">
-                    <v-list dense>
-                      <v-list-item-group v-model="configs.selectedMainNets" active-class="pink--text" multiple>
-                        <template v-for="item in mainNetChains">
-                          <v-list-item :key="item.chainId" :value="item.id">
-                            <template #default="{ active }">
-                              <v-list-item-avatar size="24">
-                                <v-img :src="item.logoUrl"></v-img>
-                              </v-list-item-avatar>
-
-                              <v-list-item-title v-text="item.label"></v-list-item-title>
-
-                              <v-list-item-action>
-                                <v-icon v-if="!active" color="grey lighten-1"> mdi-star-outline </v-icon>
-                                <v-icon v-else color="yellow darken-3"> mdi-star </v-icon>
-                              </v-list-item-action>
-                            </template>
-                          </v-list-item>
-                        </template>
-                      </v-list-item-group>
-                    </v-list>
-                  </v-card>
-                </v-menu>
-              </v-row>
+          <v-row align="center">
+            <v-col cols="6" class="py-0">
+              <v-chip-group v-model="configs.selectedMainNets" multiple active-class="primary--text">
+                <v-chip v-for="item in mainNetChains" :key="item.chainId" :value="item.chainId" outlined>
+                  <v-img :src="item.logoUrl" max-width="16" class="mr-2" /> {{ item.name }}
+                </v-chip>
+              </v-chip-group>
             </v-col>
             <v-spacer />
-            <v-col class="pb-0">
-              <v-row class="d-flex justify-end">
+            <v-col class="py-0">
+              <div class="text-right">
                 <v-menu
                   :close-on-content-click="false"
                   :nudge-width="200"
@@ -139,15 +94,15 @@
                     :key="index"
                     tile
                     outlined
-                    class="ml-1"
+                    class="ml-1 mt-1"
                     color="primary"
                     :value="item.col"
-                    :height="36"
+                    :height="30"
                   >
-                    <v-icon size="20">{{ item.icon }}</v-icon>
+                    <v-icon size="18">{{ item.icon }}</v-icon>
                   </v-btn>
                 </v-btn-toggle>
-              </v-row>
+              </div>
             </v-col>
           </v-row>
           <v-row>
