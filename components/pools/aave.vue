@@ -393,9 +393,9 @@
             </v-btn>
           </template>
         </v-data-table>
-        <aave-pool-actions ref="poolAction" @transaction-result="transactionResult" />
       </v-card>
     </v-col>
+    <aave-pool-actions ref="poolAction" @transaction-result="transactionResult" />
   </v-row>
 </template>
 

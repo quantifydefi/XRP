@@ -221,6 +221,23 @@ type GlobalStats {
   tradingVolume24h: String!
 }
 
+type LogEvent {
+  blockHeight: Int!
+  blockSignedAt: String!
+  logOffset: Int!
+  rawLogData: String!
+  rawLogTopics: [String]!
+  rawLogTopicsBytes: String!
+  senderAddress: String!
+  senderAddressLabel: String!
+  senderContractDecimals: Int!
+  senderContractTickerSymbol: String!
+  senderLogoUrl: String!
+  senderName: String!
+  txHash: String!
+  txOffset: Int!
+}
+
 type MarketData {
   ath: Map
   athChangePercentage: Map
@@ -323,6 +340,8 @@ type Query {
   spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
   supportedTokens: [Token!]
   todos: [Todo!]!
+  "Covalent Transactions"
+  transactions(address: String!, chainId: Int!, pageNumber: Int! = 0, pageSize: Int! = 1000): Transactions!
 }
 
 """
@@ -385,12 +404,6 @@ type Token {
   symbol: String!
 }
 
-type TokenBalance {
-  address: String
-  symbol: String
-  value: Float
-}
-
 type TransactionItem {
   blockHeight: Int
   blockSignedAt: String
@@ -401,6 +414,7 @@ type TransactionItem {
   gasQuote: Float
   gasQuoteRate: Float
   gasSpent: Float
+  logEvents: [LogEvent!]!
   successful: Boolean
   toAddress: String
   toAddressLabel: String
@@ -419,11 +433,10 @@ https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&ke
 type Transactions {
   address: String!
   chainId: Float!
-  items: [TransactionItem!]
+  items: [TransactionItem!]!
   nextUpdateAt: String!
   pagination: Pagination
   quoteCurrency: String!
-  someOtherKeys: String
   updatedAt: String!
 }
 
@@ -432,10 +445,9 @@ type User {
   name: String!
 }
 
+scalar Map
+
 input NewTodo {
   text: String!
   userId: String!
 }
-
-
-scalar Map
