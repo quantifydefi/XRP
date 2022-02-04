@@ -259,7 +259,7 @@
           </template>
 
           <template #[`item.function`]="{ item }">
-            <div v-if="item.function" class="text-truncate" style="width: 100px">
+            <div v-if="item.function" class="text-truncate" style="width: 120px">
               <v-tooltip top :color="ui[theme].overlayColor">
                 <template #activator="{ on, attrs }">
                   <span
@@ -268,12 +268,22 @@
                     :class="[ui[theme].innerCardLighten, 'text-capitalize']"
                     v-on="on"
                   >
-                    {{
-                      item.function
-                        .replace(/ *\([^)]*\) */g, '')
-                        .replace(/([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))/g, ' $1')
-                        .trim()
-                    }}
+                    <!--                    {{-->
+                    <!--                      item.function-->
+                    <!--                        .replace(/ *\([^)]*\) */g, '')-->
+                    <!--                        .replace(/([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))/g, ' $1')-->
+                    <!--                        .trim()-->
+                    <!--                    }}-->
+                    <v-chip label small v-bind="attrs" class="text-truncate" v-on="on">
+                      <span class="text-truncate">
+                        {{
+                          item.function
+                            .replace(/ *\([^)]*\) */g, '')
+                            .replace(/([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))/g, ' $1')
+                            .trim()
+                        }}
+                      </span>
+                    </v-chip>
                   </span>
                 </template>
                 <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']">
@@ -289,11 +299,23 @@
             <div v-else-if="item.input === '0x'">
               <v-tooltip top :color="ui[theme].overlayColor">
                 <template #activator="{ on, attrs }">
-                  <span style="cursor: pointer" v-bind="attrs" :class="[ui[theme].innerCardLighten]" v-on="on"
-                    >Transfer
-                  </span>
+                  <!--                  <span style="cursor: pointer" v-bind="attrs" :class="[ui[theme].innerCardLighten]" v-on="on"-->
+                  <!--                    >Transfer-->
+                  <!--                  </span>-->
+                  <v-chip label small v-bind="attrs" v-on="on" v-text="`Transfer`" />
                 </template>
                 <span :class="ui[ui.theme].headerTextClass">Transfer</span>
+              </v-tooltip>
+            </div>
+            <div v-else-if="item.methodId">
+              <v-tooltip top :color="ui[theme].overlayColor">
+                <template #activator="{ on, attrs }">
+                  <!--                  <span style="cursor: pointer" v-bind="attrs" :class="[ui[theme].innerCardLighten]" v-on="on"-->
+                  <!--                    >Transfer-->
+                  <!--                  </span>-->
+                  <v-chip label small v-bind="attrs" v-on="on" v-text="`0x${item.methodId}`" />
+                </template>
+                <span :class="ui[ui.theme].headerTextClass">{{ item.methodId }}</span>
               </v-tooltip>
             </div>
           </template>
@@ -307,7 +329,7 @@
                   :class="[ui[theme].innerCardLighten]"
                   v-on="on"
                   @click="copyAddressToClipboard(item.hash)"
-                  >{{ stringTruncate(item.hash, 6, 4) }}
+                  >{{ stringTruncate(item.hash, 10, 4) }}
                 </span>
               </template>
               <span :class="ui[ui.theme].headerTextClass">click to copy transaction hash</span>
@@ -323,11 +345,77 @@
                   :class="item.from !== walletAddress.toLowerCase() ? 'pink--text' : [ui[theme].innerCardLighten]"
                   @click="copyAddressToClipboard(item.from)"
                   v-on="on"
-                  >{{ stringTruncate(item.from, 6, 4) }}
+                  >{{ stringTruncate(item.from, 10, 4) }}
                 </span>
               </template>
               <span :class="ui[ui.theme].headerTextClass">click to copy address</span>
             </v-tooltip>
+          </template>
+
+          <template #[`item.fromTo`]="{ item }">
+            <div class="text-no-wrap">
+              <span :class="[ui[theme].innerCardLighten]">From:</span>
+              <v-tooltip top :color="ui[theme].overlayColor">
+                <template #activator="{ on, attrs }">
+                  <span
+                    style="cursor: pointer"
+                    v-bind="attrs"
+                    :class="item.from !== walletAddress.toLowerCase() ? 'pink--text' : ''"
+                    @click="copyAddressToClipboard(item.from)"
+                    v-on="on"
+                    >{{ stringTruncate(item.from, 10, 4) }}
+                  </span>
+                </template>
+                <span :class="ui[ui.theme].headerTextClass">click to copy address</span>
+              </v-tooltip>
+              <div
+                v-if="item.tokenTo.address.length === 0 || item.contractAddress.length > 0"
+                :class="[ui[theme].innerCardLighten]"
+              >
+                <span :class="[ui[theme].innerCardLighten]">To:</span>
+                <v-tooltip top :color="ui[theme].overlayColor">
+                  <template #activator="{ on, attrs }">
+                    <span
+                      v-bind="attrs"
+                      style="cursor: pointer"
+                      v-on="on"
+                      @click="copyAddressToClipboard(item.to || item.contractAddress)"
+                    >
+                      <v-icon v-if="item.contractAddress" class="mr-1" small>mdi-file-sign</v-icon>
+                      {{ stringTruncate(item.to, 6, 4) || stringTruncate(item.contractAddress, 6, 4) }}
+                    </span>
+                  </template>
+                  <span :class="ui[theme].headerTextClass"
+                    >click to copy <v-span v-if="item.contractAddress">contract</v-span> address</span
+                  >
+                </v-tooltip>
+              </div>
+              <div v-else class="text-no-wrap">
+                <v-row no-gutters>
+                  <span :class="[ui[theme].innerCardLighten]">To:</span>
+                  <v-tooltip top :class="[ui[theme].innerCardLighten]">
+                    <template #activator="{ on, attrs }">
+                      <div
+                        :color="ui[theme].overlayColor"
+                        v-bind="attrs"
+                        style="cursor: pointer"
+                        class="text-truncate ml-1"
+                        v-on="on"
+                      >
+                        <v-avatar size="16px" class="mt-n1">
+                          <v-img
+                            alt="Avatar"
+                            :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.tokenTo.symbol.toLowerCase()}.png`"
+                          />
+                        </v-avatar>
+                        <span @click="copyAddressToClipboard(item.to)">{{ item.tokenTo.name }}</span>
+                      </div>
+                    </template>
+                    <span :class="ui[theme].headerTextClass">click to copy address</span>
+                  </v-tooltip>
+                </v-row>
+              </div>
+            </div>
           </template>
 
           <template #[`item.isOut`]="{ item }">
@@ -419,18 +507,20 @@
           <!--          </template>-->
 
           <template #[`item.value`]="{ item }">
-            <span :class="[[ui[theme].innerCardLighten], 'text-no-wrap']"
-              >{{
-                parseInt(item.value) / 10 ** 18 > 0 ? (parseInt(item.value) / 10 ** 18).toFixed(4) : item.value
-              }}
-              ETH</span
-            >
+            <div class="py-2">
+              <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
+                {{ parseInt(item.value) / 10 ** 18 > 0 ? (parseInt(item.value) / 10 ** 18).toFixed(4) : item.value }}
+                ETH
+              </div>
+              <div>${{ calculateEthUsdPrice(item.value / 10 ** 18).toFixed(2) }}</div>
+            </div>
           </template>
 
           <template #[`item.cumulativeGasUsed`]="{ item }">
             <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
               {{ ((item.gasPrice / 10 ** 18) * item.gasUsed).toFixed(6) }} ETH
             </div>
+            <span class="caption">${{ ((item.gasPrice / 10 ** 18) * item.gasUsed).toFixed(4) }}</span>
           </template>
 
           <template #[`item.isError`]="{ item }">

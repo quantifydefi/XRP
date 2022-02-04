@@ -60,16 +60,19 @@ export default class Transactions extends Vue {
       text: 'Txn Date',
       align: 'start',
       value: 'timeStamp',
+      class: 'py-2',
     },
     {
       text: 'Method',
       align: 'start',
       value: 'function',
+      class: 'py-2',
     },
     {
       text: 'Txn Hash',
       align: 'start',
       value: 'hash',
+      class: 'py-2',
     },
     // {
     //   text: 'Age',
@@ -77,40 +80,54 @@ export default class Transactions extends Vue {
     //   value: 'txnAge',
     // },
 
-    {
-      text: 'From',
-      align: 'start',
-      value: 'from',
-    },
-    {
-      text: 'To',
-      align: 'start',
-      value: 'to',
-    },
+    // {
+    //   text: 'From',
+    //   align: 'start',
+    //   value: 'from',
+    // },
+    // {
+    //   text: 'To',
+    //   align: 'start',
+    //   value: 'to',
+    // },
     {
       text: '',
       align: 'start',
       value: 'isOut',
+      class: 'py-2',
     },
+    {
+      text: '',
+      align: 'start',
+      value: 'fromTo',
+      class: 'py-2',
+      width: 140,
+    },
+
     {
       text: 'Value',
       align: 'start',
       value: 'value',
+      width: 140,
+      class: 'py-2',
     },
     {
       text: 'Txn Fee',
       align: 'start',
       value: 'cumulativeGasUsed',
+      class: 'py-2',
     },
     {
       text: 'Status',
       align: 'start',
       value: 'isError',
+      class: 'py-2',
     },
     {
       text: '',
       align: 'start',
       value: 'action',
+      class: 'py-2',
     },
   ]
 
