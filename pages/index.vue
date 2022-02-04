@@ -71,28 +71,30 @@ import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
   components: { TokenSearch, RecentPricesChart },
   head(): object {
     return {
-      title: 'Uniswap Trading | Metamask | DeFi Heatmap',
+      title: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
       meta: [
         {
           name: 'description',
           hid: 'description',
-          content: 'Automated DEX trading with single click smart contract interface',
+          content:
+            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
         },
 
         // Open Graph
         {
           name: 'og:title',
-          content: 'Uniswap Trading | Metamask | DeFi Heatmap',
+          content: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
         },
         {
           name: 'og:description',
-          content: 'Automated DEX trading with single click smart contract interface',
+          content:
+            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
         },
         { name: 'og:type', content: 'website' },
         { name: 'og:url', content: process.env.baseURL },
         {
           name: 'og:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
         },
 
         // Twitter Card
@@ -100,19 +102,20 @@ import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
         { name: 'twitter:site', content: '@Quantify_Crypto' },
         {
           name: 'twitter:title',
-          content: 'Uniswap Trading | Metamask | DeFi Heatmap',
+          content: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
         },
         {
           name: 'twitter:description',
-          content: 'Automated DEX trading with single click smart contract interface',
+          content:
+            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
         },
         {
           name: 'twitter:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXHomepage.jpg',
         },
         {
           name: 'twitter:image:alt',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXHomepage.jpg',
         },
       ],
     }

@@ -22,6 +22,6 @@ export class Helper {
   }
 
   static setAltImg(event: any) {
-    event.target.src = require(`~/assets/images/generic/aave-generic.png`)
+    event.target.src = `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`
   }
 }
