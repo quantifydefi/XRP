@@ -243,41 +243,6 @@ export type GlobalStats = {
   tradingVolume24h: Scalars['String'];
 };
 
-export type LogEvent = {
-  __typename?: 'LogEvent';
-  blockHeight: Scalars['Int'];
-  blockSignedAt: Scalars['String'];
-  decoded: LogEventDecoded;
-  logOffset: Scalars['Int'];
-  rawLogData: Scalars['String'];
-  rawLogTopics: Array<Maybe<Scalars['String']>>;
-  rawLogTopicsBytes: Scalars['String'];
-  senderAddress: Scalars['String'];
-  senderAddressLabel: Scalars['String'];
-  senderContractDecimals: Scalars['Int'];
-  senderContractTickerSymbol: Scalars['String'];
-  senderLogoUrl: Scalars['String'];
-  senderName: Scalars['String'];
-  txHash: Scalars['String'];
-  txOffset: Scalars['Int'];
-};
-
-export type LogEventDecoded = {
-  __typename?: 'LogEventDecoded';
-  name: Scalars['String'];
-  params: Array<LogEventParams>;
-  signature: Scalars['String'];
-};
-
-export type LogEventParams = {
-  __typename?: 'LogEventParams';
-  decoded: Scalars['Boolean'];
-  indexed: Scalars['Boolean'];
-  name: Scalars['String'];
-  type: Scalars['String'];
-  value: Scalars['String'];
-};
-
 export type MarketData = {
   __typename?: 'MarketData';
   ath?: Maybe<Scalars['Map']>;
@@ -394,8 +359,8 @@ export type Query = {
   spotPrice?: Maybe<SpotPrice>;
   supportedTokens?: Maybe<Array<Token>>;
   todos: Array<Todo>;
-  /** Covalent Transactions */
-  transactions: Transactions;
+  /** Transactions */
+  transactions: Array<Transaction>;
 };
 
 
@@ -431,7 +396,7 @@ export type QuerySpotPriceArgs = {
 
 export type QueryTransactionsArgs = {
   address: Scalars['String'];
-  chainId: Scalars['Int'];
+  chainId?: Scalars['Int'];
   pageNumber?: Scalars['Int'];
   pageSize?: Scalars['Int'];
 };
@@ -500,41 +465,34 @@ export type Token = {
   symbol: Scalars['String'];
 };
 
-export type TransactionItem = {
-  __typename?: 'TransactionItem';
-  blockHeight?: Maybe<Scalars['Int']>;
-  blockSignedAt?: Maybe<Scalars['String']>;
-  fromAddress?: Maybe<Scalars['String']>;
-  fromAddressLabel?: Maybe<Scalars['String']>;
-  gasOffered?: Maybe<Scalars['Float']>;
-  gasPrice?: Maybe<Scalars['Float']>;
-  gasQuote?: Maybe<Scalars['Float']>;
-  gasQuoteRate?: Maybe<Scalars['Float']>;
-  gasSpent?: Maybe<Scalars['Float']>;
-  logEvents: Array<LogEvent>;
-  successful?: Maybe<Scalars['Boolean']>;
-  toAddress?: Maybe<Scalars['String']>;
-  toAddressLabel?: Maybe<Scalars['String']>;
-  txHash?: Maybe<Scalars['String']>;
-  txOffset?: Maybe<Scalars['Int']>;
-  value?: Maybe<Scalars['String']>;
-  valueQuote?: Maybe<Scalars['Float']>;
-};
-
 /**
  * Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
  * query param, it returns a paginated list of all tickers sorted by market cap.
  * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
  */
-export type Transactions = {
-  __typename?: 'Transactions';
-  address: Scalars['String'];
-  chainId: Scalars['Float'];
-  items: Array<TransactionItem>;
-  nextUpdateAt: Scalars['String'];
-  pagination?: Maybe<Pagination>;
-  quoteCurrency: Scalars['String'];
-  updatedAt: Scalars['String'];
+export type Transaction = {
+  __typename?: 'Transaction';
+  blockHash: Scalars['String'];
+  blockNumber: Scalars['String'];
+  confirmations: Scalars['String'];
+  contractAddress: Scalars['String'];
+  cumulativeGasUsed: Scalars['String'];
+  from: Scalars['String'];
+  function: Scalars['String'];
+  gas: Scalars['String'];
+  gasPrice: Scalars['String'];
+  gasUsed: Scalars['String'];
+  hash: Scalars['String'];
+  input: Scalars['String'];
+  isError: Scalars['String'];
+  methodId: Scalars['String'];
+  nonce: Scalars['String'];
+  timeStamp: Scalars['String'];
+  to: Scalars['String'];
+  tokenTo: Token;
+  transactionIndex: Scalars['String'];
+  txreceiptStatus: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type User = {
@@ -591,7 +549,7 @@ export type ProtocolGqlQueryVariables = Exact<{
 
 export type ProtocolGqlQuery = { __typename?: 'Query', protocol: { __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null | undefined>, twitter: string, balance: any, updatedAt: number, tokenAddresses: Array<string | null | undefined>, usdTvl: any } };
 
-export type CovalentTransactionsGqlQueryVariables = Exact<{
+export type TransactionsGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
   address: Scalars['String'];
   pageNumber: Scalars['Int'];
@@ -599,4 +557,4 @@ export type CovalentTransactionsGqlQueryVariables = Exact<{
 }>;
 
 
-export type CovalentTransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transactions', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, items: Array<{ __typename?: 'TransactionItem', blockSignedAt?: string | null | undefined, blockHeight?: number | null | undefined, txHash?: string | null | undefined, successful?: boolean | null | undefined, fromAddress?: string | null | undefined, fromAddressLabel?: string | null | undefined, toAddress?: string | null | undefined, toAddressLabel?: string | null | undefined, value?: string | null | undefined, valueQuote?: number | null | undefined, gasOffered?: number | null | undefined, gasSpent?: number | null | undefined, gasPrice?: number | null | undefined, gasQuote?: number | null | undefined, gasQuoteRate?: number | null | undefined, logEvents: Array<{ __typename?: 'LogEvent', senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string }> } }> }> } };
+export type TransactionsGqlQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', blockNumber: string, timeStamp: string, hash: string, nonce: string, blockHash: string, transactionIndex: string, from: string, to: string, value: string, gas: string, gasPrice: string, isError: string, txreceiptStatus: string, input: string, contractAddress: string, cumulativeGasUsed: string, gasUsed: string, confirmations: string, methodId: string, function: string, tokenTo: { __typename?: 'Token', chainKey: string, coingeckoId: string, address: string, name: string, symbol: string } }> };

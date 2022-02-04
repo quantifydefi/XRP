@@ -1,10 +1,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import { format } from 'timeago.js'
-import { CovalentTransactionsGQL } from '@/apollo/main/portfolio.query.graphql'
+import { TransactionsGQL } from '@/apollo/main/portfolio.query.graphql'
 import { ChainlinkEthUsdPriceGQL } from '@/apollo/main/config.query.graphql'
 import { ChainItem } from '~/models/portfolio'
-import { TransactionItem } from '~/types/apollo/main/types'
+// import { TransactionItem } from '~/types/apollo/main/types'
+import { Transaction } from '~/types/apollo/main/types'
 
 @Component({
   computed: {
@@ -13,7 +13,6 @@ import { TransactionItem } from '~/types/apollo/main/types'
       theme: (state: any) => state.ui.theme,
       walletAddress: (state: any) => state.wallet.address,
       currentChain: (state: any) => state.configs.currentChain,
-      lastBlock: (state: any) => state.configs.gasStats.lastBlock,
     }),
   },
   apollo: {
@@ -27,7 +26,7 @@ import { TransactionItem } from '~/types/apollo/main/types'
     },
     transactions: {
       prefetch: false,
-      query: CovalentTransactionsGQL,
+      query: TransactionsGQL,
       deep: false,
       variables() {
         return {
@@ -41,7 +40,7 @@ import { TransactionItem } from '~/types/apollo/main/types'
         this.isTransactionsLoading = loading
       },
       update: (data) => {
-        return data.transactions.items
+        return data.transactions
       },
       watchLoading(isLoading) {
         this.isTransactionsLoading = isLoading
@@ -53,61 +52,65 @@ export default class Transactions extends Vue {
   isTransactionsLoading = true
   ethUsdPrice!: number
   walletAddress!: string
-  lastBlock!: string
   currentChain!: ChainItem
-  readonly transactions!: TransactionItem[]
+  readonly transactions!: Transaction[]
 
   readonly cols = [
     {
-      text: '',
-      align: 'center',
-      value: 'additionalInfo',
-    },
-    {
       text: 'Txn Date',
       align: 'start',
-      value: 'blockSignedAt',
-    },
-    {
-      text: 'Age',
-      align: 'start',
-      value: 'txnAge',
+      value: 'timeStamp',
     },
     {
       text: 'Method',
       align: 'start',
-      value: 'method',
+      value: 'function',
     },
     {
       text: 'Txn Hash',
       align: 'start',
-      value: 'txHash',
+      value: 'hash',
     },
+    // {
+    //   text: 'Age',
+    //   align: 'start',
+    //   value: 'txnAge',
+    // },
 
     {
       text: 'From',
       align: 'start',
-      value: 'fromAddress',
+      value: 'from',
     },
     {
       text: 'To',
       align: 'start',
-      value: 'toAddress',
+      value: 'to',
     },
     {
-      text: 'Amount',
+      text: '',
+      align: 'start',
+      value: 'isOut',
+    },
+    {
+      text: 'Value',
       align: 'start',
       value: 'value',
     },
     {
       text: 'Txn Fee',
       align: 'start',
-      value: 'txnFee',
+      value: 'cumulativeGasUsed',
     },
     {
       text: 'Status',
       align: 'start',
-      value: 'successful',
+      value: 'isError',
+    },
+    {
+      text: '',
+      align: 'start',
+      value: 'action',
     },
   ]
 
@@ -128,9 +131,5 @@ export default class Transactions extends Vue {
 
   stringTruncate(str: string, zeroIndexTo: number, endIndexMinus: number): string {
     return str ? str.slice(0, zeroIndexTo) + '...' + str.slice(str.length - endIndexMinus, str.length) : ''
-  }
-
-  timeFromNow(date: string) {
-    return format(date)
   }
 }

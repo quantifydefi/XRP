@@ -26,7 +26,7 @@ declare module '*/portfolio.query.graphql' {
   const defaultDocument: DocumentNode;
   export const BalancesGQL: DocumentNode;
 export const ProtocolGQL: DocumentNode;
-export const CovalentTransactionsGQL: DocumentNode;
+export const TransactionsGQL: DocumentNode;
 
   export default defaultDocument;
 }
