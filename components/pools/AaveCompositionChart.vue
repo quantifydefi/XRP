@@ -28,7 +28,7 @@ if (process.browser) {
 })
 export default class AaveCompositionChart extends Vue {
   @Prop({ default: () => [] }) readonly data!: { value: number; name: string }[]
-  @Prop({ default: () => 200 }) readonly chartHeight!: number
+  @Prop({ default: () => 220 }) readonly chartHeight!: number
   @Ref('chartDiv') readonly chartDiv!: any
 
   private chart: any = null
@@ -64,6 +64,7 @@ export default class AaveCompositionChart extends Vue {
 
     // Set inner radius
     this.chart.innerRadius = am4core.percent(65)
+    this.chart.paddingTop = 20
 
     // Add and configure Series
     const pieSeries = this.chart.series.push(new am4charts.PieSeries())

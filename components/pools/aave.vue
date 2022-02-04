@@ -51,6 +51,10 @@
                     <td :class="[ui[theme].innerCardLighten]">Liquidation Threshold</td>
                     <td>{{ liquidationThreshold.toFixed(2) + ' %' }}</td>
                   </tr>
+                  <tr>
+                    <td :class="[ui[theme].innerCardLighten]">Borrowing Power Used</td>
+                    <td>{{ borrowingPowerUsed.toFixed(2) + ' %' }}</td>
+                  </tr>
                 </tbody>
               </template>
             </v-simple-table>

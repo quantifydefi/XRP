@@ -381,6 +381,7 @@ export class AavePools extends Vue {
     ],
   }
 
+  /** Filtered AAve pools, exclude AMM and LP assets */
   get aaveMainPoolsFiltered() {
     return this.aavePools.filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
   }
@@ -391,17 +392,20 @@ export class AavePools extends Vue {
     }
   }
 
+  /**  Sum of deposits of all the pools with usageAsCollateralEnabled flag in USD */
   get totalCollateral(): number {
-    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralPools = this.aaveMainPoolsFiltered.filter((elem) => elem.usageAsCollateralEnabled)
     return collateralPools.reduce((a, b) => a + b.usdPrice * b.portfolio.totalDeposits, 0)
   }
 
+  /** Sum of all the  borrowed assets in user wallet */
   get totalBorrowed(): number {
-    return this.aavePools.reduce((a, b) => a + b.usdPrice * b.portfolio.variableBorrow, 0)
+    return this.aaveMainPoolsFiltered.reduce((a, b) => a + b.usdPrice * b.portfolio.variableBorrow, 0)
   }
 
+  /** When H f < 1 the position may be liquidated to maintain solvency as described in the diagram below. */
   get healthFactor(): number {
-    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralPools = this.aaveMainPoolsFiltered.filter((elem) => elem.usageAsCollateralEnabled)
     const collateralOnLiqThreshold = collateralPools.reduce(
       (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.liquidationThreshold) / 100,
       0
@@ -410,8 +414,18 @@ export class AavePools extends Vue {
     return collateralOnLiqThreshold / this.totalBorrowed || 0
   }
 
+  /**
+   * The Loan to Value (LTV) ratio defines the maximum amount of currency that can be borrowed with a specific collateral.
+   * It’s expressed in percentage: at LTV=75%, for every 1 ETH worth of collateral, borrowers will be able to borrow
+   * 0.75 ETH worth of the corresponding currency. Once a borrow is taken, the LTV evolves with market conditions.
+   *
+   * Max Loan To Value Ratio (sum of oll collateral assets in ethereum multiplied by weighted average LTV constant
+   * and divided by total collateral in ETH)
+   *
+   * https://docs.aave.com/risk/asset-risk/risk-parameters
+   * */
   get maxTLV(): number {
-    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralPools = this.aaveMainPoolsFiltered.filter((elem) => elem.usageAsCollateralEnabled)
     const collateralOnLTV = collateralPools.reduce(
       (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.loanToValue) / 100,
       0
@@ -423,8 +437,12 @@ export class AavePools extends Vue {
     return (this.totalBorrowed / this.totalCollateral) * 100 || 0
   }
 
+  get borrowingPowerUsed() {
+    return (this.totalBorrowed * 100) / ((this.totalCollateral * this.maxTLV) / 100)
+  }
+
   get liquidationThreshold(): number {
-    const collateralPools = this.aavePools.filter((elem) => elem.usageAsCollateralEnabled)
+    const collateralPools = this.aaveMainPoolsFiltered.filter((elem) => elem.usageAsCollateralEnabled)
     const collateralOnLTV = collateralPools.reduce(
       (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.liquidationThreshold) / 100,
       0
@@ -437,19 +455,17 @@ export class AavePools extends Vue {
     const deposits: Record<string, any> = { name: 'Deposits Composition', data: [] }
     const borrows: Record<string, any> = { name: 'Borrows Composition', data: [] }
 
-    this.aavePools
-      .filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
-      .forEach((elem) => {
-        if (elem.portfolio.walletBal > 0) {
-          wallet.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.walletBal * elem.usdPrice })
-        }
-        if (elem.portfolio.totalDeposits > 0) {
-          deposits.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.totalDeposits * elem.usdPrice })
-        }
-        if (elem.portfolio.variableBorrow > 0) {
-          borrows.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.variableBorrow * elem.usdPrice })
-        }
-      })
+    this.aaveMainPoolsFiltered.forEach((elem) => {
+      if (elem.portfolio.walletBal > 0) {
+        wallet.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.walletBal * elem.usdPrice })
+      }
+      if (elem.portfolio.totalDeposits > 0) {
+        deposits.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.totalDeposits * elem.usdPrice })
+      }
+      if (elem.portfolio.variableBorrow > 0) {
+        borrows.data.push({ id: elem.id, name: elem.symbol, value: elem.portfolio.variableBorrow * elem.usdPrice })
+      }
+    })
     return [wallet, deposits, borrows]
   }
 
