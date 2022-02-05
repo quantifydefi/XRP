@@ -3,7 +3,6 @@ import { mapState } from 'vuex'
 import { TransactionsGQL } from '@/apollo/main/portfolio.query.graphql'
 import { ChainlinkEthUsdPriceGQL } from '@/apollo/main/config.query.graphql'
 import { ChainItem } from '~/models/portfolio'
-// import { TransactionItem } from '~/types/apollo/main/types'
 import { Transaction } from '~/types/apollo/main/types'
 
 @Component({
@@ -74,12 +73,6 @@ export default class Transactions extends Vue {
       value: 'hash',
       class: 'py-2',
     },
-    // {
-    //   text: 'Age',
-    //   align: 'start',
-    //   value: 'txnAge',
-    // },
-
     // {
     //   text: 'From',
     //   align: 'start',
