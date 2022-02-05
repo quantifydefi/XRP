@@ -2,10 +2,8 @@
   <div class="mb-4">
     <v-row justify="center" class="mt-4">
       <v-col cols="11" class="text-center">
-        <h1 class="v-heading text-h2 font-weight-regular">EVMx <span class="title">[Beta]</span></h1>
-        <div class="v-heading text-h4 font-weight-light mt-3 grey--text">
-          Platform for Decentralized finance with variety of features:
-        </div>
+        <h1 class="v-heading text-h2 font-weight-regular">EVMX <span class="title">[Beta]</span></h1>
+        <div class="v-heading text-h4 font-weight-light mt-3 grey--text">DeFi and NFT Portfolio Manager</div>
         <div class="mt-4">
           <client-only>
             <vue-typer
@@ -71,28 +69,30 @@ import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
   components: { TokenSearch, RecentPricesChart },
   head(): object {
     return {
-      title: 'Uniswap Trading | Metamask | DeFi Heatmap',
+      title: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
       meta: [
         {
           name: 'description',
           hid: 'description',
-          content: 'Automated DEX trading with single click smart contract interface',
+          content:
+            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
         },
 
         // Open Graph
         {
           name: 'og:title',
-          content: 'Uniswap Trading | Metamask | DeFi Heatmap',
+          content: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
         },
         {
           name: 'og:description',
-          content: 'Automated DEX trading with single click smart contract interface',
+          content:
+            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
         },
         { name: 'og:type', content: 'website' },
         { name: 'og:url', content: process.env.baseURL },
         {
           name: 'og:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
         },
 
         // Twitter Card
@@ -100,19 +100,20 @@ import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
         { name: 'twitter:site', content: '@Quantify_Crypto' },
         {
           name: 'twitter:title',
-          content: 'Uniswap Trading | Metamask | DeFi Heatmap',
+          content: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
         },
         {
           name: 'twitter:description',
-          content: 'Automated DEX trading with single click smart contract interface',
+          content:
+            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
         },
         {
           name: 'twitter:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXHomepage.jpg',
         },
         {
           name: 'twitter:image:alt',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/DeFiHeatmapHomepage.jpg',
+          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXHomepage.jpg',
         },
       ],
     }
@@ -122,122 +123,57 @@ export default class Index extends Vue {
   items = [
     {
       color: 'primary lighten-2',
-      icon: 'mdi-star',
-      header: 'Ethereum Wallet Connector',
-      desc: 'Support for additional software wallets',
+      icon: 'mdi-transit-connection-variant',
+      header: 'DeFi Gateway',
+      desc: 'Actionable interfaces for leading DeFi platforms',
     },
     {
       color: 'red lighten-2',
-      icon: 'mdi-filter',
-      header: 'Liquidity Filters',
-      desc: 'Determine the most tradable projects using our liquidity filters',
+      icon: 'mdi-panorama-variant',
+      header: 'NFT Aggregator',
+      desc: 'Favorite NFTs and your balances together',
     },
 
     {
       color: 'orange lighten-2',
       icon: 'mdi-desktop-mac-dashboard',
-      header: 'DeFi Market Overview',
-      desc: 'Big picture view of the whole DeFi Market on a single screen.',
-    },
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-currency-usd',
-      header: 'Uniswap Screener',
-      desc: 'Daily and hourly trends for tokens and token pairs.',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-bell',
-      header: 'Price Alerts',
-      desc: 'Customize price alert notifications for your favorite DeFI tokens',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-information',
-      header: 'Information',
-      desc: 'Providing all the critical DeFi information you need',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-newspaper',
-      header: 'News',
-      desc: 'Latest news for the Defi space',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-finance',
-      header: 'DeFi Movers',
-      desc: 'Daily leaders and decliners, New DeFi tokens',
-    },
-  ]
-
-  featureItems = [
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-star',
-      header: 'Portfolio Visualization',
-      desc: '',
-    },
-
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-star',
-      header: 'Interactive trading Using recent blockchain data',
-      desc: '',
-    },
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-star',
-      header: 'Support of the Latest DeFi Protocols',
-      desc: '',
-    },
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-star',
-      header: 'Latest Blockchain Data',
-      desc: '',
-    },
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-star',
-      header: 'Metamask Wallet Connector',
-      desc: 'Connect to your Metamask wallet with a single click',
-    },
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-account-reactivate-outline',
-      header: 'Uniswap Trader',
-      desc: 'Automated Smart Contract Links for Uniswap Trading, part of our Token Pages',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-information',
-      header: 'Uniswap Analytics',
-      desc: 'Providing all the critical DeFi information you need',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-format-columns',
-      header: 'Pairs Heatmap',
-      desc: 'Visually display hundreds of trading pairs on a single screen. Perform search for desired trading pair',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-chart-box',
       header: 'Token Pages',
-      desc: 'Single screen with Analytics, Price Chart and Uniswap I-frame trading link with Metamask interface',
+      desc: 'Balances, investment options, and metrics on a single screen',
     },
     {
-      color: 'orange lighten-2',
-      icon: 'mdi-send',
-      header: 'Telegram Group',
-      desc: 'Exclusive Telegram Group with the latest DeFi intel',
+      color: 'primary lighten-2',
+      icon: 'mdi-bridge',
+      header: 'Multi Chain Bridging',
+      desc: 'Support for Ethereum Mainnet, Binance Smart Change, Matic, Fantom, Avalanche networks and more',
+    },
+    {
+      color: 'red lighten-2',
+      icon: 'mdi-history',
+      header: 'Transaction History',
+      desc: 'Providing a transaction displays',
+    },
+    {
+      color: 'red lighten-2',
+      icon: 'mdi-rocket-launch-outline',
+      header: 'NFT Launch',
+      desc: 'Check this site for future updates',
     },
   ]
 
-  get animatedFeatures() {
-    return this.featureItems.map((elem) => elem.header)
-  }
+  animatedFeatures = [
+    'DeFi Gateway',
+    'NFT Aggregator',
+    'Advanced Portfolio Visualization',
+    'Uniswap Trader',
+    'Easier DeFi and NFT Transactions',
+    'Aave Smart Connect',
+    'Token Pages',
+    'Curve Crypto Pools Interface',
+    'Balancer Index Manager',
+    'Transaction History',
+    'NFT Manager',
+    'Multi Chain Swaps',
+  ]
 
   isButtonVisible = true
 }

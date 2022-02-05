@@ -92,7 +92,6 @@ import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
 import { Protocols } from '~/models/protocols'
 import BalancesGrid from '~/components/portfolio/grids/BalancesGrid.vue'
-import { Helper } from '~/models/helper'
 import CurvePools from '~/components/pools/curve.vue'
 import AavePool from '~/components/pools/aave.vue'
 
@@ -105,10 +104,114 @@ import AavePool from '~/components/pools/aave.vue'
       theme: (state: any) => state.ui.theme,
     }),
   },
+  head(): object {
+    const aaveMetaTags = () => {
+      return {
+        title: 'Aave Portal for Deposits, Staking and Loans| EVM Ethereum Virtual Machine',
+        meta: [
+          {
+            name: 'description',
+            hid: 'description',
+            content: 'Easily Deposit, Borrow, Repay and Withdraw your DeFi assets with clarity and ease',
+          },
+
+          // Open Graph
+          {
+            name: 'og:title',
+            content: 'Aave Portal for Deposits, Staking and Loans| EVM Ethereum Virtual Machine',
+          },
+          {
+            name: 'og:description',
+            content: 'Easily Deposit, Borrow, Repay and Withdraw your DeFi assets with clarity and ease',
+          },
+          { name: 'og:type', content: 'website' },
+          { name: 'og:url', content: process.env.baseURL },
+          {
+            name: 'og:image',
+            content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXAaveProtocolPage.jpg',
+          },
+
+          // Twitter Card
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:site', content: '@Quantify_Crypto' },
+          {
+            name: 'twitter:title',
+            content: 'Aave Portal for Deposits, Staking and Loans| EVM Ethereum Virtual Machine',
+          },
+          {
+            name: 'twitter:description',
+            content: 'Easily Deposit, Borrow, Repay and Withdraw your DeFi assets with clarity and ease',
+          },
+          {
+            name: 'twitter:image',
+            content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXAaveProtocolPage.jpg',
+          },
+          {
+            name: 'twitter:image:alt',
+            content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXAaveProtocolPage.jpg',
+          },
+        ],
+      }
+    }
+
+    const curveMetaTags = () => {
+      return {
+        title: 'Curve Portal for Staking | EVM Ethereum Virtual Machine',
+        meta: [
+          {
+            name: 'description',
+            hid: 'description',
+            content: 'Manage your Liquidity Pools with clarity and ease',
+          },
+
+          // Open Graph
+          {
+            name: 'og:title',
+            content: 'Curve Portal for Staking | EVM Ethereum Virtual Machine',
+          },
+          {
+            name: 'og:description',
+            content: 'Manage your Liquidity Pools with clarity and ease',
+          },
+          { name: 'og:type', content: 'website' },
+          { name: 'og:url', content: process.env.baseURL },
+          {
+            name: 'og:image',
+            content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXCurveProtocolPage.jpg',
+          },
+
+          // Twitter Card
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:site', content: '@Quantify_Crypto' },
+          {
+            name: 'twitter:title',
+            content: 'Curve Portal for Staking | EVM Ethereum Virtual Machine',
+          },
+          {
+            name: 'twitter:description',
+            content: 'Manage your Liquidity Pools with clarity and ease',
+          },
+          {
+            name: 'twitter:image',
+            content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXCurveProtocolPage.jpg',
+          },
+          {
+            name: 'twitter:image:alt',
+            content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXCurveProtocolPage.jpg',
+          },
+        ],
+      }
+    }
+    // Curve Protocol
+    if (this.$route.query.protocol === '3') {
+      return curveMetaTags()
+      // Aave Protocol
+    } else if (this.$route.query.protocol === '111') {
+      return aaveMetaTags()
+    } else {
+      return []
+    }
+  },
 })
-export default class Protocol extends mixins(Protocols) {
-  setAltImg(event: any) {
-    return Helper.setAltImg(event)
-  }
-}
+export default class Protocol extends mixins(Protocols) {}
 </script>

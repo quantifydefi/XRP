@@ -31,7 +31,7 @@ export class AavePoolAction extends Vue {
   AWETH_ADDRESS = '0x030ba81f1c18d280636f32af80b9aad02cf0854e'
   MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
   ETH_GAS_LIMIT_WEI = 1000000
-  ETH_GAS_PRICE_GWEI = 7
+  ETH_GAS_PRICE_GWEI = 105
 
   dialog = false
   loading = false
@@ -43,7 +43,9 @@ export class AavePoolAction extends Vue {
   maxLTV: number = 0
   actionType: aaveActionTypes = 'deposit'
   alert = false
-  alertMessage = { status: 'success', message: '' }
+  showTransactionLogs = false
+  alertMessage = { status: 'success', message: '', logs: {} }
+
   messages = {
     maxLTV: {
       title: 'Loan to Value (LTV) Ratio',
@@ -85,6 +87,7 @@ export class AavePoolAction extends Vue {
   onActionChanged(value: aaveActionTypes) {
     if (value) {
       this.alert = false
+      this.showTransactionLogs = false
     }
   }
 
@@ -106,7 +109,7 @@ export class AavePoolAction extends Vue {
     return ethers.utils.parseUnits(`${input}`, decimals)
   }
 
-  _allowedToDeposit: number = 0
+  // _allowedToDeposit: number = 0
 
   values = {
     inputNum: {
@@ -126,6 +129,13 @@ export class AavePoolAction extends Vue {
   get allowedToBorrow() {
     if (this.pool) {
       return ((this.totalCollateral * this.maxLTV) / 100 - this.totalBorrowed) / this.pool.usdPrice || 0
+    } else return 0
+  }
+
+  // TODO: Need to be adjusted
+  get allowedToWithdraw() {
+    if (this.pool) {
+      return (this.totalCollateral * 0.85 - this.totalBorrowed) / this.pool.usdPrice || 0
     } else return 0
   }
 
@@ -257,7 +267,6 @@ export class AavePoolAction extends Vue {
     action: aaveActionTypes
   ) {
     this.actionType = action
-    this._allowedToDeposit = 0
     this.pool = pool
     this.healthFactor = healthFactor
     this.totalCollateral = totalCollateral
@@ -290,7 +299,6 @@ export class AavePoolAction extends Vue {
         const approved = await this.provider.call(checkApprove)
         return parseInt(approved)
       } catch (err) {
-        console.log(err)
         return 0
       }
     }
@@ -309,7 +317,6 @@ export class AavePoolAction extends Vue {
         const approved = await this.provider.call(checkApprove)
         return parseInt(approved)
       } catch (err) {
-        console.log(err)
         return 0
       }
     }
@@ -354,7 +361,7 @@ export class AavePoolAction extends Vue {
     return null
   }
 
-  private async _DEPOSIT_METAMASK_CALL(): Promise<object | null> {
+  private async _DEPOSIT_METAMASK_CALL(): Promise<{ isCompleted: boolean; logs: any }> {
     if (this.pool) {
       try {
         const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
@@ -369,16 +376,16 @@ export class AavePoolAction extends Vue {
         depositCall.gasLimit = await this.provider.estimateGas(depositCall)
         depositCall.gasPrice = await this.provider.getGasPrice()
         const depositResult = await this.signer.sendTransaction(depositCall)
-        return await depositResult.wait()
+        const resp = await depositResult.wait()
+        return { isCompleted: true, logs: resp }
       } catch (error) {
-        console.log(error)
-        return null
+        return { isCompleted: false, logs: error }
       }
     }
-    return null
+    return { isCompleted: false, logs: {} }
   }
 
-  private async _DEPOSIT_ETH_METAMASK_CALL(): Promise<object | null> {
+  private async _DEPOSIT_ETH_METAMASK_CALL(): Promise<{ isCompleted: boolean; logs: any }> {
     if (this.pool) {
       try {
         const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
@@ -393,13 +400,13 @@ export class AavePoolAction extends Vue {
         depositCall.gasPrice = ethers.utils.parseUnits(`${this.ETH_GAS_PRICE_GWEI}`, 'gwei')
         depositCall.value = amount
         const depositResult = await this.signer.sendTransaction(depositCall)
-        return await depositResult.wait()
+        const resp = await depositResult.wait()
+        return { isCompleted: true, logs: resp }
       } catch (error) {
-        console.log(error)
-        return null
+        return { isCompleted: false, logs: error }
       }
     }
-    return null
+    return { isCompleted: false, logs: {} }
   }
 
   private async _BORROW_METAMASK_CALL() {
@@ -421,12 +428,13 @@ export class AavePoolAction extends Vue {
         borrowCall.gasLimit = txGasLimit
         borrowCall.gasPrice = txGasPrice
         const txResult = await this.signer.sendTransaction(borrowCall)
-        return await txResult.wait()
+        const resp = await txResult.wait()
+        return { isCompleted: true, logs: resp }
       } catch (err) {
-        return null
+        return { isCompleted: false, logs: err }
       }
     }
-    return null
+    return { isCompleted: false, logs: {} }
   }
 
   private async _BORROW_ETH_METAMASK_CALL(): Promise<object | null> {
@@ -451,7 +459,7 @@ export class AavePoolAction extends Vue {
     return null
   }
 
-  private async _REPAY_METAMASK_CALL() {
+  private async _REPAY_METAMASK_CALL(): Promise<{ isCompleted: boolean; logs: any }> {
     if (this.pool) {
       try {
         const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
@@ -468,17 +476,17 @@ export class AavePoolAction extends Vue {
         const txGasPrice = await this.provider.getGasPrice()
         repayCall.gasLimit = txGasLimit
         repayCall.gasPrice = txGasPrice
-
         const txResult = await this.signer.sendTransaction(repayCall)
-        return await txResult.wait()
+        const resp = await txResult.wait()
+        return { isCompleted: true, logs: resp }
       } catch (err) {
-        console.log(err)
-        return null
+        return { isCompleted: false, logs: err }
       }
     }
+    return { isCompleted: false, logs: {} }
   }
 
-  private async _REPAY_ETH_METAMASK_CALL(): Promise<object | null> {
+  /*  private async _REPAY_ETH_METAMASK_CALL(): Promise<object | null> {
     if (this.pool) {
       try {
         const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
@@ -501,9 +509,9 @@ export class AavePoolAction extends Vue {
       }
     }
     return null
-  }
+  } */
 
-  private async _WITHDRAW_METAMASK_CALL() {
+  private async _WITHDRAW_METAMASK_CALL(): Promise<{ isCompleted: boolean; logs: any }> {
     if (this.pool) {
       try {
         const lendingPoolContract = new ethers.Contract(this.AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, this.signer)
@@ -519,15 +527,16 @@ export class AavePoolAction extends Vue {
         withdrawCall.gasLimit = txGasLimit
         withdrawCall.gasPrice = txGasPrice
         const txResult = await this.signer.sendTransaction(withdrawCall)
-        return await txResult.wait()
+        const resp = await txResult.wait()
+        return { isCompleted: true, logs: resp }
       } catch (err) {
-        console.log(err)
-        return null
+        return { isCompleted: false, logs: err }
       }
     }
+    return { isCompleted: false, logs: {} }
   }
 
-  private async _WITHDRAW_ETH_METAMASK_CALL() {
+  /*  private async _WITHDRAW_ETH_METAMASK_CALL() {
     if (this.pool) {
       try {
         const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
@@ -549,12 +558,12 @@ export class AavePoolAction extends Vue {
         return null
       }
     }
-  }
+  } */
 
   @Emit('transaction-result')
-  transactionResult(status: 'error' | 'success', message: string): string {
+  transactionResult(status: 'error' | 'success', message: string, logs: any = {}): string {
     this.alert = true
-    this.alertMessage = { status, message }
+    this.alertMessage = { status, message, logs }
     this.values.inputNum.value = 0
     this.loading = false
     this.values.inputNum.disabled = false
@@ -562,11 +571,11 @@ export class AavePoolAction extends Vue {
   }
 
   async depositEth() {
-    const depositResp = await this._DEPOSIT_ETH_METAMASK_CALL()
-    if (!depositResp) {
-      return this.transactionResult('error', `Something went wrong.`)
+    const { isCompleted, logs } = await this._DEPOSIT_ETH_METAMASK_CALL()
+    if (!isCompleted) {
+      return this.transactionResult('error', `Something went wrong.`, logs)
     }
-    return this.transactionResult('success', 'Transaction completed successfully')
+    return this.transactionResult('success', 'Transaction completed successfully', logs)
   }
 
   async deposit() {
@@ -581,40 +590,37 @@ export class AavePoolAction extends Vue {
     if (allowedSpending < this.values.inputNum.value) {
       const resp = await this._APPROVE_SPENDING_METAMASK_CALL()
       if (!resp) {
-        this.transactionResult('error', `Cant Approve Spending`)
-        return
+        return this.transactionResult('error', `Cant Approve Spending`)
       }
     }
-    const depositResp = await this._DEPOSIT_METAMASK_CALL()
-    if (!depositResp) {
-      return this.transactionResult('error', `Something went wrong.`)
+    const { isCompleted, logs } = await this._DEPOSIT_METAMASK_CALL()
+    if (!isCompleted) {
+      return this.transactionResult('error', `Something went wrong.`, logs)
     }
-    return this.transactionResult('success', 'Transaction completed successfully')
+    return this.transactionResult('success', 'Transaction completed successfully', logs)
   }
 
-  async borrowEth() {
+  /*  async borrowEth() {
     const borrowResp = await this._BORROW_ETH_METAMASK_CALL()
     if (!borrowResp) {
       return this.transactionResult('error', `Something went wrong`)
     }
     return this.transactionResult('success', 'Transaction completed successfully')
-  }
+  } */
 
   async borrow() {
     this.loading = true
     this.values.inputNum.disabled = true
     if (this.pool) {
-      // if (this.pool.symbol === 'ETH') {
-      //   return this.borrowEth()
-      // }
-      const borrowResp = await this._BORROW_METAMASK_CALL()
-      if (!borrowResp) {
-        return this.transactionResult('error', `Something went wrong`)
+      const { isCompleted, logs } = await this._BORROW_METAMASK_CALL()
+      if (!isCompleted) {
+        return this.transactionResult('error', `Something went wrong`, logs)
       }
-      return this.transactionResult('success', 'Transaction completed successfully')
+      return this.transactionResult('success', 'Transaction completed successfully', logs)
     }
   }
 
+  /*
   async withdrawEth() {
     const allowedSpending = await this._CHECK_ALLOWED_SPENDING_WETH_METAMASK_CALL()
     if (allowedSpending > this.values.inputNum.value) {
@@ -630,53 +636,45 @@ export class AavePoolAction extends Vue {
     }
     return this.transactionResult('error', `Something went wrong`)
   }
+*/
 
   async withdraw() {
     this.loading = true
     this.values.inputNum.disabled = true
-
     if (this.pool) {
-      if (this.pool.symbol === 'ETH') {
-        return await this.withdrawEth()
+      const { isCompleted, logs } = await this._WITHDRAW_METAMASK_CALL()
+      if (!isCompleted) {
+        return this.transactionResult('error', `Something went wrong.`, logs)
       }
-
-      const borrowResp = await this._WITHDRAW_METAMASK_CALL()
-      if (!borrowResp) {
-        return this.transactionResult('error', `Something went wrong`)
-      }
-      return this.transactionResult('success', 'Transaction completed successfully')
+      return this.transactionResult('success', 'Transaction completed successfully.', logs)
     }
   }
 
-  async repayEth() {
+  /*  async repayEth() {
     const repay = await this._REPAY_ETH_METAMASK_CALL()
     if (!repay) {
       return this.transactionResult('error', `Something went wrong.`)
     }
     return this.transactionResult('success', 'Transaction completed successfully')
-  }
+  } */
 
   async repay() {
     this.loading = true
     this.values.inputNum.disabled = true
 
     if (this.pool) {
-      /* if (this.pool.symbol === 'ETH') {
-        return this.repayEth()
-      } */
       const allowedSpending = await this._CHECK_ALLOWED_SPENDING_METAMASK_CALL()
       if (allowedSpending < this.values.inputNum.value) {
         const resp = await this._APPROVE_SPENDING_METAMASK_CALL()
         if (!resp) {
-          this.transactionResult('error', `Cant Approve Spending`)
-          return
+          return this.transactionResult('error', `Cant Approve Spending`)
         }
       }
-      const repay = await this._REPAY_METAMASK_CALL()
-      if (!repay) {
-        return this.transactionResult('error', `Something went wrong.`)
+      const { isCompleted, logs } = await this._REPAY_METAMASK_CALL()
+      if (!isCompleted) {
+        return this.transactionResult('error', `Something went wrong.`, logs)
       }
-      return this.transactionResult('success', 'Transaction completed successfully')
+      return this.transactionResult('success', 'Transaction completed successfully', logs)
     }
   }
 }

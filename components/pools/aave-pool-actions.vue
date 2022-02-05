@@ -1,11 +1,15 @@
 <template>
-  <v-dialog v-model="dialog" width="700">
-    <v-card tile outlined>
+  <v-dialog v-model="dialog" persistent width="700" max-width="700">
+    <v-card tile outlined max-width="700">
+      <div class="text-right">
+        <v-icon class="mt-2 mr-2" @click="dialog = false">mdi-close</v-icon>
+      </div>
+
       <v-row no-gutters>
-        <v-col cols="12">
+        <v-col cols="12" class="pt-2">
           <div class="text-center">
-            <v-btn-toggle v-model="actionType" tile color="primary" mandatory group>
-              <v-btn v-for="action in actions" :key="action.value" rounded small :value="action.value">
+            <v-btn-toggle v-model="actionType" color="primary" mandatory group>
+              <v-btn v-for="action in actions" :key="action.value" height="32" :value="action.value" depressed outlined>
                 {{ action.text }}
               </v-btn>
             </v-btn-toggle>
@@ -13,9 +17,17 @@
         </v-col>
       </v-row>
 
-      <v-alert v-model="alert" text class="mx-4" :type="alertMessage.status" dismissible>
-        {{ alertMessage.message }}
-      </v-alert>
+      <div class="px-4">
+        <v-alert v-model="alert" class="mx-0" :type="alertMessage.status" dismissible text max-width="700">
+          {{ alertMessage.message }}
+        </v-alert>
+        <div v-if="alert" class="text--primary" @click="showTransactionLogs = !showTransactionLogs">
+          <a href="#" class="text-decoration-none">Show Logs</a>
+        </div>
+        <div v-if="showTransactionLogs && alert" :class="[ui[theme].innerCardLighten]">
+          {{ JSON.stringify(alertMessage.logs) }}
+        </div>
+      </div>
 
       <div v-if="pool" class="px-4">
         <v-row v-if="actionType === 'deposit'" class="mb-1 mt-4" no-gutters justify="center">
@@ -495,13 +507,13 @@
           </v-col>
 
           <v-col cols="8">
-            <!--            <v-row>
-              <v-col class="mb-1 caption"> Allowed To Repay:</v-col>
+            <v-row>
+              <v-col class="mb-1 caption">Allowed To Withdraw:</v-col>
               <v-col class="text-right caption">
-                <span class="font-weight-medium"> {{ pool.portfolio.walletBal }}</span>
+                <span class="font-weight-medium"> {{ allowedToWithdraw }}</span>
                 {{ pool.symbol }}
               </v-col>
-            </v-row>-->
+            </v-row>
             <v-form ref="depositForm" v-model="depositFormValid">
               <v-text-field
                 v-model="amount"
