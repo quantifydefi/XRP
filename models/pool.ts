@@ -6,6 +6,7 @@ import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio, CurvePool } from '
 import { Helper } from '~/models/helper'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 import { aaveActions, aaveActionTypes, AavePoolAction } from '~/models/web3'
+import { Events } from '~/types/global'
 
 @Component({
   name: 'CurvePools',
@@ -229,6 +230,10 @@ export class AavePoolCl implements AavePool {
   get liquidationPenalty() {
     return parseFloat(this.reserveLiquidationBonus) / 100 - 100
   }
+
+  get logoUrl() {
+    return `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${this.symbol.toLowerCase()}.png`
+  }
 }
 
 @Component({
@@ -438,7 +443,7 @@ export class AavePools extends Vue {
   }
 
   get borrowingPowerUsed() {
-    return (this.totalBorrowed * 100) / ((this.totalCollateral * this.maxTLV) / 100)
+    return (this.totalBorrowed * 100) / ((this.totalCollateral * this.liquidationThreshold) / 100)
   }
 
   get liquidationThreshold(): number {
@@ -492,6 +497,18 @@ export class AavePools extends Vue {
     const pool: AavePoolCl | undefined = this.aavePools.find((elem) => elem.id === poolAddress)
     if (pool) {
       await this.poolAction.init(pool, this.healthFactor, this.totalCollateral, this.totalBorrowed, this.maxTLV, action)
+    }
+  }
+
+  importToMetamask(poolAddress: string) {
+    const pool: AavePoolCl | undefined = this.aavePools.find((elem) => elem.id === poolAddress)
+    if (pool) {
+      this.$root.$emit(Events.IMPORT_METAMASK_TOKEN, {
+        address: pool.underlyingAsset,
+        symbol: pool.symbol,
+        decimals: pool.decimals,
+        image: pool.logoUrl,
+      })
     }
   }
 }

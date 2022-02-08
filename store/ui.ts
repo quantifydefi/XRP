@@ -11,11 +11,15 @@ export const state = () => ({
     // header
     headerTextClass: 'white--text',
     innerCardLighten: 'grey--text text--lighten-1',
+
+    // Json logs for transactions dialog
+    jsonLogs: 'grey darken-4',
   },
   light: {
     overlayColor: 'grey lighten-4',
     headerTextClass: 'black--text',
     innerCardLighten: 'black--text',
+    jsonLogs: 'grey lighten-2',
   },
 })
 export type UiState = ReturnType<typeof state>

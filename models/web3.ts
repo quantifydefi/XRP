@@ -126,16 +126,26 @@ export class AavePoolAction extends Vue {
     },
   }
 
-  get allowedToBorrow() {
+  /** Allowed borrowing (In Tokens) calculated based by totalCollateral (USD) and total Borrowed (USD) */
+  get allowedToBorrow(): number {
     if (this.pool) {
-      return ((this.totalCollateral * this.maxLTV) / 100 - this.totalBorrowed) / this.pool.usdPrice || 0
+      const allowed = ((this.totalCollateral * this.maxLTV) / 100 - this.totalBorrowed) / this.pool.usdPrice
+      if (allowed > 0) {
+        return allowed
+      } else return 0
     } else return 0
   }
 
-  // TODO: Need to be adjusted
-  get allowedToWithdraw() {
+  /** Allowed withdrawing (In Tokens) calculated based by allowedToBorrow (Tokens) and maxLTV */
+  get allowedToWithdraw(): number {
     if (this.pool) {
-      return (this.totalCollateral * 0.85 - this.totalBorrowed) / this.pool.usdPrice || 0
+      if (this.pool.portfolio.totalDeposits === 0) {
+        return 0
+      }
+      const totalAllowedToWithdraw = (this.allowedToBorrow * 100) / this.maxLTV
+      if (totalAllowedToWithdraw > this.pool.portfolio.totalDeposits) {
+        return this.pool?.portfolio.totalDeposits
+      } else return totalAllowedToWithdraw
     } else return 0
   }
 

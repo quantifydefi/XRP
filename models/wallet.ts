@@ -81,6 +81,30 @@ export class MetamaskConnector extends Vue {
     } catch (error) {
       console.log(error)
     } */
+    /** Listen to token metamask import */
+    this.$root.$on(
+      Events.IMPORT_METAMASK_TOKEN,
+      async ({
+        address,
+        symbol,
+        decimals,
+        image,
+      }: {
+        address: string
+        symbol: string
+        decimals: number
+        image: string
+      }) => {
+        try {
+          await ethereum.request({
+            method: 'wallet_watchAsset',
+            params: { type: 'ERC20', options: { address, symbol, decimals, image } },
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    )
   }
 
   /*  async mounted() {

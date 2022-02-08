@@ -22,10 +22,10 @@
           {{ alertMessage.message }}
         </v-alert>
         <div v-if="alert" class="text--primary" @click="showTransactionLogs = !showTransactionLogs">
-          <a href="#" class="text-decoration-none">Show Logs</a>
+          <a href="#" class="text-decoration-none ba">Show Logs</a>
         </div>
-        <div v-if="showTransactionLogs && alert" :class="[ui[theme].innerCardLighten]">
-          {{ JSON.stringify(alertMessage.logs) }}
+        <div v-if="showTransactionLogs && alert" :class="[ui[theme].jsonLogs, 'pa-2']">
+          <span :class="ui[theme].innerCardLighten">{{ alertMessage.logs }}</span>
         </div>
       </div>
 
