@@ -27,6 +27,7 @@
                     small
                     depressed
                     rounded
+                    class="cursor-text"
                     color="primary"
                     v-bind="attrs"
                     v-on="on"
@@ -63,12 +64,13 @@
             <div v-else-if="item.input === '0x'">
               <v-tooltip top :color="ui[theme].overlayColor">
                 <template #activator="{ on, attrs }">
-                  <v-btn rounded outlined depressed color="primary" small v-bind="attrs" v-on="on">
+                  <v-btn rounded outlined depressed color="primary" small v-bind="attrs" class="cursor-text" v-on="on">
                     <span
                       :class="[
                         ui[ui.theme].headerTextClass,
                         'text-truncate',
                         'text-capitalize',
+                        'active',
                         'px-2',
                         'font-weight-regular',
                       ]"
@@ -84,7 +86,7 @@
             <div v-else-if="item.methodId">
               <v-tooltip top :color="ui[theme].overlayColor">
                 <template #activator="{ on, attrs }">
-                  <v-btn rounded outlined depressed color="primary" small v-bind="attrs" v-on="on">
+                  <v-btn rounded outlined depressed color="primary" class="cursor-text" small v-bind="attrs" v-on="on">
                     <span
                       :class="[
                         ui[ui.theme].headerTextClass,
@@ -105,7 +107,7 @@
             <div v-else-if="item.input">
               <v-tooltip top :color="ui[theme].overlayColor">
                 <template #activator="{ on, attrs }">
-                  <v-btn rounded outlined depressed color="primary" small v-bind="attrs" v-on="on">
+                  <v-btn rounded outlined depressed color="primary" class="cursor-text" small v-bind="attrs" v-on="on">
                     <span
                       :class="[
                         ui[ui.theme].headerTextClass,
@@ -187,7 +189,7 @@
                       v-on="on"
                       @click="copyAddressToClipboard(item.to || item.contractAddress)"
                     >
-                      {{ stringTruncate(item.to, 6, 4) || stringTruncate(item.contractAddress, 6, 4) }}
+                      {{ stringTruncate(item.to, 10, 4) || stringTruncate(item.contractAddress, 10, 4) }}
                       <v-icon v-if="item.contractAddress" class="ml-1" small>mdi-file-sign</v-icon>
                     </span>
                   </template>
