@@ -104,12 +104,14 @@ export type BalanceItem = {
 
 export type Chain = {
   __typename?: 'Chain';
+  blockExplorerUrl?: Maybe<Scalars['String']>;
   chainId: Scalars['Int'];
   geckoId: Scalars['String'];
   isTestNet: Scalars['Boolean'];
   label: Scalars['String'];
   logoUrl: Scalars['String'];
   name: Scalars['String'];
+  rpcUrl: Scalars['String'];
   symbol: Scalars['String'];
 };
 
@@ -359,6 +361,8 @@ export type Query = {
   spotPrice?: Maybe<SpotPrice>;
   supportedTokens?: Maybe<Array<Token>>;
   todos: Array<Todo>;
+  /** Transactions */
+  transactions: Array<Transaction>;
 };
 
 
@@ -389,6 +393,14 @@ export type QuerySpotPriceArgs = {
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
   tickers: Scalars['String'];
+};
+
+
+export type QueryTransactionsArgs = {
+  address: Scalars['String'];
+  chainId?: Scalars['Int'];
+  pageNumber?: Scalars['Int'];
+  pageSize?: Scalars['Int'];
 };
 
 /**
@@ -455,48 +467,34 @@ export type Token = {
   symbol: Scalars['String'];
 };
 
-export type TokenBalance = {
-  __typename?: 'TokenBalance';
-  address?: Maybe<Scalars['String']>;
-  symbol?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['Float']>;
-};
-
-export type TransactionItem = {
-  __typename?: 'TransactionItem';
-  blockHeight?: Maybe<Scalars['Int']>;
-  blockSignedAt?: Maybe<Scalars['String']>;
-  fromAddress?: Maybe<Scalars['String']>;
-  fromAddressLabel?: Maybe<Scalars['String']>;
-  gasOffered?: Maybe<Scalars['Float']>;
-  gasPrice?: Maybe<Scalars['Float']>;
-  gasQuote?: Maybe<Scalars['Float']>;
-  gasQuoteRate?: Maybe<Scalars['Float']>;
-  gasSpent?: Maybe<Scalars['Float']>;
-  successful?: Maybe<Scalars['Boolean']>;
-  toAddress?: Maybe<Scalars['String']>;
-  toAddressLabel?: Maybe<Scalars['String']>;
-  txHash?: Maybe<Scalars['String']>;
-  txOffset?: Maybe<Scalars['Int']>;
-  value?: Maybe<Scalars['String']>;
-  valueQuote?: Maybe<Scalars['Float']>;
-};
-
 /**
  * Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
  * query param, it returns a paginated list of all tickers sorted by market cap.
  * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
  */
-export type Transactions = {
-  __typename?: 'Transactions';
-  address: Scalars['String'];
-  chainId: Scalars['Float'];
-  items?: Maybe<Array<TransactionItem>>;
-  nextUpdateAt: Scalars['String'];
-  pagination?: Maybe<Pagination>;
-  quoteCurrency: Scalars['String'];
-  someOtherKeys?: Maybe<Scalars['String']>;
-  updatedAt: Scalars['String'];
+export type Transaction = {
+  __typename?: 'Transaction';
+  blockHash: Scalars['String'];
+  blockNumber: Scalars['String'];
+  confirmations: Scalars['String'];
+  contractAddress: Scalars['String'];
+  cumulativeGasUsed: Scalars['String'];
+  from: Scalars['String'];
+  function: Scalars['String'];
+  gas: Scalars['String'];
+  gasPrice: Scalars['String'];
+  gasUsed: Scalars['String'];
+  hash: Scalars['String'];
+  input: Scalars['String'];
+  isError: Scalars['String'];
+  methodId: Scalars['String'];
+  nonce: Scalars['String'];
+  timeStamp: Scalars['String'];
+  to: Scalars['String'];
+  tokenTo: Token;
+  transactionIndex: Scalars['String'];
+  txreceiptStatus: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type User = {
@@ -508,7 +506,7 @@ export type User = {
 export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', name: string, chainId: number, isTestNet: boolean, label: string, logoUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string }, protocols: Array<{ __typename?: 'Protocol', name: string, symbol: string, id: string } | null | undefined> };
+export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl?: string | null }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string }, protocols: Array<{ __typename?: 'Protocol', name: string, symbol: string, id: string } | null> };
 
 export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -518,12 +516,12 @@ export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
 export type AllProtocolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllProtocolsGqlQuery = { __typename?: 'Query', protocols: Array<{ __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null | undefined>, twitter: string } | null | undefined> };
+export type AllProtocolsGqlQuery = { __typename?: 'Query', protocols: Array<{ __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null>, twitter: string } | null> };
 
 export type CurvePoolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, adminFee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null | undefined }> }> };
+export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', id: string, name: string, assetType: string, fee: string, adminFee: string, totalBalance: number, registryAddress: string, dailyVolume: number, liquidityUsd: number, baseAPY: number, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number }, coins: Array<{ __typename?: 'CurveCoin', balance: string, balanceUSD: number, token?: { __typename?: 'CurveToken', symbol: string, name: string, usdPrice: number } | null }> }> };
 
 export type AavePoolGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -533,22 +531,17 @@ export type AavePoolGqlQueryVariables = Exact<{
 
 export type AavePoolGqlQuery = { __typename?: 'Query', aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: string, liquidityRate: string, stableBorrowRate: string, variableBorrowRate: string, aEmissionPerSecond: string, vEmissionPerSecond: string, sEmissionPerSecond: string, availableLiquidity: string, utilizationRate: string, totalATokenSupply: string, totalCurrentVariableDebt: string, totalPrincipalStableDebt: string, usdPrice: number, totalLiquidityAsCollateral: string, baseLTVasCollateral: string, reserveLiquidationThreshold: string, reserveLiquidationBonus: string, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: string }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string }, portfolio: { __typename?: 'AavePortfolio', walletBal: number, totalDeposits: number, stableBorrow: number, variableBorrow: number } }> };
 
-export type UsdPriceGqlQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UsdPriceGqlQuery = { __typename?: 'Query', recentPrices: any };
-
 export type BalancesGqlQueryVariables = Exact<{
   chainIds: Array<Scalars['Int']> | Scalars['Int'];
   address: Scalars['String'];
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null | undefined } | null | undefined, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null | undefined, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }> }> };
 
 export type ProtocolGqlQueryVariables = Exact<{
   protocolId: Scalars['String'];
 }>;
 
 
-export type ProtocolGqlQuery = { __typename?: 'Query', protocol: { __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null | undefined>, twitter: string, balance: any, updatedAt: number, tokenAddresses: Array<string | null | undefined>, usdTvl: any } };
+export type ProtocolGqlQuery = { __typename?: 'Query', protocol: { __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null>, twitter: string, balance: any, updatedAt: number, tokenAddresses: Array<string | null>, usdTvl: any } };

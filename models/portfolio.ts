@@ -14,6 +14,8 @@ export class ChainItem implements Chain {
   logoUrl!: string
   name!: string
   symbol!: string
+  blockExplorerUrl!: string
+  rpcUrl!: string
 
   get id() {
     return this.chainId

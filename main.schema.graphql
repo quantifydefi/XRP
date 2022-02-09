@@ -90,12 +90,14 @@ type BalanceItem {
 }
 
 type Chain {
+  blockExplorerUrl: String
   chainId: Int!
   geckoId: String!
   isTestNet: Boolean!
   label: String!
   logoUrl: String!
   name: String!
+  rpcUrl: String!
   symbol: String!
 }
 
@@ -221,23 +223,6 @@ type GlobalStats {
   tradingVolume24h: String!
 }
 
-type LogEvent {
-  blockHeight: Int!
-  blockSignedAt: String!
-  logOffset: Int!
-  rawLogData: String!
-  rawLogTopics: [String]!
-  rawLogTopicsBytes: String!
-  senderAddress: String!
-  senderAddressLabel: String!
-  senderContractDecimals: Int!
-  senderContractTickerSymbol: String!
-  senderLogoUrl: String!
-  senderName: String!
-  txHash: String!
-  txOffset: Int!
-}
-
 type MarketData {
   ath: Map
   athChangePercentage: Map
@@ -340,8 +325,8 @@ type Query {
   spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
   supportedTokens: [Token!]
   todos: [Todo!]!
-  "Covalent Transactions"
-  transactions(address: String!, chainId: Int!, pageNumber: Int! = 0, pageSize: Int! = 1000): Transactions!
+  "Transactions"
+  transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): [Transaction!]!
 }
 
 """
@@ -404,40 +389,34 @@ type Token {
   symbol: String!
 }
 
-type TransactionItem {
-  blockHeight: Int
-  blockSignedAt: String
-  fromAddress: String
-  fromAddressLabel: String
-  gasOffered: Float
-  gasPrice: Float
-  gasQuote: Float
-  gasQuoteRate: Float
-  gasSpent: Float
-  logEvents: [LogEvent!]!
-  successful: Boolean
-  toAddress: String
-  toAddressLabel: String
-  txHash: String
-  txOffset: Int
-  value: String
-  valueQuote: Float
-}
-
 """
 
 Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
 query param, it returns a paginated list of all tickers sorted by market cap.
 https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
 """
-type Transactions {
-  address: String!
-  chainId: Float!
-  items: [TransactionItem!]!
-  nextUpdateAt: String!
-  pagination: Pagination
-  quoteCurrency: String!
-  updatedAt: String!
+type Transaction {
+  blockHash: String!
+  blockNumber: String!
+  confirmations: String!
+  contractAddress: String!
+  cumulativeGasUsed: String!
+  from: String!
+  function: String!
+  gas: String!
+  gasPrice: String!
+  gasUsed: String!
+  hash: String!
+  input: String!
+  isError: String!
+  methodId: String!
+  nonce: String!
+  timeStamp: String!
+  to: String!
+  tokenTo: Token!
+  transactionIndex: String!
+  txreceiptStatus: String!
+  value: String!
 }
 
 type User {

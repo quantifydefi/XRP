@@ -4,7 +4,7 @@
       <v-row justify="center">
         <div class="font-weight-medium">
           Application Running in simulation mode. Click
-          <a href="#" class="text-decoration-none" @click="simulationDialog = true">here</a> for instructions
+          <a href="#" class="text-decoration-none">here</a> for instructions
         </div>
       </v-row>
     </v-system-bar>
@@ -171,22 +171,13 @@
       </v-container>
     </v-main>
 
-    <!--    Simulation Dialog Instruction-->
-
-    <v-dialog v-if="currentChain && currentChain.isTestNet" v-model="simulationDialog" max-width="40%">
-      <v-card tile outlined height="100%" class="pa-4">
-        <div>Network URL: https://mainnet-simulation.defiheatmap.com</div>
-        <div>Chain ID: 1338</div>
-      </v-card>
-    </v-dialog>
-
     <main-navigation-menu />
     <notification ref="notificationComponent" />
   </v-app>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
 import { create } from 'blockies-ts'
@@ -235,7 +226,18 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
     'app-id-curve': 'Curve',
   }
 
-  simulationDialog = false
+  @Watch('conf.selectedChainId')
+  async onChainChanged(value: any, old: any) {
+    if (value === undefined) {
+      this.conf.selectedChainId = old
+    } else {
+      const chain = this._findChainById(value)
+      await this.$store.dispatch('configs/changeChain', chain)
+      if (chain) {
+        await this.changeNetwork(chain)
+      }
+    }
+  }
 
   get iconSrc() {
     return process.client ? create({ seed: this.address }).toDataURL() : ''
