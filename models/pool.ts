@@ -246,22 +246,17 @@ export class AavePoolCl implements AavePool {
   },
   apollo: {
     aavePools: {
-      prefetch: false,
-      query: AavePoolGQL,
+      fetchPolicy: 'cache-and-network',
+      // pollInterval: 60000,
       deep: false,
+      query: AavePoolGQL,
       variables() {
         return {
           chainId: this.chainId,
           userWallet: this.userWalletAddress || '',
         }
       },
-      result({ loading }) {
-        this.isPoolsLoading = loading
-      },
       update: ({ aavePools }) => plainToClass(AavePoolCl, aavePools as AavePool[]),
-      watchLoading(isLoading) {
-        this.isPoolsLoading = isLoading
-      },
     },
   },
 })
@@ -269,7 +264,7 @@ export class AavePools extends Vue {
   @Ref('poolAction') readonly poolAction!: AavePoolAction
   readonly aavePools: AavePoolCl[] = []
   readonly aaveActions = aaveActions
-  isPoolsLoading = true
+
   readonly config = {
     cols: [
       {
@@ -391,8 +386,14 @@ export class AavePools extends Vue {
     return this.aavePools.filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
   }
 
+  get isPoolsLoading() {
+    return this.$apollo.queries.aavePools.loading
+  }
+
   async transactionResult(status: 'error' | 'success') {
     if (status === 'success') {
+      // await this.$apollo.queries.aavePools.stop()
+      // await this.$apollo.queries.aavePools.start()
       await this.$apollo.queries.aavePools.refetch()
     }
   }

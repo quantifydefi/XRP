@@ -56,14 +56,18 @@ export class MetamaskConnector extends Vue {
   }
 
   async changeNetwork(chain: Chain) {
+    // console.log('Attempt to Change Chain', chain.chainId, chain)
+
     let chainId: string | number = chain.chainId
     if (chainId === 1) {
       chainId = '0x' + chain.chainId
-    } else if (chainId === 1338) {
-      chainId = '0x53a'
+    } else if (chainId === 1337) {
+      chainId = '0x539'
     } else {
       chainId = ethers.utils.hexlify(chain.chainId)
     }
+
+    // console.log('Chain ID', chainId)
 
     try {
       await this.ethereum.request({
@@ -112,8 +116,8 @@ export class MetamaskConnector extends Vue {
         }
       })
     }
-    /*    this.ethereum.on('chainChanged', (hexString: string) => {
-      console.log('Chain Changed', parseInt(hexString, 16), hexString)
+    /* this.ethereum.on('chainChanged', (hexString: string) => {
+      console.log('Metamask Chain Changed', parseInt(hexString, 16), hexString)
     }) */
     /* try {
       await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] })

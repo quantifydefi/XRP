@@ -70,18 +70,20 @@
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
-                  <v-divider v-if="testNetChains.length" />
-                  <v-subheader v-if="testNetChains.length" class="orange--text">Simulation Networks</v-subheader>
-                  <v-list-item-group v-model="conf.selectedChainId" color="primary">
-                    <v-list-item v-for="item in testNetChains" :key="item.chainId" :value="item.chainId">
-                      <v-list-item-avatar size="24">
-                        <v-img :src="item.logoUrl"></v-img>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title v-text="item.label"></v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
+                  <div v-if="isTestNetAllowed">
+                    <v-divider v-if="testNetChains.length" />
+                    <v-subheader v-if="testNetChains.length" class="orange--text">Simulation Networks</v-subheader>
+                    <v-list-item-group v-model="conf.selectedChainId" color="primary">
+                      <v-list-item v-for="item in testNetChains" :key="item.chainId" :value="item.chainId">
+                        <v-list-item-avatar size="24">
+                          <v-img :src="item.logoUrl"></v-img>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title v-text="item.label"></v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </div>
                 </v-list>
               </v-col>
             </v-row>
@@ -213,6 +215,8 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
   $refs!: { notificationComponent: any }
   walletConnected: any
   allowApiBar = process.env.runEnv === 'development' || process.env.runEnv === 'staging'
+  isTestNetAllowed = process.env.runEnv === 'development'
+
   pageTitle = {
     index: 'Dashboard',
     terminal: 'Terminal',

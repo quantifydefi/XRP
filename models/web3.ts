@@ -293,8 +293,12 @@ export class AavePoolAction extends Vue {
    * Initiate Ethers.js Signer and provider to use for future transactions
    */
   async mounted() {
-    this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-    this.signer = await this.provider.getSigner()
+    try {
+      this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+      this.signer = await this.provider.getSigner()
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   private async _CHECK_ALLOWED_SPENDING_METAMASK_CALL(): Promise<number> {

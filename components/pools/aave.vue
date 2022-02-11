@@ -15,7 +15,7 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-col v-if="!isPoolsLoading" cols="12">
+    <v-col v-show="!isPoolsLoading" cols="12">
       <v-row v-if="isWalletConnected">
         <v-col lg="3" md="6" cols="12">
           <v-card outlined tile height="100%" class="pa-2">
