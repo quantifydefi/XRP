@@ -243,6 +243,45 @@ export type GlobalStats = {
   tradingVolume24h: Scalars['String'];
 };
 
+/**
+ * Covalent Get single Transaction by chainId and txHash
+ * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
+ */
+export type LogEvent = {
+  __typename?: 'LogEvent';
+  blockHeight: Scalars['Int'];
+  blockSignedAt: Scalars['String'];
+  decoded: LogEventDecoded;
+  logOffset: Scalars['Int'];
+  rawLogData: Scalars['String'];
+  rawLogTopics: Array<Maybe<Scalars['String']>>;
+  rawLogTopicsBytes: Scalars['String'];
+  senderAddress: Scalars['String'];
+  senderAddressLabel: Scalars['String'];
+  senderContractDecimals: Scalars['Int'];
+  senderContractTickerSymbol: Scalars['String'];
+  senderLogoUrl: Scalars['String'];
+  senderName: Scalars['String'];
+  txHash: Scalars['String'];
+  txOffset: Scalars['Int'];
+};
+
+export type LogEventDecoded = {
+  __typename?: 'LogEventDecoded';
+  name: Scalars['String'];
+  params: Array<LogEventParams>;
+  signature: Scalars['String'];
+};
+
+export type LogEventParams = {
+  __typename?: 'LogEventParams';
+  decoded: Scalars['Boolean'];
+  indexed: Scalars['Boolean'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type MarketData = {
   __typename?: 'MarketData';
   ath?: Maybe<Scalars['Map']>;
@@ -359,6 +398,8 @@ export type Query = {
   spotPrice?: Maybe<SpotPrice>;
   supportedTokens?: Maybe<Array<Token>>;
   todos: Array<Todo>;
+  /** Single Transaction from Covalent */
+  transactionLogEvents: Array<LogEvent>;
   /** Transactions */
   transactions: Array<Transaction>;
 };
@@ -391,6 +432,12 @@ export type QuerySpotPriceArgs = {
   pageNumber: Scalars['Int'];
   pageSize: Scalars['Int'];
   tickers: Scalars['String'];
+};
+
+
+export type QueryTransactionLogEventsArgs = {
+  chainId?: Scalars['Int'];
+  txHash: Scalars['String'];
 };
 
 
@@ -558,3 +605,11 @@ export type TransactionsGqlQueryVariables = Exact<{
 
 
 export type TransactionsGqlQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', blockNumber: string, timeStamp: string, hash: string, nonce: string, blockHash: string, transactionIndex: string, from: string, to: string, value: string, gas: string, gasPrice: string, isError: string, txreceiptStatus: string, input: string, contractAddress: string, cumulativeGasUsed: string, gasUsed: string, confirmations: string, methodId: string, function: string, tokenTo: { __typename?: 'Token', chainKey: string, coingeckoId: string, address: string, name: string, symbol: string } }> };
+
+export type TransactionLogEventsGqlQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+  txHash: Scalars['String'];
+}>;
+
+
+export type TransactionLogEventsGqlQuery = { __typename?: 'Query', transactionLogEvents: Array<{ __typename?: 'LogEvent', senderAddress: string, senderAddressLabel: string, senderContractDecimals: number, senderContractTickerSymbol: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', params: Array<{ __typename?: 'LogEventParams', name: string, type: string, value: string }> } }> };

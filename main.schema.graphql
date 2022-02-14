@@ -221,6 +221,43 @@ type GlobalStats {
   tradingVolume24h: String!
 }
 
+"""
+
+Covalent Get single Transaction by chainId and txHash
+https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
+"""
+type LogEvent {
+  blockHeight: Int!
+  blockSignedAt: String!
+  decoded: LogEventDecoded!
+  logOffset: Int!
+  rawLogData: String!
+  rawLogTopics: [String]!
+  rawLogTopicsBytes: String!
+  senderAddress: String!
+  senderAddressLabel: String!
+  senderContractDecimals: Int!
+  senderContractTickerSymbol: String!
+  senderLogoUrl: String!
+  senderName: String!
+  txHash: String!
+  txOffset: Int!
+}
+
+type LogEventDecoded {
+  name: String!
+  params: [LogEventParams!]!
+  signature: String!
+}
+
+type LogEventParams {
+  decoded: Boolean!
+  indexed: Boolean!
+  name: String!
+  type: String!
+  value: String!
+}
+
 type MarketData {
   ath: Map
   athChangePercentage: Map
@@ -323,6 +360,8 @@ type Query {
   spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
   supportedTokens: [Token!]
   todos: [Todo!]!
+  "Single Transaction from Covalent"
+  transactionLogEvents(chainId: Int! = 0, txHash: String!): [LogEvent!]!
   "Transactions"
   transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): [Transaction!]!
 }
