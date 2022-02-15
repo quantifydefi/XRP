@@ -56,7 +56,7 @@ export class TransactionItem implements Transaction {
   },
   apollo: {
     ethUsdPrice: {
-      prefetch: false,
+      fetchPolicy: 'cache-and-network',
       query: ChainlinkEthUsdPriceGQL,
       deep: false,
       update: (data) => {
