@@ -6,7 +6,7 @@
       dense
       :headers="columnDefs"
       :items="rowData"
-      class="elevation-0"
+      class="elevation-0 row-height-50"
       hide-default-footer
       disable-pagination
       :mobile-breakpoint="0"
@@ -79,3 +79,9 @@ export default class BaseGrid extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.v-data-table.row-height-50 td {
+  height: 20px !important;
+}
+</style>

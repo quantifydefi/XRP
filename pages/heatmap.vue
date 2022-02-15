@@ -30,7 +30,7 @@
         />
       </v-card>
     </v-col>
-    <v-overlay absolute :opacity="1" :value="!isHeatmapReady" :color="$vuetify.theme.themes[theme].overlay">
+    <v-overlay absolute :opacity="1" :value="!isHeatmapReady" color="#121212">
       <img :src="'/img/logo/logo.svg'" height="100" width="100" alt="logo" />
       <v-progress-linear color="primary" indeterminate rounded height="6"></v-progress-linear>
     </v-overlay>
