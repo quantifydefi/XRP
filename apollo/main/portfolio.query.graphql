@@ -99,11 +99,11 @@ query TransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pag
 query TransactionLogEventsGQL($chainId: Int!, $txHash: String!){
 	transactionLogEvents(chainId: $chainId, txHash: $txHash){
     senderAddress
-    senderAddressLabel
     senderContractDecimals
     senderContractTickerSymbol
     senderLogoUrl
     decoded{
+      name
       params{
         name
         type

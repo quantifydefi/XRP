@@ -108,6 +108,8 @@ export class TransactionItem implements Transaction {
   },
 })
 export default class Transactions extends Vue {
+  snackbar = false
+  isCopied = false
   isTransactionsLoading = true
   isLogEventLoading = true
   ethUsdPrice!: number
@@ -119,11 +121,6 @@ export default class Transactions extends Vue {
   transactionHash = ''
 
   methodList = ['transfer', 'withdraw', 'deposit']
-
-  onExpandButtonClick(expand: any, txHash: string) {
-    expand(true)
-    this.transactionHash = txHash
-  }
 
   readonly cols = [
     {
@@ -189,16 +186,51 @@ export default class Transactions extends Vue {
     },
   ]
 
+  /**
+   * Converts ETH Price to USD
+   * @param amount number
+   * @returns number
+   ***/
   calculateEthUsdPrice(amount: number): number {
     return this.ethUsdPrice * amount
   }
 
+  /**
+   * On Datatable row double click, expand row and fetch transaction event log
+   ***/
+  onDoubleClickRow(_: Event, item: any): void {
+    if (item.item.isError === '0' && item.item.input.length > 3) {
+      item.expand(!item.isExpanded)
+      this.transactionHash = item.item.hash
+    }
+  }
+
+  /**
+   * On Datatable row double click, expand row and fetch transaction event log
+   ***/
+  onExpandButtonClick(expand: any, isExpanded: boolean, txHash: string): void {
+    expand(isExpanded)
+    this.transactionHash = txHash
+  }
+
+  /**
+   * Copies address to clipboard
+   * @param address string
+   ***/
   async copyAddressToClipboard(address: string) {
     try {
       await navigator.clipboard.writeText(address)
+      this.isCopied = true
+      setTimeout(() => {
+        this.isCopied = false
+      }, 1000)
     } catch (e) {}
   }
 
+  /**
+   * Opens a new browser tab to view transactions on etherscan
+   * @param address string
+   ***/
   navigateToExplorer(address: string) {
     const url = `https://etherscan.io/tx/${address}`
     window.open(url)
