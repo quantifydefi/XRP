@@ -149,18 +149,4 @@ export class MetamaskConnector extends Vue {
       }
     )
   }
-
-  /*  async mounted() {
-    const { ethereum } = window
-    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-    const signer = provider.getSigner()
-    const userAddress = await signer.getAddress()
-    console.log(userAddress)
-    // const userAddress = await signer.getAddress()
-
-    ethereum.on('accountsChanged', async (accounts: string[]) => {
-      const userAddress = await signer.getAddress()
-      console.log(accounts, userAddress)
-    })
-  } */
 }

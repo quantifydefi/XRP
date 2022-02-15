@@ -63,6 +63,7 @@ export class PortfolioBalance implements Balance {
 @Component({
   apollo: {
     balances: {
+      fetchPolicy: 'cache-and-network',
       prefetch: false,
       query: BalancesGQL,
       deep: false,
