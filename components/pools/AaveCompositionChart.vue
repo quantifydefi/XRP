@@ -42,9 +42,8 @@ export default class AaveCompositionChart extends Vue {
   }
 
   @Watch('data', { deep: true })
-  onDataChange() {
-    this.chart.dispose()
-    this.renderChart()
+  onDataChange(data: any) {
+    this.chart.data = data
   }
 
   mounted() {

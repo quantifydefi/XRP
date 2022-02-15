@@ -1,5 +1,14 @@
 <template>
   <v-app>
+    <v-system-bar v-if="currentChain && currentChain.isTestNet" height="30" app color="orange darken-1" window>
+      <v-row justify="center">
+        <div class="font-weight-medium">
+          Application Running in simulation mode. Click
+          <a href="#" class="text-decoration-none">here</a> for instructions
+        </div>
+      </v-row>
+    </v-system-bar>
+
     <v-app-bar app class="text-no-wrap" elevation="0">
       <v-btn v-if="$vuetify.breakpoint.mdAndDown" class="mr-1 mt-1" icon>
         <v-icon>mdi-menu</v-icon>
@@ -61,6 +70,20 @@
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
+                  <div v-if="isTestNetAllowed">
+                    <v-divider v-if="testNetChains.length" />
+                    <v-subheader v-if="testNetChains.length" class="orange--text">Simulation Networks</v-subheader>
+                    <v-list-item-group v-model="conf.selectedChainId" color="primary">
+                      <v-list-item v-for="item in testNetChains" :key="item.chainId" :value="item.chainId">
+                        <v-list-item-avatar size="24">
+                          <v-img :src="item.logoUrl"></v-img>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title v-text="item.label"></v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </div>
                 </v-list>
               </v-col>
             </v-row>
@@ -156,7 +179,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { mapState } from 'vuex'
 import { create } from 'blockies-ts'
@@ -192,6 +215,7 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
   $refs!: { notificationComponent: any }
   walletConnected: any
   allowApiBar = process.env.runEnv === 'development' || process.env.runEnv === 'staging'
+  isTestNetAllowed = process.env.runEnv === 'development'
 
   pageTitle = {
     index: 'Dashboard',
@@ -205,6 +229,19 @@ export default class Default extends mixins(LayoutMixin, MetamaskConnector, Conf
     'wallet-id': 'Portfolio',
     'app-id-aave': 'Aave v2',
     'app-id-curve': 'Curve',
+  }
+
+  @Watch('conf.selectedChainId')
+  async onChainChanged(value: any, old: any) {
+    if (value === undefined) {
+      this.conf.selectedChainId = old
+    } else {
+      const chain = this._findChainById(value)
+      await this.$store.dispatch('configs/changeChain', chain)
+      if (chain) {
+        await this.changeNetwork(chain)
+      }
+    }
   }
 
   get iconSrc() {

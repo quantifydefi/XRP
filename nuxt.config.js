@@ -203,6 +203,7 @@ export default {
   },
 
   env: {
+    runEnv,
     baseURL: config[runEnv].BASE_URL,
     amChartLicense: process.env.AMCHARTS_LICENSE,
   },

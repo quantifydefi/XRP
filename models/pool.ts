@@ -6,6 +6,7 @@ import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio, CurvePool } from '
 import { Helper } from '~/models/helper'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 import { aaveActions, aaveActionTypes, AavePoolAction } from '~/models/web3'
+import { Events } from '~/types/global'
 
 @Component({
   name: 'CurvePools',
@@ -229,6 +230,10 @@ export class AavePoolCl implements AavePool {
   get liquidationPenalty() {
     return parseFloat(this.reserveLiquidationBonus) / 100 - 100
   }
+
+  get logoUrl() {
+    return `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${this.symbol.toLowerCase()}.png`
+  }
 }
 
 @Component({
@@ -241,22 +246,17 @@ export class AavePoolCl implements AavePool {
   },
   apollo: {
     aavePools: {
-      prefetch: false,
-      query: AavePoolGQL,
+      fetchPolicy: 'cache-and-network',
+      // pollInterval: 60000,
       deep: false,
+      query: AavePoolGQL,
       variables() {
         return {
           chainId: this.chainId,
           userWallet: this.userWalletAddress || '',
         }
       },
-      result({ loading }) {
-        this.isPoolsLoading = loading
-      },
       update: ({ aavePools }) => plainToClass(AavePoolCl, aavePools as AavePool[]),
-      watchLoading(isLoading) {
-        this.isPoolsLoading = isLoading
-      },
     },
   },
 })
@@ -264,7 +264,7 @@ export class AavePools extends Vue {
   @Ref('poolAction') readonly poolAction!: AavePoolAction
   readonly aavePools: AavePoolCl[] = []
   readonly aaveActions = aaveActions
-  isPoolsLoading = true
+
   readonly config = {
     cols: [
       {
@@ -386,8 +386,14 @@ export class AavePools extends Vue {
     return this.aavePools.filter((elem: AavePoolCl) => !(elem.symbol.startsWith('Amm') || elem.symbol.startsWith('Lp')))
   }
 
+  get isPoolsLoading() {
+    return this.$apollo.queries.aavePools.loading
+  }
+
   async transactionResult(status: 'error' | 'success') {
     if (status === 'success') {
+      // await this.$apollo.queries.aavePools.stop()
+      // await this.$apollo.queries.aavePools.start()
       await this.$apollo.queries.aavePools.refetch()
     }
   }
@@ -438,7 +444,7 @@ export class AavePools extends Vue {
   }
 
   get borrowingPowerUsed() {
-    return (this.totalBorrowed * 100) / ((this.totalCollateral * this.maxTLV) / 100)
+    return (this.totalBorrowed * 100) / ((this.totalCollateral * this.liquidationThreshold) / 100)
   }
 
   get liquidationThreshold(): number {
@@ -492,6 +498,18 @@ export class AavePools extends Vue {
     const pool: AavePoolCl | undefined = this.aavePools.find((elem) => elem.id === poolAddress)
     if (pool) {
       await this.poolAction.init(pool, this.healthFactor, this.totalCollateral, this.totalBorrowed, this.maxTLV, action)
+    }
+  }
+
+  importToMetamask(poolAddress: string) {
+    const pool: AavePoolCl | undefined = this.aavePools.find((elem) => elem.id === poolAddress)
+    if (pool) {
+      this.$root.$emit(Events.IMPORT_METAMASK_TOKEN, {
+        address: pool.underlyingAsset,
+        symbol: pool.symbol,
+        decimals: pool.decimals,
+        image: pool.logoUrl,
+      })
     }
   }
 }

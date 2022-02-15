@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 import 'reflect-metadata'
 import { Component, Vue } from 'vue-property-decorator'
+import { ethers } from 'ethers'
 import { Events } from '~/types/global'
+import { Chain } from '~/types/apollo/main/types'
 
 declare const window: any
 @Component
@@ -53,13 +55,55 @@ export class MetamaskConnector extends Vue {
     }
   }
 
+  async changeNetwork(chain: Chain) {
+    // console.log('Attempt to Change Chain', chain.chainId, chain)
+
+    let chainId: string | number = chain.chainId
+    if (chainId === 1) {
+      chainId = '0x' + chain.chainId
+    } else if (chainId === 1337) {
+      chainId = '0x539'
+    } else {
+      chainId = ethers.utils.hexlify(chain.chainId)
+    }
+
+    // console.log('Chain ID', chainId)
+
+    try {
+      await this.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId }], // chainId must be in hexadecimal numbers
+      })
+    } catch (error: any) {
+      if (error.code === 4902) {
+        try {
+          await this.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId,
+                chainName: chain.label,
+                nativeCurrency: {
+                  name: chain.name,
+                  symbol: chain.symbol, // 2-6 characters long
+                  decimals: 18,
+                },
+                blockExplorerUrls: [chain.blockExplorerUrl],
+                rpcUrls: [chain.rpcUrl],
+              },
+            ],
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
+
   async mounted() {
     const { ethereum } = window
     this.ethereum = ethereum
-    // this.provider = new ethers.providers.Web3Provider(ethereum, 'any')
-    // this.signer = this.provider.getSigner()
     await this.connectToWallet()
-
     if (this.isMetaMaskInstalled) {
       this.ethereum.on('accountsChanged', async (accounts: string[]) => {
         if (accounts.length === 0) {
@@ -72,15 +116,38 @@ export class MetamaskConnector extends Vue {
         }
       })
     }
-    /*
-    this.ethereum.on('chainChanged', (hexString: string) => {
-      console.log('Chain Changed', parseInt(hexString, 16))
-    })
-    try {
+    /* this.ethereum.on('chainChanged', (hexString: string) => {
+      console.log('Metamask Chain Changed', parseInt(hexString, 16), hexString)
+    }) */
+    /* try {
       await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] })
     } catch (error) {
       console.log(error)
     } */
+    /** Listen to token metamask import */
+    this.$root.$on(
+      Events.IMPORT_METAMASK_TOKEN,
+      async ({
+        address,
+        symbol,
+        decimals,
+        image,
+      }: {
+        address: string
+        symbol: string
+        decimals: number
+        image: string
+      }) => {
+        try {
+          await ethereum.request({
+            method: 'wallet_watchAsset',
+            params: { type: 'ERC20', options: { address, symbol, decimals, image } },
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    )
   }
 
   /*  async mounted() {

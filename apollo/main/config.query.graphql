@@ -9,11 +9,15 @@ query GlobalStatsQueryGQL {
     topCoinDefiDominance
   }
   chains {
-    name
-    chainId
-    isTestNet
-    label
-    logoUrl
+    chainId,
+    name,
+    geckoId,
+    symbol,
+    label,
+    logoUrl,
+    isTestNet,
+    rpcUrl,
+    blockExplorerUrl,
   }
   gasStats{
     lastBlock, safeGasPrice, proposeGasPrice, fastGasPrice, suggestBaseFee, gasUsedRatio

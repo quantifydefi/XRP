@@ -15,7 +15,7 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-col v-if="!isPoolsLoading" cols="12">
+    <v-col v-show="!isPoolsLoading" cols="12">
       <v-row v-if="isWalletConnected">
         <v-col lg="3" md="6" cols="12">
           <v-card outlined tile height="100%" class="pa-2">
@@ -98,11 +98,7 @@
               <v-row no-gutters align="center">
                 <v-col cols="3">
                   <v-avatar size="24" class="mr-2">
-                    <img
-                      :alt="`${item.symbol} logo`"
-                      :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.symbol.toLowerCase()}.png`"
-                      @error="setAltImg"
-                    />
+                    <img :alt="`${item.symbol} logo`" :src="item.logoUrl" @error="setAltImg" />
                   </v-avatar>
                 </v-col>
                 <v-col>
@@ -278,6 +274,15 @@
                             </v-col>
                           </v-row>
                         </div>
+                      </v-tooltip>
+
+                      <v-tooltip v-if="item.symbol !== 'ETH'" bottom color="black">
+                        <template #activator="{ on, attrs }">
+                          <v-btn icon color="grey" x-small v-bind="attrs" @click="importToMetamask(item.id)" v-on="on">
+                            <v-icon size="14">mdi-wallet</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Import To Metamask Wallet</span>
                       </v-tooltip>
                     </v-col>
                   </v-row>

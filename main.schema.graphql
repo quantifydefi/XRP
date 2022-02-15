@@ -90,12 +90,14 @@ type BalanceItem {
 }
 
 type Chain {
+  blockExplorerUrl: String
   chainId: Int!
   geckoId: String!
   isTestNet: Boolean!
   label: String!
   logoUrl: String!
   name: String!
+  rpcUrl: String!
   symbol: String!
 }
 
