@@ -43,7 +43,7 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
   async initConfigs({ commit }): Promise<void> {
     try {
       const client = this.app.apolloProvider?.defaultClient
-      const query = await client?.query({ query: GlobalStatsQueryGQL })
+      const query = await client?.query({ query: GlobalStatsQueryGQL, fetchPolicy: 'no-cache' })
       if (query && query.data) {
         commit('SET_CONFIG', query.data)
       }

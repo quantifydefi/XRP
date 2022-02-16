@@ -1,13 +1,13 @@
 <template>
   <v-row justify="center">
-    <v-col v-if="!isWalletConnected" cols="10" class="d-flex align-center justify-center" style="height: 80vh">
+    <!--    <v-col v-if="!isWalletConnected" cols="10" class="d-flex align-center justify-center" style="height: 80vh">
       <div class="text-center">
         <div class="title">Connect Your Wallet</div>
         <div>Please connect your Metamask Wallet to view Transactions History</div>
       </div>
-    </v-col>
+    </v-col>-->
 
-    <v-col v-else cols="12">
+    <v-col cols="12">
       <v-row no-gutters justify="center">
         <v-col v-if="isTransactionsLoading" cols="11">
           <v-card height="100%" tile outlined>
