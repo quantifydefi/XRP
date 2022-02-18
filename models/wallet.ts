@@ -29,18 +29,18 @@ export class MetamaskConnector extends Vue {
 
   async connectToWallet() {
     if (this.isMetaMaskInstalled) {
-      /*    await this.$store.dispatch('wallet/connectToWallet', {
+      await this.$store.dispatch('wallet/connectToWallet', {
         wallet: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
         status: true,
-      }) */
+      })
 
-      const account: string | null = await this.ethereunAccount()
-      if (account) {
-        await this.$store.dispatch('wallet/connectToWallet', {
-          wallet: account,
-          status: true,
-        })
-      } else await this.$store.dispatch('wallet/disconnectToWallet')
+      // const account: string | null = await this.ethereunAccount()
+      // if (account) {
+      //   await this.$store.dispatch('wallet/connectToWallet', {
+      //     wallet: account,
+      //     status: true,
+      //   })
+      // } else await this.$store.dispatch('wallet/disconnectToWallet')
     } else {
       setTimeout(() => {
         this.$root.$emit(Events.GLOBAL_NOTIFICATION, {

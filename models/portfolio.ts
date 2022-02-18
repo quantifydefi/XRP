@@ -70,7 +70,7 @@ export class PortfolioBalance implements Balance {
       variables() {
         return {
           chainIds: this.configs.selectedMainNets,
-          address: this.walletAddress,
+          address: this.walletAddress || '',
         }
       },
       update: (data) => {

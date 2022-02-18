@@ -57,6 +57,7 @@ export class TransactionItem implements Transaction {
   apollo: {
     ethUsdPrice: {
       fetchPolicy: 'cache-and-network',
+      prefetch: false,
       query: ChainlinkEthUsdPriceGQL,
       deep: false,
       update: (data) => {
@@ -115,8 +116,8 @@ export default class Transactions extends Vue {
   walletAddress!: string
   isWalletConnected!: boolean
   currentChain!: ChainItem
-  readonly transactions!: TransactionItem[]
-  readonly transactionLogEventsDetails!: LogEvent[]
+  readonly transactions: TransactionItem[] = []
+  readonly transactionLogEventsDetails: LogEvent[] = []
   transactionHash = ''
 
   methodList = ['transfer', 'withdraw', 'deposit']
