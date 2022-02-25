@@ -111,15 +111,34 @@
                                         <span v-else>{{ event.value }}</span>
                                       </span>
                                     </template>
-                                    <span :class="ui[ui.theme].headerTextClass">{{
-                                      isCopied ? 'Copied!' : 'click to copy address'
-                                    }}</span>
+                                    <span :class="ui[ui.theme].headerTextClass">
+                                      {{ isCopied ? 'Copied!' : 'click to copy address' }}
+                                    </span>
                                   </v-tooltip>
                                 </div>
 
+                                <div
+                                  v-else-if="event.type === 'uint256' && log.function === 'Approval'"
+                                  :class="[ui[theme].innerCardLighten]"
+                                >
+                                  {{ +event.value >= 1.157920892373162e53 ? 'max approval' : +event.value }}
+                                  <span
+                                    v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
+                                  >
+                                    <v-avatar size="16" class="mt-n1 mx-1">
+                                      <img
+                                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${log.symbol.toLowerCase()}.png`"
+                                        alt="token logo"
+                                        @error="setAltImg"
+                                      />
+                                    </v-avatar>
+                                    {{ log.symbol }}
+                                  </span>
+                                </div>
+
                                 <div v-else-if="event.type === 'uint256'" :class="[ui[theme].innerCardLighten]">
-                                  <!--                                  {{ (+event.value / 10 ** logEvents[i].decimals).toFixed(6) }}-->
-                                  {{ event.value }}
+                                  {{ (+event.value / 10 ** logEvents[i].decimals).toFixed(6) }}
+
                                   <span
                                     v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
                                   >
@@ -274,9 +293,9 @@
                       >{{ stringTruncate(item.hash, 10, 4) }}
                     </span>
                   </template>
-                  <span :class="ui[ui.theme].headerTextClass">{{
-                    isCopied ? 'Copied!' : 'click to copy transaction hash'
-                  }}</span>
+                  <span :class="ui[ui.theme].headerTextClass">
+                    {{ isCopied ? 'Copied!' : 'click to copy transaction hash' }}
+                  </span>
                 </v-tooltip>
               </template>
 
@@ -292,9 +311,9 @@
                       >{{ stringTruncate(item.from, 10, 4) }}
                     </span>
                   </template>
-                  <span :class="ui[ui.theme].headerTextClass">{{
-                    isCopied ? 'Copied!' : 'click to copy address'
-                  }}</span>
+                  <span :class="ui[ui.theme].headerTextClass">
+                    {{ isCopied ? 'Copied!' : 'click to copy address' }}
+                  </span>
                 </v-tooltip>
               </template>
 
@@ -312,9 +331,9 @@
                         >{{ stringTruncate(item.from, 10, 4) }}
                       </span>
                     </template>
-                    <span :class="ui[ui.theme].headerTextClass">{{
-                      isCopied ? 'Copied!' : 'click to copy address'
-                    }}</span>
+                    <span :class="ui[ui.theme].headerTextClass">
+                      {{ isCopied ? 'Copied!' : 'click to copy address' }}
+                    </span>
                   </v-tooltip>
                   <div
                     v-if="item.tokenTo.address.length === 0 || item.contractAddress.length > 0"
@@ -335,8 +354,8 @@
                         </span>
                       </template>
                       <span :class="ui[theme].headerTextClass">
-                        {{ isCopied ? 'Copied' : `click to copy`
-                        }}<span v-if="item.contractAddress">contract</span> address</span
+                        {{ isCopied ? 'Copied' : `click to copy` }}
+                        <span v-if="item.contractAddress">contract</span> address</span
                       >
                     </v-tooltip>
                   </div>
@@ -365,9 +384,9 @@
                           >
                         </div>
                       </template>
-                      <span :class="ui[theme].headerTextClass">{{
-                        isCopied ? 'Copied' : 'click to copy address'
-                      }}</span>
+                      <span :class="ui[theme].headerTextClass">
+                        {{ isCopied ? 'Copied' : 'click to copy address' }}
+                      </span>
                     </v-tooltip>
                   </div>
                 </div>
@@ -444,9 +463,9 @@
                             @error="setAltImg"
                           />
                         </v-avatar>
-                        <span class="ml-1 caption" @click="copyAddressToClipboard(item.to)">{{
-                          item.tokenTo.name
-                        }}</span>
+                        <span class="ml-1 caption" @click="copyAddressToClipboard(item.to)">
+                          {{ item.tokenTo.name }}
+                        </span>
                       </div>
                     </template>
                     <span :class="ui[theme].headerTextClass">{{ isCopied ? 'Copied' : 'click to copy address' }}</span>
@@ -482,9 +501,9 @@
                   class="text-capitalize disable-events"
                   :color="item.isError === '0' ? 'green' : 'pink'"
                 >
-                  <span class="caption" :class="[ui[theme].headerTextClass]">{{
-                    item.isError === '0' ? 'Success' : 'Failed'
-                  }}</span>
+                  <span class="caption" :class="[ui[theme].headerTextClass]">
+                    {{ item.isError === '0' ? 'Success' : 'Failed' }}
+                  </span>
                 </v-btn>
               </template>
 

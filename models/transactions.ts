@@ -394,7 +394,8 @@ export default class Transactions extends Vue {
   }
 
   /**
-   * Fetches Transaction Log Events
+   * Fetches Transaction Log Events from raw transactions and
+   * decode it using contract's abi
    * @param {string} txnHash
    ***/
   async fetchEventLogs(txnHash: string): Promise<void> {
