@@ -7,7 +7,7 @@
       </div>
     </v-col>-->
 
-    <v-col cols="12">
+    <v-col v-if="isWalletConnected" cols="12">
       <v-row no-gutters justify="center">
         <v-col v-if="isTransactionsLoading" cols="11">
           <v-card height="100%" tile outlined>
@@ -34,7 +34,13 @@
               <template #item.data-table-expand="{ item, isExpanded, expand }">
                 <div style="width: 20px; cursor: pointer">
                   <v-btn
-                    v-if="item.isError === '0' && item.input.length > 3 && !isExpanded"
+                    v-if="
+                      item.isError === '0' &&
+                      item.input.length > 3 &&
+                      !excludeMethod.includes(cleanMethodSignature(item.function)) &&
+                      !excludeMethod.includes(item.input.substring(2, 10)) &&
+                      !isExpanded
+                    "
                     small
                     icon
                     @click="onExpandButtonClick(expand, !isExpanded, item.hash)"
@@ -53,92 +59,88 @@
               </template>
 
               <!-- expand item/row -->
-              <template #expanded-item="{ headers, item }">
+              <template #expanded-item="{ headers }">
                 <td :colspan="headers.length">
                   <v-row v-if="isLogEventLoading" no-gutters justify="center" class="py-3">
-                    <v-progress-circular :size="38" color="primary" indeterminate></v-progress-circular>
+                    <v-col cols="12">
+                      <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                    </v-col>
                   </v-row>
 
                   <v-row v-if="!isLogEventLoading" no-gutters class="pa-5" justify="center">
                     <v-col cols="12" :class="['subtitle-2']">
-                      {{ transactionLogEventsDetails.length > 0 ? '' : 'No available details' }}
+                      {{ logEvents.length > 0 ? '' : 'No available log details' }}
                     </v-col>
 
-                    <v-snackbar v-model="snackbar" centered timeout="1000"> Copied! </v-snackbar>
-
                     <v-col>
-                      <v-row
-                        v-for="(_, i) in transactionLogEventsDetails"
-                        :key="`${transactionHash}_decoded_${i}`"
-                        no-gutters
-                      >
-                        <v-col cols="12" class="mt-2 mb-n2 pink--text font-weight-regular">
-                          {{ transactionLogEventsDetails[i].decoded.name.replace(/([A-Z])/g, ' $1').trim() }}
-                        </v-col>
+                      <v-row v-for="(log, i) in logEvents" :key="`${log.address}_${i}`" no-gutters>
+                        <v-col v-if="methodList.includes(log.function.toLowerCase())" cols="12">
+                          <v-row no-gutters>
+                            <v-col cols="12" class="mt-2 mb-n2 pink--text font-weight-regular">
+                              {{ log.function }}
+                            </v-col>
 
-                        <div
-                          v-for="(log, j) in transactionLogEventsDetails[i].decoded.params"
-                          :key="`${transactionHash}_detail_${j}`"
-                          class="py-2 pr-6"
-                          no-gutters
-                          cols="12"
-                        >
-                          <div style="width: 350px">
-                            <div :class="[ui[theme].headerTextClass, 'text-capitalize', 'caption']">
-                              {{ log.name }}
-                            </div>
+                            <div v-for="event in logEvents[i].params" :key="event.name + `_${i}`" class="py-2 pr-6">
+                              <div style="width: 350px">
+                                <div :class="[ui[theme].headerTextClass, 'text-capitalize', 'caption']">
+                                  {{ event.name }}
+                                </div>
 
-                            <div v-if="log.type === 'address'">
-                              <v-tooltip top :color="ui[theme].overlayColor">
-                                <template #activator="{ on, attrs }">
+                                <div v-if="event.type === 'address'">
+                                  <v-tooltip top :color="ui[theme].overlayColor">
+                                    <template #activator="{ on, attrs }">
+                                      <span
+                                        style="cursor: pointer"
+                                        v-bind="attrs"
+                                        :class="[ui[theme].innerCardLighten]"
+                                        v-on="on"
+                                        @click="copyAddressToClipboard(`${event.value}`)"
+                                      >
+                                        <span v-if="event.value === logEvents[i].address" class="subtitle-2">
+                                          <v-avatar size="16" class="mt-n1 mr-1">
+                                            <img
+                                              :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${logEvents[
+                                                i
+                                              ].symbol.toLowerCase()}.png`"
+                                              alt="token logo"
+                                              @error="setAltImg"
+                                            />
+                                          </v-avatar>
+                                          {{ logEvents[i].name }} <small>({{ logEvents[i].symbol }})</small>
+                                        </span>
+                                        <span v-else>{{ event.value }}</span>
+                                      </span>
+                                    </template>
+                                    <span :class="ui[ui.theme].headerTextClass">{{
+                                      isCopied ? 'Copied!' : 'click to copy address'
+                                    }}</span>
+                                  </v-tooltip>
+                                </div>
+
+                                <div v-else-if="event.type === 'uint256'" :class="[ui[theme].innerCardLighten]">
+                                  <!--                                  {{ (+event.value / 10 ** logEvents[i].decimals).toFixed(6) }}-->
+                                  {{ event.value }}
                                   <span
-                                    style="cursor: pointer"
-                                    v-bind="attrs"
-                                    :class="[ui[theme].innerCardLighten]"
-                                    v-on="on"
-                                    @click="copyAddressToClipboard(log.value)"
-                                    >{{ log.value }}
+                                    v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
+                                  >
+                                    <v-avatar size="16" class="mt-n1 mx-1">
+                                      <img
+                                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${log.symbol.toLowerCase()}.png`"
+                                        alt="token logo"
+                                        @error="setAltImg"
+                                      />
+                                    </v-avatar>
+                                    {{ log.symbol }}
                                   </span>
-                                </template>
-                                <span :class="ui[ui.theme].headerTextClass">{{
-                                  isCopied ? 'Copied!' : 'click to copy address'
-                                }}</span>
-                              </v-tooltip>
-                            </div>
+                                </div>
 
-                            <div
-                              v-else-if="
-                                log.value ===
-                                '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-                              "
-                            >
-                              MAX UINT256
+                                <div v-else :class="[ui[theme].innerCardLighten]">
+                                  {{ event.value }}
+                                </div>
+                              </div>
                             </div>
-                            <div v-else :class="[ui[theme].innerCardLighten]">
-                              {{
-                                log.value === ''
-                                  ? 'none'
-                                  : log.type === 'uint256' && methodList.includes(item.method)
-                                  ? `${
-                                      parseInt(log.value) /
-                                      10 ** transactionLogEventsDetails[i].senderContractDecimals.toFixed(4)
-                                    }`
-                                  : log.value
-                              }}
-
-                              <span v-if="log.type === 'uint256' && methodList.includes(item.method)">
-                                <v-avatar size="16" class="mt-n1 mx-1">
-                                  <img
-                                    :src="transactionLogEventsDetails[i].senderLogoUrl"
-                                    alt="token logo"
-                                    @error="setAltImg"
-                                  />
-                                </v-avatar>
-                                {{ transactionLogEventsDetails[i].senderContractTickerSymbol }}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                          </v-row>
+                        </v-col>
                       </v-row>
                     </v-col>
                   </v-row>
@@ -173,6 +175,7 @@
                             ui[ui.theme].headerTextClass,
                             'text-truncate',
                             'text-capitalize',
+                            'text-capitalize',
                             'px-2',
                             'font-weight-regular',
                           ]"
@@ -187,17 +190,20 @@
                     </span>
                   </v-tooltip>
                 </div>
-                <div v-else-if="item.input === '0x'">
+
+                <div v-else-if="item.input === '0x'" class="text-truncate" style="width: 120px">
                   <v-tooltip top :color="ui[theme].overlayColor">
                     <template #activator="{ on, attrs }">
                       <v-btn
-                        rounded
+                        primary
+                        style="max-width: 120px"
                         outlined
-                        depressed
-                        color="primary"
                         small
-                        v-bind="attrs"
+                        depressed
+                        rounded
                         class="cursor-text"
+                        color="primary"
+                        v-bind="attrs"
                         v-on="on"
                       >
                         <span
@@ -205,7 +211,7 @@
                             ui[ui.theme].headerTextClass,
                             'text-truncate',
                             'text-capitalize',
-                            'active',
+                            'text-capitalize',
                             'px-2',
                             'font-weight-regular',
                           ]"
@@ -215,19 +221,22 @@
                         </span>
                       </v-btn>
                     </template>
-                    <span :class="ui[ui.theme].headerTextClass">Transfer</span>
+                    <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']"> Transfer </span>
                   </v-tooltip>
                 </div>
-                <div v-else-if="item.methodId">
+
+                <div v-else-if="item.input.length > 8" class="text-truncate" style="width: 120px">
                   <v-tooltip top :color="ui[theme].overlayColor">
                     <template #activator="{ on, attrs }">
                       <v-btn
-                        rounded
+                        primary
+                        style="max-width: 120px"
                         outlined
-                        depressed
-                        color="primary"
-                        class="cursor-text"
                         small
+                        depressed
+                        rounded
+                        class="cursor-text"
+                        color="primary"
                         v-bind="attrs"
                         v-on="on"
                       >
@@ -236,46 +245,19 @@
                             ui[ui.theme].headerTextClass,
                             'text-truncate',
                             'text-capitalize',
-                            'px-2',
-                            'font-weight-regular',
-                          ]"
-                          style="max-width: 120px"
-                        >
-                          0x{{ item.methodId }}
-                        </span>
-                      </v-btn>
-                    </template>
-                    <span :class="ui[ui.theme].headerTextClass">0x{{ item.methodId }}</span>
-                  </v-tooltip>
-                </div>
-                <div v-else-if="item.input">
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <v-btn
-                        rounded
-                        outlined
-                        depressed
-                        color="primary"
-                        class="cursor-text"
-                        small
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <span
-                          :class="[
-                            ui[ui.theme].headerTextClass,
-                            'text-truncate',
                             'text-capitalize',
                             'px-2',
                             'font-weight-regular',
                           ]"
                           style="max-width: 120px"
                         >
-                          {{ item.input.substring(0, 10) }}
+                          {{ methodSignatureMap[item.input.substring(2, 10)] || item.input.substring(0, 10) }}
                         </span>
                       </v-btn>
                     </template>
-                    <span :class="ui[ui.theme].headerTextClass">{{ item.methodId }}</span>
+                    <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']">
+                      {{ methodSignatureMap[item.input.substring(2, 10)] || item.input.substring(0, 10) }}
+                    </span>
                   </v-tooltip>
                 </div>
               </template>
@@ -348,13 +330,13 @@
                           v-on="on"
                           @click="copyAddressToClipboard(item.to || item.contractAddress)"
                         >
+                          <v-icon v-if="item.input.length > 3" class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
                           {{ stringTruncate(item.to, 10, 4) || stringTruncate(item.contractAddress, 10, 4) }}
-                          <v-icon v-if="item.contractAddress" class="ml-1" small>mdi-file-sign</v-icon>
                         </span>
                       </template>
                       <span :class="ui[theme].headerTextClass">
                         {{ isCopied ? 'Copied' : `click to copy`
-                        }}<v-span v-if="item.contractAddress">contract</v-span> address</span
+                        }}<span v-if="item.contractAddress">contract</span> address</span
                       >
                     </v-tooltip>
                   </div>
@@ -440,9 +422,9 @@
                         {{ stringTruncate(item.to, 6, 4) || stringTruncate(item.contractAddress, 6, 4) }}
                       </span>
                     </template>
-                    <span :class="ui[theme].headerTextClass"
-                      >{{ isCopied ? 'Copied' : 'click to copy' }}
-                      <v-span v-if="item.contractAddress">contract</v-span> address</span
+                    <span :class="ui[theme].headerTextClass">
+                      {{ isCopied ? 'Copied' : 'click to copy' }}
+                      <span v-if="item.contractAddress">contract</span> address</span
                     >
                   </v-tooltip>
                 </div>

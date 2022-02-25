@@ -1,8 +1,7 @@
 // eslint-disable-next-line import/named
-import { ContractInterface, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import axios from 'axios'
-import { Log } from '@ethersproject/abstract-provider/src.ts/index'
-import { Provider } from '@ethersproject/abstract-provider'
+import { Log } from '@ethersproject/abstract-provider/lib'
 import erc20Abi from '../../constracts/abi/erc20Abi.json'
 import uniswapV3PoolAbi from '../../constracts/abi/uniswap/uniswapV3PoolAbi.json'
 const MAIN_NET_FORK_URL = process.env.MAIN_NET_FORK_URL || ''
@@ -52,8 +51,8 @@ describe('Transactions', () => {
    * **/
   const fetchContractInfo = async (
     address: string,
-    erc20Abi: ContractInterface,
-    provider: Provider
+    erc20Abi: any,
+    provider: any
   ): Promise<{ name: string; symbol: string; decimals: number }> => {
     const contract = new ethers.Contract(address, erc20Abi, provider)
 

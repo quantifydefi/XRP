@@ -12,15 +12,18 @@ const config = {
     BASE_URL: process.env.BASE_URL_DEV,
     SERVER_HOST: process.env.SERVER_HOST_DEV,
     BASE_GRAPHQL_SERVER: process.env.BASE_GRAPHQL_SERVER_DEV,
+    ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
   },
   staging: {
     BASE_URL: process.env.BASE_URL_STAGING,
     SERVER_HOST: process.env.SERVER_HOST_STAGING,
     BASE_GRAPHQL_SERVER: process.env.BASE_GRAPHQL_SERVER_STAGING,
+    ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
   },
   production: {
     BASE_URL: process.env.BASE_URL_PROD,
     SERVER_HOST: process.env.SERVER_HOST_PROD,
+    ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
   },
 }
 
@@ -205,6 +208,7 @@ export default {
   env: {
     runEnv,
     baseURL: config[runEnv].BASE_URL,
+    etherscanApiKey: config[runEnv].ETHERSCAN_API_KEY,
     amChartLicense: process.env.AMCHARTS_LICENSE,
   },
 
