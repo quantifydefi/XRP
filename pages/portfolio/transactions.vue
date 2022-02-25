@@ -121,7 +121,13 @@
                                   v-else-if="event.type === 'uint256' && log.function === 'Approval'"
                                   :class="[ui[theme].innerCardLighten]"
                                 >
-                                  {{ +event.value >= 1.157920892373162e53 ? 'max approval' : +event.value }}
+                                  {{
+                                    +event.value > 0
+                                      ? +event.value >= 1.157920892373162e53
+                                        ? 'max approval'
+                                        : +event.value
+                                      : ''
+                                  }}
                                   <span
                                     v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
                                   >
@@ -136,8 +142,13 @@
                                   </span>
                                 </div>
 
-                                <div v-else-if="event.type === 'uint256'" :class="[ui[theme].innerCardLighten]">
-                                  {{ (+event.value / 10 ** logEvents[i].decimals).toFixed(6) }}
+                                <div
+                                  v-else-if="
+                                    event.type === 'uint256' && (event.name === 'value' || event.name === 'wad')
+                                  "
+                                  :class="[ui[theme].innerCardLighten]"
+                                >
+                                  {{ +event.value > 0 ? +event.value / 10 ** logEvents[i].decimals : '' }}
 
                                   <span
                                     v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
@@ -155,6 +166,18 @@
 
                                 <div v-else :class="[ui[theme].innerCardLighten]">
                                   {{ event.value }}
+                                  <span
+                                    v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
+                                  >
+                                    <v-avatar v-if="event.type === 'uint256'" size="16" class="mt-n1 mx-1">
+                                      <img
+                                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${log.symbol.toLowerCase()}.png`"
+                                        alt="token logo"
+                                        @error="setAltImg"
+                                      />
+                                    </v-avatar>
+                                    {{ log.symbol }}
+                                  </span>
                                 </div>
                               </div>
                             </div>

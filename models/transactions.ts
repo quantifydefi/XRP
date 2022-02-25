@@ -145,7 +145,6 @@ export default class Transactions extends Vue {
     'approvalforall',
     'redeem',
     'reflinkrewards',
-    'swap',
   ]
 
   readonly excludeMethod = ['cancel order', '60806040', '600d8060', '1aa3a008', 'redeem', 'commit', 'echo']
