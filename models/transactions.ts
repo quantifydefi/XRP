@@ -77,6 +77,7 @@ export class TransactionItem implements Transaction {
   apollo: {
     ethUsdPrice: {
       fetchPolicy: 'cache-and-network',
+      prefetch: false,
       query: ChainlinkEthUsdPriceGQL,
       deep: false,
       update: (data) => {
@@ -90,8 +91,7 @@ export class TransactionItem implements Transaction {
       variables() {
         return {
           chainId: this.currentChain.chainId,
-          // address: this.walletAddress,
-          address: '0x66A51330b37938f414cBf09ebd2E1eB9c70051A1',
+          address: this.walletAddress,
           pageNumber: 0,
           pageSize: 500,
         }
