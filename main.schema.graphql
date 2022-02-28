@@ -160,48 +160,59 @@ type CoingeckoInfo {
   symbol: String!
 }
 
-type CurveCoin {
-  balance: String!
-  balanceUSD: Float!
-  token: CurveToken
+type CurveAddresses {
+  deposit: String!
+  gauge: String!
+  lpToken: String!
+  stakingRewards: String!
+  swap: String!
 }
 
-type CurveCoins {
+type CurveCoin {
   ID: String!
   address: String!
-  coingeckoID: String!
+  coingeckoId: String!
   decimals: Int!
+  isLpToken: Boolean!
+  liquidity: Float!
   symbol: String!
+  tokenBalance: Float!
   type: String!
+  usdPrice: Float!
   wrappedCoinType: String!
 }
 
 type CurvePool {
+  ID: String!
+  addresses: CurveAddresses!
   adminFee: String!
   assetType: String!
+  assets: String!
   baseAPY: Float!
+  coingeckoInfo: CoingeckoInfo!
   coins: [CurveCoin!]!
-  dailyVolume: Float!
+  dataIndex: Int!
   fee: String!
-  id: String!
-  liquidityUsd: Float!
+  hasAMultiplier: Boolean!
+  idAlias: String!
+  isLendingPool: Boolean!
+  isMetaPool: Boolean!
+  isOldPool: Boolean!
+  lpTokenInfo: LpTokenInfo!
+  metaCoins: [CurveCoin!]!
   name: String!
-  registryAddress: String!
+  pageMetaData: PageMetaData!
   rewards: CurveRewards!
-  swapAddress: String!
-  totalBalance: Float!
+  totalDailyVolume: Float!
+  totalLiquidity: Float!
+  totalTokenBalance: Float!
+  underlyingCoins: [CurveCoin!]!
   virtualPrice: String!
 }
 
 type CurveRewards {
   maxRewardPtc: Float!
   rewardPtc: Float!
-}
-
-type CurveToken {
-  name: String!
-  symbol: String!
-  usdPrice: Float!
 }
 
 type EthGasStats {
@@ -225,8 +236,8 @@ type GlobalStats {
 
 """
 
-Covalent Get single Transaction by chainId and txHash
-https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
+Covalent Get single Transaction Log Event by chainId and txHash
+https://www.covalenthq.com/docs/api/#/0/Class-A/Get-a-transaction/lng=en
 """
 type LogEvent {
   blockHeight: Int!
@@ -258,6 +269,11 @@ type LogEventParams {
   name: String!
   type: String!
   value: String!
+}
+
+type LpTokenInfo {
+  name: String!
+  symbol: String!
 }
 
 type MarketData {
@@ -310,6 +326,11 @@ type Mutation {
   createTodo(input: NewTodo!): Todo!
 }
 
+type PageMetaData {
+  description: String!
+  title: String!
+}
+
 type Pagination {
   hasMore: Boolean
   pageNumber: Int
@@ -345,6 +366,8 @@ type Query {
   chains: [Chain!]!
   "Curve Pool "
   curvePools: [CurvePool!]!
+  "Eth ABI "
+  ethABI(address: String!): String!
   "Gas Stats for ETH"
   gasStats: EthGasStats!
   "Global Staths for Coin Gaico"

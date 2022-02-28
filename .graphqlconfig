@@ -18,7 +18,6 @@
         },
         "introspect": false
       },
-
       "AaveV2": {
         "schemaPath": "aaveV2.schema.graphql",
         "url": "https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2",

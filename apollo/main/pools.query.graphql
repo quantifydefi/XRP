@@ -16,20 +16,34 @@ query AllProtocolsGQL{
 
 query CurvePoolsGQL{
   curvePools{
-    id,
-    name,
-    assetType,
-    fee,
+    ID
+    dataIndex
+    idAlias
+    name
+    pageMetaData{title,description}
+    lpTokenInfo{name,symbol}
+    coingeckoInfo{id,symbol}
+    assets
+    coins{symbol, address,,coingeckoId,type,decimals,tokenBalance,liquidity,usdPrice, isLpToken}
+    metaCoins{symbol, address,,coingeckoId,type,decimals,tokenBalance,liquidity,usdPrice, isLpToken}
+    underlyingCoins{ID,coingeckoId}
+    isLendingPool
+    isMetaPool
+    hasAMultiplier
+    isOldPool
+    fee
     adminFee
-    totalBalance
-    registryAddress
-    rewards{rewardPtc, maxRewardPtc}
-    dailyVolume,
-    liquidityUsd
-    baseAPY,
-    coins{balance, balanceUSD, token{symbol, name, usdPrice}}
+    assetType
+    virtualPrice
+    addresses{swap,lpToken,gauge,deposit}
+    totalDailyVolume
+    totalTokenBalance
+    totalLiquidity
+    baseAPY
+    rewards{rewardPtc,maxRewardPtc}
   }
 }
+
 
 query AavePoolGQL($chainId: Int!, $userWallet: String!){
   aavePools(chainId: $chainId, userWallet: $userWallet){

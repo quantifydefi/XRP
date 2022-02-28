@@ -1,9 +1,0 @@
-query CurveTest {
-  _meta {
-    deployment
-    block {
-      number
-    }
-    hasIndexingErrors
-  }
-}

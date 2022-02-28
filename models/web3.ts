@@ -1,18 +1,24 @@
-import { Component, Ref, Watch, Emit, Vue } from 'vue-property-decorator'
+import { Component, Emit, Ref, Vue, Watch } from 'vue-property-decorator'
 import { BigNumber, ethers, Signer } from 'ethers'
 import lendingPoolAbi from '../constracts/abi/aave/lendingPoolAbi.json'
 import wethGatewayAbi from '../constracts/abi/aave/wethGatewayAbi.json'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
-import { AavePoolCl } from '~/models/pool'
+// import curveLPToken from '../constracts/curve/curveLPToken.json'
+import { AavePoolCl, CurveCoinCl, CurvePoolCl } from '~/models/pool'
 import { Helper } from '~/models/helper'
 
-export type aaveActionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
+export type actionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
 declare const window: any
 
-export const aaveActions: { text: string; value: aaveActionTypes }[] = [
+export const aaveActions: { text: string; value: actionTypes }[] = [
   { text: 'Deposit', value: 'deposit' },
   { text: 'Borrow', value: 'borrow' },
   { text: 'Repay', value: 'repay' },
+  { text: 'Withdraw', value: 'withdraw' },
+]
+
+export const curveActions: { text: string; value: actionTypes }[] = [
+  { text: 'Add Liquidity', value: 'deposit' },
   { text: 'Withdraw', value: 'withdraw' },
 ]
 
@@ -41,7 +47,7 @@ export class AavePoolAction extends Vue {
   totalCollateral: number = 0
   totalBorrowed: number = 0
   maxLTV: number = 0
-  actionType: aaveActionTypes = 'deposit'
+  actionType: actionTypes = 'deposit'
   alert = false
   showTransactionLogs = false
   alertMessage = { status: 'success', message: '', logs: {} }
@@ -69,11 +75,22 @@ export class AavePoolAction extends Vue {
 
   stepLogs: any = []
 
-  steps: { [key in aaveActionTypes]?: Record<string, string> } = {
-    deposit: { checkBalance: 'deposit' },
-  }
-
   depositFormValid = false
+
+  values = {
+    inputNum: {
+      value: 0 as number,
+
+      hidden: true as boolean,
+      disabled: false as boolean,
+      placeholder: 'Number Of tokens',
+      rules: {
+        required: (v: string) => !!v || 'Number is required',
+        mustBeNumber: (v: string) => !isNaN(parseFloat(v)) || 'Must be Number',
+        musBeMoreThen0: () => this.values.inputNum.value > 0 || 'Must be more then 0',
+      },
+    },
+  }
 
   @Watch('dialog')
   onDialog(value: boolean) {
@@ -84,7 +101,7 @@ export class AavePoolAction extends Vue {
   }
 
   @Watch('actionType')
-  onActionChanged(value: aaveActionTypes) {
+  onActionChanged(value: actionTypes) {
     if (value) {
       this.alert = false
       this.showTransactionLogs = false
@@ -107,23 +124,6 @@ export class AavePoolAction extends Vue {
   /** Formats input to Big Number with appropriate decimals **/
   formatInput(input: number, decimals: number): BigNumber {
     return ethers.utils.parseUnits(`${input}`, decimals)
-  }
-
-  // _allowedToDeposit: number = 0
-
-  values = {
-    inputNum: {
-      value: 0 as number,
-
-      hidden: true as boolean,
-      disabled: false as boolean,
-      placeholder: 'Number Of tokens',
-      rules: {
-        required: (v: string) => !!v || 'Number is required',
-        mustBeNumber: (v: string) => !isNaN(parseFloat(v)) || 'Must be Number',
-        musBeMoreThen0: () => this.values.inputNum.value > 0 || 'Must be more then 0',
-      },
-    },
   }
 
   /** Allowed borrowing (In Tokens) calculated based by totalCollateral (USD) and total Borrowed (USD) */
@@ -274,7 +274,7 @@ export class AavePoolAction extends Vue {
     totalCollateral: number = 0,
     totalBorrowed: number = 0,
     maxLTV: number = 0,
-    action: aaveActionTypes
+    action: actionTypes
   ) {
     this.actionType = action
     this.pool = pool
@@ -319,48 +319,11 @@ export class AavePoolAction extends Vue {
     return 0
   }
 
-  private async _CHECK_ALLOWED_SPENDING_WETH_METAMASK_CALL(): Promise<number> {
-    if (this.pool) {
-      try {
-        const tokenInstance = new ethers.Contract(this.AWETH_ADDRESS, erc20Abi, this.signer)
-        const walletAddress = await this.signer.getAddress()
-        const checkApprove = await tokenInstance.populateTransaction.allowance(
-          walletAddress,
-          this.AAVE_WETH_GATEWAY_ADDRESS
-        )
-        const approved = await this.provider.call(checkApprove)
-        return parseInt(approved)
-      } catch (err) {
-        return 0
-      }
-    }
-    return 0
-  }
-
   private async _APPROVE_SPENDING_METAMASK_CALL(): Promise<object | null> {
     if (this.pool) {
       try {
         const erc20 = new ethers.Contract(this.pool.underlyingAsset, erc20Abi, this.signer)
         const approveERC20 = await erc20.populateTransaction.approve(this.AAVE_LENDING_POOL_ADDRESS, this.MAX_UINT256)
-        const txGasLimit = await this.provider.estimateGas(approveERC20)
-        const txGasPrice = await this.provider.getGasPrice()
-        approveERC20.gasLimit = txGasLimit
-        approveERC20.gasPrice = txGasPrice
-        const approveResult = await this.signer.sendTransaction(approveERC20)
-        return await approveResult.wait()
-      } catch (error) {
-        console.log(error)
-        return null
-      }
-    }
-    return null
-  }
-
-  private async _APPROVE_SPENDING_WETH_METAMASK_CALL(): Promise<object | null> {
-    if (this.pool) {
-      try {
-        const erc20 = new ethers.Contract(this.AWETH_ADDRESS, erc20Abi, this.signer)
-        const approveERC20 = await erc20.populateTransaction.approve(this.AAVE_WETH_GATEWAY_ADDRESS, this.MAX_UINT256)
         const txGasLimit = await this.provider.estimateGas(approveERC20)
         const txGasPrice = await this.provider.getGasPrice()
         approveERC20.gasLimit = txGasLimit
@@ -451,28 +414,6 @@ export class AavePoolAction extends Vue {
     return { isCompleted: false, logs: {} }
   }
 
-  private async _BORROW_ETH_METAMASK_CALL(): Promise<object | null> {
-    if (this.pool) {
-      try {
-        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
-        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
-        const borrowCall = await wethGatewayContract.populateTransaction.borrowETH(
-          this.AAVE_LENDING_POOL_ADDRESS,
-          amount,
-          2, // variable rate
-          0 // referral code
-        )
-        borrowCall.gasLimit = await this.provider.estimateGas(borrowCall)
-        borrowCall.gasPrice = await this.provider.getGasPrice()
-        const txResult = await this.signer.sendTransaction(borrowCall)
-        return await txResult.wait()
-      } catch (err) {
-        return null
-      }
-    }
-    return null
-  }
-
   private async _REPAY_METAMASK_CALL(): Promise<{ isCompleted: boolean; logs: any }> {
     if (this.pool) {
       try {
@@ -500,31 +441,6 @@ export class AavePoolAction extends Vue {
     return { isCompleted: false, logs: {} }
   }
 
-  /*  private async _REPAY_ETH_METAMASK_CALL(): Promise<object | null> {
-    if (this.pool) {
-      try {
-        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
-        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
-        const walletAddress = await this.signer.getAddress()
-        const repayCall = await wethGatewayContract.populateTransaction.repayETH(
-          this.AAVE_LENDING_POOL_ADDRESS,
-          amount,
-          2, // variable rate
-          walletAddress
-        )
-        const txGasLimit = await this.provider.estimateGas(repayCall)
-        const txGasPrice = await this.provider.getGasPrice()
-        repayCall.gasLimit = txGasLimit
-        repayCall.gasPrice = txGasPrice
-        const txResult = await this.signer.sendTransaction(repayCall)
-        return await txResult.wait()
-      } catch (err) {
-        return null
-      }
-    }
-    return null
-  } */
-
   private async _WITHDRAW_METAMASK_CALL(): Promise<{ isCompleted: boolean; logs: any }> {
     if (this.pool) {
       try {
@@ -549,30 +465,6 @@ export class AavePoolAction extends Vue {
     }
     return { isCompleted: false, logs: {} }
   }
-
-  /*  private async _WITHDRAW_ETH_METAMASK_CALL() {
-    if (this.pool) {
-      try {
-        const wethGatewayContract = new ethers.Contract(this.AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, this.signer)
-        const amount = ethers.utils.parseUnits(`${this.values.inputNum.value}`, this.pool.decimals)
-        const walletAddress = await this.signer.getAddress()
-        const withdrawCall = await wethGatewayContract.populateTransaction.withdrawETH(
-          this.AAVE_LENDING_POOL_ADDRESS,
-          amount,
-          walletAddress
-        )
-        const txGasLimit = await this.provider.estimateGas(withdrawCall)
-        const txGasPrice = await this.provider.getGasPrice()
-        withdrawCall.gasLimit = txGasLimit
-        withdrawCall.gasPrice = txGasPrice
-        const txResult = await this.signer.sendTransaction(withdrawCall)
-        return await txResult.wait()
-      } catch (err) {
-        console.log(err)
-        return null
-      }
-    }
-  } */
 
   @Emit('transaction-result')
   transactionResult(status: 'error' | 'success', message: string, logs: any = {}): string {
@@ -614,14 +506,6 @@ export class AavePoolAction extends Vue {
     return this.transactionResult('success', 'Transaction completed successfully', logs)
   }
 
-  /*  async borrowEth() {
-    const borrowResp = await this._BORROW_ETH_METAMASK_CALL()
-    if (!borrowResp) {
-      return this.transactionResult('error', `Something went wrong`)
-    }
-    return this.transactionResult('success', 'Transaction completed successfully')
-  } */
-
   async borrow() {
     this.loading = true
     this.values.inputNum.disabled = true
@@ -634,24 +518,6 @@ export class AavePoolAction extends Vue {
     }
   }
 
-  /*
-  async withdrawEth() {
-    const allowedSpending = await this._CHECK_ALLOWED_SPENDING_WETH_METAMASK_CALL()
-    if (allowedSpending > this.values.inputNum.value) {
-      const resp = await this._APPROVE_SPENDING_WETH_METAMASK_CALL()
-      if (!resp) {
-        return this.transactionResult('error', `Cant Approve Spending`)
-      }
-      const withdrawResp = await this._WITHDRAW_ETH_METAMASK_CALL()
-      if (!withdrawResp) {
-        return this.transactionResult('error', `Something went wrong`)
-      }
-      return this.transactionResult('success', 'Transaction completed successfully')
-    }
-    return this.transactionResult('error', `Something went wrong`)
-  }
-*/
-
   async withdraw() {
     this.loading = true
     this.values.inputNum.disabled = true
@@ -663,14 +529,6 @@ export class AavePoolAction extends Vue {
       return this.transactionResult('success', 'Transaction completed successfully.', logs)
     }
   }
-
-  /*  async repayEth() {
-    const repay = await this._REPAY_ETH_METAMASK_CALL()
-    if (!repay) {
-      return this.transactionResult('error', `Something went wrong.`)
-    }
-    return this.transactionResult('success', 'Transaction completed successfully')
-  } */
 
   async repay() {
     this.loading = true
@@ -689,6 +547,385 @@ export class AavePoolAction extends Vue {
         return this.transactionResult('error', `Something went wrong.`, logs)
       }
       return this.transactionResult('success', 'Transaction completed successfully', logs)
+    }
+  }
+}
+
+@Component({ name: 'CurvePoolAction' })
+export class CurvePoolAction extends Vue {
+  @Ref('depositForm') readonly depositForm!: any
+
+  MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+
+  provider: any = null
+  signer!: Signer
+  ethABI!: string
+  dialog = false
+  loading = false
+  pool: CurvePoolCl | null = null
+  actionType: actionTypes = 'deposit'
+  alert = false
+  showTransactionLogs = false
+  alertMessage = { status: 'success', message: '', logs: {} }
+  calculatedLPBalanceCoin: number = 0
+  calculatedLPBalanceMetaCoins: number = 0
+  maxSlippage = 0.01
+  readonly actions = curveActions
+
+  /** Form Validation flag */
+  depositFormValid = false
+
+  @Watch('dialog')
+  onDialog(value: boolean) {
+    if (!value) {
+      this.alert = false
+      // this.values.inputNum.value = 0
+    }
+  }
+
+  @Watch('actionType')
+  onActionChanged(value: actionTypes) {
+    if (value) {
+      this.alert = false
+      this.showTransactionLogs = false
+    }
+  }
+
+  @Watch('pool.depositWrapped')
+  onDepositWrappedCHanged() {
+    this.pool?.resetCoinValues()
+    this.calculatedLPBalanceCoin = 0
+    this.calculatedLPBalanceMetaCoins = 0
+  }
+
+  @Watch('pool.coins', { deep: true })
+  async onCoinChange(coins: CurveCoinCl[]) {
+    if (this.pool) {
+      const amounts: (number | BigNumber)[] = []
+      let abi: any
+      coins.forEach((coin) => {
+        const amount = ethers.utils.parseUnits(`${coin.inputVal.value}`, coin.decimals)
+        amounts.push(amount)
+      })
+      if (this.pool.isMetaPool) {
+        abi = await this.readABI(this.pool.ID, true, true)
+      } else {
+        abi = await this.readABI(this.pool.ID, false, false)
+      }
+      this.calculatedLPBalanceCoin = await this.calculateLPBalance(this.pool.addresses.swap, amounts, abi)
+    }
+  }
+
+  @Watch('pool.metaCoins', { deep: true })
+  async on3PoolCOinChange(coins: CurveCoinCl[]) {
+    if (this.pool) {
+      const amounts: (number | BigNumber)[] = []
+      coins.forEach((coin) => {
+        const amount = ethers.utils.parseUnits(`${coin.inputVal.value}`, coin.decimals)
+        amounts.push(amount)
+      })
+      const abi = this.readABI('3pool', false, false)
+      const pool = '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7'
+      this.calculatedLPBalanceMetaCoins = await this.calculateLPBalance(pool, amounts, abi)
+    }
+  }
+
+  async calculateLPBalance(contractAddress: string, amounts: (number | BigNumber)[], abi: any): Promise<number> {
+    try {
+      const poolContract = new ethers.Contract(contractAddress, abi, this.signer)
+      const calculatedBalances = await poolContract.calc_token_amount(amounts, true)
+      return (parseInt(calculatedBalances, 10) / 10 ** 18) * (1 - this.maxSlippage)
+    } catch (e) {
+      console.log(e)
+      return 0
+    }
+  }
+
+  /**
+   * Accept aave pool and  instantiate landing pool contracts
+   * @param  pool Aave Pool from backend subgraph API with additional computed properties
+   * @param action
+   */
+  async init(pool: CurvePoolCl, action: actionTypes) {
+    this.pool = pool
+    this.actionType = action
+    this.dialog = true
+    await this._calculateWalletBalance()
+  }
+
+  @Emit('transaction-result')
+  async transactionResult(status: 'error' | 'success', message: string, logs: any = {}): Promise<string> {
+    this.alert = true
+    this.alertMessage = { status, message, logs }
+    this.loading = false
+    await this._calculateWalletBalance()
+    return status
+  }
+
+  setAltImg(event: any) {
+    try {
+      return Helper.setAltImg(event)
+    } catch {}
+  }
+
+  /**
+   * Initiate Ethers.js Signer and provider to use for future transactions
+   */
+  async mounted() {
+    try {
+      this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+      this.signer = await this.provider.getSigner()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  private async _ALLOWED_TO_SPEND(coin: CurveCoinCl): Promise<{ symbol: string; value: number }> {
+    try {
+      const tokenInstance = new ethers.Contract(coin.address, erc20Abi, this.signer)
+      const walletAddress = await this.signer.getAddress()
+      const checkApprove = await tokenInstance.allowance(walletAddress, this.pool?.addresses.swap)
+      const approved = parseInt(checkApprove, 10)
+      return { symbol: coin.symbol, value: approved }
+    } catch (e) {
+      console.log(e)
+      return { symbol: coin.symbol, value: 0 }
+    }
+  }
+
+  private async _APPROVE_SPENDING_METAMASK_CALL(coin: CurveCoinCl): Promise<{ symbol: string; value: boolean }> {
+    try {
+      const erc20 = new ethers.Contract(coin.address, erc20Abi, this.signer)
+      const approveCall = await erc20.populateTransaction.approve(this.pool?.addresses.swap, this.MAX_UINT256)
+      approveCall.gasLimit = await this.provider.estimateGas(approveCall)
+      approveCall.gasPrice = await this.provider.getGasPrice()
+      const approveResult = await this.signer.sendTransaction(approveCall)
+      await approveResult.wait()
+      return { symbol: coin.symbol, value: true }
+    } catch (error) {
+      console.log(error)
+      return { symbol: coin.symbol, value: false }
+    }
+  }
+
+  private async _REMOVE_LIQUIDITY_METAMASK_CALL(
+    contractAddress: string,
+    amount: BigNumber,
+    minAmounts: number[],
+    abi: any
+  ): Promise<{ isCompleted: boolean; logs: any }> {
+    try {
+      const poolContract = new ethers.Contract(contractAddress, abi, this.signer)
+      const remLiqCall = await poolContract.populateTransaction.remove_liquidity(amount, minAmounts)
+      remLiqCall.gasLimit = await this.provider.estimateGas(remLiqCall)
+      remLiqCall.gasPrice = await this.provider.getGasPrice()
+      const remCallResult = await this.signer.sendTransaction(remLiqCall)
+      const receipt = await remCallResult.wait()
+      return { isCompleted: true, logs: receipt }
+    } catch (error) {
+      console.log(error)
+      return { isCompleted: false, logs: error }
+    }
+  }
+
+  private async _ADD_LIQUIDITY_METAMASK_CALL(
+    contractAddress: string,
+    amounts: (number | BigNumber)[],
+    abi: any
+  ): Promise<{ isCompleted: boolean; logs: any }> {
+    if (this.pool) {
+      try {
+        const poolContract = new ethers.Contract(contractAddress, abi, this.signer)
+        const walletAddress = await this.signer.getAddress()
+        const addLiqCall = await poolContract.populateTransaction.add_liquidity(amounts, 0, {
+          from: walletAddress,
+        })
+        addLiqCall.gasLimit = await this.provider.estimateGas(addLiqCall)
+        addLiqCall.gasPrice = await this.provider.getGasPrice()
+        const addLiqCallResult = await this.signer.sendTransaction(addLiqCall)
+        const receipt = await addLiqCallResult.wait()
+        return { isCompleted: true, logs: receipt }
+      } catch (error) {
+        console.log(error)
+        return { isCompleted: false, logs: error }
+      }
+    }
+    return { isCompleted: false, logs: {} }
+  }
+
+  /** Get deposit elements */
+  private async _depositAmounts(coins: CurveCoinCl[]): Promise<(number | BigNumber)[]> {
+    const configs: { [key: string]: CurveCoinCl } = {}
+    let promises: any = []
+    let promiseResult: { symbol: string; value: number }[] = []
+    const result: (number | BigNumber)[] = []
+
+    // Check allowance to spend for coins with value over 0
+    coins.forEach((coin) => {
+      if (coin.inputVal.value > 0) {
+        configs[coin.symbol] = coin
+        promises.push(this._ALLOWED_TO_SPEND(coin))
+      }
+    })
+    promiseResult = await Promise.all(promises)
+    promiseResult.forEach((elem) => {
+      configs[elem.symbol].inputVal.approvedToSpend = elem.value
+    })
+    promises = []
+    for (const [, value] of Object.entries(configs)) {
+      if (value.inputVal.value >= value.inputVal.approvedToSpend) {
+        await this._APPROVE_SPENDING_METAMASK_CALL(value)
+      }
+    }
+
+    coins.forEach((coin) => {
+      const approvedCoin = configs[coin.symbol]
+      if (approvedCoin) {
+        const amount = ethers.utils.parseUnits(`${approvedCoin.inputVal.value}`, approvedCoin.decimals)
+        result.push(amount)
+      } else {
+        result.push(0)
+      }
+    })
+    return result
+  }
+
+  private readABI(pool: string, depositWrapped: boolean = false, isMetaPool: boolean = false) {
+    let abi: any = {}
+    if (this.pool) {
+      if (isMetaPool) {
+        if (depositWrapped) {
+          abi = require('../constracts/curve/rsv/swap.json')
+        }
+      } else {
+        const config: any = {
+          '3pool': require('../constracts/curve/curveStableSwapAbi.json'),
+          link: require('../constracts/curve/link/swap.json'),
+          eurt: require('../constracts/curve/link/swap.json'),
+          pax: require('../constracts/curve/pax/swap.json'),
+          ren: require('../constracts/curve/ren/swap.json'),
+          sbtc: require('../constracts/curve/sbtc/swap.json'),
+          hbtc: require('../constracts/curve/hbtc/swap.json'),
+          usdt: require('../constracts/curve/curveStableSwapAbi.json'),
+          susdv2: require('../constracts/curve/susdv2/swap.json'),
+          ankreth: require('../constracts/curve/ankreth/swap.json'),
+          reth: require('../constracts/curve/reth/swap.json'),
+          eurtusd: require('../constracts/curve/link/swap.json'),
+          eursusd: require('../constracts/curve/eurs/swap.json'),
+          crveth: require('../constracts/curve/rsv/swap.json'),
+        }
+        abi = config[pool]
+      }
+      return abi
+    }
+  }
+
+  private async lPBalance() {
+    if (this.pool) {
+      try {
+        const poolLPContract = new ethers.Contract(this.pool.addresses.lpToken, erc20Abi, this.signer)
+        const walletAddress = await this.signer.getAddress()
+        const lpBal = await poolLPContract.balanceOf(walletAddress)
+        return parseInt(lpBal, 10) / 10 ** 18
+      } catch (e) {
+        console.log('LP BAL ERROR', e)
+        return 0
+      }
+    }
+    return 0
+  }
+
+  private async _addLiquidityMetaWrapped(): Promise<{ isCompleted: boolean; logs: any }> {
+    if (this.pool) {
+      const amounts = await this._depositAmounts(this.pool.coins)
+      const abi = this.readABI(this.pool.ID, true, true)
+      return await this._ADD_LIQUIDITY_METAMASK_CALL(this.pool.addresses.swap, amounts, abi)
+    }
+    return { isCompleted: false, logs: {} }
+  }
+
+  private async _addLiquidityTo3PoolMeta(): Promise<{ isCompleted: boolean; logs: any }> {
+    if (this.pool) {
+      const amounts = await this._depositAmounts(this.pool.metaCoins)
+      const abi = this.readABI('3pool', false, false)
+      const pool = '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7'
+      return await this._ADD_LIQUIDITY_METAMASK_CALL(pool, amounts, abi)
+    }
+    return { isCompleted: false, logs: {} }
+  }
+
+  private async calculateWalletBalanceForCoin(coin: CurveCoinCl) {
+    try {
+      const erc20 = new ethers.Contract(coin.address, erc20Abi, this.signer)
+      const walletAddress = await this.signer.getAddress()
+      const balance = await erc20.balanceOf(walletAddress)
+      coin.walletBalance = balance / 10 ** coin.decimals
+    } catch (e) {
+      console.log(e)
+      return 0
+    }
+  }
+
+  private async _calculateWalletBalance() {
+    if (this.pool) {
+      let promises: any = []
+      this.pool.coins.forEach((coin) => {
+        promises.push(this.calculateWalletBalanceForCoin(coin))
+      })
+      await Promise.all(promises)
+      promises = []
+    }
+  }
+
+  async addLiquidity() {
+    if (this.pool) {
+      if (this.pool.isMetaPool) {
+        if (this.pool.depositWrapped) {
+          const { isCompleted, logs } = await this._addLiquidityMetaWrapped()
+          if (!isCompleted) {
+            return this.transactionResult('error', `Something went wrong.`, logs)
+          }
+          return this.transactionResult('success', 'Transaction completed successfully.', logs)
+        }
+      } else {
+        const amounts = await this._depositAmounts(this.pool.coins)
+        const abi = this.readABI(this.pool.ID, false, false)
+        const { isCompleted, logs } = await this._ADD_LIQUIDITY_METAMASK_CALL(this.pool.addresses.swap, amounts, abi)
+        if (!isCompleted) {
+          return this.transactionResult('error', `Something went wrong.`, logs)
+        }
+        return this.transactionResult('success', 'Transaction completed successfully.', logs)
+      }
+    }
+  }
+
+  async withdraw() {
+    if (this.pool) {
+      const amountToRemove = ethers.utils.parseUnits(`${this.pool.lpBalanceToWithdraw}`, 18)
+      let abi: any = {}
+      const minAmounts: number[] = []
+
+      if (this.pool.depositWrapped) {
+        abi = this.readABI(this.pool.ID, true, true)
+      } else {
+        abi = this.readABI(this.pool.ID, false, false)
+      }
+
+      // Set min amounts to 0
+      this.pool.coins.forEach(() => {
+        minAmounts.push(0)
+      })
+
+      const { isCompleted, logs } = await this._REMOVE_LIQUIDITY_METAMASK_CALL(
+        this.pool.addresses.swap,
+        amountToRemove,
+        minAmounts,
+        abi
+      )
+      if (!isCompleted) {
+        return this.transactionResult('error', `Something went wrong.`, logs)
+      }
+      return this.transactionResult('success', 'Transaction completed successfully.', logs)
     }
   }
 }
