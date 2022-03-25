@@ -30,7 +30,9 @@
       "@types/jest",
       "@types/node",
       "vue-apollo/types",
-      "@nuxtjs/apollo"
+      "@nuxtjs/apollo",
+      "cookie-universal-nuxt",
+      "@nuxtjs/vuetify"
     ]
   },
   "exclude": [

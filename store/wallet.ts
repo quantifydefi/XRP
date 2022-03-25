@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { ActionTree, MutationTree } from 'vuex'
+import { WalletState } from '~/types/state'
 
-export const state = () => ({
-  address: null as unknown as string,
-  isWalletConnected: false as boolean,
-  // isWalletConnected: true as boolean,
-  // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
-  totalBalance: '' as string,
-})
-export type WalletState = ReturnType<typeof state>
+export const state = () =>
+  ({
+    address: null,
+    isWalletConnected: false,
+    totalBalance: '',
+    // isWalletConnected: true as boolean,
+    // address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+  } as WalletState)
 
 export const mutations: MutationTree<WalletState> = {
   SET_WALLET_STATUS: (state, { status, wallet }) => {

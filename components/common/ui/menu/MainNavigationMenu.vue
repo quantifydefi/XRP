@@ -108,7 +108,7 @@
           </v-list-group>
         </v-list-item-group>
 
-        <div class="pa-2" style="position: fixed; bottom: 0px; width: 100%">
+        <div class="pa-2" style="position: fixed; bottom: 0; width: 100%">
           <div class="caption d-flex my-4 justify-center">
             <v-btn x-small icon @click="changeTheme">
               <v-icon>{{ $vuetify.theme.dark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }} </v-icon>
@@ -124,77 +124,78 @@
     </client-only>
   </v-navigation-drawer>
 </template>
-
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
-import { EmitEvents } from '~/types/events'
-import { ThemeOptions } from '~/types/ui'
+import { computed, defineComponent, ref, useContext, useStore } from '@nuxtjs/composition-api'
+import { State, ThemeOptions } from '~/types/state'
+export default defineComponent({
+  setup() {
+    // STATE
+    const navigationDrawer = ref(true)
+    const navigationMenu = ref([
+      {
+        icon: 'mdi-tablet-dashboard',
+        title: 'Terminal',
+        to: '/terminal',
+      },
+      {
+        icon: 'mdi-view-dashboard-variant',
+        title: 'Heatmap',
+        to: '/heatmap',
+      },
+      {
+        icon: 'mdi-chart-line-stacked',
+        title: 'Trading 101',
+        to: '/trading-101',
+      },
+      {
+        icon: 'mdi-account-group',
+        title: 'Our Team',
+        to: '/team',
+      },
+      {
+        icon: 'mdi-ethereum',
+        title: 'Crypto',
+        href: 'https://quantifycrypto.com/terminal',
+      },
+    ])
 
-@Component({
-  name: 'MainNavigationMenu',
-  computed: {
-    ...mapState({
-      theme: (state: any) => state.ui.theme,
-      protocols: (state: any) => state.configs.protocols,
-    }),
+    // COMPOSABLE
+    const store = useStore<State>()
+    const context = useContext()
+
+    // COMPUTED
+    const theme = computed(() => store.state.ui.theme)
+    const ui = computed(() => store.state.ui)
+    const protocols = computed(() => store.state.configs.protocols)
+
+    // METHODS
+
+    function changeTheme() {
+      const theme: ThemeOptions = context.$cookies.get('theme')
+      if (theme === 'dark') {
+        context.$vuetify.theme.dark = false
+        context.$cookies.set('theme', 'light')
+        store.dispatch('ui/changeTheme', 'light')
+      } else {
+        context.$vuetify.theme.dark = true
+        context.$cookies.set('theme', 'dark')
+        store.dispatch('ui/changeTheme', 'dark')
+      }
+    }
+
+    return {
+      // State
+      navigationDrawer,
+
+      // COMPUTED
+      theme,
+      ui,
+      protocols,
+      navigationMenu,
+
+      // METHOD
+      changeTheme,
+    }
   },
 })
-export default class MainNavigationMenu extends Vue {
-  navigationDrawer: boolean = true
-  $cookies!: Record<string, any>
-  $vuetify!: any
-  protocols!: { name: string; symbol: string; id: string }[]
-  navigationMenu: {
-    icon: string
-    title: string
-    to?: string
-    href?: string
-  }[] = [
-    {
-      icon: 'mdi-tablet-dashboard',
-      title: 'Terminal',
-      to: '/terminal',
-    },
-    {
-      icon: 'mdi-view-dashboard-variant',
-      title: 'Heatmap',
-      to: '/heatmap',
-    },
-    {
-      icon: 'mdi-chart-line-stacked',
-      title: 'Trading 101',
-      to: '/trading-101',
-    },
-    {
-      icon: 'mdi-account-group',
-      title: 'Our Team',
-      to: '/team',
-    },
-    {
-      icon: 'mdi-ethereum',
-      title: 'Crypto',
-      href: 'https://quantifycrypto.com/terminal',
-    },
-  ]
-
-  changeTheme() {
-    const theme: ThemeOptions = this.$cookies.get('theme')
-    if (theme === 'dark') {
-      this.$vuetify.theme.dark = false
-      this.$cookies.set('theme', 'light')
-      this.$store.dispatch('ui/changeTheme', 'light')
-    } else {
-      this.$vuetify.theme.dark = true
-      this.$cookies.set('theme', 'dark')
-      this.$store.dispatch('ui/changeTheme', 'dark')
-    }
-  }
-
-  mounted() {
-    this.$root.$on(EmitEvents.toggleNavigationMenu, () => {
-      this.navigationDrawer = !this.navigationDrawer
-    })
-  }
-}
 </script>

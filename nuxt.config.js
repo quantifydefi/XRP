@@ -1,9 +1,4 @@
-import https from 'https'
 import colors from 'vuetify/es5/util/colors'
-import axios from 'axios'
-// defiheatmap.com
-
-require('dotenv').config()
 
 const runEnv = process.env.RUN_ENV
 
@@ -41,26 +36,19 @@ export default {
   css: [],
 
   plugins: [
-    '~/plugins/initConfigs.client.ts', // only in client side
+    '~/plugins/initConfigs.ts', // only in client side
+    '~/plugins/web3/web3.client.ts',
     '~/plugins/typer.client.ts',
   ],
 
   components: true,
 
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api/module', '@nuxtjs/vuetify'],
 
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    'nuxt-webfontloader',
     'cookie-universal-nuxt',
-    [
-      '@nuxtjs/robots',
-      {
-        UserAgent: '*',
-        Disallow: '/wallet',
-      },
-    ],
     [
       '@nuxtjs/google-analytics',
       {
@@ -69,7 +57,6 @@ export default {
       },
     ],
     '@nuxtjs/apollo',
-    '@nuxtjs/sitemap', // must be last
   ],
 
   // Apollo client setup
@@ -77,16 +64,6 @@ export default {
     clientConfigs: {
       default: {
         httpEndpoint: config[runEnv].BASE_GRAPHQL_SERVER,
-      },
-      aaveV2Mainnet: {
-        // httpEndpoint: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2',
-        httpEndpoint: 'https://thegraph.defiheatmap.com/subgraphs/name/aave/protocol-v2',
-      },
-      aaveV2Kovan: {
-        httpEndpoint: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2-kovan',
-      },
-      curve: {
-        httpEndpoint: 'https://api.thegraph.com/subgraphs/name/curvefi/curve',
       },
     },
   },
@@ -96,22 +73,6 @@ export default {
     baseURL: config[runEnv].BASE_URL,
     withCredentials: true,
     debug: false,
-  },
-
-  sitemap: {
-    hostname: config[runEnv].BASE_URL,
-    gzip: true,
-    exclude: ['/wallet/**'],
-    defaults: {
-      changefreq: 'daily',
-      priority: 1,
-      lastmod: new Date(),
-    },
-    routes: async () => {
-      axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false })
-      const { data } = await axios.get(`${config[runEnv].BASE_URL}/api/defi/heatmap/uniswap-heatmap?num_of_coins=100`)
-      return data.data.map((v) => `/token/${v.pool_id}`)
-    },
   },
 
   webfontloader: {
@@ -146,15 +107,6 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
-          // background: '#121212',
-          // bgAccent: colors.grey.darken4,
-          // overlay: '#121212',
-          // appBg: '#151A23',
-          // baseText: '#fff',
-          // outline: '#2F2F2F',
-          // baseButton: colors.grey.darken4,
-          // card: '#121212',
-          // innerCard: '#151A23',
         },
 
         light: {
@@ -165,15 +117,6 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
-          // background: '#fff',
-          // bgAccent: '#fff',
-          // overlay: '#fff',
-          // appBg: colors.grey.lighten4,
-          // baseText: colors.grey.darken3,
-          // outline: '#E0E0E0',
-          // baseButton: colors.white,
-          // card: colors.grey.lighten2,
-          // innerCard: colors.grey.lighten2,
         },
       },
     },
@@ -190,7 +133,6 @@ export default {
     extractCSS: {
       ignoreOrder: false,
     },
-
     extend(config, ctx) {
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {

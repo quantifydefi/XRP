@@ -37,9 +37,5 @@ query ChainlinkEthUsdPriceGQL {
   chainLinkPrice(pairs:["ETH-USD"])
 }
 
-query EthAbiGQL($address:String!){
-  ethABI(address: $address)
-}
-
 
 

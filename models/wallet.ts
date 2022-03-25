@@ -105,7 +105,7 @@ export class MetamaskConnector extends Vue {
     }
   }
 
-  async mounted() {
+  /* async mounted() {
     const { ethereum } = window
     this.ethereum = ethereum
     await this.connectToWallet()
@@ -121,15 +121,15 @@ export class MetamaskConnector extends Vue {
         }
       })
     }
-    /* this.ethereum.on('chainChanged', (hexString: string) => {
+    /!* this.ethereum.on('chainChanged', (hexString: string) => {
       console.log('Metamask Chain Changed', parseInt(hexString, 16), hexString)
-    }) */
-    /* try {
+    }) *!/
+    /!* try {
       await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] })
     } catch (error) {
       console.log(error)
-    } */
-    /** Listen to token metamask import */
+    } *!/
+    /!** Listen to token metamask import *!/
     this.$root.$on(
       Events.IMPORT_METAMASK_TOKEN,
       async ({
@@ -153,5 +153,5 @@ export class MetamaskConnector extends Vue {
         }
       }
     )
-  }
+  } */
 }
