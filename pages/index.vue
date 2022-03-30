@@ -26,11 +26,7 @@
     </v-row>
 
     <v-row>
-      <client-only>
-        <v-col>
-          <recent-prices-chart />
-        </v-col>
-      </client-only>
+      <v-col><recent-prices-chart /></v-col>
     </v-row>
 
     <v-row justify="center">
@@ -45,7 +41,7 @@
           <v-col v-for="item in items" :key="item.header" cols="12" md="4" sm="6">
             <v-hover v-slot="{ hover }">
               <v-card height="100%" tile outlined class="pa-2 text-center" :elevation="hover ? 10 : 0">
-                <v-avatar size="40" class="mt-3" :color="$vuetify.theme.dark ? 'grey darken-4' : 'grey lighten-3'">
+                <v-avatar size="40" class="mt-3" :color="ui[theme].innerCardLighten">
                   <v-icon size="30" color="primary">{{ item.icon }}</v-icon>
                 </v-avatar>
 
@@ -61,122 +57,78 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
-import TokenSearch from '~/components/common/TokenSearch.vue'
+import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
+import { State } from '~/types/state'
 import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
-@Component({
-  name: 'Index',
-  components: { TokenSearch, RecentPricesChart },
-  head(): object {
-    return {
-      title: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
-      meta: [
-        {
-          name: 'description',
-          hid: 'description',
-          content:
-            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
-        },
 
-        // Open Graph
-        {
-          name: 'og:title',
-          content: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
-        },
-        {
-          name: 'og:description',
-          content:
-            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
-        },
-        { name: 'og:type', content: 'website' },
-        { name: 'og:url', content: process.env.baseURL },
-        {
-          name: 'og:image',
-          content: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
-        },
+export default defineComponent({
+  components: { RecentPricesChart },
+  setup() {
+    // STATE
+    const items = ref([
+      {
+        color: 'primary lighten-2',
+        icon: 'mdi-transit-connection-variant',
+        header: 'DeFi Gateway',
+        desc: 'Actionable interfaces for leading DeFi platforms',
+      },
+      {
+        color: 'red lighten-2',
+        icon: 'mdi-panorama-variant',
+        header: 'NFT Aggregator',
+        desc: 'Favorite NFTs and your balances together',
+      },
 
-        // Twitter Card
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@Quantify_Crypto' },
-        {
-          name: 'twitter:title',
-          content: 'NFT and DeFi Investments” | EVM Ethereum Virtual Machine',
-        },
-        {
-          name: 'twitter:description',
-          content:
-            'Premiere Decentralize Financial interface for NFTs, Aave, Curve, Balancer, Uniswap and leading DeFi protocols',
-        },
-        {
-          name: 'twitter:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXHomepage.jpg',
-        },
-        {
-          name: 'twitter:image:alt',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXHomepage.jpg',
-        },
-      ],
-    }
+      {
+        color: 'orange lighten-2',
+        icon: 'mdi-desktop-mac-dashboard',
+        header: 'Token Pages',
+        desc: 'Balances, investment options, and metrics on a single screen',
+      },
+      {
+        color: 'primary lighten-2',
+        icon: 'mdi-bridge',
+        header: 'Multi Chain Bridging',
+        desc: 'Support for Ethereum Mainnet, Binance Smart Change, Matic, Fantom, Avalanche networks and more',
+      },
+      {
+        color: 'red lighten-2',
+        icon: 'mdi-history',
+        header: 'Transaction History',
+        desc: 'Providing a transaction displays',
+      },
+      {
+        color: 'red lighten-2',
+        icon: 'mdi-rocket-launch-outline',
+        header: 'NFT Launch',
+        desc: 'Check this site for future updates',
+      },
+    ])
+    const animatedFeatures = ref([
+      'DeFi Gateway',
+      'NFT Aggregator',
+      'Advanced Portfolio Visualization',
+      'Uniswap Trader',
+      'Easier DeFi and NFT Transactions',
+      'Aave Smart Connect',
+      'Token Pages',
+      'Curve Crypto Pools Interface',
+      'Balancer Index Manager',
+      'Transaction History',
+      'NFT Manager',
+      'Multi Chain Swaps',
+    ])
+
+    // COMPOSABLE
+    const store = useStore<State>()
+
+    // COMPUTED
+    const ui = computed(() => store.state.ui)
+    const theme = computed(() => store.state.ui.theme)
+
+    return { items, animatedFeatures, ui, theme }
   },
 })
-export default class Index extends Vue {
-  items = [
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-transit-connection-variant',
-      header: 'DeFi Gateway',
-      desc: 'Actionable interfaces for leading DeFi platforms',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-panorama-variant',
-      header: 'NFT Aggregator',
-      desc: 'Favorite NFTs and your balances together',
-    },
-
-    {
-      color: 'orange lighten-2',
-      icon: 'mdi-desktop-mac-dashboard',
-      header: 'Token Pages',
-      desc: 'Balances, investment options, and metrics on a single screen',
-    },
-    {
-      color: 'primary lighten-2',
-      icon: 'mdi-bridge',
-      header: 'Multi Chain Bridging',
-      desc: 'Support for Ethereum Mainnet, Binance Smart Change, Matic, Fantom, Avalanche networks and more',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-history',
-      header: 'Transaction History',
-      desc: 'Providing a transaction displays',
-    },
-    {
-      color: 'red lighten-2',
-      icon: 'mdi-rocket-launch-outline',
-      header: 'NFT Launch',
-      desc: 'Check this site for future updates',
-    },
-  ]
-
-  animatedFeatures = [
-    'DeFi Gateway',
-    'NFT Aggregator',
-    'Advanced Portfolio Visualization',
-    'Uniswap Trader',
-    'Easier DeFi and NFT Transactions',
-    'Aave Smart Connect',
-    'Token Pages',
-    'Curve Crypto Pools Interface',
-    'Balancer Index Manager',
-    'Transaction History',
-    'NFT Manager',
-    'Multi Chain Swaps',
-  ]
-
-  isButtonVisible = true
-}
 </script>
 
 <style lang="scss">

@@ -30,13 +30,13 @@
 import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { Chain } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
-import { WEB3_PLUGIN_KEY, Web3Client } from '~/plugins/web3/web3.client'
+import { WEB3_PLUGIN_KEY, Web3 } from '~/plugins/web3/web3'
 
 export default defineComponent({
   setup() {
     // COMPOSABLE
     const { state, dispatch } = useStore<State>()
-    const { changeChain, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3Client
+    const { changeChain, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
 
     // STATE
     const selectedChainId = ref(1)

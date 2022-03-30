@@ -1,6 +1,5 @@
 import { Context } from '@nuxt/types'
 import { ThemeOptions } from '~/types/state'
-// TODO: Add typing here
 export default async function useInitTheme(context: Context | any) {
   const theme: ThemeOptions | undefined = context.$cookies.get('theme')
   if (theme && theme === 'light') {

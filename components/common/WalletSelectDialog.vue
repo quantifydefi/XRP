@@ -38,13 +38,13 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useStore, inject, watch } from '@nuxtjs/composition-api'
 import { State } from '~/types/state'
-import { Web3Client, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3.client'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { Web3ErrorInterface } from '~/plugins/web3/connector'
 export default defineComponent({
   setup() {
     // COMPOSABLE
     const store = useStore<State>()
-    const { connectWallet, resetErrors, walletReady, error } = inject(WEB3_PLUGIN_KEY) as Web3Client
+    const { connectWallet, resetErrors, walletReady, error } = inject(WEB3_PLUGIN_KEY) as Web3
 
     // STATE
     const errorAlert = ref(false)

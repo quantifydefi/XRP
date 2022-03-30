@@ -45,13 +45,13 @@
 import { computed, defineComponent, useStore, inject } from '@nuxtjs/composition-api'
 import { create } from 'blockies-ts'
 import { State } from '~/types/state'
-import { Web3Client, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3.client'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 export default defineComponent({
   setup() {
     // COMPOSABLE
     const { state, dispatch } = useStore<State>()
-    const { disconnectWallet, account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3Client
+    const { disconnectWallet, account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
 
     // COMPUTED
     const ui = computed(() => state.ui)

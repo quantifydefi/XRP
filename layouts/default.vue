@@ -8,11 +8,9 @@
       <v-spacer />
 
       <!--  Network Menu    -->
-      <client-only>
-        <gas-info />
-        <network-selection />
-        <wallet-connector />
-      </client-only>
+      <gas-info />
+      <network-selection />
+      <wallet-connector />
     </v-app-bar>
     <v-main>
       <v-container fluid>
@@ -22,7 +20,7 @@
 
     <main-navigation-menu />
     <notification ref="notificationComponent" />
-    <client-only><wallet-select-dialog /></client-only>
+    <wallet-select-dialog />
   </v-app>
 </template>
 
@@ -35,6 +33,7 @@ import WalletConnector from '~/components/common/WalletConnector.vue'
 import useInitTheme from '~/composables/useInitTheme'
 import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
+// import useConfig from '~/composables/useConfig'
 export default defineComponent({
   components: {
     WalletSelectDialog,

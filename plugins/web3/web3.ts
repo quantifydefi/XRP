@@ -9,7 +9,7 @@ export type Wallet = 'metamask'
 type WalletState = 'connecting' | 'connected' | 'disconnected'
 export const WEB3_PLUGIN_KEY = '$web3'
 
-export type Web3Client = {
+export type Web3 = {
   connectWallet: (wallet: Wallet) => Promise<void>
   disconnectWallet: () => void
   resetErrors: () => void
@@ -34,7 +34,7 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorInterface> = {
 
 declare module '@nuxt/types' {
   interface Context {
-    $web3: Web3Client
+    $web3: Web3
   }
 }
 
@@ -110,7 +110,7 @@ export default (context: Context): void => {
       }
     }
 
-    const plugin: Web3Client = {
+    const plugin: Web3 = {
       connectWallet,
       disconnectWallet,
       changeChain,

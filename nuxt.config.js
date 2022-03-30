@@ -36,8 +36,9 @@ export default {
   css: [],
 
   plugins: [
+    '~/plugins/apolloClient.ts', // init apollo client
     '~/plugins/initConfigs.ts', // only in client side
-    '~/plugins/web3/web3.client.ts',
+    '~/plugins/web3/web3.ts',
     '~/plugins/typer.client.ts',
   ],
 
@@ -145,6 +146,7 @@ export default {
         })
       }
     },
+    transpile: ['@vue/apollo-composable'],
   },
 
   env: {
