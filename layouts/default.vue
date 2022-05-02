@@ -19,7 +19,7 @@
     </v-main>
 
     <main-navigation-menu />
-    <notification ref="notificationComponent" />
+    <!--    <notification ref="notificationComponent" />-->
     <wallet-select-dialog />
   </v-app>
 </template>
@@ -31,8 +31,8 @@ import NetworkSelection from '~/components/common/NetworkSelection.vue'
 import GasInfo from '~/components/common/GasInfo.vue'
 import WalletConnector from '~/components/common/WalletConnector.vue'
 import useInitTheme from '~/composables/useInitTheme'
-import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
+import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
 // import useConfig from '~/composables/useConfig'
 export default defineComponent({
   components: {
@@ -40,7 +40,7 @@ export default defineComponent({
     WalletConnector,
     GasInfo,
     NetworkSelection,
-    Notification,
+    // Notification,
     MainNavigationMenu,
   },
   setup() {

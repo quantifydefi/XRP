@@ -5,7 +5,6 @@ declare module '*/config.query.graphql' {
   export const GlobalStatsQueryGQL: DocumentNode;
 export const RecentPricesGQL: DocumentNode;
 export const ChainlinkEthUsdPriceGQL: DocumentNode;
-export const EthAbiGQL: DocumentNode;
 
   export default defaultDocument;
 }

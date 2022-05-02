@@ -4,16 +4,7 @@
     "endpoints": {
       "Default Dev Endpoint": {
         "schemaPath": "main.schema.graphql",
-        "url": "https://graph.defiheatmap.com/query",
-        "headers": {
-          "user-agent": "JS GraphQL"
-        },
-        "introspect": false
-      },
-
-      "AaveV2": {
-        "schemaPath": "staging.schema.graphql",
-        "url": "https://graph.defiheatmap.com/query",
+        "url": "http://localhost:8080/query",
         "headers": {
           "user-agent": "JS GraphQL"
         },

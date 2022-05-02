@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
 import { ChainChangeParamInterface, ConnectorInterface, Web3ErrorInterface } from './connector'
 import { Chain } from '~/types/apollo/main/types'
-
 declare const window: any
 
+// TODO: Add network  change
 export class MetamaskConnector implements ConnectorInterface {
   private idVal: string = 'MetamaskInjector'
   private providerVal: any = null
@@ -77,7 +77,7 @@ export class MetamaskConnector implements ConnectorInterface {
       throw new Error('No provider registered for this connector. Something is very wrong.')
     }
     window.ethereum.on('accountsChanged', this.handleAccountsChanged)
-    // this.provider.on('chainChanged', this.handleChainChanged)
+    window.ethereum.on('chainChanged', this.handleChainChanged)
   }
 
   isMetaMaskInstalled() {
@@ -92,6 +92,13 @@ export class MetamaskConnector implements ConnectorInterface {
     } else {
       this.accountVal = accounts[0]
     }
+  }
+
+  handleChainChanged = async () => {
+    // Reset Provider if chain changed
+    this.providerVal = new ethers.providers.Web3Provider(window.ethereum)
+    const chainId = await this.providerVal.getNetwork()
+    this.chainIdVal = chainId.chainId
   }
 
   handleDisconnect() {
@@ -145,6 +152,27 @@ export class MetamaskConnector implements ConnectorInterface {
           console.log(error)
         }
       }
+    }
+  }
+
+  async importTokenToMetamask({
+    address,
+    symbol,
+    decimals,
+    image,
+  }: {
+    address: string
+    symbol: string
+    decimals: number
+    image: string
+  }) {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: { type: 'ERC20', options: { address, symbol, decimals, image } },
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 }

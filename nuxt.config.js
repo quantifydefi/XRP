@@ -1,5 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-
 const runEnv = process.env.RUN_ENV
 
 const config = {
@@ -36,8 +35,9 @@ export default {
   css: [],
 
   plugins: [
-    '~/plugins/apolloClient.ts', // init apollo client
     '~/plugins/initConfigs.ts', // only in client side
+    '~/plugins/valueFormatter.ts',
+    '~/plugins/apolloClient.ts',
     '~/plugins/web3/web3.ts',
     '~/plugins/typer.client.ts',
   ],

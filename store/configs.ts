@@ -18,6 +18,7 @@ export const state = () =>
       symbol: 'ETH',
       isTestNet: false,
       asda: 'sadsa',
+      blockExplorerUrl: 'https://etherscan.io/',
     },
     chains: [],
     protocols: [],

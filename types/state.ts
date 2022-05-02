@@ -1,3 +1,4 @@
+import { Ref } from '@nuxtjs/composition-api'
 import { Chain, EthGasStats } from './apollo/main/types'
 
 export type ThemeOptions = 'dark' | 'light'
@@ -9,7 +10,7 @@ export interface MainState {
 export interface ConfigState {
   globalStats: Chain | null
   gasStats: EthGasStats | null
-  currentChain: Chain | null
+  currentChain: Chain
   chains: Chain[]
   protocols: { name: string; symbol: string; id: string }[]
 }

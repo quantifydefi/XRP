@@ -1,5 +1,5 @@
 <template>
-  <div ref="chartDiv" :style="{ width: '100%', height: `${height}px` }"></div>
+  <div><div ref="chartDiv" :style="{ width: '100%', height: `${height}px` }"></div></div>
 </template>
 
 <script lang="ts">
@@ -26,26 +26,20 @@ if (process.browser) {
   am4themesDark = require('@amcharts/amcharts4/themes/dark')
 }
 
-type Props = {
-  data: { value: number; name: string }[]
-  chartHeight: number
-  labelsDisabled: boolean
-  ticksDisabled: boolean
-  tooltipText: string
-}
-
 interface ChartData {
-  value: number
   name: string
+  balance: number
+  balanceUsd: number
+}
+type Props = {
+  data: ChartData[]
+  chartHeight: number
 }
 
 export default defineComponent<Props>({
   props: {
     data: { type: Array as PropType<ChartData[]>, default: () => [] },
-    chartHeight: { type: Number, default: 220 },
-    labelsDisabled: { type: Boolean, default: true },
-    ticksDisabled: { type: Boolean, default: true },
-    tooltipText: { type: String, default: '' },
+    chartHeight: { type: Number, default: 400 },
   },
 
   setup(props) {
@@ -60,6 +54,7 @@ export default defineComponent<Props>({
     const theme = computed(() => state.ui.theme)
     const { env } = useContext()
 
+    // METHODS
     function renderChart() {
       if (theme.value === 'dark') {
         am4core.useTheme(am4themesDark.default)
@@ -69,33 +64,27 @@ export default defineComponent<Props>({
       }
       am4core.addLicense(env.amChartLicense)
 
-      chart = am4core.create(chartDiv.value, am4charts.PieChart)
+      chart = am4core.create(chartDiv.value, am4charts.XYChart)
       chart.data = props.data
 
-      // Set inner radius
-      chart.innerRadius = am4core.percent(65)
-      chart.paddingTop = 20
+      // Create axes
+      const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+      categoryAxis.dataFields.category = 'name'
+      categoryAxis.renderer.grid.template.location = 0
+      categoryAxis.renderer.minGridDistance = 30
 
-      // Add and configure Series
-      const pieSeries = chart.series.push(new am4charts.PieSeries())
-      pieSeries.dataFields.value = 'value'
-      pieSeries.dataFields.category = 'name'
-      pieSeries.slices.template.stroke = am4core.color(`${theme.value === 'dark' ? '#030303' : '#ffffff'}`)
-      pieSeries.slices.template.strokeWidth = 2
-      pieSeries.slices.template.strokeOpacity = 1
-      pieSeries.labels.template.maxWidth = 130
-      pieSeries.labels.template.wrap = true
-      pieSeries.labels.template.fontSize = 12
-      pieSeries.labels.template.disabled = props.labelsDisabled
-      pieSeries.ticks.template.disabled = props.ticksDisabled
-      pieSeries.slices.template.tooltipText = props.tooltipText
+      chart.yAxes.push(new am4charts.ValueAxis())
 
-      // This creates initial animation
-      pieSeries.hiddenState.properties.opacity = 1
-      pieSeries.hiddenState.properties.endAngle = -90
-      pieSeries.hiddenState.properties.startAngle = -90
-      pieSeries.slices.template.propertyFields.fill = 'color'
+      // Create series
+      const series = chart.series.push(new am4charts.ColumnSeries())
+      series.dataFields.valueY = 'balance'
+      series.dataFields.categoryX = 'name'
+      // eslint-disable-next-line no-template-curly-in-string
+      series.columns.template.tooltipText = 'Token Balance: [bold]{balance}[/]\nUSD  Balance: [bold]${balanceUsd}'
+      series.columns.template.maxWidth = 50
     }
+
+    // WATCHERS
     watch(theme, () => {
       renderChart()
     })
@@ -105,10 +94,10 @@ export default defineComponent<Props>({
       (newData) => (chart.data = newData)
     )
 
+    // HOOKS
     onMounted(() => {
       renderChart()
     })
-
     onBeforeUnmount(() => {
       chart.dispose()
     })

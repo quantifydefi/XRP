@@ -16,44 +16,38 @@ type AaveAddress {
 }
 
 type AavePool {
-  aEmissionPerSecond: String!
+  aEmissionPerSecond: Float!
   addresses: AaveAddress!
-  availableLiquidity: String!
-  baseLTVasCollateral: String!
+  availableLiquidity: Float!
+  baseLTVasCollateral: Float!
+  borrowingEnabled: Boolean!
   decimals: Int!
   id: String!
-  liquidityRate: String!
+  liquidityRate: Float!
   name: String!
-  portfolio: AavePortfolio!
   price: AavePoolPrice!
-  reserveLiquidationBonus: String!
-  reserveLiquidationThreshold: String!
-  sEmissionPerSecond: String!
-  stableBorrowRate: String!
+  reserveLiquidationBonus: Float!
+  reserveLiquidationThreshold: Float!
+  sEmissionPerSecond: Float!
+  stableBorrowRate: Float!
+  stableBorrowRateEnabled: Boolean!
   symbol: String!
-  totalATokenSupply: String!
-  totalCurrentVariableDebt: String!
-  totalLiquidity: String!
-  totalLiquidityAsCollateral: String!
-  totalPrincipalStableDebt: String!
+  totalATokenSupply: Float!
+  totalCurrentVariableDebt: Float!
+  totalLiquidity: Float!
+  totalLiquidityAsCollateral: Float!
+  totalPrincipalStableDebt: Float!
   underlyingAsset: String!
   usageAsCollateralEnabled: Boolean!
-  usdPrice: Float!
-  utilizationRate: String!
-  vEmissionPerSecond: String!
-  variableBorrowRate: String!
+  utilizationRate: Float!
+  vEmissionPerSecond: Float!
+  variableBorrowRate: Float!
 }
 
 type AavePoolPrice {
   id: String!
-  priceInEth: String!
-}
-
-type AavePortfolio {
-  stableBorrow: Float!
-  totalDeposits: Float!
-  variableBorrow: Float!
-  walletBal: Float!
+  priceInEth: Float!
+  priceUsd: Float!
 }
 
 """
@@ -358,7 +352,7 @@ type Protocol {
 
 type Query {
   "Aave Pool "
-  aavePools(chainId: Int!, userWallet: String = ""): [AavePool!]!
+  aavePools(chainId: Int!): [AavePool!]!
   "Covalent Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chainLinkAddresses: Map!

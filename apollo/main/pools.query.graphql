@@ -45,15 +45,15 @@ query CurvePoolsGQL{
 }
 
 
-query AavePoolGQL($chainId: Int!, $userWallet: String!){
-  aavePools(chainId: $chainId, userWallet: $userWallet){
+query AavePoolGQL($chainId: Int!){
+  aavePools(chainId: $chainId){
     id
     underlyingAsset
     name
     symbol
     decimals
     totalLiquidity
-    price{id,priceInEth}
+    price{id,priceInEth, priceUsd}
     liquidityRate
     stableBorrowRate
     variableBorrowRate
@@ -72,18 +72,15 @@ query AavePoolGQL($chainId: Int!, $userWallet: String!){
       variableDebtTokenAddress,
       decimals,
       address
+      symbol
     }
-    portfolio{
-      walletBal,
-      totalDeposits,
-      stableBorrow,
-      variableBorrow
-    }
-    usdPrice
     totalLiquidityAsCollateral
     baseLTVasCollateral
     reserveLiquidationThreshold
     reserveLiquidationBonus
     usageAsCollateralEnabled
+
+    borrowingEnabled
+    stableBorrowRateEnabled
   }
 }

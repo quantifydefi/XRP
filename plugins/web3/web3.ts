@@ -14,6 +14,7 @@ export type Web3 = {
   disconnectWallet: () => void
   resetErrors: () => void
   changeChain: (chain: Chain) => void
+  importTokenToMetamask: (params: any) => void
   provider: Ref<any>
   account: Ref<string>
   chainId: Ref<number | null>
@@ -30,12 +31,6 @@ type PluginState = {
 
 const WalletConnectorDictionary: Record<Wallet, ConnectorInterface> = {
   metamask: new MetamaskConnector(),
-}
-
-declare module '@nuxt/types' {
-  interface Context {
-    $web3: Web3
-  }
 }
 
 export default (context: Context): void => {
@@ -110,10 +105,17 @@ export default (context: Context): void => {
       }
     }
 
+    const importTokenToMetamask = (params: any) => {
+      if (pluginState.connector) {
+        pluginState.connector.importTokenToMetamask(params)
+      }
+    }
+
     const plugin: Web3 = {
       connectWallet,
       disconnectWallet,
       changeChain,
+      importTokenToMetamask,
       resetErrors,
       ...toRefs(pluginState),
       account,

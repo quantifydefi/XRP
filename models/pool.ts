@@ -7,7 +7,6 @@ import {
   AaveAddress,
   AavePool,
   AavePoolPrice,
-  AavePortfolio,
   CurvePool,
   CurveAddresses,
   CoingeckoInfo,
@@ -22,6 +21,12 @@ import { aaveActions, actionTypes, AavePoolAction, CurvePoolAction, curveActions
 import { Events } from '~/types/global'
 import erc20Abi from '~/constracts/abi/erc20Abi.json'
 declare const window: any
+
+interface PortfolioCompositionInterface {
+  name: string
+  data: { id: string; name: string; value: number }[]
+}
+
 export class CurveCoinCl implements CurveCoin {
   ID!: string
   address!: string
@@ -298,83 +303,94 @@ export class CurvePools extends Vue {
   }
 }
 
+export interface AavePortfolio {
+  walletBal: number
+  totalDeposits: number
+  stableBorrow: number
+  variableBorrow: number
+}
+
 export class AavePoolCl implements AavePool {
-  aEmissionPerSecond!: string
-  availableLiquidity!: string
-  decimals!: number
-  id!: string
-  liquidityRate!: string
-  name!: string
-  price!: AavePoolPrice
-  sEmissionPerSecond!: string
-  stableBorrowRate!: string
-  symbol!: string
-  totalATokenSupply!: string
-  totalCurrentVariableDebt!: string
-  totalLiquidity!: string
-  totalPrincipalStableDebt!: string
-  underlyingAsset!: string
-  utilizationRate!: string
-  vEmissionPerSecond!: string
-  variableBorrowRate!: string
-  addresses!: AaveAddress
-  portfolio!: AavePortfolio
-  usdPrice!: number
-  baseLTVasCollateral!: string
-  reserveLiquidationBonus!: string
-  reserveLiquidationThreshold!: string
-  totalLiquidityAsCollateral!: string
-  usageAsCollateralEnabled!: boolean
+  readonly id!: string
+  readonly aEmissionPerSecond!: number
+  readonly availableLiquidity!: number
+  readonly decimals!: number
+  readonly liquidityRate!: number
+  readonly name!: string
+  readonly price!: AavePoolPrice
+  readonly sEmissionPerSecond!: number
+  readonly stableBorrowRate!: number
+  readonly symbol!: string
+  readonly totalATokenSupply!: number
+  readonly totalCurrentVariableDebt!: number
+  readonly totalLiquidity!: number
+  readonly totalPrincipalStableDebt!: number
+  readonly underlyingAsset!: string
+  readonly utilizationRate!: number
+  readonly vEmissionPerSecond!: number
+  readonly variableBorrowRate!: number
+  readonly addresses!: AaveAddress
+  private portfolioVal: AavePortfolio = { walletBal: 0, totalDeposits: 0, stableBorrow: 0, variableBorrow: 0 }
+
+  // TODO needs to be removed
+  readonly usdPrice!: number
+
+  readonly baseLTVasCollateral!: number
+  readonly reserveLiquidationBonus!: number
+  readonly reserveLiquidationThreshold!: number
+  readonly totalLiquidityAsCollateral!: number
+  readonly usageAsCollateralEnabled!: boolean
+  readonly borrowingEnabled!: boolean
+  readonly stableBorrowRateEnabled!: boolean
 
   get depositAPR(): number {
-    return parseFloat(this.liquidityRate) / RAY_UNITS
+    return this.borrowingEnabled ? this.liquidityRate / RAY_UNITS : -1
   }
 
   get depositAPY(): number {
-    return (1 + this.depositAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+    return this.borrowingEnabled ? (1 + this.depositAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1 : -1
   }
 
   get stableBorrowAPR(): number {
-    return parseFloat(this.stableBorrowRate) / RAY_UNITS
-  }
-
-  get stableBorrowAPY(): number {
-    return (1 + this.stableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+    return this.borrowingEnabled && this.stableBorrowRateEnabled ? this.stableBorrowRate / RAY_UNITS : -1
   }
 
   get variableBorrowAPR(): number {
-    return parseFloat(this.variableBorrowRate) / RAY_UNITS
+    return this.borrowingEnabled ? this.variableBorrowRate / RAY_UNITS : -1
+  }
+
+  get stableBorrowAPY(): number {
+    return this.borrowingEnabled && this.stableBorrowRateEnabled
+      ? (1 + this.stableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+      : -1
   }
 
   get variableBorrowAPY(): number {
-    return (1 + this.variableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1
+    return this.borrowingEnabled ? (1 + this.variableBorrowAPR / SECONDS_PER_YEAR) ** SECONDS_PER_YEAR - 1 : -1
   }
 
   get tokenBalance(): number {
-    return parseFloat(this.totalLiquidity) / 10 ** this.decimals
+    return this.totalLiquidity / 10 ** this.decimals
   }
 
   get usdBalance(): number {
-    return this.tokenBalance * this.usdPrice
+    return this.tokenBalance * this.price.priceUsd
   }
 
   get totalBorrowBalance() {
-    return (
-      parseFloat(this.totalCurrentVariableDebt) / 10 ** this.decimals +
-      parseFloat(this.totalPrincipalStableDebt) / 10 ** this.decimals
-    )
+    return this.totalCurrentVariableDebt / 10 ** this.decimals + this.totalPrincipalStableDebt / 10 ** this.decimals
   }
 
   get totalBorrowBalanceUsd() {
-    return this.totalBorrowBalance * this.usdPrice
+    return this.totalBorrowBalance * this.price.priceUsd
   }
 
   get availableLiquidityBalance() {
-    return parseFloat(this.availableLiquidity) / 10 ** this.decimals
+    return this.availableLiquidity / 10 ** this.decimals
   }
 
   get availableLiquidityUsd() {
-    return this.availableLiquidityBalance * this.usdPrice
+    return this.availableLiquidityBalance * this.price.priceUsd
   }
 
   get reserveSizeUsd() {
@@ -382,19 +398,27 @@ export class AavePoolCl implements AavePool {
   }
 
   get utilizationRatePtc() {
-    return parseFloat(this.utilizationRate) * 100
+    return Math.abs(this.utilizationRate * 100)
   }
 
   get loanToValue() {
-    return parseFloat(this.baseLTVasCollateral) / 100
+    return this.baseLTVasCollateral / 100
   }
 
   get liquidationThreshold() {
-    return parseFloat(this.reserveLiquidationThreshold) / 100
+    return this.reserveLiquidationThreshold / 100
   }
 
   get liquidationPenalty() {
-    return parseFloat(this.reserveLiquidationBonus) / 100 - 100
+    return this.reserveLiquidationBonus / 100 - 100
+  }
+
+  get portfolio(): AavePortfolio {
+    return this.portfolioVal
+  }
+
+  set portfolio(p: AavePortfolio) {
+    this.portfolioVal = p
   }
 
   get logoUrl() {
@@ -554,7 +578,7 @@ export class AavePools extends Vue {
   get healthFactor(): number {
     const collateralPools = this.aaveMainPoolsFiltered.filter((elem) => elem.usageAsCollateralEnabled)
     const collateralOnLiqThreshold = collateralPools.reduce(
-      (a, b) => a + (b.usdPrice * b.portfolio.totalDeposits * b.liquidationThreshold) / 100,
+      (a, b) => a + (b.price.priceUsd * b.portfolio.totalDeposits * b.liquidationThreshold) / 100,
       0
     )
 
@@ -598,9 +622,9 @@ export class AavePools extends Vue {
   }
 
   get portfolioComposition() {
-    const wallet: Record<string, any> = { name: 'Your Wallet Composition', data: [] }
-    const deposits: Record<string, any> = { name: 'Deposits Composition', data: [] }
-    const borrows: Record<string, any> = { name: 'Borrows Composition', data: [] }
+    const wallet: PortfolioCompositionInterface = { name: 'Your Wallet Composition', data: [] }
+    const deposits: PortfolioCompositionInterface = { name: 'Deposits Composition', data: [] }
+    const borrows: PortfolioCompositionInterface = { name: 'Variable Borrows Composition', data: [] }
 
     this.aaveMainPoolsFiltered.forEach((elem) => {
       if (elem.portfolio.walletBal > 0) {

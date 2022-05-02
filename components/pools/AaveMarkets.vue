@@ -1,0 +1,320 @@
+<template>
+  <v-card tile outlined>
+    <v-skeleton-loader v-if="poolsLoading" type="table-tbody,table-tbody,table-tbody" />
+    <client-only>
+      <v-data-table
+        v-if="!poolsLoading"
+        id="curve-pools-grid"
+        hide-default-footer
+        :headers="cols"
+        :items="aavePools"
+        :sort-by="['usdBalance']"
+        :sort-desc="[true]"
+        :items-per-page="100"
+        class="elevation-0"
+        :expanded.sync="expanded"
+        :single-expand="false"
+        show-expand
+        item-key="id"
+      >
+        <template #expanded-item="{ headers, item }">
+          <td :colspan="headers.length"><aave-market-details :pool="item" /></td>
+        </template>
+
+        <!--      Cols-->
+        <template #item.symbol="{ item }">
+          <div class="my-1">
+            <v-row no-gutters align="center">
+              <v-col cols="3">
+                <v-avatar size="24" class="mr-2">
+                  <v-img :alt="`${item.symbol} logo`" :src="item.logoUrl" :lazy-src="item.logoUrl" />
+                </v-avatar>
+              </v-col>
+              <v-col>
+                <v-row no-gutters>
+                  <v-col><span class="text-capitalize font-weight-bold pink--text" v-text="item.name" /></v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span :class="[textClass, 'text-caption']" v-text="item.symbol" />
+                    <v-tooltip v-if="item.symbol !== 'ETH'" bottom color="black">
+                      <template #activator="{ on, attrs }">
+                        <v-btn icon color="grey" x-small v-bind="attrs" v-on="on" @click="importToMetamask(item.id)">
+                          <v-icon size="14">mdi-wallet</v-icon>
+                        </v-btn>
+                      </template>
+                      <span v-text="'Import To Metamask Wallet'" />
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </div>
+        </template>
+
+        <template #item.portfolio.walletBal="{ item }">
+          <div v-text="$f(item.portfolio.walletBal, { roundTo: 6 })" />
+          <div
+            :class="textClass"
+            v-text="$f(item.portfolio.walletBal * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
+          />
+        </template>
+
+        <template #item.portfolio.totalDeposits="{ item }">
+          <div v-text="$f(item.portfolio.totalDeposits, { roundTo: 6 })" />
+          <div
+            :class="textClass"
+            v-text="$f(item.portfolio.totalDeposits * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
+          />
+        </template>
+
+        <template #item.portfolio.variableBorrow="{ item }">
+          <div v-text="$f(item.portfolio.variableBorrow, { roundTo: 6 })" />
+          <div
+            :class="textClass"
+            v-text="$f(item.portfolio.variableBorrow * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
+          />
+        </template>
+
+        <template #item.price.priceUsd="{ item }">
+          <div v-text="$f(item.price.priceUsd, { roundTo: 2, pre: '$ ' })" />
+        </template>
+
+        <template #item.depositAPY="{ item }">
+          <div :class="textClass">
+            <span v-if="item.depositAPY === -1">--</span>
+            <span v-else v-text="$f(item.depositAPY * 100, { roundTo: 2, after: ' %' })" />
+          </div>
+        </template>
+
+        <template #item.variableBorrowAPY="{ item }">
+          <div :class="textClass">
+            <span v-if="item.variableBorrowAPY === -1">--</span>
+            <span v-else v-text="$f(item.variableBorrowAPY * 100, { roundTo: 2, after: ' %' })" />
+          </div>
+        </template>
+
+        <template #item.usdBalance="{ item }">
+          <span v-text="$f(item.usdBalance, { roundTo: 2, pre: '$ ', useSymbol: true })" />
+        </template>
+
+        <template #item.totalBorrowBalanceUsd="{ item }">
+          <span v-text="$f(item.totalBorrowBalanceUsd, { roundTo: 2, pre: '$ ', useSymbol: true })" />
+        </template>
+
+        <template #item.link="{ item }">
+          <v-tooltip bottom color="black">
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                v-bind="attrs"
+                x-small
+                class="mb-1 ml-1"
+                icon
+                v-on="on"
+                @click="$copyAddressToClipboard(item.price.id)"
+              >
+                <v-icon size="18">mdi-content-copy</v-icon>
+              </v-btn>
+            </template>
+            Copy Pool Address
+          </v-tooltip>
+          <v-tooltip bottom color="black">
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                v-bind="attrs"
+                x-small
+                class="mb-1 ml-1"
+                icon
+                v-on="on"
+                @click="navigateToExplorer(item.price.id)"
+              >
+                <v-icon size="18">mdi-open-in-new</v-icon>
+              </v-btn>
+            </template>
+            Open in Block Explorer
+          </v-tooltip>
+        </template>
+
+        <template #[`item.action`]="{ item }">
+          <v-btn
+            v-for="action in aaveActions"
+            :key="action.value"
+            :disabled="!walletReady"
+            text
+            outlined
+            color="pink"
+            class="pa-1 ma-1"
+            height="26"
+            @click="initAction(item.id, action.value)"
+          >
+            <span class="text-caption">{{ action.text }}</span>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </client-only>
+  </v-card>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, inject, PropType, ref, toRefs, UnwrapRef, useStore } from '@nuxtjs/composition-api'
+import { AavePoolCl } from '~/models/pool'
+import { State } from '~/types/state'
+import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
+import { aaveActions, actionTypes } from '~/models/web3'
+import { EmitEvents } from '~/types/events'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
+
+type Props = {
+  pools: AavePoolCl[]
+  loading: boolean
+}
+export default defineComponent<Props>({
+  components: { AaveMarketDetails },
+  props: {
+    pools: { type: Array as PropType<UnwrapRef<AavePoolCl[]>>, default: () => [], required: true },
+    loading: { type: Boolean, default: true },
+  },
+  setup(props, { emit }) {
+    // COMPOSABLE
+    const { state } = useStore<State>()
+    const { walletReady, importTokenToMetamask } = inject(WEB3_PLUGIN_KEY) as Web3
+
+    // COMPUTED
+    const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
+    const expanded = ref([])
+    const cols = [
+      {
+        text: 'Assets',
+        align: 'left',
+        value: 'symbol',
+        width: '230',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Your Balance',
+        align: 'left',
+        value: 'portfolio.walletBal',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Your Deposits',
+        align: 'left',
+        value: 'portfolio.totalDeposits',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Your  Borrows',
+        align: 'left',
+        value: 'portfolio.variableBorrow',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Asset Price',
+        align: 'left',
+        value: 'price.priceUsd',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: '',
+        value: 'action',
+        width: 300,
+        sortable: false,
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+
+      {
+        text: 'Deposit APY',
+        align: 'center',
+        value: 'depositAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+      {
+        text: 'Borrow APY, variable',
+        align: 'center',
+        value: 'variableBorrowAPY',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+      {
+        text: 'Total Deposited',
+        align: 'center',
+        value: 'usdBalance',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+      {
+        text: 'Total Borrowed',
+        align: 'center',
+        value: 'totalBorrowBalanceUsd',
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+      {
+        text: '',
+        align: 'right',
+        value: 'link',
+        sortable: false,
+        class: ['px-2', 'text-truncate'],
+        cellClass: ['px-2', 'text-truncate'],
+      },
+    ]
+    const aavePools = toRefs(props).pools
+    const poolsLoading = toRefs(props).loading
+
+    // METHODS
+    function initAction(poolAddress: string, action: actionTypes) {
+      const pool: AavePoolCl | undefined = aavePools.value.find((elem) => elem.id === poolAddress)
+      if (pool) {
+        emit(EmitEvents.initAction, { action, pool })
+      }
+    }
+
+    async function importToMetamask(poolId: string) {
+      const pool: AavePoolCl | undefined = aavePools.value.find((elem) => elem.id === poolId)
+      if (pool) {
+        await importTokenToMetamask({
+          address: pool.underlyingAsset,
+          symbol: pool.symbol,
+          decimals: pool.decimals,
+          image: pool.logoUrl,
+        })
+      }
+    }
+
+    function navigateToExplorer(address: string) {
+      const url = `https://etherscan.io/address/${address}`
+      window.open(url)
+    }
+
+    return {
+      // DATA
+      cols,
+      aavePools,
+      textClass,
+      expanded,
+      poolsLoading,
+      aaveActions,
+      walletReady,
+
+      //  METHODS
+      navigateToExplorer,
+      initAction,
+      importToMetamask,
+    }
+  },
+})
+</script>

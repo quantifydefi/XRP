@@ -129,7 +129,7 @@ export class AavePoolAction extends Vue {
   /** Allowed borrowing (In Tokens) calculated based by totalCollateral (USD) and total Borrowed (USD) */
   get allowedToBorrow(): number {
     if (this.pool) {
-      const allowed = ((this.totalCollateral * this.maxLTV) / 100 - this.totalBorrowed) / this.pool.usdPrice
+      const allowed = ((this.totalCollateral * this.maxLTV) / 100 - this.totalBorrowed) / this.pool.price.priceUsd
       if (allowed > 0) {
         return allowed
       } else return 0
@@ -169,7 +169,7 @@ export class AavePoolAction extends Vue {
             },
           ],
           reserves: [
-            { name: 'Asset price', value: '$ ' + this.pool.usdPrice.toFixed(2) + ' USD' },
+            { name: 'Asset price', value: '$ ' + this.pool.price.priceUsd.toFixed(2) + ' USD' },
             { name: 'Maximum LTV', value: this.pool.loanToValue + '%', isTooltip: true, tooltip: this.messages.maxLTV },
             {
               name: 'Liquidation Threshold',
@@ -200,7 +200,7 @@ export class AavePoolAction extends Vue {
               name: 'Available liquidity',
               value: `${this.pool.availableLiquidityBalance.toLocaleString()} ${this.pool.symbol}`,
             },
-            { name: 'Asset price', value: '$ ' + this.pool.usdPrice.toFixed(2) + ' USD' },
+            { name: 'Asset price', value: '$ ' + this.pool.price.priceUsd.toFixed(2) + ' USD' },
           ],
 
           reserves: [
