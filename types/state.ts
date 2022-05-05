@@ -1,4 +1,3 @@
-import { Ref } from '@nuxtjs/composition-api'
 import { Chain, EthGasStats } from './apollo/main/types'
 
 export type ThemeOptions = 'dark' | 'light'

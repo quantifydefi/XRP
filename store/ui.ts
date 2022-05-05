@@ -11,12 +11,15 @@ export const state = () => ({
     innerCardLighten: 'grey--text text--lighten-1',
     // Json logs for transactions dialog
     jsonLogs: 'grey darken-4',
+    // texts
+    subTextColor: 'grey--text',
   },
   light: {
     overlayColor: 'grey lighten-4',
     headerTextClass: 'black--text',
     innerCardLighten: 'black--text',
     jsonLogs: 'grey lighten-2',
+    subTextColor: 'grey--text text--darken-1',
   },
   walletSelectionDialog: false as boolean,
 })

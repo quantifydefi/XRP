@@ -110,6 +110,8 @@ input:focus {
 }
 
 // V-Scroller
+
+//DATA TABLE
 .theme--light .v-card .v-data-table__wrapper::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -141,6 +143,44 @@ input:focus {
   background: #3e3e3e;
   border: solid 1px #202020;
   border-radius: 7px;
+}
+
+// v-cards and v-sheets scroller
+.theme--dark.v-card.v-sheet.v-sheet--outlined {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #3e3e3e;
+    border: solid 1px #202020;
+    border-radius: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #202020;
+    border-left: 1px solid #2c2c2c;
+  }
+}
+
+.theme--light.v-card.v-sheet.v-sheet--outlined {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #e6e6e6;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #b0b0b0;
+    border: solid 1px #e6e6e6;
+    border-radius: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #e6e6e6;
+    border-left: 1px solid #dadada;
+  }
 }
 
 // V-table and V-Datatable */
