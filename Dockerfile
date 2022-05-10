@@ -1,15 +1,15 @@
 FROM node:16.14.0-alpine
 
 # create destination directory
-RUN mkdir -p /usr/src/qc-nuxt-defi-server
-WORKDIR /usr/src/qc-defi-nuxt-server
+RUN mkdir -p /usr/src/evmx-ui
+WORKDIR /usr/src/evmx-ui
 
 # update and install dependency
 RUN apk update && apk upgrade
 RUN apk --no-cache add curl
 
 # copy the app, note .dockerignore
-COPY . /usr/src/qc-defi-nuxt-server/
+COPY . /usr/src/evmx-ui/
 RUN npm install
 
 # build necessary, even if no static files are needed,
