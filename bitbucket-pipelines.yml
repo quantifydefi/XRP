@@ -88,7 +88,7 @@ pipelines:
 
     build-and-deploy-evmx-staging:
       - step:
-          image: node:16.14.0-alpine
+          image: node:12.7.0-alpine
           name: Build Image
           services:
             - docker
