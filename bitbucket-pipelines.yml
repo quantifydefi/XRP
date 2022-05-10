@@ -107,7 +107,7 @@ pipelines:
             - aws configure set aws_access_key_id "${AWS_KEY}"
             - aws configure set aws_secret_access_key "${AWS_SECRET}"
             - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
-            - docker build -t  $IMAGE --build-arg BASE_GRAPHQL_SERVER_URL="${BASE_GRAPHQL_SERVER_URL}" --build-arg AMCHARTS_LICENSE="${AMCHARTS_LICENSE}".
+            - docker build -t  $IMAGE --build-arg BASE_GRAPHQL_SERVER_URL="${BASE_GRAPHQL_SERVER_URL}" --build-arg AMCHARTS_LICENSE="${AMCHARTS_LICENSE}" .
             - docker push $IMAGE
 
 #      - step:
