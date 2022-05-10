@@ -4,6 +4,10 @@ FROM node:16.14.0-alpine
 RUN mkdir -p /usr/src/evmx-ui
 WORKDIR /usr/src/evmx-ui
 
+ENV SERVER_HOST                   $SERVER_HOST
+ENV ENVBASE_GRAPHQL_SERVER_URL    $BASE_GRAPHQL_SERVER_URL
+ENV AMCHARTS_LICENSE              $AMCHARTS_LICENSE
+
 # update and install dependency
 RUN apk update && apk upgrade
 RUN apk --no-cache add curl
