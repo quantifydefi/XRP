@@ -1,64 +1,86 @@
 <template>
-  <v-menu
-    v-if="gas"
-    :close-on-content-click="false"
-    :nudge-width="300"
-    :nudge-left="200"
-    nudge-bottom="10"
-    offset-y
-    max-width="300"
-  >
+  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-50" left max-width="600">
     <template #activator="{ on, attrs }">
       <div class="d-flex">
-        <v-btn class="mt-1 subtitle-2 px-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
+        <v-btn class="subtitle-2 px-2 mr-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
           <div>
             <v-icon>mdi-gas-station</v-icon>
-            <span class="ml-1"> {{ gas.fastGasPrice }}</span>
+            <span class="ml-1"> {{ ethMainNetInfo.gas.proposeGasPrice }}</span>
             <v-icon small>mdi-chevron-down</v-icon>
           </div>
         </v-btn>
       </div>
     </template>
 
-    <v-card outlined tile>
-      <v-row no-gutters class="px-3 py-1">
-        <v-col cols="12">
-          <div class="text-subtitle-2">Current Gas Prices</div>
-        </v-col>
-        <v-col cols="12">
-          <span class="text-caption grey--text lighten-2"> Gas fees on the Ethereum Network </span></v-col
-        >
-      </v-row>
-      <v-divider class="my-1" />
-      <v-row no-gutters class="text-center caption pb-2">
-        <v-col>
-          <div>Fast</div>
-          <div class="subtitle-2">{{ gas.fastGasPrice }} GWEI</div>
-        </v-col>
-        <v-col>
-          <div>Average</div>
-          <div class="subtitle-2">{{ gas.proposeGasPrice }} GWEI</div>
-        </v-col>
-        <v-col>
-          <div>Slow</div>
-          <div class="subtitle-2">{{ gas.safeGasPrice }} GWEI</div>
-        </v-col>
-      </v-row>
+    <v-card outlined tile class="pa-2">
+      <v-simple-table>
+        <template #default>
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>Low</th>
+              <th>Average</th>
+              <th>Fast</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="(elem, i) in gasData" :key="i">
+              <td><v-img :src="imageUrl(elem.symbol)" :lazy-src="imageUrl(elem.symbol)" width="20" /></td>
+              <td>
+                <a
+                  class="text-subtitle-2 text-decoration-none"
+                  :href="elem.blockExplorer"
+                  target="_blank"
+                  v-text="elem.name"
+                />
+                <div>
+                  <small>
+                    <a
+                      target="_blank"
+                      class="text-decoration-none grey--text"
+                      :href="`${elem.blockExplorer}block/${elem.gas.lastBlock}/`"
+                      v-text="elem.gas.lastBlock"
+                    />
+                  </small>
+                </div>
+              </td>
+              <td class="green--text">{{ $f(elem.gas.safeGasPrice, { roundTo: 0 }) }} gwei</td>
+              <td class="primary--text text--lighten-1">{{ $f(elem.gas.proposeGasPrice, { roundTo: 0 }) }} gwei</td>
+              <td class="red--text">{{ $f(elem.gas.fastGasPrice, { roundTo: 0 }) }} gwei</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
     </v-card>
   </v-menu>
 </template>
 <script lang="ts">
-import { defineComponent, useStore, computed } from '@nuxtjs/composition-api'
-import { State } from '~/types/state'
+import { computed, defineComponent, Ref } from '@nuxtjs/composition-api'
+import { useQuery } from '@vue/apollo-composable/dist'
+import { useResult } from '@vue/apollo-composable'
+import { GasGQL } from '~/apollo/main/config.query.graphql'
+import { GasStats } from '~/types/apollo/main/types'
 export default defineComponent({
   setup() {
     // COMPOSABLE
-    const store = useStore<State>()
+    const { result } = useQuery(GasGQL, null, { fetchPolicy: 'no-cache', pollInterval: 10000 })
+    const gasData = useResult(result, []) as Ref<GasStats[]>
+    const ethMainNetInfo = computed(() => gasData.value.find((elem) => elem.symbol === 'ETH'))
 
-    // COMPUTED
-    const gas = computed(() => store.state.configs.gasStats)
+    // METHODS
+    const imageUrl = (symbol: string) =>
+      `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
 
-    return { gas }
+    return {
+      // COMPUTED
+      gasData,
+      ethMainNetInfo,
+
+      // METHODS
+      imageUrl,
+    }
   },
 })
 </script>

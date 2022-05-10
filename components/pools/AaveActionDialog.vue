@@ -18,7 +18,42 @@
           :success-message="txOptions.successMessage"
           @on-result-closed="dialog = false"
         />
-        <div v-else class="mt-8">
+        <div v-else>
+          <v-row no-gutters class="mb-8">
+            <v-col cols="12" class="pt-2">
+              <div class="text-center">
+                <v-btn-toggle v-model="action" v color="primary" mandatory group>
+                  <v-btn
+                    v-for="elem in aaveActions"
+                    :key="elem"
+                    small
+                    class="ma-0"
+                    height="32"
+                    :value="elem"
+                    depressed
+                    outlined
+                  >
+                    {{ elem }}
+                  </v-btn>
+                </v-btn-toggle>
+              </div>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col class="py-0">
+              <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">
+                <small class="grey--text">
+                  Please Switch To
+                  <span
+                    class="red--text text--lighten-1 mr-4 font-weight-bold"
+                    v-text="isChainAndMarketMismatched.label"
+                  />
+                </small>
+              </a>
+            </v-col>
+          </v-row>
+
           <aave-actioin-form
             :amount="amount"
             :price-usd="pool.price.priceUsd"
@@ -77,12 +112,13 @@ import {
   watch,
 } from '@nuxtjs/composition-api'
 import { AavePoolCl } from '~/models/pool'
-import { actionTypes } from '~/models/web3'
+import { actionTypes, aaveActions } from '~/models/web3'
 import { State } from '~/types/state'
 import AaveActioinForm from '~/components/pools/AaveActioinForm.vue'
 import useAaveTransactions from '~/composables/useAaveTransactions'
 import TransactionResult from '~/components/common/TransactionResult.vue'
 import { EmitEvents } from '~/types/events'
+import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
 
 type Props = {
   totalCollateralUsd: number
@@ -109,7 +145,6 @@ export default defineComponent<Props>({
     AaveActioinForm,
   },
   props: {
-    someData: { type: Number, default: 1, required: true },
     healthFactor: { type: Number, default: 0, required: true },
     totalCollateralUsd: { type: Number, default: 0, required: true },
     totalBorrowedUsd: { type: Number, default: 0, required: true },
@@ -140,6 +175,7 @@ export default defineComponent<Props>({
       pool,
       amount
     )
+    const { isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
@@ -339,12 +375,15 @@ export default defineComponent<Props>({
       txLoading,
       receipt,
       isTxMined,
+      aaveActions,
+      isChainAndMarketMismatched,
 
       // METHODS
       init,
       onFormValueChanged,
       deposit,
       borrow,
+      changeToRequiredChain,
     }
   },
 })

@@ -1,13 +1,4 @@
-query GlobalStatsQueryGQL {
-  globalStats {
-    defiMarketCap
-    ethMarketCap
-    defiToEthRatio
-    tradingVolume24h
-    defiDominance
-    topCoinName
-    topCoinDefiDominance
-  }
+query AaveMarketsGQL {
   chains {
     chainId,
     name,
@@ -19,15 +10,38 @@ query GlobalStatsQueryGQL {
     rpcUrl,
     blockExplorerUrl,
   }
-  gasStats{
-    lastBlock, safeGasPrice, proposeGasPrice, fastGasPrice, suggestBaseFee, gasUsedRatio
-  }
-  protocols{
-    name
-    symbol
-    id
+}
+
+
+query GasGQL {
+  gas{
+    symbol,
+    blockExplorer
+    name,
+    gas
+    {
+      lastBlock,
+      safeGasPrice,
+      proposeGasPrice,
+      fastGasPrice,
+      suggestBaseFee
+    }
   }
 }
+
+query DeFiStats{
+  globalStats {
+    defiMarketCap,
+    ethMarketCap,
+    defiToEthRatio,
+    tradingVolume24h,
+    defiDominance,
+    topCoinName,
+    topCoinDefiDominance
+  }
+}
+
+
 
 query RecentPricesGQL{
   recentPrices

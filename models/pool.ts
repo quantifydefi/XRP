@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 import { plainToClass, Type } from 'class-transformer'
 import { mapState } from 'vuex'

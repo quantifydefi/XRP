@@ -2,7 +2,7 @@
   <div class="mb-4">
     <v-row justify="center" class="mt-4">
       <v-col cols="11" class="text-center">
-        <h1 class="v-heading text-h2 font-weight-regular">EVMX <span class="title">[Beta]</span></h1>
+        <h1 class="v-heading text-h2 font-weight-regular">EVMX</h1>
         <div class="v-heading text-h4 font-weight-light mt-3 grey--text">DeFi and NFT Portfolio Manager</div>
         <div class="mt-4">
           <client-only>

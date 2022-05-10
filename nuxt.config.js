@@ -1,29 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-const runEnv = process.env.RUN_ENV
-
-const config = {
-  development: {
-    BASE_URL: process.env.BASE_URL_DEV,
-    SERVER_HOST: process.env.SERVER_HOST_DEV,
-    BASE_GRAPHQL_SERVER: process.env.BASE_GRAPHQL_SERVER_DEV,
-    ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
-  },
-  staging: {
-    BASE_URL: process.env.BASE_URL_STAGING,
-    SERVER_HOST: process.env.SERVER_HOST_STAGING,
-    BASE_GRAPHQL_SERVER: process.env.BASE_GRAPHQL_SERVER_STAGING,
-    ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
-  },
-  production: {
-    BASE_URL: process.env.BASE_URL_PROD,
-    SERVER_HOST: process.env.SERVER_HOST_PROD,
-    ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
-  },
-}
-
-config[runEnv].COVALENT_API_KEY = process.env.COVALENT_API_KEY
-
-console.log(config[runEnv])
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -35,7 +10,7 @@ export default {
   css: [],
 
   plugins: [
-    '~/plugins/initConfigs.ts', // only in client side
+    '~/plugins/initConfigs.ts',
     '~/plugins/valueFormatter.ts',
     '~/plugins/apolloClient.ts',
     '~/plugins/web3/web3.ts',
@@ -64,14 +39,14 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: config[runEnv].BASE_GRAPHQL_SERVER,
+        httpEndpoint: process.env.BASE_GRAPHQL_SERVER_URL,
       },
     },
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: config[runEnv].BASE_URL,
+    baseURL: process.env.BASE_URL,
     withCredentials: true,
     debug: false,
   },
@@ -150,11 +125,8 @@ export default {
   },
 
   env: {
-    runEnv,
-    baseURL: config[runEnv].BASE_URL,
-    etherscanApiKey: config[runEnv].ETHERSCAN_API_KEY,
     amChartLicense: process.env.AMCHARTS_LICENSE,
   },
 
-  server: { port: 3000, host: config[runEnv].SERVER_HOST },
+  server: { port: 3000, host: process.env.SERVER_HOST },
 }

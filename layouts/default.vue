@@ -1,15 +1,25 @@
 <template>
   <v-app>
-    <v-app-bar app elevation="0">
-      <v-btn v-if="$vuetify.breakpoint.mdAndDown" class="mr-1 mt-1" icon><v-icon>mdi-menu</v-icon></v-btn>
+    <v-app-bar app elevation="0" outlined height="60">
+      <v-avatar size="38"> <v-img :src="imageUrl" :lazy-src="imageUrl" /> </v-avatar>
+      <nuxt-link to="/" class="text-decoration-none mr-10" style="color: inherit">
+        <v-toolbar-title class="ml-2" v-text="title" />
+      </nuxt-link>
 
-      <!--      Change it to separate component-->
-      <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">{{ title }}</v-toolbar-title>
+      <client-only>
+        <v-btn
+          v-for="(link, i) in links"
+          :key="i"
+          tile
+          class="text-capitalize font-weight-regular"
+          text
+          :to="link.to"
+          v-text="link.name"
+        />
+      </client-only>
+
       <v-spacer />
-
-      <!--  Network Menu    -->
       <gas-info />
-      <network-selection />
       <wallet-connector />
     </v-app-bar>
     <v-main>
@@ -17,63 +27,41 @@
         <nuxt />
       </v-container>
     </v-main>
-
-    <main-navigation-menu />
-    <!--    <notification ref="notificationComponent" />-->
     <wallet-select-dialog />
   </v-app>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
 import Notification from '../components/common/Notification.vue'
-import NetworkSelection from '~/components/common/NetworkSelection.vue'
 import GasInfo from '~/components/common/GasInfo.vue'
 import WalletConnector from '~/components/common/WalletConnector.vue'
 import useInitTheme from '~/composables/useInitTheme'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
-import MainNavigationMenu from '~/components/common/ui/menu/MainNavigationMenu.vue'
-// import useConfig from '~/composables/useConfig'
+import { State } from '~/types/state'
 export default defineComponent({
   components: {
     WalletSelectDialog,
     WalletConnector,
     GasInfo,
-    NetworkSelection,
-    // Notification,
-    MainNavigationMenu,
   },
   setup() {
     // STATE
     const notificationComponent = ref<Notification>()
+    const links = ref([
+      { name: 'Aave Markets', to: '/markets/aave' },
+      { name: 'Balances', to: '/portfolio/balances' },
+      { name: 'Transactions', to: '/portfolio/transactions' },
+    ])
 
     // COMPOSABLE
-    const route = useRoute()
-    const context = useContext()
-    useInitTheme(context)
+    const { state } = useStore<State>()
+    useInitTheme()
 
     // COMPUTED
-    const title = computed(() => {
-      const pageTitle: Record<string, string> = {
-        index: 'Dashboard',
-        terminal: 'Terminal',
-        protocols: 'Protocols',
-        'portfolio-balances': 'Balances',
-        'portfolio-transactions': 'Transactions',
-        heatmap: 'Heatmap',
-        'trading-101': 'Trading 101',
-        team: 'Our Team',
-        'wallet-id': 'Portfolio',
-        'app-id-aave': 'Aave v2',
-        'app-id-curve': 'Curve',
-      }
+    const imageUrl = computed(() => `/img/logo/evmx-${state.ui.theme}.svg`)
 
-      if (route.value.name) {
-        return pageTitle[route.value.name]
-      } else return ''
-    })
-
-    return { title, notificationComponent }
+    return { title: state.configs.title, links, notificationComponent, imageUrl }
   },
 })
 </script>

@@ -1,39 +1,38 @@
 import type { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { Context } from '@nuxt/types'
 import { Chain } from '~/types/apollo/main/types'
-import { GlobalStatsQueryGQL } from '~/apollo/main/config.query.graphql'
+import { AaveMarketsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
 
 export const state = () =>
   ({
+    title: 'EVMX',
     globalStats: null,
     gasStats: null,
-    currentChain: {
+    chains: [],
+    currentAaveMarket: {
+      chainId: 1,
       name: 'Ethereum',
       geckoId: 'ethereum',
-      rpcUrl: '',
-      chainId: 1,
-      label: 'Ethereum Mainnet',
-      logoUrl: 'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
       symbol: 'ETH',
+      label: 'Ethereum Mainnet',
+      logoUrl: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/eth.png',
       isTestNet: false,
-      asda: 'sadsa',
+      rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
       blockExplorerUrl: 'https://etherscan.io/',
+      __typename: 'Chain',
     },
-    chains: [],
+    aaveMarketsSupportedChains: [1, 137],
     protocols: [],
   } as ConfigState)
 
 export const mutations: MutationTree<ConfigState> = {
-  SET_CONFIG: (state, { globalStats, chains, protocols, gasStats }) => {
+  SET_CONFIG: (state, { chains }) => {
     state.chains = chains
-    state.globalStats = globalStats
-    state.gasStats = gasStats
-    state.protocols = protocols
   },
 
   SET_CHAIN: (state, chain: Chain) => {
-    state.currentChain = chain
+    state.currentAaveMarket = chain
   },
 }
 
@@ -41,17 +40,20 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
   async initConfigs({ commit }, context: Context): Promise<void> {
     try {
       const client = context.app.apolloProvider?.defaultClient
-      const query = await client?.query({ query: GlobalStatsQueryGQL, fetchPolicy: 'no-cache' })
+      const query = await client?.query({ query: AaveMarketsGQL, fetchPolicy: 'no-cache' })
       if (query && query.data) {
         commit('SET_CONFIG', query.data)
       }
     } catch {}
   },
 
-  changeChain({ commit }, chain: Chain) {
+  changeAaveMarket({ commit }, chain: Chain) {
     commit('SET_CHAIN', chain)
   },
 }
 export const getters: GetterTree<ConfigState, ConfigState> = {
-  chainInfo: (state: any) => (chainId: number) => state.chains.find((elem: Chain) => elem.chainId === chainId) || null,
-}
+  chainInfo: (state: ConfigState) => (chainId: number) =>
+    state.chains.find((elem: Chain) => elem.chainId === chainId) || null,
+  aaveMarkets: (state: ConfigState) =>
+    state.chains.filter((elem) => state.aaveMarketsSupportedChains.includes(elem.chainId)),
+} as any

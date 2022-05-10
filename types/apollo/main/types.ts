@@ -227,25 +227,33 @@ export type CurveRewards = {
   rewardPtc: Scalars['Float'];
 };
 
-export type EthGasStats = {
-  __typename?: 'EthGasStats';
-  fastGasPrice: Scalars['String'];
+export type EthGasStatsResult = {
+  __typename?: 'EthGasStatsResult';
+  fastGasPrice: Scalars['Float'];
   gasUsedRatio: Scalars['String'];
-  lastBlock: Scalars['String'];
-  proposeGasPrice: Scalars['String'];
-  safeGasPrice: Scalars['String'];
-  suggestBaseFee: Scalars['String'];
+  lastBlock: Scalars['Int'];
+  proposeGasPrice: Scalars['Float'];
+  safeGasPrice: Scalars['Float'];
+  suggestBaseFee: Scalars['Float'];
+};
+
+export type GasStats = {
+  __typename?: 'GasStats';
+  blockExplorer: Scalars['String'];
+  gas: EthGasStatsResult;
+  name: Scalars['String'];
+  symbol: Scalars['String'];
 };
 
 export type GlobalStats = {
   __typename?: 'GlobalStats';
-  defiDominance: Scalars['String'];
-  defiMarketCap: Scalars['String'];
-  defiToEthRatio: Scalars['String'];
-  ethMarketCap: Scalars['String'];
+  defiDominance: Scalars['Float'];
+  defiMarketCap: Scalars['Float'];
+  defiToEthRatio: Scalars['Float'];
+  ethMarketCap: Scalars['Float'];
   topCoinDefiDominance: Scalars['Float'];
   topCoinName: Scalars['String'];
-  tradingVolume24h: Scalars['String'];
+  tradingVolume24h: Scalars['Float'];
 };
 
 /**
@@ -402,7 +410,7 @@ export type Query = {
   /** Eth ABI  */
   ethABI: Scalars['String'];
   /** Gas Stats for ETH */
-  gasStats: EthGasStats;
+  gas: Array<GasStats>;
   /** Global Staths for Coin Gaico */
   globalStats: GlobalStats;
   protocol: Protocol;
@@ -571,10 +579,20 @@ export type User = {
   name: Scalars['String'];
 };
 
-export type GlobalStatsQueryGqlQueryVariables = Exact<{ [key: string]: never; }>;
+export type AaveMarketsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalStatsQueryGqlQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: string, ethMarketCap: string, defiToEthRatio: string, tradingVolume24h: string, defiDominance: string, topCoinName: string, topCoinDefiDominance: number }, chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl: string }>, gasStats: { __typename?: 'EthGasStats', lastBlock: string, safeGasPrice: string, proposeGasPrice: string, fastGasPrice: string, suggestBaseFee: string, gasUsedRatio: string }, protocols: Array<{ __typename?: 'Protocol', name: string, symbol: string, id: string } | null> };
+export type AaveMarketsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl: string }> };
+
+export type GasGqlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GasGqlQuery = { __typename?: 'Query', gas: Array<{ __typename?: 'GasStats', symbol: string, blockExplorer: string, name: string, gas: { __typename?: 'EthGasStatsResult', lastBlock: number, safeGasPrice: number, proposeGasPrice: number, fastGasPrice: number, suggestBaseFee: number } }> };
+
+export type DeFiStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeFiStatsQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: number, ethMarketCap: number, defiToEthRatio: number, tradingVolume24h: number, defiDominance: number, topCoinName: string, topCoinDefiDominance: number } };
 
 export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
