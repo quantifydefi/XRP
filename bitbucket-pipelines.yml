@@ -100,14 +100,14 @@ pipelines:
             - pip3 install awscli
             - IMAGE="488443597418.dkr.ecr.us-west-2.amazonaws.com/evmx-ui:dev"
 
-            - export SERVER_HOST="0.0.0.0"
-            - export BASE_GRAPHQL_SERVER_URL="https://staging-graph.evmx.io/query"
-            - export AMCHARTS_LICENSE="CH187387301"
+            - SERVER_HOST="0.0.0.0"
+            - BASE_GRAPHQL_SERVER_URL="https://staging-graph.evmx.io/query"
+            - AMCHARTS_LICENSE="CH187387301"
 
             - aws configure set aws_access_key_id "${AWS_KEY}"
             - aws configure set aws_secret_access_key "${AWS_SECRET}"
             - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
-            - docker build -t $IMAGE .
+            - docker build -t  $IMAGE --build-arg SERVER_HOST="${SERVER_HOST}" BASE_GRAPHQL_SERVER_URL="${BASE_GRAPHQL_SERVER_URL}" AMCHARTS_LICENSE="${AMCHARTS_LICENSE}" .
             - docker push $IMAGE
 
 #      - step:
