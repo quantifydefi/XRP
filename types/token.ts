@@ -88,3 +88,22 @@ export interface HighLowDataInterface {
   high: number
   low: number
 }
+
+
+export interface ITokenList {
+  address: string
+  chainId: number
+  name: string
+  symbol: string
+  decimals: number
+  logoURI: string
+}
+
+export interface TokenSelectInterface {
+  chainId: number
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  logoURI: string
+}

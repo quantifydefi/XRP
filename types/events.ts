@@ -2,6 +2,7 @@ export enum EmitEvents {
   toggleNavigationMenu = 'toggle-navigation-menu',
   initAction = 'init-action',
   onValueChanged = 'on-value-changed',
+  onTokenSelectChange = 'on-token-select-change',
   onResultClosed = 'on-result-closed',
   transactionSuccess = 'transaction-success',
 }

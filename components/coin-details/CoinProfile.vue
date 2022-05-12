@@ -255,10 +255,10 @@
 
       <v-row justify="center" no-gutters align="center" class="mt-1">
         <v-col class="ma-2">
-          <v-card elevation="0" :max-height="200" class="pa-0 ma-0">
+          <v-card elevation="0" :max-height="220" class="pa-0 ma-0">
             <h2 class="subtitle-1 font-weight-medium grey--text">About {{ tokenData.symbol_name }}</h2>
             <pre
-              style="font-family: 'Roboto'; white-space: pre-line; max-height: 180px"
+              style="font-family: 'Roboto'; white-space: pre-line; max-height: 210px"
               class="overflow-y-auto subtitle-2 font-weight-regular"
             >
               {{ tokenData.coin_description }}
