@@ -2,7 +2,9 @@
 declare module '*/config.query.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
-  export const GlobalStatsQueryGQL: DocumentNode;
+  export const AaveMarketsGQL: DocumentNode;
+export const GasGQL: DocumentNode;
+export const DeFiStats: DocumentNode;
 export const RecentPricesGQL: DocumentNode;
 export const ChainlinkEthUsdPriceGQL: DocumentNode;
 

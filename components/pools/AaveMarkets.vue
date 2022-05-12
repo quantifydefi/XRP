@@ -11,6 +11,7 @@
         :sort-by="['usdBalance']"
         :sort-desc="[true]"
         :items-per-page="100"
+        :search="searchString"
         class="elevation-0"
         :expanded.sync="expanded"
         :single-expand="false"
@@ -140,16 +141,16 @@
         <template #[`item.action`]="{ item }">
           <v-btn
             v-for="action in aaveActions"
-            :key="action.value"
+            :key="action"
             :disabled="!walletReady"
             text
             outlined
             color="pink"
             class="pa-1 ma-1"
             height="26"
-            @click="initAction(item.id, action.value)"
+            @click="initAction(item.id, action)"
           >
-            <span class="text-caption">{{ action.text }}</span>
+            <span class="text-caption">{{ action }}</span>
           </v-btn>
         </template>
       </v-data-table>
@@ -169,12 +170,14 @@ import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 type Props = {
   pools: AavePoolCl[]
   loading: boolean
+  search: string | null
 }
 export default defineComponent<Props>({
   components: { AaveMarketDetails },
   props: {
     pools: { type: Array as PropType<UnwrapRef<AavePoolCl[]>>, default: () => [], required: true },
     loading: { type: Boolean, default: true },
+    search: { type: String as PropType<string | null>, default: null, required: false },
   },
   setup(props, { emit }) {
     // COMPOSABLE
@@ -183,6 +186,8 @@ export default defineComponent<Props>({
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
+
+    // STATE
     const expanded = ref([])
     const cols = [
       {
@@ -274,6 +279,7 @@ export default defineComponent<Props>({
     ]
     const aavePools = toRefs(props).pools
     const poolsLoading = toRefs(props).loading
+    const searchString = toRefs(props).search
 
     // METHODS
     function initAction(poolAddress: string, action: actionTypes) {
@@ -296,7 +302,7 @@ export default defineComponent<Props>({
     }
 
     function navigateToExplorer(address: string) {
-      const url = `https://etherscan.io/address/${address}`
+      const url = `${state.configs.currentAaveMarket.blockExplorerUrl}address/${address}`
       window.open(url)
     }
 
@@ -309,6 +315,7 @@ export default defineComponent<Props>({
       poolsLoading,
       aaveActions,
       walletReady,
+      searchString,
 
       //  METHODS
       navigateToExplorer,

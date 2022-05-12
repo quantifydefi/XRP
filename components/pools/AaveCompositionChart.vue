@@ -95,6 +95,9 @@ export default defineComponent<Props>({
       pieSeries.hiddenState.properties.endAngle = -90
       pieSeries.hiddenState.properties.startAngle = -90
       pieSeries.slices.template.propertyFields.fill = 'color'
+
+      chart.paddingTop = 0
+      chart.paddingBottom = 0
     }
     watch(theme, () => {
       renderChart()

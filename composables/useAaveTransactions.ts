@@ -6,8 +6,37 @@ import wethGatewayAbi from '~/constracts/abi/aave/wethGatewayAbi.json'
 import erc20Abi from '~/constracts/abi/erc20Abi.json'
 import lendingPoolAbi from '~/constracts/abi/aave/lendingPoolAbi.json'
 
-const AAVE_LENDING_POOL_ADDRESS = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9'
-const AAVE_WETH_GATEWAY_ADDRESS = '0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04'
+interface MarketConfig {
+  name: string
+  AAVE_LENDING_POOL_ADDRESS: string
+  AAVE_WETH_GATEWAY_ADDRESS: string
+}
+const configs: { [key: number]: MarketConfig } = {
+  1: {
+    name: 'ETH mainnet',
+    AAVE_LENDING_POOL_ADDRESS: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9',
+    AAVE_WETH_GATEWAY_ADDRESS: '0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04',
+  },
+
+  137: {
+    name: 'Polygon (Matic) ',
+    AAVE_LENDING_POOL_ADDRESS: '0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf',
+    AAVE_WETH_GATEWAY_ADDRESS: '0xbEadf48d62aCC944a06EEaE0A9054A90E5A7dc97',
+  },
+
+  // 1337: {
+  //   name: 'Polygon (Matic) ',
+  //   AAVE_LENDING_POOL_ADDRESS: '0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf',
+  //   AAVE_WETH_GATEWAY_ADDRESS: '0xbEadf48d62aCC944a06EEaE0A9054A90E5A7dc97',
+  // },
+
+  1337: {
+    name: 'ETH mainnet',
+    AAVE_LENDING_POOL_ADDRESS: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9',
+    AAVE_WETH_GATEWAY_ADDRESS: '0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04',
+  },
+}
+
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 const ETH_GAS_LIMIT_WEI = 1000000
 const ETH_GAS_PRICE_GWEI = 105
@@ -20,7 +49,7 @@ interface Transaction {
 
 export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInTokens: Ref<number>) {
   // COMPUTED
-  const { signer, provider, account } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { signer, provider, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
   // STATE
   const txData = reactive<Transaction>({
@@ -30,6 +59,14 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
   })
 
   // COMPUTED
+  const AAVE_LENDING_POOL_ADDRESS = computed(() =>
+    chainId.value && chainId.value in configs ? configs[chainId.value].AAVE_LENDING_POOL_ADDRESS : ''
+  )
+
+  const AAVE_WETH_GATEWAY_ADDRESS = computed(() =>
+    chainId.value && chainId.value in configs ? configs[chainId.value].AAVE_WETH_GATEWAY_ADDRESS : ''
+  )
+
   const txLoading = computed(() => txData.loading)
   const receipt = computed(() => txData.receipt)
   const isTxMined = computed(() => !!(txData.receipt && txData.receipt.transactionHash && txData.receipt.blockNumber))
@@ -53,12 +90,12 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
   }
 
   const isSpendingApproved = async () =>
-    pool.value.symbol === 'ETH' ? true : (await allowedSpending()) > amountInTokens.value
+    ['ETH'].includes(pool.value.symbol) ? true : (await allowedSpending()) > amountInTokens.value
 
   async function approveMaxSpendingWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
       const erc20 = new ethers.Contract(pool.value.underlyingAsset, erc20Abi, signer.value)
-      const approveERC20 = await erc20.populateTransaction.approve(AAVE_LENDING_POOL_ADDRESS, MAX_UINT256)
+      const approveERC20 = await erc20.populateTransaction.approve(AAVE_LENDING_POOL_ADDRESS.value, MAX_UINT256)
       const txGasLimit = await provider.value.estimateGas(approveERC20)
       const txGasPrice = await provider.value.getGasPrice()
       approveERC20.gasLimit = txGasLimit
@@ -70,12 +107,13 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
       return { isCompleted: false, receipt: error }
     }
   }
+
   async function depositETHWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
-      const wethGatewayContract = new ethers.Contract(AAVE_WETH_GATEWAY_ADDRESS, wethGatewayAbi, signer.value)
+      const wethGatewayContract = new ethers.Contract(AAVE_WETH_GATEWAY_ADDRESS.value, wethGatewayAbi, signer.value)
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
       const depositCall = await wethGatewayContract.populateTransaction.depositETH(
-        AAVE_LENDING_POOL_ADDRESS,
+        AAVE_LENDING_POOL_ADDRESS.value,
         account.value,
         0
       )
@@ -92,7 +130,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
 
   async function depositWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
-      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, signer.value)
+      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS.value, lendingPoolAbi, signer.value)
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
 
       const depositCall = await lendingPoolContract.populateTransaction.deposit(
@@ -113,7 +151,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
 
   async function borrowWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
-      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, signer.value)
+      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS.value, lendingPoolAbi, signer.value)
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
       const borrowCall = await lendingPoolContract.populateTransaction.borrow(
         pool.value.underlyingAsset,
@@ -136,7 +174,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
 
   async function withdrawWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
-      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, signer.value)
+      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS.value, lendingPoolAbi, signer.value)
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
       const withdrawCall = await lendingPoolContract.populateTransaction.withdraw(
         pool.value.underlyingAsset,
@@ -157,7 +195,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
 
   async function repayWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
-      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS, lendingPoolAbi, signer.value)
+      const lendingPoolContract = new ethers.Contract(AAVE_LENDING_POOL_ADDRESS.value, lendingPoolAbi, signer.value)
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
       const repayCall = await lendingPoolContract.populateTransaction.repay(
         pool.value.underlyingAsset,
@@ -190,7 +228,9 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
     }
 
     let result: { isCompleted: boolean; receipt: any }
-    pool.value.symbol === 'ETH' ? (result = await depositETHWeb3Call()) : (result = await depositWeb3Call())
+    ;['ETH', 'MATIC'].includes(pool.value.symbol)
+      ? (result = await depositETHWeb3Call())
+      : (result = await depositWeb3Call())
     txData.isCompleted = result.isCompleted
     txData.receipt = result.receipt
     txData.loading = false

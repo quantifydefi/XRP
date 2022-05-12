@@ -1,6 +1,8 @@
-import { Context } from '@nuxt/types'
+import { useContext } from '@nuxtjs/composition-api'
 import { ThemeOptions } from '~/types/state'
-export default async function useInitTheme(context: Context | any) {
+
+export default async function useInitTheme() {
+  const context = useContext()
   const theme: ThemeOptions | undefined = context.$cookies.get('theme')
 
   if (theme && theme === 'light') {

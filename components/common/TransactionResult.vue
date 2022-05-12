@@ -46,7 +46,9 @@ export default defineComponent<Props>({
     const { state } = useStore<State>()
     const showLogs = ref(false)
 
-    const txHash = computed(() => `${state.configs.currentChain.blockExplorerUrl}tx/${props.receipt.transactionHash}`)
+    const txHash = computed(
+      () => `${state.configs.currentAaveMarket.blockExplorerUrl}tx/${props.receipt.transactionHash}`
+    )
     const txData = computed(() => {
       let data: { message: string; icon: string; color: string }
       props.isTxMined

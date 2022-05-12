@@ -84,7 +84,7 @@ type BalanceItem {
 }
 
 type Chain {
-  blockExplorerUrl: String
+  blockExplorerUrl: String!
   chainId: Int!
   geckoId: String!
   isTestNet: Boolean!
@@ -209,13 +209,20 @@ type CurveRewards {
   rewardPtc: Float!
 }
 
-type EthGasStats {
-  fastGasPrice: String!
+type EthGasStatsResult {
+  fastGasPrice: Float!
   gasUsedRatio: String!
-  lastBlock: String!
-  proposeGasPrice: String!
-  safeGasPrice: String!
-  suggestBaseFee: String!
+  lastBlock: Int!
+  proposeGasPrice: Float!
+  safeGasPrice: Float!
+  suggestBaseFee: Float!
+}
+
+type GasStats {
+  blockExplorer: String!
+  gas: EthGasStatsResult!
+  name: String!
+  symbol: String!
 }
 
 type GlobalStats {
@@ -363,7 +370,7 @@ type Query {
   "Eth ABI "
   ethABI(address: String!): String!
   "Gas Stats for ETH"
-  gasStats: EthGasStats!
+  gas: [GasStats!]!
   "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
   protocol(protocolId: String!): Protocol!

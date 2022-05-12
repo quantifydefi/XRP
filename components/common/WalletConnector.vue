@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <client-only>
     <v-menu
       v-if="walletReady"
       :close-on-content-click="false"
@@ -38,11 +38,11 @@
       </v-card>
     </v-menu>
     <v-btn v-else tile depressed @click="dispatch('ui/walletDialogStatus', true)">Connect to Wallet</v-btn>
-  </div>
+  </client-only>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useStore, inject } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useStore, inject, useContext } from '@nuxtjs/composition-api'
 import { create } from 'blockies-ts'
 import { State } from '~/types/state'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
@@ -52,6 +52,7 @@ export default defineComponent({
     // COMPOSABLE
     const { state, dispatch } = useStore<State>()
     const { disconnectWallet, account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
+    const { $copyAddressToClipboard } = useContext()
 
     // COMPUTED
     const ui = computed(() => state.ui)
@@ -70,11 +71,7 @@ export default defineComponent({
       ]
     })
 
-    function copyAccountAddress() {
-      try {
-        navigator.clipboard.writeText(account.value)
-      } catch {}
-    }
+    const copyAccountAddress = async () => await $copyAddressToClipboard(account.value)
 
     function navigateToExplorer() {
       try {

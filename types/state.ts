@@ -1,16 +1,13 @@
-import { Chain, EthGasStats } from './apollo/main/types'
+import { Chain, GasStats } from './apollo/main/types'
 
 export type ThemeOptions = 'dark' | 'light'
 
-export interface MainState {
-  version: string
-  $localForage: any
-}
 export interface ConfigState {
-  globalStats: Chain | null
-  gasStats: EthGasStats | null
-  currentChain: Chain
+  title: string
+  gasStats: GasStats[] | null
+  currentAaveMarket: Chain
   chains: Chain[]
+  aaveMarketsSupportedChains: number[]
   protocols: { name: string; symbol: string; id: string }[]
 }
 

@@ -17,12 +17,14 @@ export default defineComponent({
     // STATE
     const chartHeight = ref(600)
     const chartDiv = ref(null)
-    let chart: any = null
+    const chart: any = ref(null)
 
-    // COMPUTED
+    // COMPOSABLES
     const { result } = useQuery(RecentPricesGQL)
     const recentPrices = useResult(result, {}, (data) => data.recentPrices)
     const { env } = useContext()
+
+    // COMPUTED
     const dataFormatted = computed(() => {
       const supportedTokens: string[] = [
         'BTC',
@@ -94,10 +96,10 @@ export default defineComponent({
 
     function renderChart() {
       am4core.addLicense(env.amChartLicense)
-      chart = am4core.create(chartDiv.value, forceDirected.ForceDirectedTree)
+      chart.value = am4core.create(chartDiv.value, forceDirected.ForceDirectedTree)
 
       // Create series
-      const series = chart.series.push(new forceDirected.ForceDirectedSeries())
+      const series = chart.value.series.push(new forceDirected.ForceDirectedSeries())
 
       // Set data
       series.data = dataFormatted.value
@@ -160,7 +162,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      chart.dispose()
+      chart.value.dispose()
     })
 
     return { chartHeight, chartDiv }

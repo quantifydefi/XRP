@@ -1,0 +1,41 @@
+{
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "inferenceAccelerators": [],
+  "containerDefinitions": [
+    {
+      "image": "$IMAGE_NAME",
+      "name": "$CONTAINER_NAME",
+      "portMappings": [
+        {
+          "containerPort": "3000",
+          "protocol": "tcp"
+        }
+      ],
+      "environmentFiles": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/evmx-ui",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "repositoryCredentials": {
+        "credentialsParameter": ""
+      }
+    }
+  ],
+  "volumes": [],
+  "networkMode": "awsvpc",
+  "memory": "1024",
+  "cpu": "512",
+  "executionRoleArn": "arn:aws:iam::488443597418:role/ecsTaskExecutionRole",
+  "family": "$CONTAINER_FAMILY",
+  "taskRoleArn": "arn:aws:iam::488443597418:role/ecsTaskExecutionRole",
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX"
+  },
+  "tags": []
+}

@@ -1,5 +1,6 @@
 import { Component, Emit, Ref, Vue, Watch } from 'vue-property-decorator'
 import { BigNumber, ethers, Signer } from 'ethers'
+import { ref } from '@nuxtjs/composition-api'
 import lendingPoolAbi from '../constracts/abi/aave/lendingPoolAbi.json'
 import wethGatewayAbi from '../constracts/abi/aave/wethGatewayAbi.json'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
@@ -7,15 +8,9 @@ import erc20Abi from '../constracts/abi/erc20Abi.json'
 import { AavePoolCl, CurveCoinCl, CurvePoolCl } from '~/models/pool'
 import { Helper } from '~/models/helper'
 
-export type actionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
 declare const window: any
-
-export const aaveActions: { text: string; value: actionTypes }[] = [
-  { text: 'Deposit', value: 'deposit' },
-  { text: 'Borrow', value: 'borrow' },
-  { text: 'Repay', value: 'repay' },
-  { text: 'Withdraw', value: 'withdraw' },
-]
+export type actionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
+export const aaveActions = ref<Array<actionTypes>>(['deposit', 'borrow', 'repay', 'withdraw'])
 
 export const curveActions: { text: string; value: actionTypes }[] = [
   { text: 'Add Liquidity', value: 'deposit' },

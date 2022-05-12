@@ -37,6 +37,7 @@ const copyAddressToClipboard = async (value: string): Promise<void> => {
 declare module '@nuxt/types' {
   interface Context {
     $f(val: number, params: Params): string
+    $copyAddressToClipboard(value: string): Promise<void>
   }
 }
 declare module 'vue/types/vue' {
@@ -48,6 +49,8 @@ declare module 'vue/types/vue' {
 
 export default defineNuxtPlugin((context: Context) => {
   context.$f = valueFormatter
+  context.$copyAddressToClipboard = copyAddressToClipboard
+
   Vue.prototype.$f = valueFormatter
   Vue.prototype.$copyAddressToClipboard = copyAddressToClipboard
 })

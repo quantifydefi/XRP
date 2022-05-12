@@ -52,10 +52,9 @@ export default function (addresses: ComputedRef<{ [id: string]: AaveAddress }>) 
       const variableBorrowTokenAddress = addresses.value[key].variableDebtTokenAddress
       const decimals = addresses.value[key].decimals
 
-      const request =
-        addresses.value[key].symbol === 'ETH'
-          ? getEthBalance(key, account.value, provider.value)
-          : getERC20Balance(key, tokenAddress, decimals, account.value, signer.value)
+      const request = ['ETH', 'MATIC'].includes(addresses.value[key].symbol)
+        ? getEthBalance(key, account.value, provider.value)
+        : getERC20Balance(key, tokenAddress, decimals, account.value, signer.value)
       nativeMultCalls.push(request)
       depositMultCalls.push(getERC20Balance(key, aTokenAddress, decimals, account.value, signer.value))
       variableBorrowMultCalls.push(
