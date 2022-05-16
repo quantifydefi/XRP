@@ -1,187 +1,192 @@
 <template>
   <div id="uniswap-dialog">
     <v-btn tile @click="toggleDialog(true)">Uniswap Action Dialog</v-btn>
-    <v-dialog v-model="dialog" max-width="580" class="rounded-0">
-      <v-row class="overflow-hidden" no-gutters justify="center">
-        <v-col cols="12">
-          <v-card tile outlined width="100%">
-            <v-card-title class="justify-center pa-2 text-no-wrap">
-              <v-col cols="4">
-                <v-spacer />
-                <v-btn-toggle tile>
-                  <v-btn small>AAVE</v-btn>
-                  <v-btn small>WETH</v-btn>
-                </v-btn-toggle>
-              </v-col>
-              <v-col cols="4" class="text-center">Add Liquidity</v-col>
-              <v-col cols="4" class="text-right">
-                <v-btn icon><v-icon>mdi-cog</v-icon></v-btn>
-                <v-btn icon @click="toggleDialog(false)"><v-icon>mdi-close</v-icon></v-btn>
-              </v-col>
-            </v-card-title>
-            <v-divider />
-            <v-row no-gutters class="pa-6" justify="center">
-              <v-col cols="12" class="px-1">
-                <v-row justify="center">
-                  <v-col cols="12" class="px-2 py-0 d-flex" :class="ui[theme].subTextColor">
-                    <div>Deposit Pair</div>
-                    <v-spacer />
-                    <v-btn x-small text color="primary" class="text-capitalize">Clear All</v-btn>
-                  </v-col>
-                  <v-col cols="12" lg="6">
-                    <v-row>
-                      <v-col cols="12" class="pa-2">
-                        <v-row no-gutters>
-                          <span class="caption">Available Balance:</span> <v-spacer /><span class="caption">0 ETH</span>
-                        </v-row>
-                        <token-input-select
-                          :token-list="list"
-                          :token-selected="input.selectedTokenA"
-                          @on-value-changed="onInputChange($event, 1)"
-                          @on-token-select-change="onTokenSelectChange($event, 1)"
-                        ></token-input-select>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="12" lg="6">
-                    <v-row class="py-0">
-                      <v-col cols="12" class="pa-2">
-                        <v-row no-gutters>
-                          <span class="caption">Available Balance:</span> <v-spacer /><span class="caption">0 ETH</span>
-                        </v-row>
-
-                        <token-input-select
-                          :token-list="list"
-                          :token-selected="input.selectedTokenB"
-                          @on-value-changed="onInputChange($event, 2)"
-                          @on-token-select-change="onTokenSelectChange($event, 2)"
-                        ></token-input-select>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" class="px-2 py-1" :class="ui[theme].subTextColor"> Fee Tier </v-col>
-                  <v-col v-for="item in feeTier" :key="item.title" cols="6" lg="3" class="px-2 py-0">
-                    <v-sheet outlined :color="item.title === selectedFee.title ? 'primary' : ''">
-                      <v-card
-                        outlined
-                        tile
-                        height="100"
-                        :color="$vuetify.theme.dark ? '#121212' : ''"
-                        @click="selectedFee = item"
-                      >
-                        <div class="pa-2">
-                          <v-row class="subtitle-2">
-                            <v-col> {{ item.title }}</v-col>
-                            <v-col v-if="item.title === selectedFee.title" class="text-right">
-                              <v-icon
-                                size="20"
-                                class="mt-n10 mr-n3"
-                                :color="item.title === selectedFee.title ? 'primary' : ''"
-                              >
-                                mdi-check-circle
-                              </v-icon>
-                            </v-col>
+    <client-only>
+      <v-dialog v-model="dialog" max-width="580" class="rounded-0">
+        <v-row class="overflow-hidden" no-gutters justify="center">
+          <v-col cols="12">
+            <v-card tile outlined width="100%">
+              <v-card-title class="justify-center pa-2 text-no-wrap">
+                <v-col cols="4">
+                  <v-spacer />
+                  <v-btn-toggle tile>
+                    <v-btn small>AAVE</v-btn>
+                    <v-btn small>WETH</v-btn>
+                  </v-btn-toggle>
+                </v-col>
+                <v-col cols="4" class="text-center">Add Liquidity</v-col>
+                <v-col cols="4" class="text-right">
+                  <v-btn icon><v-icon>mdi-cog</v-icon></v-btn>
+                  <v-btn icon @click="toggleDialog(false)"><v-icon>mdi-close</v-icon></v-btn>
+                </v-col>
+              </v-card-title>
+              <v-divider />
+              <v-row no-gutters class="pa-6" justify="center">
+                <v-col cols="12" class="px-1">
+                  <v-row justify="center">
+                    <v-col cols="12" class="px-2 py-0 d-flex" :class="ui[theme].subTextColor">
+                      <div>Deposit Pair</div>
+                      <v-spacer />
+                      <v-btn x-small text color="primary" class="text-capitalize">Clear All</v-btn>
+                    </v-col>
+                    <v-col cols="12" lg="6">
+                      <v-row>
+                        <v-col cols="12" class="pa-2">
+                          <v-row no-gutters>
+                            <span class="caption">Available Balance:</span> <v-spacer /><span class="caption"
+                              >0 ETH</span
+                            >
                           </v-row>
-                          <div class="caption grey--text" style="line-height: normal">
-                            {{ item.description }}
+                          <token-input-select
+                            :token-list="list"
+                            :token-selected="input.selectedTokenA"
+                            @on-value-changed="onInputChange($event, 1)"
+                            @on-token-select-change="onTokenSelectChange($event, 1)"
+                          ></token-input-select>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col cols="12" lg="6">
+                      <v-row class="py-0">
+                        <v-col cols="12" class="pa-2">
+                          <v-row no-gutters>
+                            <span class="caption">Available Balance:</span> <v-spacer /><span class="caption"
+                              >0 ETH</span
+                            >
+                          </v-row>
+
+                          <token-input-select
+                            :token-list="list"
+                            :token-selected="input.selectedTokenB"
+                            @on-value-changed="onInputChange($event, 2)"
+                            @on-token-select-change="onTokenSelectChange($event, 2)"
+                          ></token-input-select>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+
+                    <v-col cols="12" class="px-2 py-1" :class="ui[theme].subTextColor"> Fee Tier </v-col>
+                    <v-col v-for="item in feeTier" :key="item.title" cols="6" lg="3" class="px-2 py-0">
+                      <v-sheet outlined :color="item.title === selectedFee.title ? 'primary' : ''">
+                        <v-card
+                          outlined
+                          tile
+                          height="100"
+                          :color="$vuetify.theme.dark ? '#121212' : ''"
+                          @click="selectedFee = item"
+                        >
+                          <div class="pa-2">
+                            <v-row class="subtitle-2">
+                              <v-col> {{ item.title }}</v-col>
+                              <v-col v-if="item.title === selectedFee.title" class="text-right">
+                                <v-icon
+                                  size="20"
+                                  class="mt-n10 mr-n3"
+                                  :color="item.title === selectedFee.title ? 'primary' : ''"
+                                >
+                                  mdi-check-circle
+                                </v-icon>
+                              </v-col>
+                            </v-row>
+                            <div class="caption grey--text" style="line-height: normal">
+                              {{ item.description }}
+                            </div>
+                            <v-chip
+                              x-small
+                              :color="item.title === selectedFee.title ? 'primary' : ''"
+                              class="rounded-0 font-weight-medium"
+                            >
+                              {{ item.selectedPercentage * 100 }}% select
+                            </v-chip>
                           </div>
-                          <v-chip
-                            x-small
-                            :color="item.title === selectedFee.title ? 'primary' : ''"
-                            class="rounded-0 font-weight-medium"
-                          >
-                            {{ item.selectedPercentage * 100 }}% select
-                          </v-chip>
-                        </div>
-                      </v-card>
-                    </v-sheet>
-                  </v-col>
+                        </v-card>
+                      </v-sheet>
+                    </v-col>
 
-                  <v-col cols="12" class="pa-2" :class="ui[theme].subTextColor"> Price Range </v-col>
-                  <v-col cols="12" class="px-2 py-0">
-                    <v-card outlined tile height="180"></v-card>
-                  </v-col>
+                    <v-col cols="12" class="pa-2" :class="ui[theme].subTextColor"> Price Range </v-col>
+                    <v-col cols="12" class="px-2 py-0">
+                      <v-card outlined tile height="180"></v-card>
+                    </v-col>
 
-                  <v-col cols="6" lg="5">
-                    <v-sheet outlined tile>
-                      <v-card
-                        class="text-center pa-3"
-                        outlined
-                        elevation="0"
-                        tile
-                        :color="$vuetify.theme.dark ? '#121212' : ''"
-                      >
-                        <div class="subtitle-2 grey--text">Max Price</div>
-                        <div>
-                          <v-btn elevation="1" fab x-small @click="minusMaxPrice">
-                            <v-icon>mdi-minus</v-icon>
-                          </v-btn>
-                          <span class="px-3"> {{ range.max.toFixed(2) }}</span>
+                    <v-col cols="6" lg="5">
+                      <v-sheet outlined tile>
+                        <v-card
+                          class="text-center pa-3"
+                          outlined
+                          elevation="0"
+                          tile
+                          :color="$vuetify.theme.dark ? '#121212' : ''"
+                        >
+                          <div class="subtitle-2 grey--text">Max Price</div>
+                          <div>
+                            <v-btn elevation="1" fab x-small @click="minusMaxPrice">
+                              <v-icon>mdi-minus</v-icon>
+                            </v-btn>
+                            <span class="px-3"> {{ range.max.toFixed(2) }}</span>
 
-                          <v-btn elevation="1" fab x-small @click="addMaxPrice">
-                            <v-icon>mdi-plus</v-icon>
-                          </v-btn>
-                        </div>
-                        <div class="caption">
-                          {{ input.selectedTokenA.symbol }} per {{ input.selectedTokenB.symbol }}
-                        </div>
-                      </v-card>
-                    </v-sheet>
-                  </v-col>
-                  <v-col cols="6" lg="5">
-                    <v-sheet outlined tile>
-                      <v-card
-                        class="text-center pa-3"
-                        outlined
-                        elevation="0"
-                        tile
-                        :color="$vuetify.theme.dark ? '#121212' : ''"
-                      >
-                        <div class="subtitle-2 grey--text">Min Price</div>
-                        <div>
-                          <v-btn elevation="1" fab x-small @click="minusMinPrice">
-                            <v-icon>mdi-minus</v-icon>
-                          </v-btn>
-                          <span class="px-3"> {{ range.min.toFixed(2) }}</span>
+                            <v-btn elevation="1" fab x-small @click="addMaxPrice">
+                              <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                          </div>
+                          <div class="caption">
+                            {{ input.selectedTokenA.symbol }} per {{ input.selectedTokenB.symbol }}
+                          </div>
+                        </v-card>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="6" lg="5">
+                      <v-sheet outlined tile>
+                        <v-card
+                          class="text-center pa-3"
+                          outlined
+                          elevation="0"
+                          tile
+                          :color="$vuetify.theme.dark ? '#121212' : ''"
+                        >
+                          <div class="subtitle-2 grey--text">Min Price</div>
+                          <div>
+                            <v-btn elevation="1" fab x-small @click="minusMinPrice">
+                              <v-icon>mdi-minus</v-icon>
+                            </v-btn>
+                            <span class="px-3"> {{ range.min.toFixed(2) }}</span>
 
-                          <v-btn elevation="1" fab x-small @click="addMinPrice">
-                            <v-icon>mdi-plus</v-icon>
-                          </v-btn>
-                        </div>
-                        <div class="caption">
-                          {{ input.selectedTokenA.symbol }} per {{ input.selectedTokenB.symbol }}
-                        </div>
-                      </v-card>
-                    </v-sheet>
-                  </v-col>
+                            <v-btn elevation="1" fab x-small @click="addMinPrice">
+                              <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                          </div>
+                          <div class="caption">
+                            {{ input.selectedTokenA.symbol }} per {{ input.selectedTokenB.symbol }}
+                          </div>
+                        </v-card>
+                      </v-sheet>
+                    </v-col>
 
-                  <v-col cols="12" class="pb-1">
-                    <v-sheet outlined tile>
-                      <v-btn
-                        :color="$vuetify.theme.dark ? '#121212' : ''"
-                        elevation="0"
-                        block
-                        small
-                        class="text-capitalize font-weight-medium"
-                        @click="fullRange"
-                      >
-                        Full Range
-                      </v-btn>
-                    </v-sheet>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-btn class="text-capitalize" tile block large color="primary">Create Position</v-btn>
-                  </v-col>
-                </v-row>
+                    <v-col cols="12" class="pb-1">
+                      <v-sheet outlined tile>
+                        <v-btn
+                          :color="$vuetify.theme.dark ? '#121212' : ''"
+                          elevation="0"
+                          block
+                          small
+                          class="text-capitalize font-weight-medium"
+                          @click="fullRange"
+                        >
+                          Full Range
+                        </v-btn>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-btn class="text-capitalize" tile block large color="primary">Create Position</v-btn>
+                    </v-col>
+                  </v-row>
 
-                <!-- <v-row>
+                  <!-- <v-row>
                   <v-col v-for="i in 4" :key="i">
                     <v-card outlined tile height="100"></v-card>
                   </v-col>
                 </v-row> -->
-              </v-col>
-              <!-- <v-col cols="12" lg="5" class="pa-1">
+                </v-col>
+                <!-- <v-col cols="12" lg="5" class="pa-1">
                 <v-row class="ml-3">
                   <v-col cols="12" class="py-0 subtitle-2" :class="ui[theme].subTextColor">Fee Tier</v-col>
                   <v-col>
@@ -189,11 +194,12 @@
                   </v-col>
                 </v-row>
               </v-col> -->
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-dialog>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-dialog>
+    </client-only>
   </div>
 </template>
 
@@ -211,7 +217,7 @@ export default defineComponent({
     const ui = computed<UiState>(() => state.ui)
     const theme = computed<ThemeOptions>(() => state.ui.theme)
 
-    const dialog = ref(true)
+    const dialog = ref(false)
     const list = ref<TokenSelectInterface[]>(tokenList)
     const feeTier = ref(feeTiers)
 

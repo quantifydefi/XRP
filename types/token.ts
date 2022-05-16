@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import { aaveTokenProfile } from '~/mock/data'
 
 export interface TokenInterface {
   pool_id: string
@@ -51,37 +50,6 @@ export interface SearchPoolInterface {
   token1_symbol: string
 }
 
-export interface CoinProfileDataInterface {
-  qc_key: string
-  symbol_name: string
-  rank?: number
-  coin_description?: string
-
-  website_url?: string[]
-  explorer_urls?: string[]
-  github_repos?: string[]
-  bitbucket_repos?: string[]
-  twitter_url?: string
-  facebook_url?: string
-  subreddit_url?: string
-  discord_channel_id?: string
-  telegram_channel_id?: string
-}
-
-export interface MetricsDataInterface {
-  qc_key: string
-  symbol_name?: string
-  price_usd: number
-  price_btc: number
-  marketcap: number
-  volume24h?: number
-  circulating_supply?: number
-  safe_score: string
-  price24h: number
-  support1h: number
-  resistance1h: number
-}
-
 export interface HighLowDataInterface {
   unix_time: number
   interval: string
@@ -89,14 +57,14 @@ export interface HighLowDataInterface {
   low: number
 }
 
-
-export interface ITokenList {
+export interface TokenListInterface {
+  name: string
+  decimals: number
+  symbol: string
   address: string
   chainId: number
-  name: string
-  symbol: string
-  decimals: number
-  logoURI: string
+  logoURI?: string
+  tags?: string[]
 }
 
 export interface TokenSelectInterface {

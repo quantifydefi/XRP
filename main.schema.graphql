@@ -226,13 +226,13 @@ type GasStats {
 }
 
 type GlobalStats {
-  defiDominance: String!
-  defiMarketCap: String!
-  defiToEthRatio: String!
-  ethMarketCap: String!
+  defiDominance: Float!
+  defiMarketCap: Float!
+  defiToEthRatio: Float!
+  ethMarketCap: Float!
   topCoinDefiDominance: Float!
   topCoinName: String!
-  tradingVolume24h: String!
+  tradingVolume24h: Float!
 }
 
 """
@@ -357,6 +357,40 @@ type Protocol {
   usdTvl: Map!
 }
 
+type QCCoin {
+  ID: ID
+  qcMetrics: QCMetrics!
+  qcProfile: QCProfile!
+}
+
+type QCMetrics {
+  circulatingSupply: Float!
+  marketcap: Float!
+  price24h: Float!
+  priceBTC: Float!
+  priceUsd: Float!
+  resistance1h: Float!
+  safeScore: Float!
+  support1h: Float!
+  volume24h: Float!
+}
+
+type QCProfile {
+  bitbucketRepos: JSONMap!
+  coinDescription: String!
+  discordChannelId: String!
+  explorerUrls: JSONMap!
+  facebookUrl: String!
+  githubRepos: JSONMap!
+  qcKey: String
+  rank: Int!
+  subredditUrl: String!
+  symbolName: String
+  telegramChannelId: String!
+  twitterUrl: String!
+  websiteUrl: JSONMap!
+}
+
 type Query {
   "Aave Pool "
   aavePools(chainId: Int!): [AavePool!]!
@@ -376,6 +410,7 @@ type Query {
   protocol(protocolId: String!): Protocol!
   "Supported Protocols"
   protocols: [Protocol]!
+  qcCoin(qcKey: String!): QCCoin!
   "Recent Usd Prices "
   recentPrices: Map!
   """
@@ -384,7 +419,6 @@ type Query {
   is present), only return the spot prices for these tokens.
   """
   spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
-  supportedTokens: [Token!]
   todos: [Todo!]!
   "Single Transaction from Covalent"
   transactionLogEvents(chainId: Int! = 0, txHash: String!): [LogEvent!]!
@@ -486,6 +520,8 @@ type User {
   id: ID!
   name: String!
 }
+
+scalar JSONMap
 
 scalar Map
 

@@ -111,16 +111,15 @@
 import { defineComponent, useStore, ref, computed, watch, PropType, toRef, toRefs } from '@nuxtjs/composition-api'
 import { ethers } from 'ethers'
 import { EmitEvents } from '~/types/events'
-import { TokenSelectInterface } from '~/types/token'
+import { TokenSelectInterface, TokenListInterface } from '~/types/token'
 import { State, ThemeOptions, UiState } from '~/types/state'
-import { TokenList } from '~/models/uniswap'
 
 export default defineComponent({
   name: 'TokenInputSelect',
   props: {
     tokenList: {
-      type: Array as PropType<TokenList[]>,
-      default: () => [] as TokenList[],
+      type: Array as PropType<TokenListInterface[]>,
+      default: () => [] as TokenListInterface[],
     },
     tokenSelected: {
       type: Object as PropType<TokenSelectInterface>,

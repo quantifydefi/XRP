@@ -16,11 +16,11 @@
           :to="link.to"
           v-text="link.name"
         />
-      </client-only>
 
-      <v-spacer />
-      <gas-info />
-      <wallet-connector />
+        <v-spacer />
+        <gas-info />
+        <wallet-connector />
+      </client-only>
     </v-app-bar>
     <v-main>
       <v-container fluid>

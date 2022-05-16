@@ -1,8 +1,7 @@
 <template>
-  <div style="height: 100%">
-    <v-card :min-height="height" tile outlined elevation="0" class="pa-4">
-      <!--   SKELETON LOADER   -->
-      <v-row v-if="isLoading" no-gutters align="center">
+  <v-card tile outlined :min-height="height" elevation="0" class="pa-4">
+    <template v-if="loading">
+      <v-row no-gutters align="center">
         <v-col cols="12">
           <v-skeleton-loader type="table-heading,text"></v-skeleton-loader>
         </v-col>
@@ -19,14 +18,15 @@
           </v-row>
         </v-col>
       </v-row>
+    </template>
 
-      <!--   COMPONENT   -->
-      <v-row v-else>
+    <template v-else>
+      <v-row>
         <v-col cols="12" lg="2">
           <v-row no-gutters align="center">
             <v-col cols="12">
               <h2 class="text-h4 font-weight-medium ml-1 text-no-wrap" :style="{ color: priceUsdStyle.color }">
-                {{ currencyFormatter(localCoin.price_usd, 'USD', 'en') }}
+                {{ currencyFormatter(localCoin.priceUsd, 'USD', 'en') }}
                 <span>
                   <v-btn dark depressed tile height="22" class="px-2 subtitle-2" :color="ptcChangeStyle"
                     >{{ ptcFormatter(localCoin.price24h) }}
@@ -38,7 +38,7 @@
             <v-col cols="12">
               <div class="font-weight-medium subtitle-1 ml-2 text-no-wrap">
                 <span :style="localCoin.qc_key !== 'BTC' ? { color: priceUsdStyle.color } : {}">
-                  {{ btcPriceFormatter(localCoin.price_btc, 'USD', 'en') }}
+                  {{ btcPriceFormatter(localCoin.priceBTC, 'USD', 'en') }}
                 </span>
                 <span class="font-weight-regular ml-1">BTC</span>
               </div>
@@ -118,7 +118,7 @@
         </v-col>
 
         <v-col cols="12" class="py-0">
-          <v-row no-gutters>
+          <v-row class="pa-4">
             <v-col cols="6" md="4" lg="2" class="pa-1">
               <v-row no-gutters>
                 <v-col :class="[ui[theme].subTextColor, 'text-subtitle-2']">Market Cap</v-col>
@@ -147,7 +147,7 @@
               </v-row>
               <v-row no-gutters>
                 <v-col class="text-h6 text-truncate">
-                  {{ currencyFormatter(localCoin.circulating_supply / 1000000, 'USD', 'en') + ' M' }}
+                  {{ currencyFormatter(localCoin.circulatingSupply / 1000000, 'USD', 'en') + ' M' }}
                 </v-col>
               </v-row>
             </v-col>
@@ -179,23 +179,24 @@
                 <v-col :class="[ui[theme].subTextColor, 'text-subtitle-2']">Safety Score</v-col>
               </v-row>
               <v-row no-gutters>
-                <v-col class="text-h6">{{ localCoin.safe_score || '-' }}</v-col>
+                <v-col class="text-h6">{{ localCoin.safeScore || '-' }}</v-col>
               </v-row>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-    </v-card>
-  </div>
+    </template>
+  </v-card>
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
 import { defineComponent, useStore, PropType, watch, reactive, computed, toRef, ref } from '@nuxtjs/composition-api'
-import { HighLowDataInterface, MetricsDataInterface } from '~/types/token'
+import { HighLowDataInterface } from '~/types/token'
 import { State, ThemeOptions, UiState } from '~/types/state'
 
 import { useHelpers } from '~/composables/useHelpers'
+import { QcMetrics } from '~/types/apollo/main/types'
 
 export default defineComponent({
   name: 'CoinMetrics',
@@ -204,13 +205,14 @@ export default defineComponent({
       type: Number,
       default: 197,
     },
+    loading: { type: Boolean, default: true },
     highLowData: {
       type: Object as PropType<HighLowDataInterface>,
       required: true,
       default: null,
     },
     coinMetricsData: {
-      type: Object as PropType<MetricsDataInterface>,
+      type: Object as PropType<QcMetrics>,
       required: true,
       default: () => ({}),
     },
@@ -222,15 +224,10 @@ export default defineComponent({
 
     /** STATE **/
     const priceUsdStyle = reactive({ arrow: '', color: '' })
-    const localCoin = toRef(props, 'coinMetricsData')
     const highLow = toRef(props, 'highLowData')
     const intervalTypeOptions = ['5min', '15min', '30min', '1h', '2h', '4h', '24h', '1week']
     const toggleOrderType = ref(false)
     const intervalType = ref('24h')
-
-    const isLoading = computed<boolean>(() => {
-      return Object.values(props.coinMetricsData).length === 0
-    })
 
     /** COMPUTED **/
     const ui = computed<UiState>(() => store.state.ui)
@@ -239,8 +236,10 @@ export default defineComponent({
       return Math.sign(localCoin.value.price24h) === 1 ? 'green' : 'red'
     })
     const highLowPtcScore = computed(() => {
-      return ((localCoin.value.price_usd - highLow.value.low) / (highLow.value.high - highLow.value.low)) * 100
+      return ((localCoin.value.priceUsd - highLow.value.low) / (highLow.value.high - highLow.value.low)) * 100
     })
+
+    const localCoin = computed<QcMetrics>(() => props.coinMetricsData)
 
     // color style for percentage progress bar based on high and low percentage score
     const highLowPtcColorStyle = computed<string>(() => {
@@ -261,7 +260,7 @@ export default defineComponent({
 
     /** WATCH **/
     watch(
-      () => localCoin.value.price_usd,
+      () => localCoin.value.priceUsd,
       (newPrice, prevPrice) => {
         if (newPrice > prevPrice) {
           priceUsdStyle.color = '#4caf50'
@@ -279,7 +278,6 @@ export default defineComponent({
     }
 
     return {
-      isLoading,
       ui,
       theme,
       localCoin,
@@ -292,7 +290,7 @@ export default defineComponent({
       intervalType,
       toggleOrderType,
 
-      // METHODS
+      /** METHODS **/
       onIntervalTypeSelectChange,
       currencyFormatter,
       btcPriceFormatter,

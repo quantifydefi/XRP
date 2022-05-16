@@ -1,0 +1,30 @@
+query QCCoinGQL($qcKey: String!) {
+  qcCoin(qcKey: $qcKey) {
+    qcProfile {
+      rank
+      symbolName
+      qcKey
+      coinDescription
+      websiteUrl
+      explorerUrls
+      githubRepos
+      bitbucketRepos
+      twitterUrl
+      facebookUrl
+      subredditUrl
+      discordChannelId
+      telegramChannelId
+    }
+    qcMetrics{
+      priceUsd
+      priceBTC
+      marketcap
+      volume24h
+      price24h
+      circulatingSupply
+      safeScore
+      support1h
+      resistance1h
+    }
+  }
+}

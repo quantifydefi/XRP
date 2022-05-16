@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { ChartDataInterface, SearchPoolInterface, TokenInterface } from '~/types/token'
+import { QcCoin, QcMetrics, QcProfile } from '~/types/apollo/main/types'
 
 export class Token implements TokenInterface {
   readonly base_asset!: string
@@ -80,4 +81,9 @@ export class TokenPoolSearch implements SearchPoolInterface {
   token1_id!: string
   token1_name!: string
   token1_symbol!: string
+}
+
+export class QCCoinCl implements QcCoin {
+  qcProfile!: QcProfile
+  qcMetrics!: QcMetrics
 }
