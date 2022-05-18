@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="11">
+    <v-col cols="10">
       <protocol-header
         :name="header.name"
         :symbol="header.symbol"

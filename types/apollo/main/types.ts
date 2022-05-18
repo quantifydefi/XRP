@@ -61,21 +61,6 @@ export type AavePoolPrice = {
   priceUsd: Scalars['Float'];
 };
 
-/**
- * Covalent Get Balances for address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
- */
-export type Balance = {
-  __typename?: 'Balance';
-  address: Scalars['String'];
-  chainId: Scalars['Float'];
-  items: Array<BalanceItem>;
-  nextUpdateAt: Scalars['String'];
-  pagination?: Maybe<Pagination>;
-  quoteCurrency: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
 export type BalanceItem = {
   __typename?: 'BalanceItem';
   balance: Scalars['String'];
@@ -93,6 +78,21 @@ export type BalanceItem = {
   quoteRate24h: Scalars['Float'];
   supportsErc?: Maybe<Array<Scalars['String']>>;
   type: Scalars['String'];
+};
+
+/**
+ * Covalent Get Balances for address
+ * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+ */
+export type Balances = {
+  __typename?: 'Balances';
+  address: Scalars['String'];
+  chainId: Scalars['Float'];
+  items: Array<BalanceItem>;
+  nextUpdateAt: Scalars['String'];
+  pagination?: Maybe<Pagination>;
+  quoteCurrency: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type Chain = {
@@ -401,7 +401,7 @@ export type Query = {
   /** Aave Pool  */
   aavePools: Array<AavePool>;
   /** Covalent Balances */
-  balances: Array<Balance>;
+  balances: Array<Balances>;
   chainLinkAddresses: Scalars['Map'];
   chainLinkPrice: Scalars['Map'];
   chains: Array<Chain>;
@@ -627,7 +627,7 @@ export type BalancesGqlQueryVariables = Exact<{
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balances', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }> }> };
 
 export type ProtocolGqlQueryVariables = Exact<{
   protocolId: Scalars['String'];

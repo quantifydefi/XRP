@@ -22,6 +22,7 @@ export const state = () =>
       blockExplorerUrl: 'https://etherscan.io/',
       __typename: 'Chain',
     },
+    balancesChains: [1, 56, 137, 250],
     aaveMarketsSupportedChains: [1, 137],
     protocols: [],
   } as ConfigState)

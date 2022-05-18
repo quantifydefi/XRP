@@ -4,7 +4,7 @@
       v-if="walletReady"
       :close-on-content-click="false"
       :nudge-width="250"
-      nudge-bottom="10"
+      nudge-bottom="8"
       offset-y
       max-width="230"
     >

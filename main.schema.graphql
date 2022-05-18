@@ -50,21 +50,6 @@ type AavePoolPrice {
   priceUsd: Float!
 }
 
-"""
-
-Covalent Get Balances for address
-https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
-"""
-type Balance {
-  address: String!
-  chainId: Float!
-  items: [BalanceItem!]!
-  nextUpdateAt: String!
-  pagination: Pagination
-  quoteCurrency: String!
-  updatedAt: String!
-}
-
 type BalanceItem {
   balance: String!
   balance24h: String!
@@ -81,6 +66,21 @@ type BalanceItem {
   quoteRate24h: Float!
   supportsErc: [String!]
   type: String!
+}
+
+"""
+
+Covalent Get Balances for address
+https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+"""
+type Balances {
+  address: String!
+  chainId: Float!
+  items: [BalanceItem!]!
+  nextUpdateAt: String!
+  pagination: Pagination
+  quoteCurrency: String!
+  updatedAt: String!
 }
 
 type Chain {
@@ -226,13 +226,13 @@ type GasStats {
 }
 
 type GlobalStats {
-  defiDominance: String!
-  defiMarketCap: String!
-  defiToEthRatio: String!
-  ethMarketCap: String!
+  defiDominance: Float!
+  defiMarketCap: Float!
+  defiToEthRatio: Float!
+  ethMarketCap: Float!
   topCoinDefiDominance: Float!
   topCoinName: String!
-  tradingVolume24h: String!
+  tradingVolume24h: Float!
 }
 
 """
@@ -361,7 +361,7 @@ type Query {
   "Aave Pool "
   aavePools(chainId: Int!): [AavePool!]!
   "Covalent Balances"
-  balances(address: String!, chainIds: [Int!]!): [Balance!]!
+  balances(address: String!, chainIds: [Int!]!): [Balances!]!
   chainLinkAddresses: Map!
   chainLinkPrice(chainId: Int! = 1, pairs: [String!]! = []): Map!
   chains: [Chain!]!

@@ -34,6 +34,12 @@ const copyAddressToClipboard = async (value: string): Promise<void> => {
   } catch (e) {}
 }
 
+const setAltImageUrl = (event: any) =>
+  (event.target.src = `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`)
+
+const imageUrlBySymbol = (symbol: string) =>
+  `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
+
 declare module '@nuxt/types' {
   interface Context {
     $f(val: number, params: Params): string
@@ -44,6 +50,8 @@ declare module 'vue/types/vue' {
   interface Vue {
     $f(val: number, params: Params): string
     $copyAddressToClipboard(value: string): Promise<void>
+    $setAltImageUrl(event: any): string
+    $imageUrlBySymbol(symbol: string): string
   }
 }
 
@@ -53,4 +61,6 @@ export default defineNuxtPlugin((context: Context) => {
 
   Vue.prototype.$f = valueFormatter
   Vue.prototype.$copyAddressToClipboard = copyAddressToClipboard
+  Vue.prototype.$setAltImageUrl = setAltImageUrl
+  Vue.prototype.$imageUrlBySymbol = imageUrlBySymbol
 })
