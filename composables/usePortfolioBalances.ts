@@ -12,9 +12,10 @@ export default function () {
   // COMPOSABLES
   const { state } = useStore<State>()
   const { account } = inject(WEB3_PLUGIN_KEY) as Web3
+  // '0xF705b9ba1908cA505537F309B08E6949C1b8f31F'
   const { result, error, onResult } = useQuery(
     BalancesGQL,
-    () => ({ chainIds: state.configs.balancesChains, address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F' }),
+    () => ({ chainIds: state.configs.balancesChains, address: account.value }),
     { fetchPolicy: 'no-cache', pollInterval: 30000 }
   )
   const balanceData = useResult(result, []) as Ref<Balances[]>
