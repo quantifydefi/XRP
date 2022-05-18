@@ -4,7 +4,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
 import { plainToClass } from 'class-transformer'
 import { BalancesGQL } from '~/apollo/main/portfolio.query.graphql'
-import { Balance, BalanceItem, Chain } from '~/types/apollo/main/types'
+import { Balances, BalanceItem, Chain } from '~/types/apollo/main/types'
 
 export class ChainItem implements Chain {
   chainId!: number
@@ -40,7 +40,7 @@ export class Portfolio extends Vue {
   }
 }
 
-export class PortfolioBalance implements Balance {
+export class PortfolioBalance implements Balances {
   address!: string
   chainId!: number
   items!: Array<BalanceItem>
