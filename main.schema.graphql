@@ -154,6 +154,13 @@ type CoingeckoInfo {
   symbol: String!
 }
 
+type Currency {
+  code: String!
+  slug: String!
+  title: String!
+  url: String!
+}
+
 type CurveAddresses {
   deposit: String!
   gauge: String!
@@ -233,6 +240,13 @@ type GlobalStats {
   topCoinDefiDominance: Float!
   topCoinName: String!
   tradingVolume24h: Float!
+}
+
+type HighAndLow {
+  high: Float!
+  interval: String!
+  low: Float!
+  unixTime: Int!
 }
 
 """
@@ -327,6 +341,19 @@ type Mutation {
   createTodo(input: NewTodo!): Todo!
 }
 
+"""
+
+Returns news by coin symbol
+https://cryptopanic.com/api/v1/posts/?auth_token=API_KEY&currencies=COIN_SYMBOL
+"""
+type News {
+  currencies: [Currency!]
+  id: Int!
+  publishedAt: String!
+  title: String!
+  url: String!
+}
+
 type PageMetaData {
   description: String!
   title: String!
@@ -359,6 +386,7 @@ type Protocol {
 
 type QCCoin {
   ID: ID
+  price: QCPrice!
   qcMetrics: QCMetrics!
   qcProfile: QCProfile!
 }
@@ -367,12 +395,18 @@ type QCMetrics {
   circulatingSupply: Float!
   marketcap: Float!
   price24h: Float!
-  priceBTC: Float!
-  priceUsd: Float!
   resistance1h: Float!
   safeScore: Float!
   support1h: Float!
   volume24h: Float!
+}
+
+type QCPrice {
+  dataSource: String!
+  priceBtc: Float!
+  priceUsd: Float!
+  qcKey: String!
+  symbolName: String!
 }
 
 type QCProfile {
@@ -382,10 +416,10 @@ type QCProfile {
   explorerUrls: JSONMap!
   facebookUrl: String!
   githubRepos: JSONMap!
-  qcKey: String
+  qcKey: String!
   rank: Int!
   subredditUrl: String!
-  symbolName: String
+  symbolName: String!
   telegramChannelId: String!
   twitterUrl: String!
   websiteUrl: JSONMap!
@@ -407,6 +441,9 @@ type Query {
   gas: [GasStats!]!
   "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
+  highAndLow(intervalType: String!, qcKey: String!): HighAndLow!
+  "Crypto Panic News"
+  news(qcKey: String!): [News!]
   protocol(protocolId: String!): Protocol!
   "Supported Protocols"
   protocols: [Protocol]!

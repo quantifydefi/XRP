@@ -59,22 +59,17 @@
             <v-tooltip top color="grey darken-4">
               <template #activator="{ on, attrs }">
                 <div v-bind="attrs" class="text-no-wrap" v-on="on">
-                  {{ new Date(item.published_at).toLocaleTimeString() }}
+                  {{ new Date(item.publishedAt).toLocaleTimeString() }}
                 </div>
               </template>
-              <span>{{ new Date(item.published_at).toLocaleString() }}</span>
+              <span>{{ new Date(item.publishedAt).toLocaleString() }}</span>
             </v-tooltip>
           </template>
           <template #[`item.title`]="{ item }">
             <v-tooltip top color="grey darken-4">
               <template #activator="{ on, attrs }">
                 <div v-bind="attrs" class="text-clamp-1" v-on="on">
-                  <a
-                    :href="item.url"
-                    target="_blank"
-                    style="text-decoration: none; color: inherit"
-                    :class="['token-link', ui[theme].headerTextclass]"
-                  >
+                  <a :href="item.url" target="_blank" style="text-decoration: none; color: inherit" class="token-link">
                     {{ item.title }}
                   </a>
                 </div>
@@ -91,8 +86,8 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { defineComponent, useStore, PropType, toRef } from '@nuxtjs/composition-api'
-import { CryptoPanicArticleInterface } from '@/types/news'
 import { State } from '~/types/state'
+import { News } from '~/types/apollo/main/types'
 
 export default defineComponent({
   name: 'TokenNews',
@@ -108,9 +103,9 @@ export default defineComponent({
       default: '',
     },
     coinArticles: {
-      type: Array as PropType<CryptoPanicArticleInterface[]>,
+      type: Array as PropType<News[]>,
       required: true,
-      default: [] as CryptoPanicArticleInterface[],
+      default: [] as News[],
     },
   },
   setup(props) {

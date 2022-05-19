@@ -11,9 +11,11 @@
             <v-col cols="12">
               <coin-metrics
                 :coin-metrics-data="qcCoinData.qcMetrics"
+                :coin-price-data="coinPrice"
                 :loading="loading"
-                :high-low-data="highAndLowData"
+                :high-low-data="highAndLow"
                 :height="200"
+                @change-interval-type-selection="onChangeIntervalSelection"
               ></coin-metrics>
             </v-col>
             <v-col cols="12" lg="6">
@@ -41,9 +43,9 @@
         <v-col cols="12" lg="4">
           <token-news
             :height="505"
-            :loading="loading"
+            :loading="loadingNews"
             :token-symbol="$route.params.id.toUpperCase()"
-            :coin-articles="articles"
+            :coin-articles="news"
           ></token-news>
         </v-col>
       </v-row>
@@ -53,31 +55,51 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
+import { useQuery } from '@vue/apollo-composable/dist'
+import { useResult } from '@vue/apollo-composable'
 import CoinProfile from '~/components/coin-details/CoinProfile.vue'
-import { CryptoPanicArticleInterface } from '@/types/news'
 
 import TokenNews from '~/components/news/TokenNews.vue'
 import useQCCoinDetails from '~/composables/useQCCoinDetails'
 
-import { aavehighAndLowData, aaveNews } from '~/mock/data'
-
 import CoinMetrics from '~/components/coin-details/CoinMetrics.vue'
+import { TimeInterval } from '~/types/token'
+import { NewsGQL } from '~/apollo/main/news.query.graphql'
+import { News } from '~/types/apollo/main/types'
 
 export default defineComponent({
   name: 'Index',
   components: { CoinProfile, CoinMetrics, TokenNews },
   setup() {
+    /** STATE **/
+    const loadingNews = ref(true)
+
     /** COMPOSABLES **/
-    const { qcCoinData, loading } = useQCCoinDetails()
+    const route = useRoute()
+    const { qcCoinData, selectedInterval, coinPrice, highAndLow, loading } = useQCCoinDetails()
 
-    // Todo: Fetch News from backend
-    const articles: CryptoPanicArticleInterface[] = aaveNews as CryptoPanicArticleInterface[]
+    const newsQuery = useQuery(NewsGQL, () => ({ qcKey: route.value.params.id }), {
+      fetchPolicy: 'no-cache',
+      prefetch: false,
+    })
 
-    // Todo: Add High and Low and Poll every 10 seconds from backend
-    const highAndLowData = aavehighAndLowData
+    const newsResult = useResult(newsQuery.result, [])
 
-    return { loading, qcCoinData, highAndLowData, articles }
+    /** COMPUTED **/
+    const news = computed(() => newsResult.value as News[])
+
+    /** METHODS **/
+    function onChangeIntervalSelection(intervalType: string) {
+      selectedInterval.value = intervalType as TimeInterval
+    }
+
+    /** EVENTS **/
+    newsQuery.onResult((queryResult) => {
+      loadingNews.value = queryResult.loading
+    })
+
+    return { loading, loadingNews, qcCoinData, coinPrice, highAndLow, news, onChangeIntervalSelection }
   },
 })
 </script>

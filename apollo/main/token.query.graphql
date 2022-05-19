@@ -16,8 +16,6 @@ query QCCoinGQL($qcKey: String!) {
       telegramChannelId
     }
     qcMetrics{
-      priceUsd
-      priceBTC
       marketcap
       volume24h
       price24h
@@ -26,5 +24,26 @@ query QCCoinGQL($qcKey: String!) {
       support1h
       resistance1h
     }
+  }
+}
+
+query PriceGQL($qcKey: String!){
+  qcCoin(qcKey: $qcKey){
+    price {
+      priceUsd
+      priceBtc
+      dataSource
+      symbolName
+      qcKey
+    }
+  }
+}
+
+query HighAndLowGQL($qcKey: String!, $intervalType: String!){
+  highAndLow(qcKey: $qcKey, intervalType: $intervalType){
+    high
+    low
+    interval
+    unixTime
   }
 }

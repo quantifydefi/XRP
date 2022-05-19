@@ -50,13 +50,6 @@ export interface SearchPoolInterface {
   token1_symbol: string
 }
 
-export interface HighLowDataInterface {
-  unix_time: number
-  interval: string
-  high: number
-  low: number
-}
-
 export interface TokenListInterface {
   name: string
   decimals: number
@@ -75,3 +68,5 @@ export interface TokenSelectInterface {
   decimals: number
   logoURI: string
 }
+
+export type TimeInterval = '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '24h' | '1week'
