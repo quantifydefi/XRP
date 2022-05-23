@@ -19,7 +19,7 @@
       </client-only>
 
       <v-spacer />
-      <gas-info />
+      <client-only> <gas-info /></client-only>
       <wallet-connector />
     </v-app-bar>
     <v-main>

@@ -1,5 +1,4 @@
 import { useQuery } from '@vue/apollo-composable/dist'
-import { useResult } from '@vue/apollo-composable'
 import { computed, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { plainToClass } from 'class-transformer'
 import { AavePoolGQL } from '~/apollo/main/pools.query.graphql'
@@ -132,10 +131,9 @@ export default function () {
     }),
     { fetchPolicy: 'no-cache', pollInterval: 10000 }
   )
-  const query = useResult(result, [])
 
   // COMPUTED
-  const aavePoolsData = computed(() => plainToClass(AavePoolCl, query.value as AavePool[]))
+  const aavePoolsData = computed(() => plainToClass(AavePoolCl, result.value?.aavePools as AavePool[]) ?? [])
   const marketId = computed(() => state.configs.currentAaveMarket.chainId)
 
   // EVENTS

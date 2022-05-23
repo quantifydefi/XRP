@@ -61,14 +61,13 @@
 <script lang="ts">
 import { computed, defineComponent, Ref } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
-import { useResult } from '@vue/apollo-composable'
 import { GasGQL } from '~/apollo/main/config.query.graphql'
 import { GasStats } from '~/types/apollo/main/types'
 export default defineComponent({
   setup() {
     // COMPOSABLE
     const { result } = useQuery(GasGQL, null, { fetchPolicy: 'no-cache', pollInterval: 10000 })
-    const gasData = useResult(result, []) as Ref<GasStats[]>
+    const gasData = computed(() => result.value?.gas ?? []) as Ref<GasStats[]>
     const ethMainNetInfo = computed(() => gasData.value.find((elem) => elem.symbol === 'ETH'))
 
     return {

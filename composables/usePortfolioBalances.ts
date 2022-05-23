@@ -1,5 +1,4 @@
 import { useQuery } from '@vue/apollo-composable/dist'
-import { useResult } from '@vue/apollo-composable'
 import { computed, inject, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { BalancesGQL } from '~/apollo/main/portfolio.query.graphql'
 import { BalanceItem, Balance } from '~/types/apollo/main/types'
@@ -17,9 +16,9 @@ export default function () {
     () => ({ chainIds: state.configs.balancesChains, address: account.value }),
     { fetchPolicy: 'no-cache', pollInterval: 60000 }
   )
-  const balanceData = useResult(result, []) as Ref<Balance[]>
 
   // COMPUtED
+  const balanceData = computed(() => result.value?.balances ?? []) as Ref<Balance[]>
   const totalBalance = computed(() =>
     balanceData.value
       .map((elem: Balance) => elem.items.reduce((n: number, el: BalanceItem) => n + el.quote, 0))
