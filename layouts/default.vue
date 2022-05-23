@@ -16,11 +16,11 @@
           :to="link.to"
           v-text="link.name"
         />
-
-        <v-spacer />
-        <gas-info />
-        <wallet-connector />
       </client-only>
+
+      <v-spacer />
+      <client-only> <gas-info /></client-only>
+      <wallet-connector />
     </v-app-bar>
     <v-main>
       <v-container fluid>
@@ -50,7 +50,7 @@ export default defineComponent({
     const notificationComponent = ref<Notification>()
     const links = ref([
       { name: 'Aave Markets', to: '/markets/aave' },
-      { name: 'Balances', to: '/portfolio/balances' },
+      { name: 'Balances', to: '/portfolio-balances' },
       { name: 'Transactions', to: '/portfolio/transactions' },
     ])
 

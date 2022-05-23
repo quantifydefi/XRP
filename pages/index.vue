@@ -26,7 +26,9 @@
     </v-row>
 
     <v-row>
-      <v-col><recent-prices-chart /></v-col>
+      <v-col>
+        <recent-prices-chart />
+      </v-col>
     </v-row>
 
     <v-row justify="center">

@@ -25,6 +25,7 @@ type AavePool {
   id: String!
   liquidityRate: Float!
   name: String!
+  portfolioVal: AavePortfolio!
   price: AavePoolPrice!
   reserveLiquidationBonus: Float!
   reserveLiquidationThreshold: Float!
@@ -50,12 +51,21 @@ type AavePoolPrice {
   priceUsd: Float!
 }
 
+type AavePortfolio {
+  stableBorrow: Float!
+  symbol: String!
+  totalDeposits: Float!
+  variableBorrow: Float!
+  walletBal: Float!
+}
+
 """
 
 Covalent Get Balances for address
 https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
 """
 type Balance {
+  aavePools: [AavePool!]!
   address: String!
   chainId: Float!
   items: [BalanceItem!]!

@@ -1,7 +1,7 @@
 <template>
   <v-tooltip right color="black" max-width="400">
     <template #activator="{ on, attrs }">
-      <v-btn icon color="grey" class="pa-0 mb-0" x-small v-bind="attrs" v-on="on">
+      <v-btn icon color="grey" :class="tooltipIconClass" x-small v-bind="attrs" v-on="on">
         <v-icon :size="iconSize">{{ tooltipIcon }}</v-icon>
       </v-btn>
     </template>
@@ -20,6 +20,7 @@ type Props = {
   text: string
   size: number
   icon: string
+  iconClass: string
 }
 export default defineComponent<Props>({
   props: {
@@ -27,6 +28,7 @@ export default defineComponent<Props>({
     text: { type: String, default: '', required: false },
     header: { type: String as PropType<string | null>, default: null, required: false },
     icon: { type: String, default: 'mdi-information-outline', required: false },
+    iconClass: { type: String, default: 'pa-0 mb-0', required: false },
   },
   setup(props) {
     return {
@@ -34,6 +36,7 @@ export default defineComponent<Props>({
       tooltipText: props.text,
       iconSize: props.size,
       tooltipIcon: props.icon,
+      tooltipIconClass: props.iconClass,
     }
   },
 })

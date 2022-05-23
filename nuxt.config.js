@@ -33,6 +33,17 @@ export default {
       },
     ],
     '@nuxtjs/apollo',
+    [
+      'nuxt-compress',
+      {
+        gzip: {
+          threshold: 8192,
+        },
+        brotli: {
+          threshold: 8192,
+        },
+      },
+    ],
   ],
 
   // Apollo client setup
@@ -106,9 +117,7 @@ export default {
       chunk: ({ isDev }) => (isDev ? '[name].js' : '[id].[contenthash].js'),
     },
 
-    extractCSS: {
-      ignoreOrder: false,
-    },
+    extractCSS: false,
     extend(config, ctx) {
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {

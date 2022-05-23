@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, useContext } from '@nuxtjs/composition-api'
-import { useQuery, useResult } from '@vue/apollo-composable/dist'
+import { useQuery } from '@vue/apollo-composable/dist'
 import { RecentPricesGQL } from '~/apollo/main/config.query.graphql'
 let am4core: any = null
 let forceDirected: any = null
@@ -21,7 +21,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const { result } = useQuery(RecentPricesGQL)
-    const recentPrices = useResult(result, {}, (data) => data.recentPrices)
+    const recentPrices = computed(() => result.value?.recentPrices ?? {})
     const { env } = useContext()
 
     // COMPUTED
@@ -158,7 +158,9 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      renderChart()
+      setTimeout(() => {
+        renderChart()
+      }, 500)
     })
 
     onBeforeUnmount(() => {

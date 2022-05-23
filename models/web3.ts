@@ -5,7 +5,8 @@ import lendingPoolAbi from '../constracts/abi/aave/lendingPoolAbi.json'
 import wethGatewayAbi from '../constracts/abi/aave/wethGatewayAbi.json'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
 // import curveLPToken from '../constracts/curve/curveLPToken.json'
-import { AavePoolCl, CurveCoinCl, CurvePoolCl } from '~/models/pool'
+import { CurveCoinCl, CurvePoolCl } from '~/models/pool'
+import { AavePoolCl } from '~/composables/useAavePools'
 import { Helper } from '~/models/helper'
 
 declare const window: any

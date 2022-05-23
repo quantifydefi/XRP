@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="11">
+    <v-col cols="10">
       <protocol-header
         :name="header.name"
         :symbol="header.symbol"
@@ -85,10 +85,9 @@
 <script lang="ts">
 import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
 import protocolHeader from '~/components/ProtocolHeader.vue'
-import useAavePools from '~/composables/useAavePools'
+import useAavePools, { AavePoolCl } from '~/composables/useAavePools'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
-import { AavePoolCl } from '~/models/pool'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { actionTypes } from '~/models/web3'
 import AavePoolActions from '~/components/pools/aave-pool-actions.vue'

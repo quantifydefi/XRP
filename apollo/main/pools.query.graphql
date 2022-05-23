@@ -74,6 +74,12 @@ query AavePoolGQL($chainId: Int!){
       address
       symbol
     }
+    portfolioVal{
+      totalDeposits,
+      walletBal,
+      stableBorrow,
+      variableBorrow
+    }
     totalLiquidityAsCollateral
     baseLTVasCollateral
     reserveLiquidationThreshold

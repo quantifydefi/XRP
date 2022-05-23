@@ -6,8 +6,11 @@
           <div :class="[textClass, 'text-right', 'text-caption']">
             <v-btn color="red" fab tile height="10" width="10" class="pa-0 mr-1" />Total Borrowed
           </div>
-          <div class="text-right text-h5" v-text="$f(aavePool.totalBorrowBalance, 3)" />
-          <div :class="[textClass, 'text-right']" v-text="$f(aavePool.totalBorrowBalanceUsd, 2, '$ ', '')" />
+          <div class="text-right text-h5" v-text="$f(aavePool.totalBorrowBalance, { roundTo: 3 })" />
+          <div
+            :class="[textClass, 'text-right']"
+            v-text="$f(aavePool.totalBorrowBalanceUsd, { roundTo: 2, pre: '$ ' })"
+          />
         </v-col>
 
         <v-col class="mt-2">
@@ -25,22 +28,22 @@
             Available Liquidity
             <v-btn color="green" fab tile height="10" width="10" class="pa-0 mr-1"></v-btn>
           </div>
-          <div class="text-h5" v-text="$f(aavePool.availableLiquidityBalance, 3)" />
-          <div :class="[textClass]" v-text="$f(aavePool.availableLiquidityUsd, 2, '$ ')" />
+          <div class="text-h5" v-text="$f(aavePool.availableLiquidityBalance, { roundTo: 3 })" />
+          <div :class="[textClass]" v-text="$f(aavePool.availableLiquidityUsd, { roundTo: 2, pre: '$ ' })" />
         </v-col>
       </v-row>
       <v-row no-gutters class="mt-6">
         <v-col class="mx-3">
           <div class="text-right">
             <span :class="textClass">Reserve size:</span>
-            <span v-text="$f(aavePool.reserveSizeUsd, 2, '$ ')" />
+            <span v-text="$f(aavePool.reserveSizeUsd, { roundTo: 2, pre: '$ ' })" />
           </div>
         </v-col>
 
         <v-col class="mx-3">
           <div>
             <span :class="textClass">Utilisation rate:</span>
-            <span v-text="$f(aavePool.utilizationRatePtc, 2, '', ' %')" />
+            <span v-text="$f(aavePool.utilizationRatePtc, { roundTo: 2, after: ' %' })" />
           </div>
         </v-col>
       </v-row>
@@ -59,14 +62,14 @@
                   <td :class="textClass">Deposit APY</td>
                   <td>
                     <span v-if="aavePool.depositAPY === -1">--</span>
-                    <span v-else v-text="$f(aavePool.depositAPY * 100, 2, '', ' %')" />
+                    <span v-else v-text="$f(aavePool.depositAPY * 100, { roundTo: 2, after: ' %' })" />
                   </td>
                 </tr>
                 <tr>
                   <td :class="textClass">Deposit APR</td>
                   <td>
                     <span v-if="aavePool.depositAPR === -1">--</span>
-                    <span v-else v-text="$f(aavePool.depositAPR * 100, 2, '', ' %')" />
+                    <span v-else v-text="$f(aavePool.depositAPR * 100, { roundTo: 2, after: ' %' })" />
                   </td>
                 </tr>
               </tbody>
@@ -88,14 +91,14 @@
                   <td :class="textClass">Borrow APY</td>
                   <td>
                     <span v-if="aavePool.stableBorrowAPY === -1">--</span>
-                    <span v-else v-text="$f(aavePool.stableBorrowAPY * 100, 2, '', ' %')" />
+                    <span v-else v-text="$f(aavePool.stableBorrowAPY * 100, { roundTo: 2, after: ' %' })" />
                   </td>
                 </tr>
                 <tr>
                   <td :class="textClass">Borrow APR</td>
                   <td>
                     <span v-if="aavePool.stableBorrowAPR === -1">--</span>
-                    <span v-else v-text="$f(aavePool.stableBorrowAPR * 100, 2, '', ' %')" />
+                    <span v-else v-text="$f(aavePool.stableBorrowAPR * 100, { roundTo: 2, after: ' %' })" />
                   </td>
                 </tr>
               </tbody>
@@ -117,14 +120,14 @@
                   <td :class="textClass">Deposit APY</td>
                   <td>
                     <span v-if="aavePool.variableBorrowAPY === -1">--</span>
-                    <span v-else v-text="$f(aavePool.variableBorrowAPY * 100, 2, '', ' %')" />
+                    <span v-else v-text="$f(aavePool.variableBorrowAPY * 100, { roundTo: 2, after: ' %' })" />
                   </td>
                 </tr>
                 <tr>
                   <td :class="textClass">Deposit APR</td>
                   <td>
                     <span v-if="aavePool.variableBorrowAPR === -1">--</span>
-                    <span v-else v-text="$f(aavePool.variableBorrowAPR * 100, 2, '', ' %')" />
+                    <span v-else v-text="$f(aavePool.variableBorrowAPR * 100, { roundTo: 2, after: ' %' })" />
                   </td>
                 </tr>
               </tbody>
@@ -137,19 +140,21 @@
         <v-col>
           <div>Maximum LTV</div>
           <div class="font-weight-bold">
-            {{ aavePool.loanToValue > 0 ? $f(aavePool.loanToValue, 2, '', ' %') : '-' }}
+            {{ aavePool.loanToValue > 0 ? $f(aavePool.loanToValue, { roundTo: 2, after: ' %' }) : '-' }}
           </div>
         </v-col>
         <v-col>
           <div>Liquidation threshold</div>
           <div class="font-weight-bold">
-            {{ aavePool.liquidationThreshold > 0 ? $f(aavePool.liquidationThreshold, 2, '', ' %') : '-' }}
+            {{
+              aavePool.liquidationThreshold > 0 ? $f(aavePool.liquidationThreshold, { roundTo: 2, after: ' %' }) : '-'
+            }}
           </div>
         </v-col>
         <v-col>
           <div>Liquidation Penalty</div>
           <div class="font-weight-bold">
-            {{ aavePool.liquidationPenalty > 0 ? $f(aavePool.liquidationPenalty, 2, '', ' %') : '-' }}
+            {{ aavePool.liquidationPenalty > 0 ? $f(aavePool.liquidationPenalty, { roundTo: 2, after: ' %' }) : '-' }}
           </div>
         </v-col>
         <v-col>
@@ -173,7 +178,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, PropType, useStore } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/models/pool'
+import { AavePoolCl } from '~/composables/useAavePools'
 import { State } from '~/types/state'
 import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
 import AaveBalanceChart from '~/components/pools/AaveBalanceChart.vue'

@@ -1,5 +1,5 @@
 <template>
-  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-50" left max-width="600">
+  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-46" left max-width="600">
     <template #activator="{ on, attrs }">
       <div class="d-flex">
         <v-btn class="subtitle-2 px-2 mr-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
@@ -27,7 +27,9 @@
 
           <tbody>
             <tr v-for="(elem, i) in gasData" :key="i">
-              <td><v-img :src="imageUrl(elem.symbol)" :lazy-src="imageUrl(elem.symbol)" width="20" /></td>
+              <td>
+                <v-img :src="$imageUrlBySymbol(elem.symbol)" :lazy-src="$imageUrlBySymbol(elem.symbol)" width="20" />
+              </td>
               <td>
                 <a
                   class="text-subtitle-2 text-decoration-none"
@@ -59,27 +61,19 @@
 <script lang="ts">
 import { computed, defineComponent, Ref } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
-import { useResult } from '@vue/apollo-composable'
 import { GasGQL } from '~/apollo/main/config.query.graphql'
 import { GasStats } from '~/types/apollo/main/types'
 export default defineComponent({
   setup() {
     // COMPOSABLE
     const { result } = useQuery(GasGQL, null, { fetchPolicy: 'no-cache', pollInterval: 10000 })
-    const gasData = useResult(result, []) as Ref<GasStats[]>
+    const gasData = computed(() => result.value?.gas ?? []) as Ref<GasStats[]>
     const ethMainNetInfo = computed(() => gasData.value.find((elem) => elem.symbol === 'ETH'))
-
-    // METHODS
-    const imageUrl = (symbol: string) =>
-      `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
 
     return {
       // COMPUTED
       gasData,
       ethMainNetInfo,
-
-      // METHODS
-      imageUrl,
     }
   },
 })

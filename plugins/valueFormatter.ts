@@ -2,12 +2,6 @@ import { defineNuxtPlugin } from '@nuxtjs/composition-api'
 import { Context } from '@nuxt/types'
 import Vue from 'vue'
 
-interface Params {
-  roundTo?: number
-  pre?: string
-  after?: string
-  useSymbol?: boolean
-}
 const applyCommas = (val: string) => val.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
 
 function applyNumber(val: number, roundTo: number, pre: string) {
@@ -34,18 +28,13 @@ const copyAddressToClipboard = async (value: string): Promise<void> => {
   } catch (e) {}
 }
 
-declare module '@nuxt/types' {
-  interface Context {
-    $f(val: number, params: Params): string
-    $copyAddressToClipboard(value: string): Promise<void>
-  }
-}
-declare module 'vue/types/vue' {
-  interface Vue {
-    $f(val: number, params: Params): string
-    $copyAddressToClipboard(value: string): Promise<void>
-  }
-}
+const setAltImageUrl = (event: any) =>
+  (event.target.src = `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`)
+
+const imageUrlBySymbol = (symbol: string | null) =>
+  symbol
+    ? `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
+    : `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`
 
 export default defineNuxtPlugin((context: Context) => {
   context.$f = valueFormatter
@@ -53,4 +42,6 @@ export default defineNuxtPlugin((context: Context) => {
 
   Vue.prototype.$f = valueFormatter
   Vue.prototype.$copyAddressToClipboard = copyAddressToClipboard
+  Vue.prototype.$setAltImageUrl = setAltImageUrl
+  Vue.prototype.$imageUrlBySymbol = imageUrlBySymbol
 })
