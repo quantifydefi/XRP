@@ -159,7 +159,7 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         renderChart()
-      }, 200)
+      }, 500)
     })
 
     onBeforeUnmount(() => {
