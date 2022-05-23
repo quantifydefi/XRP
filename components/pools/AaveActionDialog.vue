@@ -111,7 +111,7 @@ import {
   useStore,
   watch,
 } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/models/pool'
+import { AavePoolCl } from '~/composables/useAavePools'
 import { actionTypes, aaveActions } from '~/models/web3'
 import { State } from '~/types/state'
 import AaveActioinForm from '~/components/pools/AaveActioinForm.vue'

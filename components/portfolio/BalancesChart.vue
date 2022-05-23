@@ -14,7 +14,7 @@ import {
   useStore,
   watch,
 } from '@nuxtjs/composition-api'
-import { Balances } from '~/types/apollo/main/types'
+import { Balance } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
 let am4core: any = null
 let am4charts: any = null
@@ -27,13 +27,13 @@ if (process.browser) {
   am4themesDark = require('@amcharts/amcharts4/themes/dark')
 }
 type Props = {
-  balances: Balances[]
+  balances: Balance[]
 }
 
 export default defineComponent<Props>({
   props: {
     balances: {
-      type: Array as PropType<Balances[]>,
+      type: Array as PropType<Balance[]>,
       default: () => [],
     },
   },

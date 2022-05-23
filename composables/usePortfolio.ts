@@ -2,8 +2,7 @@ import { ethers } from 'ethers'
 import { ComputedRef, inject } from '@nuxtjs/composition-api'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-import { AaveAddress } from '~/types/apollo/main/types'
-import { AavePortfolio } from '~/models/pool'
+import { AaveAddress, AavePortfolio } from '~/types/apollo/main/types'
 
 type Balance = { poolId: string; balance: number }
 export type PortfolioMap = { [poolId: string]: AavePortfolio }
@@ -37,7 +36,7 @@ async function getEthBalance(poolId: string, walletAddress: string, provider: an
 
 export default function (addresses: ComputedRef<{ [id: string]: AaveAddress }>) {
   // COMPOSABLES
-  const { account, signer, provider } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { signer, account, provider } = inject(WEB3_PLUGIN_KEY) as Web3
 
   // METHODS
   const fetchPortfolio = async (): Promise<PortfolioMap> => {
@@ -73,7 +72,7 @@ export default function (addresses: ComputedRef<{ [id: string]: AaveAddress }>) 
     const variableBorrow = await Promise.all(variableBorrowMultCalls).then((balances) => toHashMap(balances))
 
     Object.keys(addresses.value).forEach((key) => {
-      portfolio[key] = { walletBal: 0, totalDeposits: 0, stableBorrow: 0, variableBorrow: 0 }
+      portfolio[key] = { symbol: '', walletBal: 0, totalDeposits: 0, stableBorrow: 0, variableBorrow: 0 }
       portfolio[key].walletBal = native[key]
       portfolio[key].totalDeposits = deposit[key]
       portfolio[key].variableBorrow = variableBorrow[key]

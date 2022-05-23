@@ -35,6 +35,7 @@ export type AavePool = {
   id: Scalars['String'];
   liquidityRate: Scalars['Float'];
   name: Scalars['String'];
+  portfolioVal: AavePortfolio;
   price: AavePoolPrice;
   reserveLiquidationBonus: Scalars['Float'];
   reserveLiquidationThreshold: Scalars['Float'];
@@ -61,6 +62,31 @@ export type AavePoolPrice = {
   priceUsd: Scalars['Float'];
 };
 
+export type AavePortfolio = {
+  __typename?: 'AavePortfolio';
+  stableBorrow: Scalars['Float'];
+  symbol: Scalars['String'];
+  totalDeposits: Scalars['Float'];
+  variableBorrow: Scalars['Float'];
+  walletBal: Scalars['Float'];
+};
+
+/**
+ * Covalent Get Balances for address
+ * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+ */
+export type Balance = {
+  __typename?: 'Balance';
+  aavePools: Array<AavePool>;
+  address: Scalars['String'];
+  chainId: Scalars['Float'];
+  items: Array<BalanceItem>;
+  nextUpdateAt: Scalars['String'];
+  pagination?: Maybe<Pagination>;
+  quoteCurrency: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type BalanceItem = {
   __typename?: 'BalanceItem';
   balance: Scalars['String'];
@@ -78,21 +104,6 @@ export type BalanceItem = {
   quoteRate24h: Scalars['Float'];
   supportsErc?: Maybe<Array<Scalars['String']>>;
   type: Scalars['String'];
-};
-
-/**
- * Covalent Get Balances for address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
- */
-export type Balances = {
-  __typename?: 'Balances';
-  address: Scalars['String'];
-  chainId: Scalars['Float'];
-  items: Array<BalanceItem>;
-  nextUpdateAt: Scalars['String'];
-  pagination?: Maybe<Pagination>;
-  quoteCurrency: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type Chain = {
@@ -401,7 +412,7 @@ export type Query = {
   /** Aave Pool  */
   aavePools: Array<AavePool>;
   /** Covalent Balances */
-  balances: Array<Balances>;
+  balances: Array<Balance>;
   chainLinkAddresses: Scalars['Map'];
   chainLinkPrice: Scalars['Map'];
   chains: Array<Chain>;
@@ -619,7 +630,7 @@ export type AavePoolGqlQueryVariables = Exact<{
 }>;
 
 
-export type AavePoolGqlQuery = { __typename?: 'Query', aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string, symbol: string } }> };
+export type AavePoolGqlQuery = { __typename?: 'Query', aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string, symbol: string }, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number } }> };
 
 export type BalancesGqlQueryVariables = Exact<{
   chainIds: Array<Scalars['Int']> | Scalars['Int'];
@@ -627,7 +638,7 @@ export type BalancesGqlQueryVariables = Exact<{
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balances', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number }> }> };
 
 export type ProtocolGqlQueryVariables = Exact<{
   protocolId: Scalars['String'];

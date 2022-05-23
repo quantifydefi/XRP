@@ -1,5 +1,5 @@
 import { computed, Ref, useContext } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/models/pool'
+import type { AavePoolCl } from '~/composables/useAavePools'
 
 interface PortfolioCompositionInterface {
   name: string

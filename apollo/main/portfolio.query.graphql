@@ -25,6 +25,23 @@ query BalancesGQL($chainIds: [Int!]!, $address: String! ) {
       quote24h
       nftData
     }
+    aavePools{
+      symbol,
+      id,
+      name,
+      liquidityRate,
+      borrowingEnabled,
+      stableBorrowRateEnabled,
+      stableBorrowRate ,
+      variableBorrowRate
+      portfolioVal{
+        totalDeposits,
+        walletBal,
+        stableBorrow,
+        variableBorrow
+      }
+      price{id,priceInEth, priceUsd}
+    }
   }
 }
 
@@ -97,7 +114,7 @@ query TransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pag
 }
 
 query TransactionLogEventsGQL($chainId: Int!, $txHash: String!){
-	transactionLogEvents(chainId: $chainId, txHash: $txHash){
+  transactionLogEvents(chainId: $chainId, txHash: $txHash){
     senderAddress
     senderContractDecimals
     senderContractTickerSymbol

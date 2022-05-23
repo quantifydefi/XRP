@@ -25,6 +25,7 @@ type AavePool {
   id: String!
   liquidityRate: Float!
   name: String!
+  portfolioVal: AavePortfolio!
   price: AavePoolPrice!
   reserveLiquidationBonus: Float!
   reserveLiquidationThreshold: Float!
@@ -50,6 +51,30 @@ type AavePoolPrice {
   priceUsd: Float!
 }
 
+type AavePortfolio {
+  stableBorrow: Float!
+  symbol: String!
+  totalDeposits: Float!
+  variableBorrow: Float!
+  walletBal: Float!
+}
+
+"""
+
+Covalent Get Balances for address
+https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
+"""
+type Balance {
+  aavePools: [AavePool!]!
+  address: String!
+  chainId: Float!
+  items: [BalanceItem!]!
+  nextUpdateAt: String!
+  pagination: Pagination
+  quoteCurrency: String!
+  updatedAt: String!
+}
+
 type BalanceItem {
   balance: String!
   balance24h: String!
@@ -66,21 +91,6 @@ type BalanceItem {
   quoteRate24h: Float!
   supportsErc: [String!]
   type: String!
-}
-
-"""
-
-Covalent Get Balances for address
-https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
-"""
-type Balances {
-  address: String!
-  chainId: Float!
-  items: [BalanceItem!]!
-  nextUpdateAt: String!
-  pagination: Pagination
-  quoteCurrency: String!
-  updatedAt: String!
 }
 
 type Chain {
@@ -361,7 +371,7 @@ type Query {
   "Aave Pool "
   aavePools(chainId: Int!): [AavePool!]!
   "Covalent Balances"
-  balances(address: String!, chainIds: [Int!]!): [Balances!]!
+  balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chainLinkAddresses: Map!
   chainLinkPrice(chainId: Int! = 1, pairs: [String!]! = []): Map!
   chains: [Chain!]!

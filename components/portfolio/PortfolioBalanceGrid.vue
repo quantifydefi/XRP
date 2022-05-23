@@ -5,7 +5,7 @@
         <v-avatar size="24px">
           <v-img :src="chainData.logoUrl" :lazy-src="chainData.logoUrl"></v-img>
         </v-avatar>
-        <h1 class="text-subtitle-1 pl-3 text-truncate" v-text="chainData.label" />
+        <h4 class="text-subtitle-1 pl-3 text-truncate" v-text="chainData.label" />
       </v-col>
       <v-col cols="4" class="text-right">
         <h4
@@ -44,7 +44,7 @@
       </template>
 
       <template #[`item.quote`]="{ item }">
-        <span :class="textClass" v-text="$f(item.quote, { pre: '$ ', roundTo: 3 })" />
+        <span :class="textClass" v-text="$f(item.quote, { pre: '$ ', roundTo: 2 })" />
       </template>
     </v-data-table>
     <v-divider />
@@ -52,17 +52,17 @@
 </template>
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropType, Ref, useStore } from '@nuxtjs/composition-api'
-import { BalanceItem, Balances, Chain } from '~/types/apollo/main/types'
+import { BalanceItem, Balance, Chain } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
 
 type Props = {
-  data: Balances
+  data: Balance
 }
 
 export default defineComponent<Props>({
   props: {
     data: {
-      type: Object as PropType<Balances>,
+      type: Object as PropType<Balance>,
       default: () => {},
     },
   },
@@ -116,51 +116,3 @@ export default defineComponent<Props>({
   },
 })
 </script>
-
-<!--<script lang="ts">-->
-<!--/* eslint-disable */-->
-<!--import { Vue, Component, Prop, Watch } from "vue-property-decorator";-->
-<!--import {Helper} from '~/models/helper'-->
-<!--import type {PortfolioBalance} from "~/models/portfolio";-->
-<!--import { mapState , mapGetters} from "vuex";-->
-
-<!--@Component({ name: 'BalancesGrid',-->
-<!--  computed: { ...mapState({-->
-<!--      chains: (state: any) => state.configs.chains,-->
-<!--      ui: (state: any) => state.ui,-->
-<!--      theme: (state: any) => state.ui.theme,-->
-<!--    }),-->
-<!--    ...mapGetters({chainInfo:'configs/chainInfo'})-->
-<!--  }-->
-<!--})-->
-<!--export default class BalancesGrid extends Vue {-->
-<!--  @Prop({default: 435}) readonly gridHeight!: number-->
-<!--  @Prop({default: 1}) readonly chainId!: number-->
-<!--  @Prop({default: []}) readonly cols!: any-->
-<!--  @Prop({default: []}) readonly balance!: PortfolioBalance-->
-
-<!--  private gridHeightLocal = this.gridHeight-->
-
-<!--  @Watch('gridHeight')-->
-<!--  onGridHeightChange(newVal:number){-->
-<!--    this.gridHeightLocal = newVal-->
-<!--  }-->
-
-<!--  priceFormatter(value: number) {-->
-<!--    return Helper.priceFormatter(value)-->
-<!--  }-->
-
-<!--  balanceFormatter(value: number): string {-->
-<!--    return new Intl.NumberFormat('en', {-->
-<!--      maximumSignificantDigits: 8,-->
-<!--      minimumSignificantDigits: 8-->
-<!--    }).format(value)-->
-<!--  }-->
-
-<!--  setAltImg(event: any) {-->
-<!--    return Helper.setAltImg(event)-->
-<!--  }-->
-<!--}-->
-<!--</script>-->
-
-<!--<style lang="scss"></style>-->

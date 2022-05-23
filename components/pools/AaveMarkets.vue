@@ -160,7 +160,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, PropType, ref, toRefs, UnwrapRef, useStore } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/models/pool'
+import { AavePoolCl } from '~/composables/useAavePools'
 import { State } from '~/types/state'
 import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
 import { aaveActions, actionTypes } from '~/models/web3'
