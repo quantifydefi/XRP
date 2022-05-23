@@ -93,7 +93,6 @@ export default defineComponent({
         },
       ]
     })
-
     function renderChart() {
       am4core.addLicense(env.amChartLicense)
       chart.value = am4core.create(chartDiv.value, forceDirected.ForceDirectedTree)
@@ -158,7 +157,9 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      renderChart()
+      setTimeout(() => {
+        renderChart()
+      }, 200)
     })
 
     onBeforeUnmount(() => {
