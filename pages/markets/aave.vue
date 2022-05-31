@@ -55,12 +55,14 @@
           <v-text-field v-model="searchString" append-icon="mdi-magnify" color="primary" outlined dense hide-details />
         </v-col>
         <v-col class="text-right">
-          <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">
-            <small class="grey--text">
-              Please Switch To
-              <span class="red--text text--lighten-1 mr-4 font-weight-bold" v-text="isChainAndMarketMismatched.label" />
-            </small>
-          </a>
+          <!--          <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">-->
+          <!--            <small class="grey&#45;&#45;text">-->
+          <!--              Please Switch To-->
+          <!--              <span class="red&#45;&#45;text text&#45;&#45;lighten-1 mr-4 font-weight-bold" v-text="isChainAndMarketMismatched.label" />-->
+          <!--            </small>-->
+          <!--          </a>-->
+
+          <switch-network-dialog ref="switchNetworkDialog"></switch-network-dialog>
           <network-selection />
         </v-col>
       </v-row>
@@ -98,8 +100,10 @@ import AaveActionDialog from '~/components/pools/AaveActionDialog.vue'
 import { State } from '~/types/state'
 import NetworkSelection from '~/components/common/NetworkSelection.vue'
 import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
+import SwitchNetworkDialog from '~/components/common/SwithNetworkDialog.vue'
 export default defineComponent({
   components: {
+    SwitchNetworkDialog,
     NetworkSelection,
     AaveActionDialog,
     AaveMarketStats,
@@ -122,6 +126,7 @@ export default defineComponent({
     const poolAction = ref<any>(null)
     const actionDialog = ref<any>(null)
     const searchString = ref('')
+    const switchNetworkDialog = ref<any>(null)
 
     // COMPOSABLE
     const { walletReady, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
@@ -160,9 +165,13 @@ export default defineComponent({
     } = UseAavePoolsStats(pools)
 
     // WATCHERS
-    watch([loading, walletReady, account, chainId, marketId], async () => {
+    watch([loading, walletReady, account, chainId, marketId, isChainAndMarketMismatched], async () => {
       // Refresh portfolio of loading of aave pools query is set to false
       if (!loading.value) await updatePortfolio()
+
+      if (isChainAndMarketMismatched.value && isChainAndMarketMismatched.value.chainId !== chainId.value) {
+        switchNetworkDialog.value.toggleDialog(true)
+      }
     })
 
     // METHODS
@@ -194,6 +203,7 @@ export default defineComponent({
       totalDepositsUsd,
       searchString,
       isChainAndMarketMismatched,
+      switchNetworkDialog,
 
       // METHODS
       initAction,
