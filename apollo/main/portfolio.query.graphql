@@ -113,6 +113,61 @@ query TransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pag
   }
 }
 
+query CovalentTransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pageSize: Int!) {
+  covalentTransactions(chainId: $chainId, address: $address, pageNumber: $pageNumber, pageSize: $pageSize){
+    items{
+      blockSignedAt
+      blockHeight
+      txHash
+      txOffset
+      successful
+      fromAddress
+      fromAddressLabel
+      fromAddressName
+      fromAddressSymbol
+      fromAddressIsContract
+      toAddress
+      toAddressLabel
+      toAddressName
+      toAddressIsContract
+      toAddressSymbol
+      value
+      valueQuote
+      gasOffered
+      gasSpent
+      gasPrice
+      gasQuote
+      gasQuoteRate
+      logEvents{
+        blockSignedAt
+        blockHeight
+        txOffset
+        logOffset
+        txHash
+        rawLogTopics
+        senderContractDecimals
+        senderName
+        senderContractTickerSymbol
+        senderAddress
+        senderAddressLabel
+        senderLogoUrl
+        rawLogData
+        decoded {
+          name
+          signature
+          params {
+            name
+            type
+            indexed
+            decoded
+            value
+          }
+        }
+      }
+    }
+  }
+}
+
 query TransactionLogEventsGQL($chainId: Int!, $txHash: String!){
   transactionLogEvents(chainId: $chainId, txHash: $txHash){
     senderAddress

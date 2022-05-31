@@ -1,616 +1,439 @@
 <template>
   <v-row justify="center">
-    <!--    <v-col v-if="!isWalletConnected" cols="10" class="d-flex align-center justify-center" style="height: 80vh">
-      <div class="text-center">
-        <div class="title">Connect Your Wallet</div>
-        <div>Please connect your Metamask Wallet to view Transactions History</div>
-      </div>
-    </v-col>-->
+    <v-col cols="11">
+      <template v-if="!walletReady">
+        <connect-wallet-memo></connect-wallet-memo>
+      </template>
 
-    <v-col v-if="isWalletConnected" cols="12">
-      <v-row no-gutters justify="center">
-        <v-col v-if="isTransactionsLoading" cols="11">
-          <v-card height="100%" tile outlined>
-            <v-skeleton-loader type="table-heading, table-tbody, table-tbody, table-tbody" />
-          </v-card>
-        </v-col>
+      <template v-if="walletReady">
+        <v-row justify="end" class="pt-3">
+          <network-selection-menu
+            :chains="chains"
+            :selected-chain="currentChain"
+            @on-network-select-change="onNetworkSelectChange"
+          ></network-selection-menu>
+        </v-row>
 
-        <v-col v-else cols="11">
-          <v-card outlined tile>
-            <v-data-table
-              :headers="cols"
-              :items="transactions"
-              :items-per-page="100"
-              :footer-props="{
-                'items-per-page-options': [25, 50, 75, 100],
-              }"
-              class="elevation-0"
-              item-key="hash"
-              show-expand
-              single-expand
-              @dblclick:row="onDoubleClickRow"
-            >
-              <!-- expand column -->
-              <template #item.data-table-expand="{ item, isExpanded, expand }">
-                <div style="width: 20px; cursor: pointer">
-                  <v-btn
-                    v-if="
-                      item.isError === '0' &&
-                      item.input.length > 3 &&
-                      !excludeMethod.includes(cleanMethodSignature(item.function)) &&
-                      !excludeMethod.includes(item.input.substring(2, 10)) &&
-                      !isExpanded
-                    "
-                    small
-                    icon
-                    @click="onExpandButtonClick(expand, !isExpanded, item.hash)"
-                  >
-                    <v-icon>mdi-chevron-down</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-if="item.isError === '0' && item.input.length > 3 && isExpanded"
-                    small
-                    icon
-                    @click="expand(false)"
-                  >
-                    <v-icon>mdi-chevron-up</v-icon>
-                  </v-btn>
-                </div>
+        <v-row justify="center">
+          <v-col cols="12">
+            <v-card tile outlined elevation="0">
+              <template v-if="loading">
+                <v-skeleton-loader
+                  height="1200"
+                  type="table-heading,divider,table-tbody,table-tbody@3"
+                ></v-skeleton-loader>
               </template>
 
-              <!-- expand item/row -->
-              <template #expanded-item="{ headers }">
-                <td :colspan="headers.length">
-                  <v-row v-if="isLogEventLoading" no-gutters justify="center" class="py-3">
-                    <v-col cols="12">
-                      <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
-                    </v-col>
-                  </v-row>
-
-                  <v-row v-if="!isLogEventLoading" no-gutters class="pa-5" justify="center">
-                    <v-col cols="12" :class="['subtitle-2']">
-                      {{ logEvents.length > 0 ? '' : 'No available log details' }}
-                    </v-col>
-
-                    <v-col>
-                      <v-row v-for="(log, i) in logEvents" :key="`${log.address}_${i}`" no-gutters>
-                        <v-col v-if="methodList.includes(log.function.toLowerCase())" cols="12">
-                          <v-row no-gutters>
-                            <v-col cols="12" class="mt-2 mb-n2 pink--text font-weight-regular">
-                              {{ log.function }}
-                            </v-col>
-
-                            <div v-for="event in logEvents[i].params" :key="event.name + `_${i}`" class="py-2 pr-6">
-                              <div style="width: 350px">
-                                <div :class="[ui[theme].headerTextClass, 'text-capitalize', 'caption']">
-                                  {{ event.name }}
-                                </div>
-
-                                <div v-if="event.type === 'address'">
-                                  <v-tooltip top :color="ui[theme].overlayColor">
-                                    <template #activator="{ on, attrs }">
-                                      <span
-                                        style="cursor: pointer"
-                                        v-bind="attrs"
-                                        :class="[ui[theme].innerCardLighten]"
-                                        v-on="on"
-                                        @click="copyAddressToClipboard(`${event.value}`)"
-                                      >
-                                        <span v-if="event.value === logEvents[i].address" class="subtitle-2">
-                                          <v-avatar size="16" class="mt-n1 mr-1">
-                                            <img
-                                              :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${logEvents[
-                                                i
-                                              ].symbol.toLowerCase()}.png`"
-                                              alt="token logo"
-                                              @error="setAltImg"
-                                            />
-                                          </v-avatar>
-                                          {{ logEvents[i].name }} <small>({{ logEvents[i].symbol }})</small>
-                                        </span>
-                                        <span v-else>{{ event.value }}</span>
-                                      </span>
-                                    </template>
-                                    <span :class="ui[ui.theme].headerTextClass">
-                                      {{ isCopied ? 'Copied!' : 'click to copy address' }}
-                                    </span>
-                                  </v-tooltip>
-                                </div>
-
-                                <div
-                                  v-else-if="event.type === 'uint256' && log.function === 'Approval'"
-                                  :class="[ui[theme].innerCardLighten]"
-                                >
-                                  {{
-                                    +event.value > 0
-                                      ? +event.value >= 1.157920892373162e53
-                                        ? 'max approval'
-                                        : +event.value
-                                      : ''
-                                  }}
-                                  <span
-                                    v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
-                                  >
-                                    <v-avatar size="16" class="mt-n1 mx-1">
-                                      <img
-                                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${log.symbol.toLowerCase()}.png`"
-                                        alt="token logo"
-                                        @error="setAltImg"
-                                      />
-                                    </v-avatar>
-                                    {{ log.symbol }}
-                                  </span>
-                                </div>
-
-                                <div
-                                  v-else-if="
-                                    event.type === 'uint256' && (event.name === 'value' || event.name === 'wad')
-                                  "
-                                  :class="[ui[theme].innerCardLighten]"
-                                >
-                                  {{ +event.value > 0 ? +event.value / 10 ** logEvents[i].decimals : '' }}
-
-                                  <span
-                                    v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
-                                  >
-                                    <v-avatar size="16" class="mt-n1 mx-1">
-                                      <img
-                                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${log.symbol.toLowerCase()}.png`"
-                                        alt="token logo"
-                                        @error="setAltImg"
-                                      />
-                                    </v-avatar>
-                                    {{ log.symbol }}
-                                  </span>
-                                </div>
-
-                                <div v-else :class="[ui[theme].innerCardLighten]">
-                                  {{ event.value }}
-                                  <span
-                                    v-if="event.type === 'uint256' && methodList.includes(log.function.toLowerCase())"
-                                  >
-                                    <v-avatar v-if="event.type === 'uint256'" size="16" class="mt-n1 mx-1">
-                                      <img
-                                        :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${log.symbol.toLowerCase()}.png`"
-                                        alt="token logo"
-                                        @error="setAltImg"
-                                      />
-                                    </v-avatar>
-                                    {{ log.symbol }}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </td>
-              </template>
-
-              <!--    Templates for Table Data      -->
-              <template #[`item.timeStamp`]="{ item }">
-                <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-                  {{ new Date(item.timeStamp * 1000).toLocaleString() }}
-                </div>
-              </template>
-
-              <template #[`item.method`]="{ item }">
-                <div v-if="item.method" class="text-truncate" style="width: 120px">
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <v-btn
-                        primary
-                        style="max-width: 120px"
-                        outlined
-                        small
-                        depressed
-                        rounded
-                        class="cursor-text"
-                        color="primary"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <span
-                          :class="[
-                            ui[ui.theme].headerTextClass,
-                            'text-truncate',
-                            'text-capitalize',
-                            'text-capitalize',
-                            'px-2',
-                            'font-weight-regular',
-                          ]"
-                          style="max-width: 120px"
-                        >
-                          {{ item.method }}
-                        </span>
-                      </v-btn>
-                    </template>
-                    <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']">
-                      {{ item.method }}
-                    </span>
-                  </v-tooltip>
-                </div>
-
-                <div v-else-if="item.input === '0x'" class="text-truncate" style="width: 120px">
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <v-btn
-                        primary
-                        style="max-width: 120px"
-                        outlined
-                        small
-                        depressed
-                        rounded
-                        class="cursor-text"
-                        color="primary"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <span
-                          :class="[
-                            ui[ui.theme].headerTextClass,
-                            'text-truncate',
-                            'text-capitalize',
-                            'text-capitalize',
-                            'px-2',
-                            'font-weight-regular',
-                          ]"
-                          style="max-width: 120px"
-                        >
-                          Transfer
-                        </span>
-                      </v-btn>
-                    </template>
-                    <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']"> Transfer </span>
-                  </v-tooltip>
-                </div>
-
-                <div v-else-if="item.input.length > 8" class="text-truncate" style="width: 120px">
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <v-btn
-                        primary
-                        style="max-width: 120px"
-                        outlined
-                        small
-                        depressed
-                        rounded
-                        class="cursor-text"
-                        color="primary"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <span
-                          :class="[
-                            ui[ui.theme].headerTextClass,
-                            'text-truncate',
-                            'text-capitalize',
-                            'text-capitalize',
-                            'px-2',
-                            'font-weight-regular',
-                          ]"
-                          style="max-width: 120px"
-                        >
-                          {{ methodSignatureMap[item.input.substring(2, 10)] || item.input.substring(0, 10) }}
-                        </span>
-                      </v-btn>
-                    </template>
-                    <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']">
-                      {{ methodSignatureMap[item.input.substring(2, 10)] || item.input.substring(0, 10) }}
-                    </span>
-                  </v-tooltip>
-                </div>
-              </template>
-
-              <template #[`item.hash`]="{ item }">
-                <v-tooltip top :color="ui[theme].overlayColor">
-                  <template #activator="{ on, attrs }">
-                    <span
-                      style="cursor: pointer"
-                      v-bind="attrs"
-                      :class="[ui[theme].innerCardLighten]"
-                      v-on="on"
-                      @click="copyAddressToClipboard(item.hash)"
-                      >{{ stringTruncate(item.hash, 10, 4) }}
-                    </span>
-                  </template>
-                  <span :class="ui[ui.theme].headerTextClass">
-                    {{ isCopied ? 'Copied!' : 'click to copy transaction hash' }}
-                  </span>
-                </v-tooltip>
-              </template>
-
-              <template #[`item.from`]="{ item }">
-                <v-tooltip top :color="ui[theme].overlayColor">
-                  <template #activator="{ on, attrs }">
-                    <span
-                      style="cursor: pointer"
-                      v-bind="attrs"
-                      :class="item.from !== walletAddress.toLowerCase() ? 'pink--text' : [ui[theme].innerCardLighten]"
-                      @click="copyAddressToClipboard(item.from)"
-                      v-on="on"
-                      >{{ stringTruncate(item.from, 10, 4) }}
-                    </span>
-                  </template>
-                  <span :class="ui[ui.theme].headerTextClass">
-                    {{ isCopied ? 'Copied!' : 'click to copy address' }}
-                  </span>
-                </v-tooltip>
-              </template>
-
-              <template #[`item.fromTo`]="{ item }">
-                <div class="text-no-wrap">
-                  <span :class="ui[theme].innerCardLighten">From:</span>
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <span
-                        style="cursor: pointer"
-                        v-bind="attrs"
-                        :class="item.from !== walletAddress.toLowerCase() ? 'pink--text' : ''"
-                        @click="copyAddressToClipboard(item.from)"
-                        v-on="on"
-                        >{{ stringTruncate(item.from, 10, 4) }}
-                      </span>
-                    </template>
-                    <span :class="ui[ui.theme].headerTextClass">
-                      {{ isCopied ? 'Copied!' : 'click to copy address' }}
-                    </span>
-                  </v-tooltip>
-                  <div
-                    v-if="item.tokenTo.address.length === 0 || item.contractAddress.length > 0"
-                    :class="[ui[theme].innerCardLighten]"
-                  >
-                    <span :class="ui[theme].innerCardLighten">To:</span>
-                    <v-tooltip top :color="ui[theme].overlayColor">
-                      <template #activator="{ on, attrs }">
-                        <span
-                          v-bind="attrs"
-                          style="cursor: pointer"
-                          :class="ui[theme].headerTextClass"
-                          v-on="on"
-                          @click="copyAddressToClipboard(item.to || item.contractAddress)"
-                        >
-                          <v-icon v-if="item.input.length > 3" class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
-                          {{ stringTruncate(item.to, 10, 4) || stringTruncate(item.contractAddress, 10, 4) }}
-                        </span>
-                      </template>
-                      <span :class="ui[theme].headerTextClass">
-                        {{ isCopied ? 'Copied' : `click to copy` }}
-                        <span v-if="item.contractAddress">contract</span> address</span
-                      >
-                    </v-tooltip>
-                  </div>
-                  <div v-else class="text-no-wrap d-flex text-truncate" style="max-width: 200px">
-                    <span :class="[ui[theme].innerCardLighten]">To:</span>
-                    <v-tooltip top :color="ui[theme].overlayColor">
-                      <template #activator="{ on, attrs }">
-                        <div
-                          :color="ui[theme].overlayColor"
-                          v-bind="attrs"
-                          style="cursor: pointer"
-                          class="text-truncate ml-1"
-                          v-on="on"
-                        >
-                          <v-avatar size="16px" class="mt-n1">
-                            <img
-                              alt="Avatar"
-                              :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.tokenTo.symbol.toLowerCase()}.png`"
-                              @error="setAltImg"
-                            />
-                          </v-avatar>
-                          <span
-                            :class="[ui[theme].headerTextClass, 'text-no-wrap']"
-                            @click="copyAddressToClipboard(item.to)"
-                            >{{ item.tokenTo.name }}</span
-                          >
-                        </div>
-                      </template>
-                      <span :class="ui[theme].headerTextClass">
-                        {{ isCopied ? 'Copied' : 'click to copy address' }}
-                      </span>
-                    </v-tooltip>
-                  </div>
-                </div>
-              </template>
-
-              <template #[`item.isOut`]="{ item }">
-                <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-                  <v-btn
-                    v-if="item.from === walletAddress.toLowerCase()"
-                    text
-                    width="50"
-                    style="pointer-events: none"
-                    color="pink"
-                    small
-                    class="rounded-sm"
-                    label
-                    text-color="white"
-                  >
-                    OUT
-                  </v-btn>
-                  <v-btn
-                    v-else-if="item.to.toLowerCase() === item.from.toLowerCase()"
-                    style="pointer-events: none"
-                    width="50"
-                    color="grey"
-                    small
-                    class="rounded-sm"
-                    text
-                  >
-                    SELF
-                  </v-btn>
-                  <v-btn v-else style="pointer-events: none" width="50" color="green" small class="rounded-sm" text>
-                    IN
-                  </v-btn>
-                </div>
-              </template>
-
-              <template #[`item.to`]="{ item }">
-                <div
-                  v-if="item.tokenTo.address.length === 0 || item.contractAddress.length > 0"
-                  :class="[ui[theme].innerCardLighten]"
+              <template v-else>
+                <v-data-table
+                  :items="transactionsData"
+                  :items-per-page="20"
+                  :footer-props="{
+                    'items-per-page-options': [20, 40, 60, 80, 100],
+                  }"
+                  item-key="txHash"
+                  class="elevation-0"
+                  :headers="cols"
+                  show-expand
+                  single-expand
                 >
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <span
-                        v-bind="attrs"
-                        style="cursor: pointer"
-                        v-on="on"
-                        @click="copyAddressToClipboard(item.to || item.contractAddress)"
-                      >
-                        <v-icon v-if="item.contractAddress" class="mr-1" small>mdi-file-sign</v-icon>
-                        {{ stringTruncate(item.to, 6, 4) || stringTruncate(item.contractAddress, 6, 4) }}
-                      </span>
-                    </template>
-                    <span :class="ui[theme].headerTextClass">
-                      {{ isCopied ? 'Copied' : 'click to copy' }}
-                      <span v-if="item.contractAddress">contract</span> address</span
-                    >
-                  </v-tooltip>
-                </div>
-                <div v-else>
-                  <v-tooltip top :color="ui[theme].overlayColor">
-                    <template #activator="{ on, attrs }">
-                      <div
-                        v-bind="attrs"
-                        style="cursor: pointer; max-width: 140px"
-                        class="text-no-wrap text-truncate"
-                        v-on="on"
-                      >
-                        <v-avatar size="18px">
-                          <img
-                            alt="Avatar"
-                            :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.tokenTo.symbol.toLowerCase()}.png`"
-                            @error="setAltImg"
-                          />
-                        </v-avatar>
-                        <span class="ml-1 caption" @click="copyAddressToClipboard(item.to)">
-                          {{ item.tokenTo.name }}
-                        </span>
-                      </div>
-                    </template>
-                    <span :class="ui[theme].headerTextClass">{{ isCopied ? 'Copied' : 'click to copy address' }}</span>
-                  </v-tooltip>
-                </div>
-              </template>
-
-              <template #[`item.value`]="{ item }">
-                <div class="py-2">
-                  <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
-                    {{
-                      parseInt(item.value) / 10 ** 18 > 0 ? (parseInt(item.value) / 10 ** 18).toFixed(4) : item.value
-                    }}
-                    ETH
-                  </div>
-                  <div>${{ calculateEthUsdPrice(item.value / 10 ** 18).toFixed(2) }}</div>
-                </div>
-              </template>
-
-              <!--    Txn Fee      -->
-              <template #[`item.txnFee`]="{ item }">
-                <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">{{ item.txnFee.toFixed(6) }} ETH</div>
-                <span>${{ calculateEthUsdPrice(item.txnFee).toFixed(2) }}</span>
-              </template>
-
-              <template #[`item.isError`]="{ item }">
-                <v-btn
-                  width="90"
-                  outlined
-                  small
-                  depressed
-                  rounded
-                  class="text-capitalize disable-events"
-                  :color="item.isError === '0' ? 'green' : 'pink'"
-                >
-                  <span class="caption" :class="[ui[theme].headerTextClass]">
-                    {{ item.isError === '0' ? 'Success' : 'Failed' }}
-                  </span>
-                </v-btn>
-              </template>
-
-              <template #[`item.action`]="{ item }">
-                <v-tooltip top :color="ui[theme].overlayColor">
-                  <template #activator="{ on, attrs }">
-                    <div v-bind="attrs" style="cursor: pointer" v-on="on">
+                  <!-- expand column -->
+                  <template #item.data-table-expand="{ item, isExpanded, expand }">
+                    <div style="width: 16px; cursor: pointer">
                       <v-btn
+                        v-if="item.logEvents.length > 0 && !isExpanded"
                         small
                         icon
-                        color="primary"
-                        class="caption text-capitalize"
-                        @click="navigateToExplorer(item.hash)"
+                        @click="expandRow(expand, true, item.logEvents)"
                       >
-                        <v-icon small class="ml-1">mdi-open-in-new</v-icon>
+                        <v-icon>mdi-chevron-down</v-icon>
+                      </v-btn>
+                      <v-btn
+                        v-if="item.logEvents.length > 0 && isExpanded"
+                        small
+                        icon
+                        @click="expandRow(expand, false, item.logEvents)"
+                      >
+                        <v-icon>mdi-chevron-up</v-icon>
                       </v-btn>
                     </div>
                   </template>
-                  <span :class="[ui[theme].headerTextClass]">View on Block Explorer</span>
-                </v-tooltip>
+
+                  <!-- expanded column items -->
+                  <template #expanded-item="{ headers, item }">
+                    <td :colspan="headers.length">
+                      <v-row justify="center" class="overflow-auto my-0 mx-n4" style="max-height: 625px">
+                        <v-col cols="11">
+                          <div
+                            v-for="event in logEventsLoaded"
+                            :key="event.txHash + '_' + event.logOffset"
+                            class="pb-3"
+                          >
+                            <div class="subtitle-2 pink--text">
+                              {{ event.decoded.name.replace(/([A-Z])/g, ' $1').trim() }}
+                            </div>
+
+                            <v-row no-gutters :class="[ui[theme].innerCardLighten]">
+                              <div v-for="(param, i) in event.decoded.params" :key="i">
+                                <div v-if="param.decoded && param.value.length > 0" class="pr-10">
+                                  <div :class="[ui[ui.theme].headerTextClass, 'text-capitalize text-caption']">
+                                    {{ param.name.replace('_', '') }}:
+                                  </div>
+
+                                  <div v-if="param.type === 'address'" class="pr-16">
+                                    <v-tooltip top color="grey darken-4">
+                                      <template #activator="{ on, attrs }">
+                                        <div
+                                          style="cursor: pointer"
+                                          :class="[ui[theme].innerCardLighten]"
+                                          v-bind="attrs"
+                                          v-on="on"
+                                          @click="$copyAddressToClipboard(param.value)"
+                                        >
+                                          {{ $truncateAddress(param.value, 8, 10) }}
+                                        </div>
+                                      </template>
+                                      <span>{{ param.value }}</span>
+                                    </v-tooltip>
+                                  </div>
+
+                                  <div v-else-if="param.name === 'functionSignature'" class="pr-16">
+                                    <v-tooltip top color="grey darken-4">
+                                      <template #activator="{ on, attrs }">
+                                        <div
+                                          style="cursor: pointer"
+                                          :class="[ui[theme].innerCardLighten]"
+                                          v-bind="attrs"
+                                          v-on="on"
+                                          @click="$copyAddressToClipboard(param.value)"
+                                        >
+                                          {{ $truncateAddress(param.value, 8, 10) }}
+                                        </div>
+                                      </template>
+                                      <span>{{ param.value }}</span>
+                                    </v-tooltip>
+                                  </div>
+
+                                  <div v-else-if="param.name === 'Approval'" class="pr-10">
+                                    {{
+                                      +param.value >=
+                                      115792089237316195423570985008687907853269984665640564039457584007913129639935
+                                        ? 'max approval'
+                                        : param.value
+                                    }}
+                                  </div>
+
+                                  <div v-else class="pr-10">
+                                    {{
+                                      param.type.startsWith('uint') && param.name === 'value'
+                                        ? $nf(+param.value / 10 ** event.senderContractDecimals, 0, 6)
+                                        : param.value.substring(0, 300)
+                                    }}
+                                  </div>
+                                </div>
+                              </div>
+                              <v-row
+                                v-if="event.senderName && event.decoded.params.length > 0"
+                                no-gutters
+                                class="ml-n12 mt-5"
+                              >
+                                <v-avatar size="16" style="margin-top: 2px">
+                                  <img
+                                    :src="event.senderLogoUrl"
+                                    :alt="`${event.senderName} logo`"
+                                    @error="$setAltImageUrl"
+                                  />
+                                </v-avatar>
+                                <div class="pl-2">
+                                  {{ event.senderName }}
+                                  <span class="caption">({{ event.senderContractTickerSymbol }})</span>
+                                </div>
+                              </v-row>
+                            </v-row>
+                          </div>
+                          <v-row no-gutters>
+                            <v-btn
+                              v-if="loadedEventsLength < item.logEvents.length"
+                              height="24"
+                              block
+                              small
+                              class="text-capitalize"
+                              outlined
+                              color="primary"
+                              tile
+                              @click="loadMore"
+                            >
+                              <span :class="ui[theme].headerTextClass">Load more...</span>
+                            </v-btn>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </td>
+                  </template>
+
+                  <template #[`item.blockSignedAt`]="{ item }">
+                    <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
+                      {{ new Date(item.blockSignedAt).toLocaleString() }}
+                    </div>
+                  </template>
+
+                  <template #[`item.method`]="{ item }">
+                    <div class="text-truncate" style="width: 120px">
+                      <v-tooltip top :color="ui[theme].overlayColor">
+                        <template #activator="{ on, attrs }">
+                          <v-btn
+                            primary
+                            style="max-width: 120px"
+                            outlined
+                            small
+                            depressed
+                            rounded
+                            class="cursor-text"
+                            color="primary"
+                            v-bind="attrs"
+                            v-on="on"
+                          >
+                            <div
+                              :class="[
+                                ui[ui.theme].headerTextClass,
+                                'text-truncate text-capitalize',
+                                'px-2',
+                                'font-weight-regular',
+                              ]"
+                              style="max-width: 120px"
+                            >
+                              {{ methodRenderer(item.logEvents) }}
+                            </div>
+                          </v-btn>
+                        </template>
+                        <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']">
+                          {{ methodRenderer(item.logEvents) }}
+                        </span>
+                      </v-tooltip>
+                    </div>
+                  </template>
+
+                  <template #[`item.isOut`]="{ item }">
+                    <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
+                      <v-btn
+                        style="pointer-events: none"
+                        width="50"
+                        :color="isOutStyleRenderer(item).color"
+                        small
+                        class="rounded-sm"
+                        text
+                      >
+                        {{ isOutStyleRenderer(item).text }}
+                      </v-btn>
+                    </div>
+                  </template>
+
+                  <template #[`item.fromTo`]="{ item }">
+                    <div class="text-no-wrap">
+                      <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap d-flex">
+                        From:
+                        <div
+                          v-if="item.fromAddressIsContract"
+                          style="cursor: pointer"
+                          :class="[ui[theme].headerTextClass, 'ml-1']"
+                          @click="$copyAddressToClipboard(item.fromAddress)"
+                        >
+                          <v-avatar v-if="item.fromAddressSymbol" size="16" style="margin-top: -2px">
+                            <img
+                              :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.fromAddressSymbol.toLowerCase()}.png`"
+                              :alt="`${item.fromAddressSymbol} logo`"
+                              @error="$setAltImageUrl"
+                            />
+                          </v-avatar>
+                          <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
+                          {{ !item.fromAddressName ? $truncateAddress(item.fromAddress, 4, 10) : item.fromAddressName }}
+                        </div>
+
+                        <div
+                          v-else
+                          style="cursor: pointer"
+                          :class="[
+                            'ml-1',
+                            item.fromAddress.toLowerCase() === walletAddress.toLowerCase()
+                              ? 'pink--text'
+                              : ui[theme].headerTextClass,
+                          ]"
+                          @click="$copyAddressToClipboard(item.fromAddress)"
+                        >
+                          {{ $truncateAddress(item.fromAddress, 4, 10) }}
+                        </div>
+                      </div>
+
+                      <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap d-flex">
+                        To:
+                        <div
+                          v-if="item.toAddressIsContract"
+                          style="cursor: pointer"
+                          :class="[ui[theme].headerTextClass, 'ml-1']"
+                          @click="$copyAddressToClipboard(item.toAddress)"
+                        >
+                          <v-avatar v-if="item.toAddressSymbol" size="16" style="margin-top: -2px">
+                            <img
+                              :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.toAddressSymbol.toLowerCase()}.png`"
+                              :alt="`${item.toAddressSymbol} logo`"
+                              @error="$setAltImageUrl"
+                            />
+                          </v-avatar>
+                          <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
+                          {{ !item.toAddressName ? $truncateAddress(item.toAddress, 4, 10) : item.toAddressName }}
+                        </div>
+
+                        <div v-else-if="!item.toAddress" :class="[ui[theme].headerTextClass]">
+                          <v-icon class="mx-1 mt-n1" small>mdi-file-sign</v-icon>Contract Creation
+                        </div>
+
+                        <div
+                          v-else
+                          style="cursor: pointer"
+                          :class="[
+                            item.toAddress.toLowerCase() === walletAddress.toLowerCase()
+                              ? 'pink--text'
+                              : ui[theme].headerTextClass,
+                          ]"
+                          @click="$copyAddressToClipboard(item.toAddress)"
+                        >
+                          {{ $truncateAddress(item.toAddress, 4, 10) }}
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+
+                  <template #[`item.txHash`]="{ item }">
+                    <v-tooltip top color="grey darken-4">
+                      <template #activator="{ on, attrs }">
+                        <div
+                          style="cursor: pointer"
+                          :class="[ui[theme].innerCardLighten]"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="$copyAddressToClipboard(item.txHash)"
+                        >
+                          {{ $truncateAddress(item.txHash, 10, 4) }}
+                        </div>
+                      </template>
+                      <span>{{ item.txHash }}</span>
+                    </v-tooltip>
+                  </template>
+
+                  <template #[`item.value`]="{ item }">
+                    <div class="py-2">
+                      <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
+                        {{ $nf(item.value / 10 ** 18, 0, 6) }} ETH
+                      </div>
+                      <span>$ {{ $nf(item.valueQuote, 2, 2) }}</span>
+                    </div>
+                  </template>
+
+                  <template #[`item.txnFee`]="{ item }">
+                    <div class="py-2">
+                      <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
+                        {{ $nf(item.txnFee, 0, 6) }} ETH
+                      </div>
+                      <span>$ {{ $nf(item.gasQuote, 2, 2) }}</span>
+                    </div>
+                  </template>
+
+                  <template #[`item.successful`]="{ item }">
+                    <v-btn
+                      width="90"
+                      outlined
+                      small
+                      depressed
+                      rounded
+                      class="text-capitalize cursor-text"
+                      :color="item.successful ? 'green' : 'pink'"
+                    >
+                      <span class="caption" :class="[ui[theme].headerTextClass]">
+                        {{ item.successful ? 'Success' : 'Failed' }}
+                      </span>
+                    </v-btn>
+                  </template>
+
+                  <template #[`item.action`]="{ item }">
+                    <v-tooltip top :color="ui[theme].overlayColor">
+                      <template #activator="{ on, attrs }">
+                        <div v-bind="attrs" style="cursor: pointer; width: 25px" v-on="on">
+                          <v-btn
+                            small
+                            icon
+                            color="primary"
+                            class="caption text-capitalize"
+                            @click="navigateToExplorer(item.txHash)"
+                          >
+                            <v-icon small class="ml-1">mdi-open-in-new</v-icon>
+                          </v-btn>
+                        </div>
+                      </template>
+                      <span :class="[ui[theme].headerTextClass]">View on Block Explorer</span>
+                    </v-tooltip>
+                  </template>
+                </v-data-table>
               </template>
-            </v-data-table>
-          </v-card>
-        </v-col>
-      </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </template>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
-import Transactions from '@/models/transactions'
+import { defineComponent, useStore, computed } from '@nuxtjs/composition-api'
+import { State } from '@/types/state'
+import NetworkSelectionMenu from '~/components/common/NetworkMenuSelection.vue'
 
-@Component({
-  name: 'Transaction',
-  head(): object {
+import useTransactions from '~/composables/useTransactions'
+import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
+
+export default defineComponent({
+  name: 'Transactions',
+  components: { ConnectWalletMemo, NetworkSelectionMenu },
+  setup() {
+    /** COMPOSABLES **/
+    const store = useStore<State>()
+    const {
+      walletReady,
+      loading,
+      cols,
+      account,
+      chains,
+      currentChain,
+      transactionsData,
+      loadedEventsLength,
+      logEventsLoaded,
+      loadMore,
+      onNetworkSelectChange,
+      navigateToExplorer,
+      expandRow,
+      isOutStyleRenderer,
+      methodRenderer,
+    } = useTransactions()
+
     return {
-      title: 'DeFi Transaction History | EVM Ethereum Virtual Machine',
-      meta: [
-        {
-          name: 'description',
-          hid: 'description',
-          content: 'DeFi transactions for Ethereum Mainnet, Matic, Binance Smart Chain, Fantom Opera and more',
-        },
-
-        // Open Graph
-        {
-          name: 'og:title',
-          content: 'DeFi Transaction History | EVM Ethereum Virtual Machine',
-        },
-        {
-          name: 'og:description',
-          content: 'DeFi transactions for Ethereum Mainnet, Matic, Binance Smart Chain, Fantom Opera and more',
-        },
-        { name: 'og:type', content: 'website' },
-        { name: 'og:url', content: process.env.baseURL },
-        {
-          name: 'og:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXTransactionsPage.jpg',
-        },
-
-        // Twitter Card
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@Quantify_Crypto' },
-        {
-          name: 'twitter:title',
-          content: 'DeFi Transaction History | EVM Ethereum Virtual Machine',
-        },
-        {
-          name: 'twitter:description',
-          content: 'DeFi transactions for Ethereum Mainnet, Matic, Binance Smart Chain, Fantom Opera and more',
-        },
-        {
-          name: 'twitter:image',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXTransactionsPage.jpg',
-        },
-        {
-          name: 'twitter:image:alt',
-          content: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/website-img/EVMXTransactionsPage.jpg',
-        },
-      ],
+      ui: computed(() => store.state.ui),
+      theme: computed(() => store.state.ui.theme),
+      walletAddress: computed(() => account.value ?? ''),
+      walletReady,
+      loading,
+      cols,
+      chains,
+      currentChain,
+      transactionsData,
+      loadedEventsLength,
+      logEventsLoaded,
+      /** Methods **/
+      loadMore,
+      onNetworkSelectChange,
+      navigateToExplorer,
+      expandRow,
+      isOutStyleRenderer,
+      methodRenderer,
     }
   },
 })
-export default class Transaction extends mixins(Transactions) {}
 </script>

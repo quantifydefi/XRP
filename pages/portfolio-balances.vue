@@ -1,10 +1,8 @@
 <template>
   <div>
     <v-row v-if="!walletReady" align="center" justify="center">
-      <v-col class="text-center">
-        <client-only>
-          <v-btn class="mt-16" tile depressed @click="dispatch('ui/walletDialogStatus', true)">Connect to Wallet</v-btn>
-        </client-only>
+      <v-col cols="11">
+        <connect-wallet-memo></connect-wallet-memo>
       </v-col>
     </v-row>
 
@@ -85,9 +83,10 @@ import { State } from '~/types/state'
 import BalancesChart from '~/components/portfolio/BalancesChart.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import BalanceProtocols from '~/components/portfolio/BalanceProtocols.vue'
+import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 
 export default defineComponent({
-  components: { BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
+  components: { ConnectWalletMemo, BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
   setup() {
     // COMPOSABLES
     const { walletReady } = inject(WEB3_PLUGIN_KEY) as Web3

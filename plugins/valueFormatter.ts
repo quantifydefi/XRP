@@ -36,6 +36,20 @@ const imageUrlBySymbol = (symbol: string | null) =>
     ? `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
     : `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`
 
+const truncateAddress = (address: string, zeroIndexTo: number, endIndexMinus: number): string => {
+  return address
+    ? address.slice(0, zeroIndexTo) + '...' + address.slice(address.length - endIndexMinus, address.length)
+    : ''
+}
+
+// Returns a formatted string with specified minimum and maximum fractional digits
+const numFormat = (val: number, minFracDigits = 2, maxFracDigits = 6): string => {
+  return new Intl.NumberFormat('en', {
+    maximumFractionDigits: maxFracDigits,
+    minimumFractionDigits: minFracDigits,
+  }).format(val)
+}
+
 export default defineNuxtPlugin((context: Context) => {
   context.$f = valueFormatter
   context.$copyAddressToClipboard = copyAddressToClipboard
@@ -44,4 +58,6 @@ export default defineNuxtPlugin((context: Context) => {
   Vue.prototype.$copyAddressToClipboard = copyAddressToClipboard
   Vue.prototype.$setAltImageUrl = setAltImageUrl
   Vue.prototype.$imageUrlBySymbol = imageUrlBySymbol
+  Vue.prototype.$truncateAddress = truncateAddress
+  Vue.prototype.$nf = numFormat
 })

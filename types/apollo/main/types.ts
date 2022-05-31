@@ -491,6 +491,8 @@ export type Query = {
   chainLinkAddresses: Scalars['Map'];
   chainLinkPrice: Scalars['Map'];
   chains: Array<Chain>;
+  /** Covalent Transactions */
+  covalentTransactions: Transactions;
   /** Curve Pool  */
   curvePools: Array<CurvePool>;
   /** Eth ABI  */
@@ -535,6 +537,14 @@ export type QueryBalancesArgs = {
 export type QueryChainLinkPriceArgs = {
   chainId?: Scalars['Int'];
   pairs?: Array<Scalars['String']>;
+};
+
+
+export type QueryCovalentTransactionsArgs = {
+  address: Scalars['String'];
+  chainId?: Scalars['Int'];
+  pageNumber?: Scalars['Int'];
+  pageSize?: Scalars['Int'];
 };
 
 
@@ -678,6 +688,48 @@ export type Transaction = {
   value: Scalars['String'];
 };
 
+export type TransactionItem = {
+  __typename?: 'TransactionItem';
+  blockHeight: Scalars['Int'];
+  blockSignedAt: Scalars['String'];
+  fromAddress: Scalars['String'];
+  fromAddressIsContract: Scalars['Boolean'];
+  fromAddressLabel: Scalars['String'];
+  fromAddressName: Scalars['String'];
+  fromAddressSymbol: Scalars['String'];
+  gasOffered: Scalars['Float'];
+  gasPrice: Scalars['Float'];
+  gasQuote: Scalars['Float'];
+  gasQuoteRate: Scalars['Float'];
+  gasSpent: Scalars['Float'];
+  logEvents?: Maybe<Array<LogEvent>>;
+  successful: Scalars['Boolean'];
+  toAddress: Scalars['String'];
+  toAddressIsContract: Scalars['Boolean'];
+  toAddressLabel: Scalars['String'];
+  toAddressName: Scalars['String'];
+  toAddressSymbol: Scalars['String'];
+  txHash: Scalars['String'];
+  txOffset: Scalars['Int'];
+  value: Scalars['String'];
+  valueQuote: Scalars['Float'];
+};
+
+/**
+ * Covalent Get Transactions by chainId and address
+ * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-a-transaction/lng=en
+ */
+export type Transactions = {
+  __typename?: 'Transactions';
+  address: Scalars['String'];
+  chainID: Scalars['Float'];
+  items?: Maybe<Array<TransactionItem>>;
+  nextUpdateAt: Scalars['String'];
+  pagination?: Maybe<Pagination>;
+  quoteCurrency: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -739,7 +791,7 @@ export type BalancesGqlQueryVariables = Exact<{
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number } }> }> };
 
 export type ProtocolGqlQueryVariables = Exact<{
   protocolId: Scalars['String'];
@@ -757,6 +809,16 @@ export type TransactionsGqlQueryVariables = Exact<{
 
 
 export type TransactionsGqlQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', blockNumber: string, timeStamp: string, hash: string, nonce: string, blockHash: string, transactionIndex: string, from: string, to: string, value: string, gas: string, gasPrice: string, isError: string, txreceiptStatus: string, input: string, contractAddress: string, cumulativeGasUsed: string, gasUsed: string, confirmations: string, methodId: string, function: string, tokenTo: { __typename?: 'Token', chainKey: string, coingeckoId: string, address: string, name: string, symbol: string } }> };
+
+export type CovalentTransactionsGqlQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+  address: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+}>;
+
+
+export type CovalentTransactionsGqlQuery = { __typename?: 'Query', covalentTransactions: { __typename?: 'Transactions', items?: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, blockHeight: number, txHash: string, txOffset: number, successful: boolean, fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasOffered: number, gasSpent: number, gasPrice: number, gasQuote: number, gasQuoteRate: number, logEvents?: Array<{ __typename?: 'LogEvent', blockSignedAt: string, blockHeight: number, txOffset: number, logOffset: number, txHash: string, rawLogTopics: Array<string | null>, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, rawLogData: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string }> } }> | null }> | null } };
 
 export type TransactionLogEventsGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];

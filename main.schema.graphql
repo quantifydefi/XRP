@@ -1,62 +1,62 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-  query: Query
-  mutation: Mutation
+    query: Query
+    mutation: Mutation
 }
 
 type AaveAddress {
-  aTokenAddress: String!
-  aTokenSymbol: String!
-  address: String!
-  decimals: Int!
-  stableDebtTokenAddress: String!
-  symbol: String!
-  variableDebtTokenAddress: String!
+    aTokenAddress: String!
+    aTokenSymbol: String!
+    address: String!
+    decimals: Int!
+    stableDebtTokenAddress: String!
+    symbol: String!
+    variableDebtTokenAddress: String!
 }
 
 type AavePool {
-  aEmissionPerSecond: Float!
-  addresses: AaveAddress!
-  availableLiquidity: Float!
-  baseLTVasCollateral: Float!
-  borrowingEnabled: Boolean!
-  decimals: Int!
-  id: String!
-  liquidityRate: Float!
-  name: String!
-  portfolioVal: AavePortfolio!
-  price: AavePoolPrice!
-  reserveLiquidationBonus: Float!
-  reserveLiquidationThreshold: Float!
-  sEmissionPerSecond: Float!
-  stableBorrowRate: Float!
-  stableBorrowRateEnabled: Boolean!
-  symbol: String!
-  totalATokenSupply: Float!
-  totalCurrentVariableDebt: Float!
-  totalLiquidity: Float!
-  totalLiquidityAsCollateral: Float!
-  totalPrincipalStableDebt: Float!
-  underlyingAsset: String!
-  usageAsCollateralEnabled: Boolean!
-  utilizationRate: Float!
-  vEmissionPerSecond: Float!
-  variableBorrowRate: Float!
+    aEmissionPerSecond: Float!
+    addresses: AaveAddress!
+    availableLiquidity: Float!
+    baseLTVasCollateral: Float!
+    borrowingEnabled: Boolean!
+    decimals: Int!
+    id: String!
+    liquidityRate: Float!
+    name: String!
+    portfolioVal: AavePortfolio!
+    price: AavePoolPrice!
+    reserveLiquidationBonus: Float!
+    reserveLiquidationThreshold: Float!
+    sEmissionPerSecond: Float!
+    stableBorrowRate: Float!
+    stableBorrowRateEnabled: Boolean!
+    symbol: String!
+    totalATokenSupply: Float!
+    totalCurrentVariableDebt: Float!
+    totalLiquidity: Float!
+    totalLiquidityAsCollateral: Float!
+    totalPrincipalStableDebt: Float!
+    underlyingAsset: String!
+    usageAsCollateralEnabled: Boolean!
+    utilizationRate: Float!
+    vEmissionPerSecond: Float!
+    variableBorrowRate: Float!
 }
 
 type AavePoolPrice {
-  id: String!
-  priceInEth: Float!
-  priceUsd: Float!
+    id: String!
+    priceInEth: Float!
+    priceUsd: Float!
 }
 
 type AavePortfolio {
-  stableBorrow: Float!
-  symbol: String!
-  totalDeposits: Float!
-  variableBorrow: Float!
-  walletBal: Float!
+    stableBorrow: Float!
+    symbol: String!
+    totalDeposits: Float!
+    variableBorrow: Float!
+    walletBal: Float!
 }
 
 """
@@ -65,44 +65,44 @@ Covalent Get Balances for address
 https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
 """
 type Balance {
-  aavePools: [AavePool!]!
-  address: String!
-  chainId: Float!
-  items: [BalanceItem!]!
-  nextUpdateAt: String!
-  pagination: Pagination
-  quoteCurrency: String!
-  updatedAt: String!
+    aavePools: [AavePool!]!
+    address: String!
+    chainId: Float!
+    items: [BalanceItem!]!
+    nextUpdateAt: String!
+    pagination: Pagination
+    quoteCurrency: String!
+    updatedAt: String!
 }
 
 type BalanceItem {
-  balance: String!
-  balance24h: String!
-  contractAddress: String!
-  contractDecimals: Float!
-  contractName: String!
-  contractTickerSymbol: String!
-  lastTransferredAt: String!
-  logoUrl: String!
-  nftData: Float!
-  quote: Float!
-  quote24h: Float!
-  quoteRate: Float!
-  quoteRate24h: Float!
-  supportsErc: [String!]
-  type: String!
+    balance: String!
+    balance24h: String!
+    contractAddress: String!
+    contractDecimals: Float!
+    contractName: String!
+    contractTickerSymbol: String!
+    lastTransferredAt: String!
+    logoUrl: String!
+    nftData: Float!
+    quote: Float!
+    quote24h: Float!
+    quoteRate: Float!
+    quoteRate24h: Float!
+    supportsErc: [String!]
+    type: String!
 }
 
 type Chain {
-  blockExplorerUrl: String!
-  chainId: Int!
-  geckoId: String!
-  isTestNet: Boolean!
-  label: String!
-  logoUrl: String!
-  name: String!
-  rpcUrl: String!
-  symbol: String!
+    blockExplorerUrl: String!
+    chainId: Int!
+    geckoId: String!
+    isTestNet: Boolean!
+    label: String!
+    logoUrl: String!
+    name: String!
+    rpcUrl: String!
+    symbol: String!
 }
 
 """
@@ -111,39 +111,39 @@ Coin Gaico Coin Details
 https://api.coingecko.com/api/v3/coins/list?include_platform=true
 """
 type CoinDetails {
-  additional_notices: [String]
-  assetPlatformId: String
-  blockTimeInMinutes: Float
-  categories: [String]
-  coingeckoRank: Float
-  coingeckoScore: Float
-  communityData: Map
-  communityScore: Float
-  contractAddress: String
-  countryOrigin: String
-  description: Map
-  developerData: Map
-  developerScore: Float
-  genesisDate: String
-  hashingAlgorithm: String
-  id: String!
-  image: Map
-  lastUpdated: String
-  links: Map
-  liquidityScore: Float
-  localization: Map
-  marketCapRank: Float
-  marketData: MarketData
-  name: String!
-  platforms: Map
-  publicInterestScore: Float
-  publicInterestStats: Map
-  publicNotice: String
-  sentimentVotesDownPercentage: Float
-  sentimentVotesUpPercentage: Float
-  statusUpdates: [Map]
-  symbol: String!
-  tickers: [TickerData]
+    additional_notices: [String]
+    assetPlatformId: String
+    blockTimeInMinutes: Float
+    categories: [String]
+    coingeckoRank: Float
+    coingeckoScore: Float
+    communityData: Map
+    communityScore: Float
+    contractAddress: String
+    countryOrigin: String
+    description: Map
+    developerData: Map
+    developerScore: Float
+    genesisDate: String
+    hashingAlgorithm: String
+    id: String!
+    image: Map
+    lastUpdated: String
+    links: Map
+    liquidityScore: Float
+    localization: Map
+    marketCapRank: Float
+    marketData: MarketData
+    name: String!
+    platforms: Map
+    publicInterestScore: Float
+    publicInterestStats: Map
+    publicNotice: String
+    sentimentVotesDownPercentage: Float
+    sentimentVotesUpPercentage: Float
+    statusUpdates: [Map]
+    symbol: String!
+    tickers: [TickerData]
 }
 
 """
@@ -152,111 +152,111 @@ Coin Gaico coin List
 https://api.coingecko.com/api/v3/coins/list?include_platform=true
 """
 type CoinList {
-  id: String!
-  name: String!
-  platforms: Map
-  symbol: String!
+    id: String!
+    name: String!
+    platforms: Map
+    symbol: String!
 }
 
 type CoingeckoInfo {
-  id: String!
-  referenceAssetID: String!
-  symbol: String!
+    id: String!
+    referenceAssetID: String!
+    symbol: String!
 }
 
 type Currency {
-  code: String!
-  slug: String!
-  title: String!
-  url: String!
+    code: String!
+    slug: String!
+    title: String!
+    url: String!
 }
 
 type CurveAddresses {
-  deposit: String!
-  gauge: String!
-  lpToken: String!
-  stakingRewards: String!
-  swap: String!
+    deposit: String!
+    gauge: String!
+    lpToken: String!
+    stakingRewards: String!
+    swap: String!
 }
 
 type CurveCoin {
-  ID: String!
-  address: String!
-  coingeckoId: String!
-  decimals: Int!
-  isLpToken: Boolean!
-  liquidity: Float!
-  symbol: String!
-  tokenBalance: Float!
-  type: String!
-  usdPrice: Float!
-  wrappedCoinType: String!
+    ID: String!
+    address: String!
+    coingeckoId: String!
+    decimals: Int!
+    isLpToken: Boolean!
+    liquidity: Float!
+    symbol: String!
+    tokenBalance: Float!
+    type: String!
+    usdPrice: Float!
+    wrappedCoinType: String!
 }
 
 type CurvePool {
-  ID: String!
-  addresses: CurveAddresses!
-  adminFee: String!
-  assetType: String!
-  assets: String!
-  baseAPY: Float!
-  coingeckoInfo: CoingeckoInfo!
-  coins: [CurveCoin!]!
-  dataIndex: Int!
-  fee: String!
-  hasAMultiplier: Boolean!
-  idAlias: String!
-  isLendingPool: Boolean!
-  isMetaPool: Boolean!
-  isOldPool: Boolean!
-  lpTokenInfo: LpTokenInfo!
-  metaCoins: [CurveCoin!]!
-  name: String!
-  pageMetaData: PageMetaData!
-  rewards: CurveRewards!
-  totalDailyVolume: Float!
-  totalLiquidity: Float!
-  totalTokenBalance: Float!
-  underlyingCoins: [CurveCoin!]!
-  virtualPrice: String!
+    ID: String!
+    addresses: CurveAddresses!
+    adminFee: String!
+    assetType: String!
+    assets: String!
+    baseAPY: Float!
+    coingeckoInfo: CoingeckoInfo!
+    coins: [CurveCoin!]!
+    dataIndex: Int!
+    fee: String!
+    hasAMultiplier: Boolean!
+    idAlias: String!
+    isLendingPool: Boolean!
+    isMetaPool: Boolean!
+    isOldPool: Boolean!
+    lpTokenInfo: LpTokenInfo!
+    metaCoins: [CurveCoin!]!
+    name: String!
+    pageMetaData: PageMetaData!
+    rewards: CurveRewards!
+    totalDailyVolume: Float!
+    totalLiquidity: Float!
+    totalTokenBalance: Float!
+    underlyingCoins: [CurveCoin!]!
+    virtualPrice: String!
 }
 
 type CurveRewards {
-  maxRewardPtc: Float!
-  rewardPtc: Float!
+    maxRewardPtc: Float!
+    rewardPtc: Float!
 }
 
 type EthGasStatsResult {
-  fastGasPrice: Float!
-  gasUsedRatio: String!
-  lastBlock: Int!
-  proposeGasPrice: Float!
-  safeGasPrice: Float!
-  suggestBaseFee: Float!
+    fastGasPrice: Float!
+    gasUsedRatio: String!
+    lastBlock: Int!
+    proposeGasPrice: Float!
+    safeGasPrice: Float!
+    suggestBaseFee: Float!
 }
 
 type GasStats {
-  blockExplorer: String!
-  gas: EthGasStatsResult!
-  name: String!
-  symbol: String!
+    blockExplorer: String!
+    gas: EthGasStatsResult!
+    name: String!
+    symbol: String!
 }
 
 type GlobalStats {
-  defiDominance: Float!
-  defiMarketCap: Float!
-  defiToEthRatio: Float!
-  ethMarketCap: Float!
-  topCoinDefiDominance: Float!
-  topCoinName: String!
-  tradingVolume24h: Float!
+    defiDominance: Float!
+    defiMarketCap: Float!
+    defiToEthRatio: Float!
+    ethMarketCap: Float!
+    topCoinDefiDominance: Float!
+    topCoinName: String!
+    tradingVolume24h: Float!
 }
 
 type HighAndLow {
-  high: Float!
-  interval: String!
-  low: Float!
-  unixTime: Int!
+    high: Float!
+    interval: String!
+    low: Float!
+    unixTime: Int!
 }
 
 """
@@ -265,90 +265,90 @@ Covalent Get single Transaction Log Event by chainId and txHash
 https://www.covalenthq.com/docs/api/#/0/Class-A/Get-a-transaction/lng=en
 """
 type LogEvent {
-  blockHeight: Int!
-  blockSignedAt: String!
-  decoded: LogEventDecoded!
-  logOffset: Int!
-  rawLogData: String!
-  rawLogTopics: [String]!
-  rawLogTopicsBytes: String!
-  senderAddress: String!
-  senderAddressLabel: String!
-  senderContractDecimals: Int!
-  senderContractTickerSymbol: String!
-  senderLogoUrl: String!
-  senderName: String!
-  txHash: String!
-  txOffset: Int!
+    blockHeight: Int!
+    blockSignedAt: String!
+    decoded: LogEventDecoded!
+    logOffset: Int!
+    rawLogData: String!
+    rawLogTopics: [String]!
+    rawLogTopicsBytes: String!
+    senderAddress: String!
+    senderAddressLabel: String!
+    senderContractDecimals: Int!
+    senderContractTickerSymbol: String!
+    senderLogoUrl: String!
+    senderName: String!
+    txHash: String!
+    txOffset: Int!
 }
 
 type LogEventDecoded {
-  name: String!
-  params: [LogEventParams!]!
-  signature: String!
+    name: String!
+    params: [LogEventParams!]!
+    signature: String!
 }
 
 type LogEventParams {
-  decoded: Boolean!
-  indexed: Boolean!
-  name: String!
-  type: String!
-  value: String!
+    decoded: Boolean!
+    indexed: Boolean!
+    name: String!
+    type: String!
+    value: String!
 }
 
 type LpTokenInfo {
-  name: String!
-  symbol: String!
+    name: String!
+    symbol: String!
 }
 
 type MarketData {
-  ath: Map
-  athChangePercentage: Map
-  athDate: Map
-  atl: Map
-  atlChangePercentage: Map
-  atlDate: Map
-  circulatingSupply: Float
-  currentPrice: Map
-  fdvToTvlRatio: Float
-  fullyDilutedValuation: Map
-  high24h: Map
-  lastUpdated: String
-  low24h: Map
-  marketCap: Map
-  marketCapChange24h: Float
-  marketCapChange24hInCurrency: Map
-  marketCapChangePercentage24h: Float
-  marketCapChangePercentage24hInCurrency: Map
-  marketCapRank: Float
-  maxSupply: Float
-  mcapToTvlRatio: Float
-  priceChange24h: Float
-  priceChange24hInCurrency: Map
-  priceChangePercentage14d: Float
-  priceChangePercentage14dInCurrency: Map
-  priceChangePercentage1hInCurrency: Map
-  priceChangePercentage1y: Float
-  priceChangePercentage1yInCurrency: Map
-  priceChangePercentage200d: Float
-  priceChangePercentage200dInCurrency: Map
-  priceChangePercentage24h: Float
-  priceChangePercentage24hInCurrency: Map
-  priceChangePercentage30d: Float
-  priceChangePercentage30dInCurrency: Map
-  priceChangePercentage60d: Float
-  priceChangePercentage60dInCurrency: Map
-  priceChangePercentage7d: Float
-  priceChangePercentage7dInCurrency: Map
-  roi: Map
-  sparkline7d: Map
-  totalSupply: Float
-  totalValueLocked: Map
-  totalVolume: Map
+    ath: Map
+    athChangePercentage: Map
+    athDate: Map
+    atl: Map
+    atlChangePercentage: Map
+    atlDate: Map
+    circulatingSupply: Float
+    currentPrice: Map
+    fdvToTvlRatio: Float
+    fullyDilutedValuation: Map
+    high24h: Map
+    lastUpdated: String
+    low24h: Map
+    marketCap: Map
+    marketCapChange24h: Float
+    marketCapChange24hInCurrency: Map
+    marketCapChangePercentage24h: Float
+    marketCapChangePercentage24hInCurrency: Map
+    marketCapRank: Float
+    maxSupply: Float
+    mcapToTvlRatio: Float
+    priceChange24h: Float
+    priceChange24hInCurrency: Map
+    priceChangePercentage14d: Float
+    priceChangePercentage14dInCurrency: Map
+    priceChangePercentage1hInCurrency: Map
+    priceChangePercentage1y: Float
+    priceChangePercentage1yInCurrency: Map
+    priceChangePercentage200d: Float
+    priceChangePercentage200dInCurrency: Map
+    priceChangePercentage24h: Float
+    priceChangePercentage24hInCurrency: Map
+    priceChangePercentage30d: Float
+    priceChangePercentage30dInCurrency: Map
+    priceChangePercentage60d: Float
+    priceChangePercentage60dInCurrency: Map
+    priceChangePercentage7d: Float
+    priceChangePercentage7dInCurrency: Map
+    roi: Map
+    sparkline7d: Map
+    totalSupply: Float
+    totalValueLocked: Map
+    totalVolume: Map
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+    createTodo(input: NewTodo!): Todo!
 }
 
 """
@@ -357,120 +357,122 @@ Returns news by coin symbol
 https://cryptopanic.com/api/v1/posts/?auth_token=API_KEY&currencies=COIN_SYMBOL
 """
 type News {
-  currencies: [Currency!]
-  id: Int!
-  publishedAt: String!
-  title: String!
-  url: String!
+    currencies: [Currency!]
+    id: Int!
+    publishedAt: String!
+    title: String!
+    url: String!
 }
 
 type PageMetaData {
-  description: String!
-  title: String!
+    description: String!
+    title: String!
 }
 
 type Pagination {
-  hasMore: Boolean
-  pageNumber: Int
-  pageSize: Int
-  totalCount: Int
+    hasMore: Boolean
+    pageNumber: Int
+    pageSize: Int
+    totalCount: Int
 }
 
 type Protocol {
-  address: String!
-  balance: Map!
-  category: String!
-  chain: String!
-  chains: [String]!
-  description: String!
-  geckoId: String!
-  id: String!
-  name: String!
-  symbol: String!
-  tokenAddresses: [String]!
-  twitter: String!
-  updatedAt: Int!
-  url: String!
-  usdTvl: Map!
+    address: String!
+    balance: Map!
+    category: String!
+    chain: String!
+    chains: [String]!
+    description: String!
+    geckoId: String!
+    id: String!
+    name: String!
+    symbol: String!
+    tokenAddresses: [String]!
+    twitter: String!
+    updatedAt: Int!
+    url: String!
+    usdTvl: Map!
 }
 
 type QCCoin {
-  ID: ID
-  price: QCPrice!
-  qcMetrics: QCMetrics!
-  qcProfile: QCProfile!
+    ID: ID
+    price: QCPrice!
+    qcMetrics: QCMetrics!
+    qcProfile: QCProfile!
 }
 
 type QCMetrics {
-  circulatingSupply: Float!
-  marketcap: Float!
-  price24h: Float!
-  resistance1h: Float!
-  safeScore: Float!
-  support1h: Float!
-  volume24h: Float!
+    circulatingSupply: Float!
+    marketcap: Float!
+    price24h: Float!
+    resistance1h: Float!
+    safeScore: Float!
+    support1h: Float!
+    volume24h: Float!
 }
 
 type QCPrice {
-  dataSource: String!
-  priceBtc: Float!
-  priceUsd: Float!
-  qcKey: String!
-  symbolName: String!
+    dataSource: String!
+    priceBtc: Float!
+    priceUsd: Float!
+    qcKey: String!
+    symbolName: String!
 }
 
 type QCProfile {
-  bitbucketRepos: JSONMap!
-  coinDescription: String!
-  discordChannelId: String!
-  explorerUrls: JSONMap!
-  facebookUrl: String!
-  githubRepos: JSONMap!
-  qcKey: String!
-  rank: Int!
-  subredditUrl: String!
-  symbolName: String!
-  telegramChannelId: String!
-  twitterUrl: String!
-  websiteUrl: JSONMap!
+    bitbucketRepos: JSONMap!
+    coinDescription: String!
+    discordChannelId: String!
+    explorerUrls: JSONMap!
+    facebookUrl: String!
+    githubRepos: JSONMap!
+    qcKey: String!
+    rank: Int!
+    subredditUrl: String!
+    symbolName: String!
+    telegramChannelId: String!
+    twitterUrl: String!
+    websiteUrl: JSONMap!
 }
 
 type Query {
-  "Aave Pool "
-  aavePools(chainId: Int!): [AavePool!]!
-  "Covalent Balances"
-  balances(address: String!, chainIds: [Int!]!): [Balance!]!
-  chainLinkAddresses: Map!
-  chainLinkPrice(chainId: Int! = 1, pairs: [String!]! = []): Map!
-  chains: [Chain!]!
-  "Curve Pool "
-  curvePools: [CurvePool!]!
-  "Eth ABI "
-  ethABI(address: String!): String!
-  "Gas Stats for ETH"
-  gas: [GasStats!]!
-  "Global Staths for Coin Gaico"
-  globalStats: GlobalStats!
-  highAndLow(intervalType: String!, qcKey: String!): HighAndLow!
-  "Crypto Panic News"
-  news(qcKey: String!): [News!]
-  protocol(protocolId: String!): Protocol!
-  "Supported Protocols"
-  protocols: [Protocol]!
-  qcCoin(qcKey: String!): QCCoin!
-  "Recent Usd Prices "
-  recentPrices: Map!
-  """
+    "Aave Pool "
+    aavePools(chainId: Int!): [AavePool!]!
+    "Covalent Balances"
+    balances(address: String!, chainIds: [Int!]!): [Balance!]!
+    chainLinkAddresses: Map!
+    chainLinkPrice(chainId: Int! = 1, pairs: [String!]! = []): Map!
+    chains: [Chain!]!
+    "Covalent Transactions"
+    covalentTransactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transactions!
+    "Curve Pool "
+    curvePools: [CurvePool!]!
+    "Eth ABI "
+    ethABI(address: String!): String!
+    "Gas Stats for ETH"
+    gas: [GasStats!]!
+    "Global Staths for Coin Gaico"
+    globalStats: GlobalStats!
+    highAndLow(intervalType: String!, qcKey: String!): HighAndLow!
+    "Crypto Panic News"
+    news(qcKey: String!): [News!]
+    protocol(protocolId: String!): Protocol!
+    "Supported Protocols"
+    protocols: [Protocol]!
+    qcCoin(qcKey: String!): QCCoin!
+    "Recent Usd Prices "
+    recentPrices: Map!
+    """
 
-  If tickers (a comma separated list of tickers
-  is present), only return the spot prices for these tokens.
-  """
-  spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
-  todos: [Todo!]!
-  "Single Transaction from Covalent"
-  transactionLogEvents(chainId: Int! = 0, txHash: String!): [LogEvent!]!
-  "Transactions"
-  transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): [Transaction!]!
+    If tickers (a comma separated list of tickers
+    is present), only return the spot prices for these tokens.
+    """
+    spotPrice(pageNumber: Int!, pageSize: Int!, tickers: String!): SpotPrice
+    todos: [Todo!]!
+    "Single Transaction from Covalent"
+    transactionLogEvents(chainId: Int! = 0, txHash: String!): [LogEvent!]!
+    "Transactions"
+    transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): [Transaction!]!
 }
 
 """
@@ -479,58 +481,58 @@ Covalent Get Transactions for address
 https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
 """
 type SpotPrice {
-  items: [SpotPriceItem]!
-  pagination: Pagination
-  updatedAt: String!
+    items: [SpotPriceItem]!
+    pagination: Pagination
+    updatedAt: String!
 }
 
 type SpotPriceItem {
-  contractAddress: String!
-  contractDecimals: Int!
-  contractName: String!
-  contractTickerSymbol: String!
-  logoUrl: String!
-  quoteRate: Float!
-  rank: Int!
-  supportsErc: String!
+    contractAddress: String!
+    contractDecimals: Int!
+    contractName: String!
+    contractTickerSymbol: String!
+    logoUrl: String!
+    quoteRate: Float!
+    rank: Int!
+    supportsErc: String!
 }
 
 type TickerData {
-  base: String
-  bidAskSpreadPercentage: Float
-  coinId: String
-  convertedLast: Map
-  convertedVolume: Map
-  isAnomaly: Boolean
-  isStale: Boolean
-  last: Float
-  lastFetchAt: String
-  lastTradedAt: String
-  market: Map
-  target: String
-  targetCoinId: String
-  timestamp: String
-  tokenInfoUrl: String
-  tradeUrl: String
-  trustScore: String
-  volume: Float
+    base: String
+    bidAskSpreadPercentage: Float
+    coinId: String
+    convertedLast: Map
+    convertedVolume: Map
+    isAnomaly: Boolean
+    isStale: Boolean
+    last: Float
+    lastFetchAt: String
+    lastTradedAt: String
+    market: Map
+    target: String
+    targetCoinId: String
+    timestamp: String
+    tokenInfoUrl: String
+    tradeUrl: String
+    trustScore: String
+    volume: Float
 }
 
 type Todo {
-  done: Boolean!
-  id: ID!
-  text: String!
-  user: User!
+    done: Boolean!
+    id: ID!
+    text: String!
+    user: User!
 }
 
 type Token {
-  ID: ID!
-  address: String!
-  chainKey: String!
-  coingeckoId: String!
-  logoURI: String!
-  name: String!
-  symbol: String!
+    ID: ID!
+    address: String!
+    chainKey: String!
+    coingeckoId: String!
+    logoURI: String!
+    name: String!
+    symbol: String!
 }
 
 """
@@ -540,32 +542,73 @@ query param, it returns a paginated list of all tickers sorted by market cap.
 https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
 """
 type Transaction {
-  blockHash: String!
-  blockNumber: String!
-  confirmations: String!
-  contractAddress: String!
-  cumulativeGasUsed: String!
-  from: String!
-  function: String!
-  gas: String!
-  gasPrice: String!
-  gasUsed: String!
-  hash: String!
-  input: String!
-  isError: String!
-  methodId: String!
-  nonce: String!
-  timeStamp: String!
-  to: String!
-  tokenTo: Token!
-  transactionIndex: String!
-  txreceiptStatus: String!
-  value: String!
+    blockHash: String!
+    blockNumber: String!
+    confirmations: String!
+    contractAddress: String!
+    cumulativeGasUsed: String!
+    from: String!
+    function: String!
+    gas: String!
+    gasPrice: String!
+    gasUsed: String!
+    hash: String!
+    input: String!
+    isError: String!
+    methodId: String!
+    nonce: String!
+    timeStamp: String!
+    to: String!
+    tokenTo: Token!
+    transactionIndex: String!
+    txreceiptStatus: String!
+    value: String!
+}
+
+type TransactionItem {
+    blockHeight: Int!
+    blockSignedAt: String!
+    fromAddress: String!
+    fromAddressIsContract: Boolean!
+    fromAddressLabel: String!
+    fromAddressName: String!
+    fromAddressSymbol: String!
+    gasOffered: Float!
+    gasPrice: Float!
+    gasQuote: Float!
+    gasQuoteRate: Float!
+    gasSpent: Float!
+    logEvents: [LogEvent!]
+    successful: Boolean!
+    toAddress: String!
+    toAddressIsContract: Boolean!
+    toAddressLabel: String!
+    toAddressName: String!
+    toAddressSymbol: String!
+    txHash: String!
+    txOffset: Int!
+    value: String!
+    valueQuote: Float!
+}
+
+"""
+
+Covalent Get Transactions by chainId and address
+https://www.covalenthq.com/docs/api/#/0/Class-A/Get-a-transaction/lng=en
+"""
+type Transactions {
+    address: String!
+    chainID: Float!
+    items: [TransactionItem!]
+    nextUpdateAt: String!
+    pagination: Pagination
+    quoteCurrency: String!
+    updatedAt: String!
 }
 
 type User {
-  id: ID!
-  name: String!
+    id: ID!
+    name: String!
 }
 
 scalar JSONMap
@@ -573,6 +616,6 @@ scalar JSONMap
 scalar Map
 
 input NewTodo {
-  text: String!
-  userId: String!
+    text: String!
+    userId: String!
 }

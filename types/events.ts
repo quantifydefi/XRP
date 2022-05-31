@@ -5,6 +5,7 @@ export enum EmitEvents {
   onTokenSelectChange = 'on-token-select-change',
   onResultClosed = 'on-result-closed',
   transactionSuccess = 'transaction-success',
+  onNetworkSelectChange = 'on-network-select-change',
 }
 
 export enum DefiEvents {
