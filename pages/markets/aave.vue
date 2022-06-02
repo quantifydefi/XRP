@@ -71,7 +71,6 @@
           <aave-markets :loading="loading" :pools="pools" :search="searchString" @init-action="initAction" />
         </v-col>
       </v-row>
-      <aave-pool-actions ref="poolAction" @transaction-result="updatePortfolio" />
       <aave-action-dialog
         ref="actionDialog"
         :health-factor="healthFactor"
