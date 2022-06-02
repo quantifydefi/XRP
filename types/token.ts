@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+
 export interface TokenInterface {
   pool_id: string
   token0_id: string
@@ -48,3 +49,24 @@ export interface SearchPoolInterface {
   token1_name: string
   token1_symbol: string
 }
+
+export interface TokenListInterface {
+  name: string
+  decimals: number
+  symbol: string
+  address: string
+  chainId: number
+  logoURI?: string
+  tags?: string[]
+}
+
+export interface TokenSelectInterface {
+  chainId: number
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  logoURI: string
+}
+
+export type TimeInterval = '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '24h' | '1week'

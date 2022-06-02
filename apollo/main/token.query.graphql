@@ -1,0 +1,49 @@
+query QCCoinGQL($qcKey: String!) {
+  qcCoin(qcKey: $qcKey) {
+    qcProfile {
+      rank
+      symbolName
+      qcKey
+      coinDescription
+      websiteUrl
+      explorerUrls
+      githubRepos
+      bitbucketRepos
+      twitterUrl
+      facebookUrl
+      subredditUrl
+      discordChannelId
+      telegramChannelId
+    }
+    qcMetrics{
+      marketcap
+      volume24h
+      price24h
+      circulatingSupply
+      safeScore
+      support1h
+      resistance1h
+    }
+  }
+}
+
+query PriceGQL($qcKey: String!){
+  qcCoin(qcKey: $qcKey){
+    price {
+      priceUsd
+      priceBtc
+      dataSource
+      symbolName
+      qcKey
+    }
+  }
+}
+
+query HighAndLowGQL($qcKey: String!, $intervalType: String!){
+  highAndLow(qcKey: $qcKey, intervalType: $intervalType){
+    high
+    low
+    interval
+    unixTime
+  }
+}

@@ -6,9 +6,11 @@ export interface ConfigState {
   title: string
   gasStats: GasStats[] | null
   currentAaveMarket: Chain
+  currentTransactionChain: Chain
   chains: Chain[]
   balancesChains: number[]
   aaveMarketsSupportedChains: number[]
+  transactionsSupportedChains: number[]
   protocols: { name: string; symbol: string; id: string }[]
 }
 

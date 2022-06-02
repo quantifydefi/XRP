@@ -1,0 +1,14 @@
+query NewsGQL($qcKey: String!){
+  news(qcKey: $qcKey ) {
+    id
+    url
+    title
+    publishedAt
+    currencies{
+      code
+      title
+      slug
+      url
+    }
+  }
+}
