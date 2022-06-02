@@ -90,7 +90,6 @@ import AaveMarkets from '~/components/pools/AaveMarkets.vue'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { actionTypes } from '~/models/web3'
-import AavePoolActions from '~/components/pools/aave-pool-actions.vue'
 import UseAavePoolsStats from '~/composables/useAavePoolsStats'
 import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
 import AaveMarketStats from '~/components/pools/AaveMarketStats.vue'
@@ -104,7 +103,6 @@ export default defineComponent({
     AaveActionDialog,
     AaveMarketStats,
     AaveCompositionChart,
-    AavePoolActions,
     AaveMarkets,
     protocolHeader,
   },
