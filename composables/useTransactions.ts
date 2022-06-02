@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { plainToClass } from 'class-transformer'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { computed, inject, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'
-import { CovalentTransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
+import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
 import { Transactions } from '~/models/transaction'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
@@ -83,7 +83,7 @@ export default function () {
   /** COMPOSABLES **/
   const { account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, error, onResult } = useQuery(
-    CovalentTransactionsGQL,
+    TransactionsGQL,
     () => ({
       chainId: currentChain.value.chainId,
       address: account.value,
@@ -95,7 +95,7 @@ export default function () {
 
   /** COMPUTED **/
   const transactionsData = computed(
-    () => plainToClass(Transactions, result.value?.covalentTransactions.items as Transactions[]) ?? []
+    () => plainToClass(Transactions, result.value?.transactions.items as Transactions[]) ?? []
   ) as Ref<Transactions[]>
 
   const logEventsLoaded = computed<LogEvent[]>(() => logEvents.value.slice(0, loadedEventsLength.value))
