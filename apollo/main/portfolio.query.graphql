@@ -47,6 +47,11 @@ query BalancesGQL($chainIds: [Int!]!, $address: String! ) {
 
 query TransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pageSize: Int!) {
   transactions(chainId: $chainId, address: $address, pageNumber: $pageNumber, pageSize: $pageSize){
+    pagination {
+      hasMore
+      pageSize
+      pageNumber
+    }
     items{
       blockSignedAt
       blockHeight

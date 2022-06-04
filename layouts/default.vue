@@ -28,6 +28,8 @@
       </v-container>
     </v-main>
     <wallet-select-dialog />
+
+    <main-footer></main-footer>
   </v-app>
 </template>
 
@@ -39,8 +41,10 @@ import WalletConnector from '~/components/common/WalletConnector.vue'
 import useInitTheme from '~/composables/useInitTheme'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
 import { State } from '~/types/state'
+import MainFooter from '~/components/common/ui/footers/MainFooter.vue'
 export default defineComponent({
   components: {
+    MainFooter,
     WalletSelectDialog,
     WalletConnector,
     GasInfo,
