@@ -1,7 +1,7 @@
 import type { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { Context } from '@nuxt/types'
 import { Chain } from '~/types/apollo/main/types'
-import { AaveMarketsGQL } from '~/apollo/main/config.query.graphql'
+import { SupportedChainsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
 
 export const state = () =>
@@ -58,7 +58,7 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
   async initConfigs({ commit }, context: Context): Promise<void> {
     try {
       const client = context.app.apolloProvider?.defaultClient
-      const query = await client?.query({ query: AaveMarketsGQL, fetchPolicy: 'no-cache' })
+      const query = await client?.query({ query: SupportedChainsGQL, fetchPolicy: 'no-cache' })
       if (query && query.data) {
         commit('SET_CONFIG', query.data)
       }

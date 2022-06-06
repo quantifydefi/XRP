@@ -72,10 +72,6 @@ export type AavePortfolio = {
   walletBal: Scalars['Float'];
 };
 
-/**
- * Covalent Get Balances for address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
- */
 export type Balance = {
   __typename?: 'Balance';
   aavePools: Array<AavePool>;
@@ -120,133 +116,6 @@ export type Chain = {
   symbol: Scalars['String'];
 };
 
-/**
- * Coin Gaico Coin Details
- * https://api.coingecko.com/api/v3/coins/list?include_platform=true
- */
-export type CoinDetails = {
-  __typename?: 'CoinDetails';
-  additional_notices?: Maybe<Array<Maybe<Scalars['String']>>>;
-  assetPlatformId?: Maybe<Scalars['String']>;
-  blockTimeInMinutes?: Maybe<Scalars['Float']>;
-  categories?: Maybe<Array<Maybe<Scalars['String']>>>;
-  coingeckoRank?: Maybe<Scalars['Float']>;
-  coingeckoScore?: Maybe<Scalars['Float']>;
-  communityData?: Maybe<Scalars['Map']>;
-  communityScore?: Maybe<Scalars['Float']>;
-  contractAddress?: Maybe<Scalars['String']>;
-  countryOrigin?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['Map']>;
-  developerData?: Maybe<Scalars['Map']>;
-  developerScore?: Maybe<Scalars['Float']>;
-  genesisDate?: Maybe<Scalars['String']>;
-  hashingAlgorithm?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  image?: Maybe<Scalars['Map']>;
-  lastUpdated?: Maybe<Scalars['String']>;
-  links?: Maybe<Scalars['Map']>;
-  liquidityScore?: Maybe<Scalars['Float']>;
-  localization?: Maybe<Scalars['Map']>;
-  marketCapRank?: Maybe<Scalars['Float']>;
-  marketData?: Maybe<MarketData>;
-  name: Scalars['String'];
-  platforms?: Maybe<Scalars['Map']>;
-  publicInterestScore?: Maybe<Scalars['Float']>;
-  publicInterestStats?: Maybe<Scalars['Map']>;
-  publicNotice?: Maybe<Scalars['String']>;
-  sentimentVotesDownPercentage?: Maybe<Scalars['Float']>;
-  sentimentVotesUpPercentage?: Maybe<Scalars['Float']>;
-  statusUpdates?: Maybe<Array<Maybe<Scalars['Map']>>>;
-  symbol: Scalars['String'];
-  tickers?: Maybe<Array<Maybe<TickerData>>>;
-};
-
-/**
- * Coin Gaico coin List
- * https://api.coingecko.com/api/v3/coins/list?include_platform=true
- */
-export type CoinList = {
-  __typename?: 'CoinList';
-  id: Scalars['String'];
-  name: Scalars['String'];
-  platforms?: Maybe<Scalars['Map']>;
-  symbol: Scalars['String'];
-};
-
-export type CoingeckoInfo = {
-  __typename?: 'CoingeckoInfo';
-  id: Scalars['String'];
-  referenceAssetID: Scalars['String'];
-  symbol: Scalars['String'];
-};
-
-export type Currency = {
-  __typename?: 'Currency';
-  code: Scalars['String'];
-  slug: Scalars['String'];
-  title: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type CurveAddresses = {
-  __typename?: 'CurveAddresses';
-  deposit: Scalars['String'];
-  gauge: Scalars['String'];
-  lpToken: Scalars['String'];
-  stakingRewards: Scalars['String'];
-  swap: Scalars['String'];
-};
-
-export type CurveCoin = {
-  __typename?: 'CurveCoin';
-  ID: Scalars['String'];
-  address: Scalars['String'];
-  coingeckoId: Scalars['String'];
-  decimals: Scalars['Int'];
-  isLpToken: Scalars['Boolean'];
-  liquidity: Scalars['Float'];
-  symbol: Scalars['String'];
-  tokenBalance: Scalars['Float'];
-  type: Scalars['String'];
-  usdPrice: Scalars['Float'];
-  wrappedCoinType: Scalars['String'];
-};
-
-export type CurvePool = {
-  __typename?: 'CurvePool';
-  ID: Scalars['String'];
-  addresses: CurveAddresses;
-  adminFee: Scalars['String'];
-  assetType: Scalars['String'];
-  assets: Scalars['String'];
-  baseAPY: Scalars['Float'];
-  coingeckoInfo: CoingeckoInfo;
-  coins: Array<CurveCoin>;
-  dataIndex: Scalars['Int'];
-  fee: Scalars['String'];
-  hasAMultiplier: Scalars['Boolean'];
-  idAlias: Scalars['String'];
-  isLendingPool: Scalars['Boolean'];
-  isMetaPool: Scalars['Boolean'];
-  isOldPool: Scalars['Boolean'];
-  lpTokenInfo: LpTokenInfo;
-  metaCoins: Array<CurveCoin>;
-  name: Scalars['String'];
-  pageMetaData: PageMetaData;
-  rewards: CurveRewards;
-  totalDailyVolume: Scalars['Float'];
-  totalLiquidity: Scalars['Float'];
-  totalTokenBalance: Scalars['Float'];
-  underlyingCoins: Array<CurveCoin>;
-  virtualPrice: Scalars['String'];
-};
-
-export type CurveRewards = {
-  __typename?: 'CurveRewards';
-  maxRewardPtc: Scalars['Float'];
-  rewardPtc: Scalars['Float'];
-};
-
 export type EthGasStatsResult = {
   __typename?: 'EthGasStatsResult';
   fastGasPrice: Scalars['Float'];
@@ -284,10 +153,6 @@ export type HighAndLow = {
   unixTime: Scalars['Int'];
 };
 
-/**
- * Covalent Get single Transaction Log Event by chainId and txHash
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-a-transaction/lng=en
- */
 export type LogEvent = {
   __typename?: 'LogEvent';
   blockHeight: Scalars['Int'];
@@ -323,59 +188,6 @@ export type LogEventParams = {
   value: Scalars['String'];
 };
 
-export type LpTokenInfo = {
-  __typename?: 'LpTokenInfo';
-  name: Scalars['String'];
-  symbol: Scalars['String'];
-};
-
-export type MarketData = {
-  __typename?: 'MarketData';
-  ath?: Maybe<Scalars['Map']>;
-  athChangePercentage?: Maybe<Scalars['Map']>;
-  athDate?: Maybe<Scalars['Map']>;
-  atl?: Maybe<Scalars['Map']>;
-  atlChangePercentage?: Maybe<Scalars['Map']>;
-  atlDate?: Maybe<Scalars['Map']>;
-  circulatingSupply?: Maybe<Scalars['Float']>;
-  currentPrice?: Maybe<Scalars['Map']>;
-  fdvToTvlRatio?: Maybe<Scalars['Float']>;
-  fullyDilutedValuation?: Maybe<Scalars['Map']>;
-  high24h?: Maybe<Scalars['Map']>;
-  lastUpdated?: Maybe<Scalars['String']>;
-  low24h?: Maybe<Scalars['Map']>;
-  marketCap?: Maybe<Scalars['Map']>;
-  marketCapChange24h?: Maybe<Scalars['Float']>;
-  marketCapChange24hInCurrency?: Maybe<Scalars['Map']>;
-  marketCapChangePercentage24h?: Maybe<Scalars['Float']>;
-  marketCapChangePercentage24hInCurrency?: Maybe<Scalars['Map']>;
-  marketCapRank?: Maybe<Scalars['Float']>;
-  maxSupply?: Maybe<Scalars['Float']>;
-  mcapToTvlRatio?: Maybe<Scalars['Float']>;
-  priceChange24h?: Maybe<Scalars['Float']>;
-  priceChange24hInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage1hInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage1y?: Maybe<Scalars['Float']>;
-  priceChangePercentage1yInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage7d?: Maybe<Scalars['Float']>;
-  priceChangePercentage7dInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage14d?: Maybe<Scalars['Float']>;
-  priceChangePercentage14dInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage24h?: Maybe<Scalars['Float']>;
-  priceChangePercentage24hInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage30d?: Maybe<Scalars['Float']>;
-  priceChangePercentage30dInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage60d?: Maybe<Scalars['Float']>;
-  priceChangePercentage60dInCurrency?: Maybe<Scalars['Map']>;
-  priceChangePercentage200d?: Maybe<Scalars['Float']>;
-  priceChangePercentage200dInCurrency?: Maybe<Scalars['Map']>;
-  roi?: Maybe<Scalars['Map']>;
-  sparkline7d?: Maybe<Scalars['Map']>;
-  totalSupply?: Maybe<Scalars['Float']>;
-  totalValueLocked?: Maybe<Scalars['Map']>;
-  totalVolume?: Maybe<Scalars['Map']>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createTodo: Todo;
@@ -397,17 +209,19 @@ export type NewTodo = {
  */
 export type News = {
   __typename?: 'News';
-  currencies?: Maybe<Array<Currency>>;
+  currencies: Array<NewsCurrency>;
   id: Scalars['Int'];
   publishedAt: Scalars['String'];
   title: Scalars['String'];
   url: Scalars['String'];
 };
 
-export type PageMetaData = {
-  __typename?: 'PageMetaData';
-  description: Scalars['String'];
+export type NewsCurrency = {
+  __typename?: 'NewsCurrency';
+  code: Scalars['String'];
+  slug: Scalars['String'];
   title: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export type Pagination = {
@@ -418,46 +232,8 @@ export type Pagination = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type Protocol = {
-  __typename?: 'Protocol';
-  address: Scalars['String'];
-  balance: Scalars['Map'];
-  category: Scalars['String'];
-  chain: Scalars['String'];
-  chains: Array<Maybe<Scalars['String']>>;
-  description: Scalars['String'];
-  geckoId: Scalars['String'];
-  id: Scalars['String'];
-  name: Scalars['String'];
-  symbol: Scalars['String'];
-  tokenAddresses: Array<Maybe<Scalars['String']>>;
-  twitter: Scalars['String'];
-  updatedAt: Scalars['Int'];
-  url: Scalars['String'];
-  usdTvl: Scalars['Map'];
-};
-
-export type QcCoin = {
-  __typename?: 'QCCoin';
-  ID?: Maybe<Scalars['ID']>;
-  price: QcPrice;
-  qcMetrics: QcMetrics;
-  qcProfile: QcProfile;
-};
-
-export type QcMetrics = {
-  __typename?: 'QCMetrics';
-  circulatingSupply: Scalars['Float'];
-  marketcap: Scalars['Float'];
-  price24h: Scalars['Float'];
-  resistance1h: Scalars['Float'];
-  safeScore: Scalars['Float'];
-  support1h: Scalars['Float'];
-  volume24h: Scalars['Float'];
-};
-
-export type QcPrice = {
-  __typename?: 'QCPrice';
+export type Price = {
+  __typename?: 'Price';
   dataSource: Scalars['String'];
   priceBtc: Scalars['Float'];
   priceUsd: Scalars['Float'];
@@ -465,61 +241,23 @@ export type QcPrice = {
   symbolName: Scalars['String'];
 };
 
-export type QcProfile = {
-  __typename?: 'QCProfile';
-  bitbucketRepos: Scalars['JSONMap'];
-  coinDescription: Scalars['String'];
-  discordChannelId: Scalars['String'];
-  explorerUrls: Scalars['JSONMap'];
-  facebookUrl: Scalars['String'];
-  githubRepos: Scalars['JSONMap'];
-  qcKey: Scalars['String'];
-  rank: Scalars['Int'];
-  subredditUrl: Scalars['String'];
-  symbolName: Scalars['String'];
-  telegramChannelId: Scalars['String'];
-  twitterUrl: Scalars['String'];
-  websiteUrl: Scalars['JSONMap'];
-};
-
 export type Query = {
   __typename?: 'Query';
   /** Aave Pool  */
   aavePools: Array<AavePool>;
-  /** Covalent Balances */
+  /** Portfolio Balances */
   balances: Array<Balance>;
-  chainLinkAddresses: Scalars['Map'];
-  chainLinkPrice: Scalars['Map'];
   chains: Array<Chain>;
-  /** Covalent Transactions */
-  covalentTransactions: Transactions;
-  /** Curve Pool  */
-  curvePools: Array<CurvePool>;
-  /** Eth ABI  */
-  ethABI: Scalars['String'];
   /** Gas Stats for ETH */
   gas: Array<GasStats>;
   /** Global Staths for Coin Gaico */
   globalStats: GlobalStats;
-  highAndLow: HighAndLow;
-  /** Crypto Panic News */
-  news?: Maybe<Array<News>>;
-  protocol: Protocol;
-  /** Supported Protocols */
-  protocols: Array<Maybe<Protocol>>;
-  qcCoin: QcCoin;
   /** Recent Usd Prices  */
   recentPrices: Scalars['Map'];
-  /**
-   * If tickers (a comma separated list of tickers
-   *     is present), only return the spot prices for these tokens.
-   */
-  spotPrice?: Maybe<SpotPrice>;
   todos: Array<Todo>;
-  /** Single Transaction from Covalent */
-  transactionLogEvents: Array<LogEvent>;
-  /** Transactions */
-  transactions: Array<Transaction>;
+  token: Token;
+  /** Portfolio Transactions */
+  transactions: Transaction;
 };
 
 
@@ -534,56 +272,13 @@ export type QueryBalancesArgs = {
 };
 
 
-export type QueryChainLinkPriceArgs = {
+export type QueryTokenArgs = {
   chainId?: Scalars['Int'];
-  pairs?: Array<Scalars['String']>;
-};
-
-
-export type QueryCovalentTransactionsArgs = {
-  address: Scalars['String'];
-  chainId?: Scalars['Int'];
-  pageNumber?: Scalars['Int'];
-  pageSize?: Scalars['Int'];
-};
-
-
-export type QueryEthAbiArgs = {
-  address: Scalars['String'];
-};
-
-
-export type QueryHighAndLowArgs = {
-  intervalType: Scalars['String'];
+  contractAddress?: Scalars['String'];
+  decimals?: Scalars['Int'];
+  interval?: TimeInterval;
   qcKey: Scalars['String'];
-};
-
-
-export type QueryNewsArgs = {
-  qcKey: Scalars['String'];
-};
-
-
-export type QueryProtocolArgs = {
-  protocolId: Scalars['String'];
-};
-
-
-export type QueryQcCoinArgs = {
-  qcKey: Scalars['String'];
-};
-
-
-export type QuerySpotPriceArgs = {
-  pageNumber: Scalars['Int'];
-  pageSize: Scalars['Int'];
-  tickers: Scalars['String'];
-};
-
-
-export type QueryTransactionLogEventsArgs = {
-  chainId?: Scalars['Int'];
-  txHash: Scalars['String'];
+  walletAddress?: Scalars['String'];
 };
 
 
@@ -594,50 +289,16 @@ export type QueryTransactionsArgs = {
   pageSize?: Scalars['Int'];
 };
 
-/**
- * Covalent Get Transactions for address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-all-chain-statuses/lng=en
- */
-export type SpotPrice = {
-  __typename?: 'SpotPrice';
-  items: Array<Maybe<SpotPriceItem>>;
-  pagination?: Maybe<Pagination>;
-  updatedAt: Scalars['String'];
-};
-
-export type SpotPriceItem = {
-  __typename?: 'SpotPriceItem';
-  contractAddress: Scalars['String'];
-  contractDecimals: Scalars['Int'];
-  contractName: Scalars['String'];
-  contractTickerSymbol: Scalars['String'];
-  logoUrl: Scalars['String'];
-  quoteRate: Scalars['Float'];
-  rank: Scalars['Int'];
-  supportsErc: Scalars['String'];
-};
-
-export type TickerData = {
-  __typename?: 'TickerData';
-  base?: Maybe<Scalars['String']>;
-  bidAskSpreadPercentage?: Maybe<Scalars['Float']>;
-  coinId?: Maybe<Scalars['String']>;
-  convertedLast?: Maybe<Scalars['Map']>;
-  convertedVolume?: Maybe<Scalars['Map']>;
-  isAnomaly?: Maybe<Scalars['Boolean']>;
-  isStale?: Maybe<Scalars['Boolean']>;
-  last?: Maybe<Scalars['Float']>;
-  lastFetchAt?: Maybe<Scalars['String']>;
-  lastTradedAt?: Maybe<Scalars['String']>;
-  market?: Maybe<Scalars['Map']>;
-  target?: Maybe<Scalars['String']>;
-  targetCoinId?: Maybe<Scalars['String']>;
-  timestamp?: Maybe<Scalars['String']>;
-  tokenInfoUrl?: Maybe<Scalars['String']>;
-  tradeUrl?: Maybe<Scalars['String']>;
-  trustScore?: Maybe<Scalars['String']>;
-  volume?: Maybe<Scalars['Float']>;
-};
+export enum TimeInterval {
+  Interval_1H = 'INTERVAL_1H',
+  Interval_1Week = 'INTERVAL_1WEEK',
+  Interval_2H = 'INTERVAL_2H',
+  Interval_4H = 'INTERVAL_4H',
+  Interval_5Min = 'INTERVAL_5MIN',
+  Interval_15Min = 'INTERVAL_15MIN',
+  Interval_24H = 'INTERVAL_24H',
+  Interval_30Min = 'INTERVAL_30MIN'
+}
 
 export type Todo = {
   __typename?: 'Todo';
@@ -649,43 +310,47 @@ export type Todo = {
 
 export type Token = {
   __typename?: 'Token';
-  ID: Scalars['ID'];
-  address: Scalars['String'];
-  chainKey: Scalars['String'];
-  coingeckoId: Scalars['String'];
-  logoURI: Scalars['String'];
-  name: Scalars['String'];
-  symbol: Scalars['String'];
+  ID?: Maybe<Scalars['ID']>;
+  aavePools: Array<AavePool>;
+  bitbucketRepos?: Maybe<Scalars['JSONMap']>;
+  chainId: Scalars['Int'];
+  circulatingSupply: Scalars['Float'];
+  coinDescription: Scalars['String'];
+  contractAddress: Scalars['String'];
+  decimals: Scalars['Int'];
+  discordChannelId: Scalars['String'];
+  explorerUrls?: Maybe<Scalars['JSONMap']>;
+  facebookUrl: Scalars['String'];
+  githubRepos?: Maybe<Scalars['JSONMap']>;
+  interval: TimeInterval;
+  marketcap: Scalars['Float'];
+  news: Array<News>;
+  price: Price;
+  price24h: Scalars['Float'];
+  qcKey: Scalars['String'];
+  rank: Scalars['Int'];
+  resistance1h: Scalars['Float'];
+  safeScore: Scalars['Float'];
+  subredditUrl: Scalars['String'];
+  support1h: Scalars['Float'];
+  symbolName: Scalars['String'];
+  telegramChannelId: Scalars['String'];
+  tokenInterval: HighAndLow;
+  twitterUrl: Scalars['String'];
+  volume24h: Scalars['Float'];
+  walletAddress: Scalars['String'];
+  websiteUrl?: Maybe<Scalars['JSONMap']>;
 };
 
-/**
- * Return spot prices and metadata for all tickers or a select group of tickers. Without tickers
- * query param, it returns a paginated list of all tickers sorted by market cap.
- * https://api.covalenthq.com/v1/pricing/tickers/?quote-currency=USD&format=JSON&key=ckey_docs
- */
 export type Transaction = {
   __typename?: 'Transaction';
-  blockHash: Scalars['String'];
-  blockNumber: Scalars['String'];
-  confirmations: Scalars['String'];
-  contractAddress: Scalars['String'];
-  cumulativeGasUsed: Scalars['String'];
-  from: Scalars['String'];
-  function: Scalars['String'];
-  gas: Scalars['String'];
-  gasPrice: Scalars['String'];
-  gasUsed: Scalars['String'];
-  hash: Scalars['String'];
-  input: Scalars['String'];
-  isError: Scalars['String'];
-  methodId: Scalars['String'];
-  nonce: Scalars['String'];
-  timeStamp: Scalars['String'];
-  to: Scalars['String'];
-  tokenTo: Token;
-  transactionIndex: Scalars['String'];
-  txreceiptStatus: Scalars['String'];
-  value: Scalars['String'];
+  address: Scalars['String'];
+  chainID: Scalars['Float'];
+  items: Array<TransactionItem>;
+  nextUpdateAt: Scalars['String'];
+  pagination?: Maybe<Pagination>;
+  quoteCurrency: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type TransactionItem = {
@@ -715,31 +380,16 @@ export type TransactionItem = {
   valueQuote: Scalars['Float'];
 };
 
-/**
- * Covalent Get Transactions by chainId and address
- * https://www.covalenthq.com/docs/api/#/0/Class-A/Get-a-transaction/lng=en
- */
-export type Transactions = {
-  __typename?: 'Transactions';
-  address: Scalars['String'];
-  chainID: Scalars['Float'];
-  items?: Maybe<Array<TransactionItem>>;
-  nextUpdateAt: Scalars['String'];
-  pagination?: Maybe<Pagination>;
-  quoteCurrency: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
 };
 
-export type AaveMarketsGqlQueryVariables = Exact<{ [key: string]: never; }>;
+export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AaveMarketsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl: string }> };
+export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl: string }> };
 
 export type GasGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -756,28 +406,6 @@ export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
 
-export type ChainlinkEthUsdPriceGqlQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ChainlinkEthUsdPriceGqlQuery = { __typename?: 'Query', chainLinkPrice: any };
-
-export type NewsGqlQueryVariables = Exact<{
-  qcKey: Scalars['String'];
-}>;
-
-
-export type NewsGqlQuery = { __typename?: 'Query', news?: Array<{ __typename?: 'News', id: number, url: string, title: string, publishedAt: string, currencies?: Array<{ __typename?: 'Currency', code: string, title: string, slug: string, url: string }> | null }> | null };
-
-export type AllProtocolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllProtocolsGqlQuery = { __typename?: 'Query', protocols: Array<{ __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null>, twitter: string } | null> };
-
-export type CurvePoolsGqlQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CurvePoolsGqlQuery = { __typename?: 'Query', curvePools: Array<{ __typename?: 'CurvePool', ID: string, dataIndex: number, idAlias: string, name: string, assets: string, isLendingPool: boolean, isMetaPool: boolean, hasAMultiplier: boolean, isOldPool: boolean, fee: string, adminFee: string, assetType: string, virtualPrice: string, totalDailyVolume: number, totalTokenBalance: number, totalLiquidity: number, baseAPY: number, pageMetaData: { __typename?: 'PageMetaData', title: string, description: string }, lpTokenInfo: { __typename?: 'LpTokenInfo', name: string, symbol: string }, coingeckoInfo: { __typename?: 'CoingeckoInfo', id: string, symbol: string }, coins: Array<{ __typename?: 'CurveCoin', symbol: string, address: string, coingeckoId: string, type: string, decimals: number, tokenBalance: number, liquidity: number, usdPrice: number, isLpToken: boolean }>, metaCoins: Array<{ __typename?: 'CurveCoin', symbol: string, address: string, coingeckoId: string, type: string, decimals: number, tokenBalance: number, liquidity: number, usdPrice: number, isLpToken: boolean }>, underlyingCoins: Array<{ __typename?: 'CurveCoin', ID: string, coingeckoId: string }>, addresses: { __typename?: 'CurveAddresses', swap: string, lpToken: string, gauge: string, deposit: string }, rewards: { __typename?: 'CurveRewards', rewardPtc: number, maxRewardPtc: number } }> };
-
 export type AavePoolGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
 }>;
@@ -793,13 +421,6 @@ export type BalancesGqlQueryVariables = Exact<{
 
 export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number } }> }> };
 
-export type ProtocolGqlQueryVariables = Exact<{
-  protocolId: Scalars['String'];
-}>;
-
-
-export type ProtocolGqlQuery = { __typename?: 'Query', protocol: { __typename?: 'Protocol', id: string, name: string, address: string, symbol: string, url: string, description: string, chain: string, geckoId: string, category: string, chains: Array<string | null>, twitter: string, balance: any, updatedAt: number, tokenAddresses: Array<string | null>, usdTvl: any } };
-
 export type TransactionsGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
   address: Scalars['String'];
@@ -808,44 +429,16 @@ export type TransactionsGqlQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsGqlQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', blockNumber: string, timeStamp: string, hash: string, nonce: string, blockHash: string, transactionIndex: string, from: string, to: string, value: string, gas: string, gasPrice: string, isError: string, txreceiptStatus: string, input: string, contractAddress: string, cumulativeGasUsed: string, gasUsed: string, confirmations: string, methodId: string, function: string, tokenTo: { __typename?: 'Token', chainKey: string, coingeckoId: string, address: string, name: string, symbol: string } }> };
+export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, blockHeight: number, txHash: string, txOffset: number, successful: boolean, fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasOffered: number, gasSpent: number, gasPrice: number, gasQuote: number, gasQuoteRate: number, logEvents?: Array<{ __typename?: 'LogEvent', blockSignedAt: string, blockHeight: number, txOffset: number, logOffset: number, txHash: string, rawLogTopics: Array<string | null>, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, rawLogData: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string }> } }> | null }> } };
 
-export type CovalentTransactionsGqlQueryVariables = Exact<{
+export type TokenQueryGqlQueryVariables = Exact<{
+  qcKey: Scalars['String'];
+  walletAddress: Scalars['String'];
+  interval: TimeInterval;
+  contractAddress: Scalars['String'];
   chainId: Scalars['Int'];
-  address: Scalars['String'];
-  pageNumber: Scalars['Int'];
-  pageSize: Scalars['Int'];
+  decimals: Scalars['Int'];
 }>;
 
 
-export type CovalentTransactionsGqlQuery = { __typename?: 'Query', covalentTransactions: { __typename?: 'Transactions', items?: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, blockHeight: number, txHash: string, txOffset: number, successful: boolean, fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasOffered: number, gasSpent: number, gasPrice: number, gasQuote: number, gasQuoteRate: number, logEvents?: Array<{ __typename?: 'LogEvent', blockSignedAt: string, blockHeight: number, txOffset: number, logOffset: number, txHash: string, rawLogTopics: Array<string | null>, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, rawLogData: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string }> } }> | null }> | null } };
-
-export type TransactionLogEventsGqlQueryVariables = Exact<{
-  chainId: Scalars['Int'];
-  txHash: Scalars['String'];
-}>;
-
-
-export type TransactionLogEventsGqlQuery = { __typename?: 'Query', transactionLogEvents: Array<{ __typename?: 'LogEvent', senderAddress: string, senderContractDecimals: number, senderContractTickerSymbol: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, value: string }> } }> };
-
-export type QcCoinGqlQueryVariables = Exact<{
-  qcKey: Scalars['String'];
-}>;
-
-
-export type QcCoinGqlQuery = { __typename?: 'Query', qcCoin: { __typename?: 'QCCoin', qcProfile: { __typename?: 'QCProfile', rank: number, symbolName: string, qcKey: string, coinDescription: string, websiteUrl: any, explorerUrls: any, githubRepos: any, bitbucketRepos: any, twitterUrl: string, facebookUrl: string, subredditUrl: string, discordChannelId: string, telegramChannelId: string }, qcMetrics: { __typename?: 'QCMetrics', marketcap: number, volume24h: number, price24h: number, circulatingSupply: number, safeScore: number, support1h: number, resistance1h: number } } };
-
-export type PriceGqlQueryVariables = Exact<{
-  qcKey: Scalars['String'];
-}>;
-
-
-export type PriceGqlQuery = { __typename?: 'Query', qcCoin: { __typename?: 'QCCoin', price: { __typename?: 'QCPrice', priceUsd: number, priceBtc: number, dataSource: string, symbolName: string, qcKey: string } } };
-
-export type HighAndLowGqlQueryVariables = Exact<{
-  qcKey: Scalars['String'];
-  intervalType: Scalars['String'];
-}>;
-
-
-export type HighAndLowGqlQuery = { __typename?: 'Query', highAndLow: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number } };
+export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceBtc: number }, aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string }, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number } }>, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }> } };

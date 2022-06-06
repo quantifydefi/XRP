@@ -161,7 +161,6 @@ export default defineComponent<Props>({
     const isVariableBorrow = ref(true)
 
     const marketStats = reactive({
-      someData: toRefs(props).someData,
       healthFactor: toRefs(props).healthFactor,
       totalCollateralUsd: toRefs(props).totalCollateralUsd,
       totalBorrowedUsd: toRefs(props).totalBorrowedUsd,

@@ -1,14 +1,14 @@
 <template>
-  <v-tooltip right color="black" max-width="400">
+  <v-tooltip right color="black" max-width="400" top>
     <template #activator="{ on, attrs }">
-      <v-btn icon color="grey" :class="tooltipIconClass" x-small v-bind="attrs" v-on="on">
-        <v-icon :size="iconSize">{{ tooltipIcon }}</v-icon>
+      <v-btn icon color="grey" :class="iconClass" x-small v-bind="attrs" v-on="on">
+        <v-icon :size="size">{{ icon }}</v-icon>
       </v-btn>
     </template>
     <span></span>
     <div class="pa-2">
-      <p v-if="toolTipHeader" class="text-center font-weight-bold text-subtitle-1" v-text="toolTipHeader" />
-      <p v-if="tooltipText" v-text="tooltipText"></p>
+      <p v-if="header" class="text-center font-weight-bold text-subtitle-1" v-text="header" />
+      <p v-if="text" v-text="text"></p>
     </div>
   </v-tooltip>
 </template>
@@ -24,20 +24,11 @@ type Props = {
 }
 export default defineComponent<Props>({
   props: {
-    size: { type: Number, default: 14, required: false },
-    text: { type: String, default: '', required: false },
-    header: { type: String as PropType<string | null>, default: null, required: false },
-    icon: { type: String, default: 'mdi-information-outline', required: false },
-    iconClass: { type: String, default: 'pa-0 mb-0', required: false },
-  },
-  setup(props) {
-    return {
-      toolTipHeader: props.header,
-      tooltipText: props.text,
-      iconSize: props.size,
-      tooltipIcon: props.icon,
-      tooltipIconClass: props.iconClass,
-    }
+    size: { type: Number, default: 14 },
+    text: { type: String, default: '' },
+    header: { type: String as PropType<string | null>, default: null },
+    icon: { type: String, default: 'mdi-information-outline' },
+    iconClass: { type: String, default: 'pa-0 mb-0' },
   },
 })
 </script>

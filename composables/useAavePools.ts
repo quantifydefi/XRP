@@ -129,7 +129,7 @@ export default function () {
     () => ({
       chainId: state.configs.currentAaveMarket.chainId,
     }),
-    { fetchPolicy: 'no-cache', pollInterval: 10000 }
+    { fetchPolicy: 'no-cache', pollInterval: 30000 }
   )
 
   // COMPUTED

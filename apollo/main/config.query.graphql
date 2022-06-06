@@ -1,4 +1,4 @@
-query AaveMarketsGQL {
+query SupportedChainsGQL {
   chains {
     chainId,
     name,

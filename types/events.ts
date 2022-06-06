@@ -6,6 +6,7 @@ export enum EmitEvents {
   onResultClosed = 'on-result-closed',
   transactionSuccess = 'transaction-success',
   onNetworkSelectChange = 'on-network-select-change',
+  onIntervalChange = 'on-interval-change',
 }
 
 export enum DefiEvents {

@@ -1,49 +1,101 @@
-query QCCoinGQL($qcKey: String!) {
-  qcCoin(qcKey: $qcKey) {
-    qcProfile {
-      rank
-      symbolName
-      qcKey
-      coinDescription
-      websiteUrl
-      explorerUrls
-      githubRepos
-      bitbucketRepos
-      twitterUrl
-      facebookUrl
-      subredditUrl
-      discordChannelId
-      telegramChannelId
+query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInterval!, $contractAddress: String!, $chainId:Int! , $decimals: Int!){
+  token(qcKey: $qcKey, walletAddress: $walletAddress , interval: $interval, contractAddress: $contractAddress, chainId: $chainId, decimals: $decimals){
+    ID
+    walletAddress
+    interval
+    qcKey
+    symbolName
+    rank
+    chainId
+    tokenInterval {
+      high
+      low
+      interval
+      unixTime
     }
-    qcMetrics{
-      marketcap
-      volume24h
-      price24h
-      circulatingSupply
-      safeScore
-      support1h
-      resistance1h
-    }
-  }
-}
-
-query PriceGQL($qcKey: String!){
-  qcCoin(qcKey: $qcKey){
     price {
+      qcKey
+      symbolName
       priceUsd
       priceBtc
-      dataSource
-      symbolName
-      qcKey
     }
-  }
-}
 
-query HighAndLowGQL($qcKey: String!, $intervalType: String!){
-  highAndLow(qcKey: $qcKey, intervalType: $intervalType){
-    high
-    low
-    interval
-    unixTime
+    price24h
+
+    marketcap
+    volume24h
+    circulatingSupply
+    support1h
+    resistance1h
+    safeScore
+
+    websiteUrl
+    bitbucketRepos
+    githubRepos
+    explorerUrls
+
+    telegramChannelId
+    twitterUrl
+    subredditUrl
+    facebookUrl
+
+    coinDescription
+
+    aavePools {
+      id
+      underlyingAsset
+      name
+      symbol
+      decimals
+      totalLiquidity
+      price {
+        id
+        priceInEth
+        priceUsd
+      }
+      liquidityRate
+      stableBorrowRate
+      variableBorrowRate
+      aEmissionPerSecond
+      vEmissionPerSecond
+      sEmissionPerSecond
+      availableLiquidity
+      utilizationRate
+      totalATokenSupply
+      totalCurrentVariableDebt
+      totalPrincipalStableDebt
+      addresses {
+        aTokenAddress
+        aTokenSymbol
+        stableDebtTokenAddress
+        variableDebtTokenAddress
+        decimals
+        address
+      }
+      portfolioVal {
+        totalDeposits
+        walletBal
+        stableBorrow
+        variableBorrow
+      }
+
+      totalLiquidityAsCollateral
+      baseLTVasCollateral
+      reserveLiquidationThreshold
+      reserveLiquidationBonus
+      usageAsCollateralEnabled
+    }
+
+    news{
+      id
+      title
+      url
+      publishedAt
+      currencies {
+        code
+        title
+        slug
+        url
+      }}
   }
 }

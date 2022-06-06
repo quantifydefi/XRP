@@ -16,7 +16,7 @@
         :expanded.sync="expanded"
         :single-expand="false"
         show-expand
-        item-key="id"
+        item-key="name"
       >
         <template #expanded-item="{ headers, item }">
           <td :colspan="headers.length"><aave-market-details :pool="item" /></td>
@@ -33,7 +33,16 @@
               </v-col>
               <v-col>
                 <v-row no-gutters>
-                  <v-col><span class="text-capitalize font-weight-bold pink--text" v-text="item.name" /></v-col>
+                  <v-col>
+                    <nuxt-link
+                      class="text-capitalize font-weight-bold pink--text text-decoration-none"
+                      :to="{
+                        path: `/token/${item.symbol}`,
+                        query: { contract: item.addresses.address, decimals: item.addresses.decimals },
+                      }"
+                      v-text="item.name"
+                    />
+                  </v-col>
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
@@ -159,7 +168,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, ref, toRefs, UnwrapRef, useStore } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  PropType,
+  ref,
+  toRefs,
+  UnwrapRef,
+  useStore,
+} from '@nuxtjs/composition-api'
 import { AavePoolCl } from '~/composables/useAavePools'
 import { State } from '~/types/state'
 import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
@@ -171,6 +190,8 @@ type Props = {
   pools: AavePoolCl[]
   loading: boolean
   search: string | null
+  hideActionCols: boolean
+  expandFirstRow: boolean
 }
 export default defineComponent<Props>({
   components: { AaveMarketDetails },
@@ -178,6 +199,8 @@ export default defineComponent<Props>({
     pools: { type: Array as PropType<UnwrapRef<AavePoolCl[]>>, default: () => [], required: true },
     loading: { type: Boolean, default: true },
     search: { type: String as PropType<string | null>, default: null, required: false },
+    hideActionCols: { type: Boolean, default: false },
+    expandFirstRow: { type: Boolean, default: false },
   },
   setup(props, { emit }) {
     // COMPOSABLE
@@ -188,95 +211,100 @@ export default defineComponent<Props>({
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
 
     // STATE
-    const expanded = ref([])
-    const cols = [
-      {
-        text: 'Assets',
-        align: 'left',
-        value: 'symbol',
-        width: '230',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+    const expanded: any = ref<AavePoolCl[]>([])
+    const datatable: any = ref(null)
+    const cols = computed(() => {
+      const cols = [
+        {
+          text: 'Assets',
+          align: 'left',
+          value: 'symbol',
+          width: '230',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
 
-      {
-        text: 'Your Balance',
-        align: 'left',
-        value: 'portfolio.walletBal',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+        {
+          text: 'Your Balance',
+          align: 'left',
+          value: 'portfolio.walletBal',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
 
-      {
-        text: 'Your Deposits',
-        align: 'left',
-        value: 'portfolio.totalDeposits',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+        {
+          text: 'Your Deposits',
+          align: 'left',
+          value: 'portfolio.totalDeposits',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
 
-      {
-        text: 'Your  Borrows',
-        align: 'left',
-        value: 'portfolio.variableBorrow',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+        {
+          text: 'Your  Borrows',
+          align: 'left',
+          value: 'portfolio.variableBorrow',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
 
-      {
-        text: 'Asset Price',
-        align: 'left',
-        value: 'price.priceUsd',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+        {
+          text: 'Asset Price',
+          align: 'left',
+          value: 'price.priceUsd',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
 
-      {
-        text: '',
-        value: 'action',
-        width: 300,
-        sortable: false,
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
+        {
+          text: '',
+          value: 'action',
+          width: 300,
+          sortable: false,
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
 
-      {
-        text: 'Deposit APY',
-        align: 'center',
-        value: 'depositAPY',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-      {
-        text: 'Borrow APY, variable',
-        align: 'center',
-        value: 'variableBorrowAPY',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-      {
-        text: 'Total Deposited',
-        align: 'center',
-        value: 'usdBalance',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-      {
-        text: 'Total Borrowed',
-        align: 'center',
-        value: 'totalBorrowBalanceUsd',
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-      {
-        text: '',
-        align: 'right',
-        value: 'link',
-        sortable: false,
-        class: ['px-2', 'text-truncate'],
-        cellClass: ['px-2', 'text-truncate'],
-      },
-    ]
+        {
+          text: 'Deposit APY',
+          align: 'center',
+          value: 'depositAPY',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
+        {
+          text: 'Borrow APY, variable',
+          align: 'center',
+          value: 'variableBorrowAPY',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
+        {
+          text: 'Total Deposited',
+          align: 'center',
+          value: 'usdBalance',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
+        {
+          text: 'Total Borrowed',
+          align: 'center',
+          value: 'totalBorrowBalanceUsd',
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
+        {
+          text: '',
+          align: 'right',
+          value: 'link',
+          sortable: false,
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
+      ]
+      return props.hideActionCols ? cols.filter((item) => item.value !== 'action') : cols
+    })
+
     const aavePools = toRefs(props).pools
     const poolsLoading = toRefs(props).loading
     const searchString = toRefs(props).search
@@ -306,6 +334,15 @@ export default defineComponent<Props>({
       window.open(url)
     }
 
+    function expendSingleRow() {
+      if (props.expandFirstRow) {
+        const firstRow: AavePoolCl = aavePools.value[0]
+        expanded.value.push(firstRow)
+      }
+    }
+
+    onMounted(() => expendSingleRow())
+
     return {
       // DATA
       cols,
@@ -316,6 +353,7 @@ export default defineComponent<Props>({
       aaveActions,
       walletReady,
       searchString,
+      datatable,
 
       //  METHODS
       navigateToExplorer,

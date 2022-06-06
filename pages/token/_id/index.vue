@@ -1,105 +1,124 @@
 <template>
   <v-row justify="center">
-    <v-col cols="12" lg="11">
-      <v-row>
+    <v-col cols="10">
+      <v-row v-if="loading">
         <v-col cols="12" lg="4">
-          <coin-profile :height="513" :coin-profile-data="qcCoinData.qcProfile" :loading="loading"> </coin-profile>
-        </v-col>
-
-        <v-col cols="12" lg="8">
-          <v-row>
-            <v-col cols="12">
-              <coin-metrics
-                :coin-metrics-data="qcCoinData.qcMetrics"
-                :coin-price-data="coinPrice"
-                :loading="loading"
-                :high-low-data="highAndLow"
-                :height="200"
-                @change-interval-type-selection="onChangeIntervalSelection"
-              ></coin-metrics>
-            </v-col>
-            <v-col cols="12" lg="6">
-              <v-card height="290" tile outlined> </v-card>
-            </v-col>
-            <v-col cols="12" lg="6">
-              <v-card height="290" tile outlined> </v-card>
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col cols="12" lg="4">
-          <v-card tile outlined>
-            <iframe
-              src="https://app.uniswap.org/#/swap?outputCurrency=0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"
-              height="505px"
-              width="100%"
-              style="border: 0; margin: 0 auto; display: block; max-width: 100%; min-width: 300px"
-            />
+          <v-card height="480" tile outlined>
+            <v-skeleton-loader type="article,list-item-three-line@4" height="450" />
           </v-card>
         </v-col>
 
-        <v-col cols="12" lg="4"> <v-card tile outlined height="505"> </v-card> </v-col>
+        <v-col cols="8">
+          <v-row>
+            <v-col>
+              <v-card height="200" tile outlined>
+                <v-row>
+                  <v-col cols="12">
+                    <v-skeleton-loader type="table-heading,text" />
+                  </v-col>
 
-        <v-col cols="12" lg="4">
-          <token-news
-            :height="505"
-            :loading="loadingNews"
-            :token-symbol="$route.params.id.toUpperCase()"
-            :coin-articles="news"
-          ></token-news>
+                  <v-col cols="12">
+                    <v-skeleton-loader type="divider" />
+                  </v-col>
+
+                  <v-col cols="12" class="mt-5">
+                    <v-row class="mt-1">
+                      <v-col v-for="i in 6" :key="i" cols="6" md="3" lg="2">
+                        <v-skeleton-loader type="text@2" />
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-card tile outlined height="256">
+                <v-skeleton-loader type="table-heading,divider,table-tbody" height="256" />
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card tile outlined height="100%"></v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col cols="12">
+          <v-card tile outlined height="500">
+            <v-skeleton-loader type="table" tile height="500" />
+          </v-card>
         </v-col>
       </v-row>
+
+      <v-row v-else-if="tokenData">
+        <v-col cols="12" lg="4">
+          <coin-profile
+            :rank="tokenData.rank"
+            :symbol="tokenData.symbolName"
+            :qc-key="tokenData.qcKey"
+            :website-links="tokenData.websiteUrl"
+            :bit-bucket-repos="tokenData.bitbucketRepos"
+            :git-hub-repos="tokenData.githubRepos"
+            :explorer-urls="tokenData.explorerUrls"
+            :telegram-channel-id="tokenData.telegramChannelId"
+            :twitter-url="tokenData.twitterUrl"
+            :subreddit-url="tokenData.subredditUrl"
+            :facebook-url="tokenData.facebookUrl"
+            :coin-description="tokenData.coinDescription"
+          />
+        </v-col>
+        <v-col cols="8">
+          <v-row>
+            <v-col cols="12">
+              <coin-metrics
+                :price-usd="tokenData.price.priceUsd"
+                :price-btc="tokenData.price.priceBtc"
+                :price24h="tokenData.price24h"
+                :interval-data="tokenData.tokenInterval"
+                :market-cap="tokenData.marketcap"
+                :volume="tokenData.volume24h"
+                :circ-supply="tokenData.circulatingSupply"
+                :support="tokenData.support1h"
+                :resistance="tokenData.resistance1h"
+                :safety-score="tokenData.safeScore"
+                @on-interval-change="setInterval"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-card tile outlined height="256">
+                <token-news :token-symbol="tokenData.qcKey" :news="tokenData.news" :symbol="tokenData.qcKey" />
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card tile outlined height="100%"></v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <token-aave-assets v-if="tokenData" :row-pool-data="tokenData.aavePools" />
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
-import { computed, defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
-import { useQuery } from '@vue/apollo-composable/dist'
-import { useResult } from '@vue/apollo-composable'
+import { defineComponent } from '@nuxtjs/composition-api'
+import useToken from '~/composables/useToken'
 import CoinProfile from '~/components/coin-details/CoinProfile.vue'
-
-import TokenNews from '~/components/news/TokenNews.vue'
-import useQCCoinDetails from '~/composables/useQCCoinDetails'
-
 import CoinMetrics from '~/components/coin-details/CoinMetrics.vue'
-import { TimeInterval } from '~/types/token'
-import { NewsGQL } from '~/apollo/main/news.query.graphql'
-import { News } from '~/types/apollo/main/types'
-
+import TokenNews from '~/components/news/TokenNews.vue'
+import TokenAaveAssets from '~/components/coin-details/TokenAaveAssets.vue'
 export default defineComponent({
-  name: 'Index',
-  components: { CoinProfile, CoinMetrics, TokenNews },
+  components: {
+    TokenAaveAssets,
+    TokenNews,
+    CoinMetrics,
+    CoinProfile,
+  },
   setup() {
-    /** STATE **/
-    const loadingNews = ref(true)
-
-    /** COMPOSABLES **/
-    const route = useRoute()
-    const { qcCoinData, selectedInterval, coinPrice, highAndLow, loading } = useQCCoinDetails()
-
-    const newsQuery = useQuery(NewsGQL, () => ({ qcKey: route.value.params.id }), {
-      fetchPolicy: 'no-cache',
-      prefetch: false,
-    })
-
-    const newsResult = useResult(newsQuery.result, [])
-
-    /** COMPUTED **/
-    const news = computed(() => newsResult.value as News[])
-
-    /** METHODS **/
-    function onChangeIntervalSelection(intervalType: string) {
-      selectedInterval.value = intervalType as TimeInterval
-    }
-
-    /** EVENTS **/
-    newsQuery.onResult((queryResult) => {
-      loadingNews.value = queryResult.loading
-    })
-
-    return { loading, loadingNews, qcCoinData, coinPrice, highAndLow, news, onChangeIntervalSelection }
+    const { tokenData, loading, setInterval } = useToken()
+    return { tokenData, loading, setInterval }
   },
 })
 </script>

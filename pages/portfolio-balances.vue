@@ -55,13 +55,13 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="!loading">
+        <v-row v-show="!loading">
           <v-col v-for="balance in balanceData" :key="balance.chainId" lg="6" md="12">
             <portfolio-balance-grid :data="balance" />
           </v-col>
         </v-row>
 
-        <v-row v-if="!loading">
+        <v-row v-show="!loading">
           <v-col class="pb-0 mt-4">
             <v-avatar size="40" class="mr-2">
               <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" @error="$setAltImageUrl" />
