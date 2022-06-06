@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row no-gutters justify="center">
     <v-col cols="11">
       <template v-if="!walletReady">
         <connect-wallet-memo></connect-wallet-memo>

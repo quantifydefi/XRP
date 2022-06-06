@@ -29,7 +29,9 @@
     </v-main>
     <wallet-select-dialog />
 
-    <main-footer></main-footer>
+    <client-only>
+      <main-footer></main-footer>
+    </client-only>
   </v-app>
 </template>
 

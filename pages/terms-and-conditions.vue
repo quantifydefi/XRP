@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="11" lg="10">
+    <v-col cols="11" lg="8" md="9">
       <h1 class="text-h4 py-3">Terms and Conditions</h1>
       <v-divider />
       <div class="py-3 body-2">Last update: June 2022</div>

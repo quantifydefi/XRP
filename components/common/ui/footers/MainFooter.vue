@@ -1,31 +1,49 @@
 <template>
-  <v-footer absolute padless app>
+  <v-footer padless class="mt-10">
     <v-row no-gutters>
-      <v-col cols="12" class="pa-0">
+      <v-col class="pa-0">
         <v-card flat tile outlined class="text-center">
-          <v-card-text class="white--text">
+          <v-card-text>
             <v-row>
-              <v-col v-if="$vuetify.breakpoint.smAndUp" cols="2" sm="6" class="text-left pa-1">
-                <v-btn tile text small to="/terms-and-conditions" color="#121212">
-                  <span class="grey--text lighten-1">Terms And Conditions</span>
-                </v-btn>
+              <v-col class="pb-0 text-left d-sm-flex">
+                <div v-for="link in footerLinks" :key="link.title">
+                  <v-btn tile text small :to="link.url" color="#121212">
+                    <span class="grey--text text--lighten-1">{{ link.title }}</span>
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
 
+            <v-row>
+              <v-col cols="12" sm="5" class="text-left pa-0">
+                <div class="font-weight-medium grey--text py-2 pl-6 text-no-wrap">
+                  &copy;
+                  {{ new Date().getFullYear() }} - EVMX
+                  <span class="caption pl-2"
+                    >contact us at
+                    <a
+                      href="mailto:admin@quantifycrypto.net"
+                      class="text-decoration-none grey--text font-weight-medium"
+                    >
+                      admin@quantifycrypto.net</a
+                    ></span
+                  >
+                </div>
+              </v-col>
+
+              <v-col class="py-0 text-sm-right text-left order-first order-sm-last mt-sm-n5" cols="12" sm="7">
                 <v-btn
-                  v-for="icon in socialIcons"
+                  v-for="icon in communityLinks"
                   :key="icon.title"
-                  :href="icon.to"
+                  :href="icon.url"
                   target="_blank"
-                  class="mx-3 grey--text text--lighten-1"
+                  class="mx-1 grey--text text--lighten-1"
                   icon
                 >
-                  <v-icon size="20px" :style="icon.title === 'Telegram' ? { transform: 'rotate(-45deg)' } : {}">
+                  <v-icon size="24" :style="icon.title === 'Telegram' ? { transform: 'rotate(-36deg)' } : {}">
                     {{ icon.icon }}
                   </v-icon>
                 </v-btn>
-              </v-col>
-
-              <v-col class="text-sm-right pa-1" cols="12" sm="6">
-                <div class="font-weight-medium grey--text lighten-1 mt-sm-2 mt-1 pr-2">&copy; 2022 - EVMX</div>
               </v-col>
             </v-row>
           </v-card-text>
@@ -36,35 +54,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useStore, computed } from '@nuxtjs/composition-api'
+import { State } from '~/types/state'
 
 export default defineComponent({
   name: 'MainFooter',
   setup() {
-    const socialIcons = [
-      {
-        title: 'Facebook',
-        icon: 'mdi-facebook',
-        to: 'https://www.facebook.com/crypto.researcher/',
-      },
+    const { state } = useStore<State>()
+    const headerTextClass = computed(() => state.ui[state.ui.theme].headerTextClass)
+
+    const footerLinks = [
+      { title: 'Terms and Conditions', url: '/terms-and-conditions' },
+      { title: 'Meet Our Team', url: '/team' },
+    ]
+
+    const communityLinks = [
       {
         title: 'Twitter',
         icon: 'mdi-twitter',
-        to: 'https://twitter.com/EVMX_IO',
+        url: 'https://twitter.com/EVMX_IO',
       },
       {
         title: 'Linkedin',
         icon: 'mdi-linkedin',
-        to: 'https://www.linkedin.com/company/quantifycrypto',
+        url: 'https://www.linkedin.com/company/quantifycrypto',
       },
       {
         title: 'Telegram',
         icon: 'mdi-send',
-        to: 'https://t.me/Quantify_Crypto',
+        url: 'https://t.me/Quantify_Crypto',
       },
     ]
 
-    return { socialIcons }
+    return { footerLinks, communityLinks, headerTextClass }
   },
 })
 </script>
