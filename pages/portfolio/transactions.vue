@@ -39,11 +39,12 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import NetworkSelectionMenu from '~/components/common/NetworkMenuSelection.vue'
-
 import useTransactions from '~/composables/useTransactions'
+import { useMetaTags } from '~/composables/useMetaTags'
+
 import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import TransactionsGrid from '~/components/transactions/TransactionsGrid.vue'
+import NetworkSelectionMenu from '~/components/common/NetworkMenuSelection.vue'
 
 export default defineComponent({
   name: 'Transactions',
@@ -63,6 +64,12 @@ export default defineComponent({
       navigateToExplorer,
     } = useTransactions()
 
+    // META TAGS
+    const { metaTags } = useMetaTags()
+
+    metaTags.title = 'Transactions History | EVMX'
+    metaTags.subDirectory = 'portfolio/transactions'
+
     return {
       walletReady,
       loading,
@@ -76,5 +83,6 @@ export default defineComponent({
       navigateToExplorer,
     }
   },
+  head: {},
 })
 </script>

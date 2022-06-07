@@ -110,3 +110,21 @@
     </v-col>
   </v-row>
 </template>
+
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+import { useMetaTags } from '~/composables/useMetaTags'
+
+export default defineComponent({
+  name: 'TermsAndConditions',
+  transition: 'slide-x-transition',
+  setup() {
+    // META TAGS
+    const { metaTags } = useMetaTags()
+
+    metaTags.title = 'Terms and Conditions | EVMX'
+    metaTags.subDirectory = 'terms-and-conditions'
+  },
+  head: {},
+})
+</script>

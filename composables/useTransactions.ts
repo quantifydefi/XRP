@@ -32,8 +32,7 @@ export default function () {
     TransactionsGQL,
     () => ({
       chainId: currentChain.value.chainId,
-      // address: account.value,
-      address: '0xF705b9ba1908cA505537F309B08E6949C1b8f31F',
+      address: account.value,
       pageNumber: pagination.page,
       pageSize: pagination.perPage,
     }),

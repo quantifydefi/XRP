@@ -10,18 +10,18 @@
           <div v-for="(param, i) in log.decoded['params']" :key="i">
             <div class="pr-5">
               <div :class="[ui[ui.theme].headerTextClass, 'text-capitalize text-caption']">
-                {{ param.name.replace('_', '') }}:
+                {{ param['name'].replace('_', '') }}:
               </div>
 
               <div v-if="log.decoded['name'] === 'Approval'" class="pr-10">
-                {{ approvalRenderer(param.value) }}
+                {{ approvalRenderer(param['value']) }}
               </div>
 
-              <div v-else-if="param.type.startsWith('uint') && param.name === 'value'" class="pr-10">
-                {{ $nf(+param.value / 10 ** log.senderContractDecimals, 0, 6) }}
+              <div v-else-if="param['type'].startsWith('uint') && param['name'] === 'value'" class="pr-10">
+                {{ $nf(+param['value'] / 10 ** log.senderContractDecimals, 0, 6) }}
               </div>
 
-              <div v-else-if="param.type === 'address' || param.name === 'functionSignature'" class="pr-10">
+              <div v-else-if="param['type'] === 'address' || param['name'] === 'functionSignature'" class="pr-10">
                 <v-tooltip top color="grey darken-4">
                   <template #activator="{ on, attrs }">
                     <div
@@ -29,17 +29,17 @@
                       :class="[ui[theme].innerCardLighten]"
                       v-bind="attrs"
                       v-on="on"
-                      @click="$copyAddressToClipboard(param.value)"
+                      @click="$copyAddressToClipboard(param['value'])"
                     >
-                      {{ $truncateAddress(param.value, 8, 10) }}
+                      {{ $truncateAddress(param['value'], 8, 10) }}
                     </div>
                   </template>
-                  <span>{{ param.value }}</span>
+                  <span>{{ param['value'] }}</span>
                 </v-tooltip>
               </div>
 
               <div v-else class="pr-10">
-                {{ param.value.substring(0, 300) }}
+                {{ param['value'].substring(0, 300) }}
               </div>
             </div>
           </div>

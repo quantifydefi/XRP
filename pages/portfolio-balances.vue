@@ -84,6 +84,7 @@ import BalancesChart from '~/components/portfolio/BalancesChart.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import BalanceProtocols from '~/components/portfolio/BalanceProtocols.vue'
 import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
+import { useMetaTags } from '~/composables/useMetaTags'
 
 export default defineComponent({
   components: { ConnectWalletMemo, BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
@@ -102,6 +103,12 @@ export default defineComponent({
         total: item.items.reduce((n, { quote }) => n + quote, 0),
       }))
     )
+
+    // META TAGS
+    const { metaTags } = useMetaTags()
+
+    metaTags.title = 'Portfolio Balances | EVMX'
+    metaTags.subDirectory = 'portfolio-balance'
 
     return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch }
   },
