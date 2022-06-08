@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-app-bar app elevation="0" outlined height="60">
-      <v-avatar size="38"> <v-img :src="imageUrl" :lazy-src="imageUrl" /> </v-avatar>
+      <v-avatar size="38">
+        <v-img :src="imageUrl" :lazy-src="imageUrl" />
+      </v-avatar>
       <nuxt-link to="/" class="text-decoration-none mr-10" style="color: inherit">
         <v-toolbar-title class="ml-2" v-text="title" />
       </nuxt-link>
@@ -28,6 +30,10 @@
       </v-container>
     </v-main>
     <wallet-select-dialog />
+
+    <client-only>
+      <main-footer></main-footer>
+    </client-only>
   </v-app>
 </template>
 
@@ -39,8 +45,10 @@ import WalletConnector from '~/components/common/WalletConnector.vue'
 import useInitTheme from '~/composables/useInitTheme'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
 import { State } from '~/types/state'
+import MainFooter from '~/components/common/ui/footers/MainFooter.vue'
 export default defineComponent({
   components: {
+    MainFooter,
     WalletSelectDialog,
     WalletConnector,
     GasInfo,

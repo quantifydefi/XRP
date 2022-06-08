@@ -136,7 +136,7 @@ type HighAndLow {
 type LogEvent {
   blockHeight: Int!
   blockSignedAt: String!
-  decoded: LogEventDecoded!
+  decoded: LogEventDecoded
   logOffset: Int!
   rawLogData: String!
   rawLogTopics: [String]!

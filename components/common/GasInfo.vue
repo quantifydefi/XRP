@@ -63,6 +63,7 @@ import { computed, defineComponent, Ref } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { GasGQL } from '~/apollo/main/config.query.graphql'
 import { GasStats } from '~/types/apollo/main/types'
+
 export default defineComponent({
   setup() {
     // COMPOSABLE
