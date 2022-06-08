@@ -37,7 +37,14 @@
                   @error="$setAltImageUrl"
                 />
               </v-avatar>
-              {{ item.symbol }}
+              <nuxt-link
+                class="text-capitalize text-decoration-none white--text"
+                :to="{
+                  path: `/token/${item.symbol}`,
+                  query: { contract: item.addresses.address, decimals: item.addresses.decimals },
+                }"
+                v-text="item.symbol"
+              />
             </div>
           </template>
 

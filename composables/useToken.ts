@@ -15,13 +15,14 @@ export default function () {
   // COMPOSABLES
   const { account } = inject(WEB3_PLUGIN_KEY) as Web3
   const route = useRoute()
+  const contractAddress = computed(() => route.value.query?.contract ?? '') as Ref<string>
   const { result, onResult } = useQuery(
     TokenQueryGQL,
     () => ({
       qcKey: route.value.params?.id ?? '',
       walletAddress: account.value ?? '',
       interval: interval.value,
-      contractAddress: route.value.query?.contract ?? '',
+      contractAddress: contractAddress.value,
       chainId: aaveMarketChainId.value,
       decimals: route.value.query?.decimals ?? 18,
     }),
@@ -40,5 +41,5 @@ export default function () {
   // METHODS
   const setInterval = (int: `${TimeInterval}`) => (interval.value = int)
 
-  return { tokenData, loading, setInterval }
+  return { tokenData, loading, contractAddress, setInterval }
 }

@@ -1,7 +1,7 @@
 <template>
-  <v-card tile outlined class="pa-4" height="200">
+  <v-card tile outlined class="pa-4" height="100%">
     <v-row>
-      <v-col cols="12" lg="2">
+      <v-col cols="12" lg="4">
         <v-row no-gutters align="center">
           <v-col cols="12">
             <h2 :class="['text-h4 font-weight-medium', 'ml-1', 'text-no-wrap', priceTextClass]">
@@ -31,7 +31,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="12" lg="10">
+      <v-col cols="12" lg="8">
         <v-row no-gutters class="mt-2 flex-no-wrap mt-lg-6" justify="center">
           <v-col cols="auto" lg="3" class="d-flex justify-end">
             <div class="text-no-wrap">
@@ -49,7 +49,7 @@
             ></v-progress-linear>
           </v-col>
 
-          <v-col cols="auto" lg="3" class="d-flex">
+          <v-col lg="3">
             <div class="text-no-wrap">
               <span class="font-weight-bold">
                 <span class="ml-1 font-weight-bold" v-text="`Low: ${$f(intervalData.high, { roundTo: 2 })}`" />
@@ -158,7 +158,6 @@ export default defineComponent<Props>({
     const tokenPriceBtc = toRefs(props).priceBtc
     const tokenPrice24h = toRefs(props).price24h
     const tokenInterval = toRefs(props).intervalData
-
     const priceTextClass = ref('')
     const intervalModel = ref<{ text: string; value: `${TimeInterval}` }>({ text: '1h', value: 'INTERVAL_1H' })
     const intervalSelectorOptions: { text: string; value: `${TimeInterval}` }[] = [

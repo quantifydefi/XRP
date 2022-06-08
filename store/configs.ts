@@ -4,36 +4,27 @@ import { Chain } from '~/types/apollo/main/types'
 import { SupportedChainsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
 
+const defaultChain: Chain = {
+  chainId: 1,
+  name: 'Ethereum',
+  geckoId: 'ethereum',
+  symbol: 'ETH',
+  label: 'Ethereum Mainnet',
+  logoUrl: 'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
+  isTestNet: false,
+  rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
+  blockExplorerUrl: 'https://etherscan.io/',
+  __typename: 'Chain',
+}
+
 export const state = () =>
   ({
     title: 'EVMX',
     globalStats: null,
     gasStats: null,
     chains: [],
-    currentAaveMarket: {
-      chainId: 1,
-      name: 'Ethereum',
-      geckoId: 'ethereum',
-      symbol: 'ETH',
-      label: 'Ethereum Mainnet',
-      logoUrl: 'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
-      isTestNet: false,
-      rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
-      blockExplorerUrl: 'https://etherscan.io/',
-      __typename: 'Chain',
-    },
-    currentTransactionChain: {
-      chainId: 1,
-      name: 'Ethereum',
-      geckoId: 'ethereum',
-      symbol: 'ETH',
-      label: 'Ethereum Mainnet',
-      logoUrl: 'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
-      isTestNet: false,
-      rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
-      blockExplorerUrl: 'https://etherscan.io/',
-      __typename: 'Chain',
-    },
+    currentAaveMarket: defaultChain,
+    currentTransactionChain: defaultChain,
     balancesChains: [1, 56, 137, 250],
     aaveMarketsSupportedChains: [1, 137],
     transactionsSupportedChains: [1, 56, 137, 250],

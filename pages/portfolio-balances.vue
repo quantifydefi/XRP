@@ -97,8 +97,8 @@ export default defineComponent({
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
     const stats = computed(() =>
       balanceData.value.map((item) => ({
-        name: getters['configs/chainInfo'](item.chainId)?.name || '',
-        symbol: getters['configs/chainInfo'](item.chainId)?.symbol || '',
+        name: getters['configs/chainInfo'](item.chainId)?.label ?? '',
+        symbol: getters['configs/chainInfo'](item.chainId)?.symbol ?? '',
         total: item.items.reduce((n, { quote }) => n + quote, 0),
       }))
     )

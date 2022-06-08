@@ -11,11 +11,24 @@
               {{ symbol }}
               <span class="text-h6 pink--text ml-2 mt-2" v-text="qcKey" />
             </h2>
-            <v-spacer />
-            <v-chip small class="mt-2 text-highlight rounded-0" v-text="`Rank ${rank}`" />
           </v-col>
         </v-row>
 
+        <v-row no-gutters>
+          <v-col cols="2">
+            <span class="subtitle-2 text-no-wrap grey--text" v-text="`Contract:`" />
+          </v-col>
+          <v-col cols="9">
+            <span class="ml-2 d-inline-block text-truncate" style="max-width: 250px" v-text="contractAddress" />
+          </v-col>
+          <v-col cols="1">
+            <div class="text-right">
+              <v-btn color="primary" x-small class="mb-1 ml-1" icon @click="$copyAddressToClipboard(contractAddress)">
+                <v-icon size="18">mdi-content-copy</v-icon>
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
         <v-row v-for="(elem, i) in resourcesUrls" :key="i" justify="center" no-gutters align="center">
           <v-col cols="2">
             <span class="subtitle-2 text-no-wrap grey--text" v-text="elem.title" />
@@ -85,10 +98,10 @@
 
         <v-row justify="center" no-gutters align="center" class="mt-1">
           <v-col>
-            <v-card elevation="0" :max-height="220" class="pa-0 mt-4">
+            <v-card elevation="0" :max-height="180" class="pa-0 mt-4">
               <h2 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
               <pre
-                style="white-space: pre-line; max-height: 210px"
+                style="white-space: pre-line; max-height: 180px"
                 class="overflow-y-auto subtitle-2 font-weight-regular pr-2 grey--text"
                 v-text="coinDescription"
               />
@@ -104,7 +117,6 @@
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
 type Props = {
-  rank: number
   symbol: string
   qcKey: string
 
@@ -118,10 +130,10 @@ type Props = {
   subredditUrl: string
   facebookUrl: string
   discordChannelId: string
+  contract: string
 }
 export default defineComponent<Props>({
   props: {
-    rank: { type: Number, default: 999 },
     qcKey: { type: String, required: true },
     symbol: { type: String, required: true },
     coinDescription: { type: String, default: '' },
@@ -138,23 +150,30 @@ export default defineComponent<Props>({
     subredditUrl: { type: String, default: '#' },
     facebookUrl: { type: String, default: '#' },
     discordChannelId: { type: String, default: '#' },
+
+    // contract
+    contractAddress: { type: String, default: '' },
   },
   setup(props) {
     // COMPUTED
     const resourcesUrls = computed<{ title: string; items: string[] }[]>(() => [
-      { title: 'Website', items: props.websiteLinks?.links ?? [] },
-      { title: 'Explorer', items: props.explorerUrls?.links ?? [] },
+      { title: 'Website:', items: props.websiteLinks?.links ?? [] },
+      { title: 'Explorer:', items: props.explorerUrls?.links ?? [] },
       {
-        title: 'Source',
+        title: 'Source:',
         items: [...(props.bitBucketRepos?.links ?? []), ...(props.gitHubRepos?.links ?? [])],
       },
     ])
     const socials = computed<{ link: string; icon: string; style?: Object }[]>(() => [
-      { link: `https://t.me/${props.telegramChannelId}`, icon: 'mdi-send', style: { transform: 'rotate(-45deg)' } },
-      { link: props.twitterUrl, icon: 'mdi-twitter' },
-      { link: props.subredditUrl, icon: 'mdi-reddit' },
-      { link: props.facebookUrl, icon: 'mdi-facebook' },
-      { link: props.discordChannelId, icon: 'mdi-discord' },
+      {
+        link: `https://t.me/${props.telegramChannelId}`,
+        icon: 'mdi-send',
+        style: { transform: 'rotate(-45deg)', color: '#536af6' },
+      },
+      { link: props.twitterUrl, icon: 'mdi-twitter', style: { color: '#536af6' } },
+      { link: props.subredditUrl, icon: 'mdi-reddit', style: { color: '#536af6' } },
+      { link: props.facebookUrl, icon: 'mdi-facebook', style: { color: '#536af6' } },
+      { link: props.discordChannelId, icon: 'mdi-discord', style: { color: '#536af6' } },
     ])
     return { resourcesUrls, socials }
   },

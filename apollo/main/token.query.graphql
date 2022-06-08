@@ -71,6 +71,7 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
         variableDebtTokenAddress
         decimals
         address
+        symbol
       }
       portfolioVal {
         totalDeposits
@@ -97,5 +98,7 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
         slug
         url
       }}
+
+    balances{chainId, items{balance}}
   }
 }

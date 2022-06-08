@@ -14,7 +14,6 @@ query BalancesGQL($chainIds: [Int!]!, $address: String! ) {
       contractTickerSymbol
       contractAddress
       supportsErc
-      logoUrl
       lastTransferredAt
       type
       balance
@@ -41,6 +40,7 @@ query BalancesGQL($chainIds: [Int!]!, $address: String! ) {
         variableBorrow
       }
       price{id,priceInEth, priceUsd}
+      addresses{address ,decimals}
     }
   }
 }

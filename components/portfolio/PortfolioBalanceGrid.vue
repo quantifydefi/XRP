@@ -29,9 +29,16 @@
       <template #[`item.contractTickerSymbol`]="{ item }">
         <div class="text-no-wrap overflow-x-hidden">
           <v-avatar size="20" class="mr-2">
-            <img :src="item.logoUrl" :lazy-src="item.logoUrl" @error="$setAltImageUrl" />
+            <img :src="$imageUrlBySymbol(item.contractTickerSymbol)" @error="$setAltImageUrl" />
           </v-avatar>
-          {{ item.contractTickerSymbol }}
+          <nuxt-link
+            class="text-capitalize text-decoration-none white--text"
+            :to="{
+              path: `/token/${item.contractTickerSymbol}`,
+              query: { contract: item.contractAddress, decimals: item.contractDecimals },
+            }"
+            v-text="item.contractTickerSymbol"
+          />
         </div>
       </template>
 

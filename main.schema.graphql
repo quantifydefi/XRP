@@ -71,8 +71,8 @@ type Balance {
 }
 
 type BalanceItem {
-  balance: String!
-  balance24h: String!
+  balance: Float!
+  balance24h: Float!
   contractAddress: String!
   contractDecimals: Float!
   contractName: String!
@@ -98,13 +98,6 @@ type Chain {
   name: String!
   rpcUrl: String!
   symbol: String!
-}
-
-type Currency {
-  code: String!
-  slug: String!
-  title: String!
-  url: String!
 }
 
 type EthGasStatsResult {
@@ -182,9 +175,16 @@ Returns news by coin symbol
 https://cryptopanic.com/api/v1/posts/?auth_token=API_KEY&currencies=COIN_SYMBOL
 """
 type News {
-  currencies: [Currency!]
+  currencies: [NewsCurrency!]!
   id: Int!
   publishedAt: String!
+  title: String!
+  url: String!
+}
+
+type NewsCurrency {
+  code: String!
+  slug: String!
   title: String!
   url: String!
 }
@@ -205,6 +205,8 @@ type Price {
 }
 
 type Query {
+  "Aave Addresses "
+  aaveAddresses(chainId: Int!): [AaveAddress!]!
   "Aave Pool "
   aavePools(chainId: Int!): [AavePool!]!
   "Portfolio Balances"
@@ -214,13 +216,10 @@ type Query {
   gas: [GasStats!]!
   "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
-  "Crypto Panic News"
-  news(qcKey: String!): [News!]
   "Recent Usd Prices "
   recentPrices: Map!
   todos: [Todo!]!
   token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
-  tokenTest: String!
   "Portfolio Transactions"
   transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
 }
@@ -235,18 +234,20 @@ type Todo {
 type Token {
   ID: ID
   aavePools: [AavePool!]!
-  bitbucketRepos: JSONMap!
+  balances: [Balance!]!
+  bitbucketRepos: JSONMap
   chainId: Int!
   circulatingSupply: Float!
   coinDescription: String!
   contractAddress: String!
   decimals: Int!
   discordChannelId: String!
-  explorerUrls: JSONMap!
+  explorerUrls: JSONMap
   facebookUrl: String!
-  githubRepos: JSONMap!
+  githubRepos: JSONMap
   interval: TimeInterval!
   marketcap: Float!
+  news: [News!]!
   price: Price!
   price24h: Float!
   qcKey: String!
@@ -261,7 +262,7 @@ type Token {
   twitterUrl: String!
   volume24h: Float!
   walletAddress: String!
-  websiteUrl: JSONMap!
+  websiteUrl: JSONMap
 }
 
 type Transaction {

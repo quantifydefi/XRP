@@ -11,7 +11,7 @@
       <template #activator="{ on, attrs }">
         <div class="d-flex">
           <v-btn class="mt-1 px-2 subtitle-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
-            <div :class="ui[theme].headerTextClass">
+            <div>
               <v-avatar tile size="24" class="rounded"><v-img :src="avatar" /></v-avatar>
               <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-2" v-text="accountShortCut" />
               <v-icon small>mdi-chevron-down</v-icon>
@@ -50,13 +50,11 @@ import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 export default defineComponent({
   setup() {
     // COMPOSABLE
-    const { state, dispatch } = useStore<State>()
+    const { dispatch } = useStore<State>()
     const { disconnectWallet, account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
     const { $copyAddressToClipboard } = useContext()
 
     // COMPUTED
-    const ui = computed(() => state.ui)
-    const theme = computed(() => state.ui.theme)
     const avatar = computed(() => create({ seed: account.value }).toDataURL() || '')
     const accountShortCut = computed(
       () => `${account.value.slice(0, 5)}.....${account.value.slice(account.value.length - 5, account.value.length)}`
@@ -82,8 +80,6 @@ export default defineComponent({
     return {
       dispatch,
       walletReady,
-      ui,
-      theme,
       account,
       avatar,
       accountShortCut,

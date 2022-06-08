@@ -86,8 +86,8 @@ export type Balance = {
 
 export type BalanceItem = {
   __typename?: 'BalanceItem';
-  balance: Scalars['String'];
-  balance24h: Scalars['String'];
+  balance: Scalars['Float'];
+  balance24h: Scalars['Float'];
   contractAddress: Scalars['String'];
   contractDecimals: Scalars['Float'];
   contractName: Scalars['String'];
@@ -243,6 +243,8 @@ export type Price = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Aave Addresses  */
+  aaveAddresses: Array<AaveAddress>;
   /** Aave Pool  */
   aavePools: Array<AavePool>;
   /** Portfolio Balances */
@@ -258,6 +260,11 @@ export type Query = {
   token: Token;
   /** Portfolio Transactions */
   transactions: Transaction;
+};
+
+
+export type QueryAaveAddressesArgs = {
+  chainId: Scalars['Int'];
 };
 
 
@@ -312,6 +319,7 @@ export type Token = {
   __typename?: 'Token';
   ID?: Maybe<Scalars['ID']>;
   aavePools: Array<AavePool>;
+  balances: Array<Balance>;
   bitbucketRepos?: Maybe<Scalars['JSONMap']>;
   chainId: Scalars['Int'];
   circulatingSupply: Scalars['Float'];
@@ -419,7 +427,7 @@ export type BalancesGqlQueryVariables = Exact<{
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: string, balance24h: string, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number } }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: number, balance24h: number, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number } }> }> };
 
 export type TransactionsGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -441,4 +449,4 @@ export type TokenQueryGqlQueryVariables = Exact<{
 }>;
 
 
-export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceBtc: number }, aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string }, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number } }>, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }> } };
+export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceBtc: number }, aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string, symbol: string }, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number } }>, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
