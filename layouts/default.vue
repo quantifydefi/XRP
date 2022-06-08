@@ -11,7 +11,7 @@
           v-for="(link, i) in links"
           :key="i"
           tile
-          class="text-capitalize font-weight-regular"
+          class="text-capitalize font-weight-regular text-hover-primary"
           text
           :to="link.to"
           v-text="link.name"

@@ -11,12 +11,9 @@
       hide-default-footer
     >
       <template #item.data-table-expand="{ item, isExpanded, expand }">
-        <div style="width: 16px; cursor: pointer">
-          <v-btn v-if="item.logEvents.length > 0 && !isExpanded" small icon @click="expandRow(expand, true)">
-            <v-icon>mdi-chevron-down</v-icon>
-          </v-btn>
-          <v-btn v-if="item.logEvents.length > 0 && isExpanded" small icon @click="expandRow(expand, false)">
-            <v-icon>mdi-chevron-up</v-icon>
+        <div style="width: 16px">
+          <v-btn v-if="item.logEvents.length > 0" small icon @click="expandRow(expand, !isExpanded)">
+            <v-icon>mdi-chevron-{{ isExpanded ? 'up' : 'down' }}</v-icon>
           </v-btn>
         </div>
       </template>
@@ -24,7 +21,7 @@
       <!-- expanded column items -->
       <template #expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <log-events :log-events="item.logEvents"></log-events>
+          <log-events :key="item.txHash" :log-events="item.logEvents"></log-events>
         </td>
       </template>
 
@@ -36,7 +33,7 @@
 
       <template #[`item.method`]="{ item }">
         <div class="text-truncate" style="width: 120px">
-          <v-tooltip top :color="ui[theme].overlayColor">
+          <v-tooltip right color="black">
             <template #activator="{ on, attrs }">
               <v-btn
                 primary
@@ -63,7 +60,7 @@
                 </div>
               </v-btn>
             </template>
-            <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize']">
+            <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize', 'caption']">
               {{ methodRenderer(item.logEvents) }}
             </span>
           </v-tooltip>
@@ -89,81 +86,99 @@
         <div class="text-no-wrap">
           <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap d-flex">
             From:
-            <div
-              v-if="item.fromAddressIsContract"
-              style="cursor: pointer"
-              :class="[ui[theme].headerTextClass, 'ml-1']"
-              @click="$copyAddressToClipboard(item.fromAddress)"
-            >
-              <v-avatar v-if="item.fromAddressSymbol" size="16" style="margin-top: -2px">
-                <img
-                  :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.fromAddressSymbol.toLowerCase()}.png`"
-                  :alt="`${item.fromAddressSymbol} logo`"
-                  @error="$setAltImageUrl"
-                />
-              </v-avatar>
-              <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
-              {{ !item.fromAddressName ? $truncateAddress(item.fromAddress, 4, 10) : item.fromAddressName }}
-            </div>
+            <v-tooltip top color="black">
+              <template #activator="{ on, attrs }">
+                <div
+                  v-if="item.fromAddressIsContract"
+                  v-bind="attrs"
+                  :class="[ui[theme].headerTextClass, 'ml-1', 'cursor-copy']"
+                  v-on="on"
+                  @click="$copyAddressToClipboard(item.fromAddress)"
+                >
+                  <v-avatar v-if="item.fromAddressSymbol" size="16" style="margin-top: -2px">
+                    <img
+                      :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.fromAddressSymbol.toLowerCase()}.png`"
+                      :alt="`${item.fromAddressSymbol} logo`"
+                      @error="$setAltImageUrl"
+                    />
+                  </v-avatar>
+                  <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
+                  {{ !item.fromAddressName ? $truncateAddress(item.fromAddress, 4, 10) : item.fromAddressName }}
+                </div>
 
-            <div
-              v-else
-              style="cursor: pointer"
-              :class="[
-                'ml-1',
-                item.fromAddress.toLowerCase() === walletAddress.toLowerCase()
-                  ? 'pink--text'
-                  : ui[theme].headerTextClass,
-              ]"
-              @click="$copyAddressToClipboard(item.fromAddress)"
-            >
-              {{ $truncateAddress(item.fromAddress, 4, 10) }}
-            </div>
+                <div
+                  v-else
+                  v-bind="attrs"
+                  :class="[
+                    'cursor-copy',
+                    'ml-1',
+                    item.fromAddress.toLowerCase() === walletAddress.toLowerCase()
+                      ? 'pink--text'
+                      : ui[theme].headerTextClass,
+                  ]"
+                  v-on="on"
+                  @click="$copyAddressToClipboard(item.fromAddress)"
+                >
+                  {{ $truncateAddress(item.fromAddress, 4, 10) }}
+                </div>
+              </template>
+              <span class="caption">{{ item.fromAddress }}</span>
+            </v-tooltip>
           </div>
 
           <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap d-flex">
             To:
-            <div
-              v-if="item.toAddressIsContract"
-              style="cursor: pointer"
-              :class="[ui[theme].headerTextClass, 'ml-1']"
-              @click="$copyAddressToClipboard(item.toAddress)"
-            >
-              <v-avatar v-if="item.toAddressSymbol" size="16" style="margin-top: -2px">
-                <img
-                  :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.toAddressSymbol.toLowerCase()}.png`"
-                  :alt="`${item.toAddressSymbol} logo`"
-                  @error="$setAltImageUrl"
-                />
-              </v-avatar>
-              <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
-              {{ !item.toAddressName ? $truncateAddress(item.toAddress, 4, 10) : item.toAddressName }}
-            </div>
+            <v-tooltip top color="black" class="ma-0 pa-0">
+              <template #activator="{ on, attrs }">
+                <div
+                  v-if="item.toAddressIsContract"
+                  v-bind="attrs"
+                  :class="[ui[theme].headerTextClass, 'ml-1', 'cursor-copy']"
+                  v-on="on"
+                  @click="$copyAddressToClipboard(item.toAddress)"
+                >
+                  <v-avatar v-if="item.toAddressSymbol" size="16" style="margin-top: -2px">
+                    <img
+                      :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.toAddressSymbol.toLowerCase()}.png`"
+                      :alt="`${item.toAddressSymbol} logo`"
+                      @error="$setAltImageUrl"
+                    />
+                  </v-avatar>
+                  <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
+                  {{ !item.toAddressName ? $truncateAddress(item.toAddress, 4, 10) : item.toAddressName }}
+                </div>
 
-            <div v-else-if="!item.toAddress" :class="[ui[theme].headerTextClass]">
-              <v-icon class="mx-1 mt-n1" small>mdi-file-sign</v-icon>Contract Creation
-            </div>
+                <div v-else-if="!item.toAddress" :class="[ui[theme].headerTextClass]">
+                  <v-icon class="mx-1 mt-n1" small>mdi-file-sign</v-icon>
+                  Contract Creation
+                </div>
 
-            <div
-              v-else
-              style="cursor: pointer"
-              :class="[
-                item.toAddress.toLowerCase() === walletAddress.toLowerCase() ? 'pink--text' : ui[theme].headerTextClass,
-              ]"
-              @click="$copyAddressToClipboard(item.toAddress)"
-            >
-              {{ $truncateAddress(item.toAddress, 4, 10) }}
-            </div>
+                <div
+                  v-else
+                  v-bind="attrs"
+                  :class="[
+                    'cursor-copy',
+                    item.toAddress.toLowerCase() === walletAddress.toLowerCase()
+                      ? 'pink--text'
+                      : ui[theme].headerTextClass,
+                  ]"
+                  v-on="on"
+                  @click="$copyAddressToClipboard(item.toAddress)"
+                >
+                  {{ $truncateAddress(item.toAddress, 4, 10) }}
+                </div>
+              </template>
+              <span class="caption">{{ item.toAddress }}</span>
+            </v-tooltip>
           </div>
         </div>
       </template>
 
       <template #[`item.txHash`]="{ item }">
-        <v-tooltip top color="grey darken-4">
+        <v-tooltip top color="black">
           <template #activator="{ on, attrs }">
             <div
-              style="cursor: pointer"
-              :class="[ui[theme].innerCardLighten]"
+              :class="[ui[theme].innerCardLighten, 'cursor-copy']"
               v-bind="attrs"
               v-on="on"
               @click="$copyAddressToClipboard(item.txHash)"
@@ -171,14 +186,14 @@
               {{ $truncateAddress(item.txHash, 10, 4) }}
             </div>
           </template>
-          <span>{{ item.txHash }}</span>
+          <span class="caption">{{ item.txHash }}</span>
         </v-tooltip>
       </template>
 
       <template #[`item.value`]="{ item }">
         <div class="py-2">
           <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
-            {{ $nf(item.value / 10 ** 18, 0, 6) }} ETH
+            {{ $nf(item.value / 10 ** 18, 0, 6) }} {{ currentChain.symbol }}
           </div>
           <span>$ {{ $nf(item.valueQuote, 2, 2) }}</span>
         </div>
@@ -186,7 +201,10 @@
 
       <template #[`item.txnFee`]="{ item }">
         <div class="py-2">
-          <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">{{ $nf(item.txnFee, 0, 6) }} ETH</div>
+          <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
+            {{ $nf(item.txnFee, 0, 6) }}
+            {{ currentChain.symbol }}
+          </div>
           <span>$ {{ $nf(item.gasQuote, 2, 2) }}</span>
         </div>
       </template>
@@ -208,7 +226,7 @@
       </template>
 
       <template #[`item.action`]="{ item }">
-        <v-tooltip top :color="ui[theme].overlayColor">
+        <v-tooltip top color="black">
           <template #activator="{ on, attrs }">
             <div v-bind="attrs" style="cursor: pointer; width: 25px" v-on="on">
               <v-btn
@@ -222,7 +240,7 @@
               </v-btn>
             </div>
           </template>
-          <span :class="[ui[theme].headerTextClass]">View on Block Explorer</span>
+          <span class="caption">View on Block Explorer</span>
         </v-tooltip>
       </template>
     </v-data-table>
@@ -236,17 +254,13 @@ import { State } from '~/types/state'
 import useTransactions from '~/composables/useTransactions'
 import LogEvents from '~/components/transactions/LogEvents.vue'
 
-type Props = {
-  transactions: TransactionItem[]
-}
-
-export default defineComponent<Props>({
+export default defineComponent({
   name: 'TransactionsGrid',
   components: { LogEvents },
   props: {
     transactions: {
       type: Array as PropType<TransactionItem[]>,
-      default: () => [],
+      default: () => [] as TransactionItem[],
     },
     itemsPerPage: {
       type: Number,
@@ -360,7 +374,6 @@ export default defineComponent<Props>({
       return logs.join(', ')
     }
 
-    // On expandRow, reset loadedEventsLength to default = 5
     function expandRow(expand: any, isExpand: boolean): void {
       expand(isExpand)
     }

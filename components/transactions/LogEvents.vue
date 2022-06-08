@@ -14,19 +14,40 @@
               </div>
 
               <div v-if="log.decoded['name'] === 'Approval'" class="pr-10">
-                {{ approvalRenderer(param['value']) }}
+                <div v-if="param['type'] === 'address'">
+                  <v-tooltip top color="black">
+                    <template #activator="{ on, attrs }">
+                      <div
+                        :class="[ui[theme].innerCardLighten, 'cursor-copy']"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="$copyAddressToClipboard(param['value'])"
+                      >
+                        {{ $truncateAddress(param['value'], 8, 10) }}
+                      </div>
+                    </template>
+                    <span class="caption">{{ param['value'] }}</span>
+                  </v-tooltip>
+                </div>
+                <div v-else>
+                  {{ approvalRenderer(param['value']) }}
+                </div>
               </div>
 
               <div v-else-if="param['type'].startsWith('uint') && param['name'] === 'value'" class="pr-10">
                 {{ $nf(+param['value'] / 10 ** log.senderContractDecimals, 0, 6) }}
               </div>
 
-              <div v-else-if="param['type'] === 'address' || param['name'] === 'functionSignature'" class="pr-10">
-                <v-tooltip top color="grey darken-4">
+              <div
+                v-else-if="
+                  param['type'] === 'address' || param['name'] === 'functionSignature' || param['name'] === 'owner'
+                "
+                class="pr-10"
+              >
+                <v-tooltip top color="black">
                   <template #activator="{ on, attrs }">
                     <div
-                      style="cursor: pointer"
-                      :class="[ui[theme].innerCardLighten]"
+                      :class="[ui[theme].innerCardLighten, 'cursor-copy']"
                       v-bind="attrs"
                       v-on="on"
                       @click="$copyAddressToClipboard(param['value'])"
@@ -34,7 +55,7 @@
                       {{ $truncateAddress(param['value'], 8, 10) }}
                     </div>
                   </template>
-                  <span>{{ param['value'] }}</span>
+                  <span class="caption">{{ param['value'] }}</span>
                 </v-tooltip>
               </div>
 
@@ -69,11 +90,7 @@ import { computed, defineComponent, PropType, ref, toRefs, useStore } from '@nux
 import { LogEvent } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
 
-type Props = {
-  logEvents: LogEvent[]
-}
-
-export default defineComponent<Props>({
+export default defineComponent({
   name: 'LogEvents',
   props: {
     logEvents: {
@@ -81,7 +98,7 @@ export default defineComponent<Props>({
       default: () => [] as LogEvent[],
     },
   },
-  setup(props, { root: { $truncateAddress } }) {
+  setup(props) {
     // STATE
     const MAX_UINT256 = 2 ** 256 - 1
     const transactionLogEvents = toRefs(props).logEvents
@@ -98,7 +115,8 @@ export default defineComponent<Props>({
       if (+value >= MAX_UINT256) {
         return 'max approval'
       }
-      return $truncateAddress(value, 8, 10)
+
+      return value
     }
 
     function loadMoreLogEvents() {

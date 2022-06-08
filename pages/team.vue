@@ -28,7 +28,7 @@
                 </v-avatar>
 
                 <div class="ml-6 mt-2">
-                  <h4 class="text-h6 v-chip--clickable" @click="toggleBio(member.id, false, true)">
+                  <h4 class="text-h6 v-chip--clickable text-hover-primary" @click="toggleBio(member.id, false, true)">
                     {{ member.name }}
                   </h4>
                   <div class="text--secondary">
@@ -38,7 +38,7 @@
                   <v-btn
                     v-for="social in member.socials"
                     :key="social.link"
-                    class="mt-1 mr-2"
+                    class="mt-1 mr-2 text-hover-primary"
                     small
                     icon
                     :href="social.link"
@@ -79,7 +79,7 @@
                 </v-avatar>
 
                 <div class="ml-6 mt-2">
-                  <h4 class="text-h6 v-chip--clickable" @click="toggleBio(member.id, true, true)">
+                  <h4 class="text-h6 v-chip--clickable text-hover-primary" @click="toggleBio(member.id, true, true)">
                     {{ member.name }}
                   </h4>
                   <div class="text--secondary">
@@ -89,7 +89,7 @@
                   <v-btn
                     v-for="social in member.socials"
                     :key="social.link"
-                    class="mt-1 mr-2"
+                    class="mt-1 mr-2 text-hover-primary"
                     small
                     icon
                     :href="social.link"
@@ -321,7 +321,7 @@ export default defineComponent({
     // META TAGS
     const { metaTags } = useMetaTags()
 
-    metaTags.title = 'Meet Our Team and Advisors | EVMX'
+    metaTags.title = 'Meet Our Team and Advisors | EVM Finance'
     metaTags.description = 'The cryptocurrency team working to improve the crypto modal experience'
     metaTags.subDirectory = 'team'
 

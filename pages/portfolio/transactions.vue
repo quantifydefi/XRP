@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters justify="center">
-    <v-col cols="11">
+    <v-col cols="11" lg="10">
       <template v-if="!walletReady">
         <connect-wallet-memo></connect-wallet-memo>
       </template>
@@ -17,19 +17,20 @@
         <v-row justify="center">
           <v-col cols="12">
             <v-card v-if="loading" tile outlined>
-              <v-skeleton-loader height="936" type="table-heading,divider,table-tbody@3"></v-skeleton-loader>
+              <v-skeleton-loader height="933" type="table-heading,divider,table-tbody@3"></v-skeleton-loader>
             </v-card>
 
             <div v-else>
               <transactions-grid :transactions="transactionsData"></transactions-grid>
-
-              <v-pagination
-                v-model="currentPage"
-                class="mt-4"
-                :total-visible="pagination.visible"
-                :length="pagination.total"
-              ></v-pagination>
             </div>
+
+            <v-pagination
+              v-model="currentPage"
+              class="mt-4"
+              :total-visible="pagination.visible"
+              :length="pagination.total"
+              @input="loading = true"
+            ></v-pagination>
           </v-col>
         </v-row>
       </template>
@@ -67,7 +68,7 @@ export default defineComponent({
     // META TAGS
     const { metaTags } = useMetaTags()
 
-    metaTags.title = 'Transactions History | EVMX'
+    metaTags.title = 'Transactions History | EVM Finance'
     metaTags.subDirectory = 'portfolio/transactions'
 
     return {

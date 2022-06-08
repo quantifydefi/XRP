@@ -3,7 +3,11 @@
     <template #activator="{ on, attrs }">
       <v-btn elevation="0" class="px-2" color="transparent" tile v-bind="attrs" v-on="on">
         <v-avatar size="26" class="mr-2" tile>
-          <v-img :src="currentSelectedChain.logoUrl" :lazy-src="currentSelectedChain.logoUrl" />
+          <v-img
+            :src="currentSelectedChain.logoUrl"
+            :lazy-src="currentSelectedChain.logoUrl"
+            :alt="`${currentSelectedChain.name} logo`"
+          />
         </v-avatar>
         <span class="text-capitalize" v-text="currentSelectedChain.label" />
         <v-icon class="ml-1">mdi-chevron-down</v-icon>
@@ -17,9 +21,11 @@
             <v-list-item-group v-model="currentSelectedChain" mandatory color="primary">
               <v-list-item v-for="item in chains" :key="item.chainId" :value="item">
                 <v-list-item-avatar size="24">
-                  <v-img :src="item.logoUrl" :lazy-src="item.logoUrl" />
+                  <v-img :src="item.logoUrl" :lazy-src="item.logoUrl" :alt="`${item.name} logo`" />
                 </v-list-item-avatar>
-                <v-list-item-content><v-list-item-title v-text="item.label" /></v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.label" />
+                </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
           </v-list>

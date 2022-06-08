@@ -11,6 +11,14 @@
   cursor: text;
 }
 
+.cursor-copy {
+  cursor: copy;
+}
+
+.cursor-copy:active {
+  cursor: progress;
+}
+
 .disable-events {
   pointer-events: none;
 }
@@ -66,6 +74,10 @@ input:focus {
 .token-link:hover {
   color: #536aff !important;
   font-weight: 500 !important;
+}
+
+.text-hover-primary:hover {
+  color: #536aff !important;
 }
 
 
@@ -243,6 +255,7 @@ tbody {
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
   height: 32px;
 }
+
 .v-data-table > .v-data-table__wrapper tbody tr.v-data-table__expanded__content {
   box-shadow: none;
 }

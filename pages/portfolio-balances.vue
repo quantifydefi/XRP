@@ -107,10 +107,11 @@ export default defineComponent({
     // META TAGS
     const { metaTags } = useMetaTags()
 
-    metaTags.title = 'Portfolio Balances | EVMX'
+    metaTags.title = 'Portfolio Balances | EVM Finance'
     metaTags.subDirectory = 'portfolio-balance'
 
     return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch }
   },
+  head: {},
 })
 </script>

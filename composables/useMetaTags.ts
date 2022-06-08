@@ -4,11 +4,11 @@ const TWITTER_HANDLE = 'EVMX_IO'
 
 export function useMetaTags() {
   const metaTags = reactive({
-    title: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVMX',
-    description: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVMX',
+    title: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
+    description: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
     subDirectory: '',
     imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
-    imgAlt: 'EVMX Homepage',
+    imgAlt: 'EVM Finance Homepage',
   })
 
   const meta = computed(() => {
