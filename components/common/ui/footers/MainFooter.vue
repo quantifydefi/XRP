@@ -9,8 +9,8 @@
                 <v-row>
                   <v-col class="pl-6 b-0 text-left d-sm-flex">
                     <div v-for="link in footerLinks" :key="link.title">
-                      <v-btn tile text small :to="link.url" color="#121212">
-                        <span class="grey--text text--lighten-1">{{ link.title }}</span>
+                      <v-btn tile text small :to="link.url" color="transparent">
+                        <span class="white--text text-hover-primary">{{ link.title }}</span>
                       </v-btn>
                     </div>
                   </v-col>

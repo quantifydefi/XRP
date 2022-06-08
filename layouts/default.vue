@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-app-bar app elevation="0" outlined height="60">
-      <v-avatar size="38"> <v-img :src="imageUrl" :lazy-src="imageUrl" /> </v-avatar>
+      <v-avatar size="38">
+        <v-img :src="imageUrl" :lazy-src="imageUrl" />
+      </v-avatar>
       <nuxt-link to="/" class="text-decoration-none mr-10" style="color: inherit">
         <v-toolbar-title class="ml-2" v-text="title" />
       </nuxt-link>
@@ -11,7 +13,7 @@
           v-for="(link, i) in links"
           :key="i"
           tile
-          class="text-capitalize font-weight-regular text-hover-primary"
+          class="text-capitalize font-weight-regular"
           text
           :to="link.to"
           v-text="link.name"

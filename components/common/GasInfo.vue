@@ -2,13 +2,7 @@
   <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-46" left max-width="600">
     <template #activator="{ on, attrs }">
       <div class="d-flex">
-        <v-btn
-          class="subtitle-2 px-2 mr-2 text-capitalize font-weight-regular text-hover-primary"
-          text
-          tile
-          v-bind="attrs"
-          v-on="on"
-        >
+        <v-btn class="subtitle-2 px-2 mr-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
           <div>
             <v-icon>mdi-gas-station</v-icon>
             <span class="ml-1"> {{ ethMainNetInfo.gas.proposeGasPrice }}</span>
