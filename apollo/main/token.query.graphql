@@ -4,6 +4,7 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
     walletAddress
     interval
     qcKey
+    coinGeckoID
     symbolName
     rank
     chainId
@@ -100,5 +101,13 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
       }}
 
     balances{chainId, items{balance}}
+  }
+}
+
+query PriceChartGQL($coinGeckoID:String!){
+  priceChart(coinGeckoID: $coinGeckoID){
+    timestamp
+    price
+    date
   }
 }

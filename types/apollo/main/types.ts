@@ -93,7 +93,6 @@ export type BalanceItem = {
   contractName: Scalars['String'];
   contractTickerSymbol: Scalars['String'];
   lastTransferredAt: Scalars['String'];
-  logoUrl: Scalars['String'];
   nftData: Scalars['Float'];
   quote: Scalars['Float'];
   quote24h: Scalars['Float'];
@@ -175,7 +174,7 @@ export type LogEvent = {
 export type LogEventDecoded = {
   __typename?: 'LogEventDecoded';
   name: Scalars['String'];
-  params: Array<LogEventParams>;
+  params: Array<Maybe<LogEventParams>>;
   signature: Scalars['String'];
 };
 
@@ -241,6 +240,13 @@ export type Price = {
   symbolName: Scalars['String'];
 };
 
+export type PriceChart = {
+  __typename?: 'PriceChart';
+  data: Scalars['String'];
+  price: Scalars['Float'];
+  timestamp: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Aave Addresses  */
@@ -254,6 +260,7 @@ export type Query = {
   gas: Array<GasStats>;
   /** Global Staths for Coin Gaico */
   globalStats: GlobalStats;
+  priceChart: Array<PriceChart>;
   /** Recent Usd Prices  */
   recentPrices: Scalars['Map'];
   todos: Array<Todo>;
@@ -276,6 +283,12 @@ export type QueryAavePoolsArgs = {
 export type QueryBalancesArgs = {
   address: Scalars['String'];
   chainIds: Array<Scalars['Int']>;
+};
+
+
+export type QueryPriceChartArgs = {
+  coinGeckoID?: Scalars['String'];
+  contractAddress?: Scalars['String'];
 };
 
 
@@ -324,6 +337,7 @@ export type Token = {
   chainId: Scalars['Int'];
   circulatingSupply: Scalars['Float'];
   coinDescription: Scalars['String'];
+  coinGeckoID: Scalars['String'];
   contractAddress: Scalars['String'];
   decimals: Scalars['Int'];
   discordChannelId: Scalars['String'];
@@ -427,7 +441,7 @@ export type BalancesGqlQueryVariables = Exact<{
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, logoUrl: string, lastTransferredAt: string, type: string, balance: number, balance24h: number, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number } }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, lastTransferredAt: string, type: string, balance: number, balance24h: number, quoteRate: number, quoteRate24h: number, quote: number, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', address: string, decimals: number } }> }> };
 
 export type TransactionsGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -437,7 +451,7 @@ export type TransactionsGqlQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, blockHeight: number, txHash: string, txOffset: number, successful: boolean, fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasOffered: number, gasSpent: number, gasPrice: number, gasQuote: number, gasQuoteRate: number, logEvents?: Array<{ __typename?: 'LogEvent', blockSignedAt: string, blockHeight: number, txOffset: number, logOffset: number, txHash: string, rawLogTopics: Array<string | null>, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, rawLogData: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string }> } }> | null }> } };
+export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, blockHeight: number, txHash: string, txOffset: number, successful: boolean, fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasOffered: number, gasSpent: number, gasPrice: number, gasQuote: number, gasQuoteRate: number, logEvents?: Array<{ __typename?: 'LogEvent', blockSignedAt: string, blockHeight: number, txOffset: number, logOffset: number, txHash: string, rawLogTopics: Array<string | null>, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, rawLogData: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string } | null> } }> | null }> } };
 
 export type TokenQueryGqlQueryVariables = Exact<{
   qcKey: Scalars['String'];
@@ -449,4 +463,12 @@ export type TokenQueryGqlQueryVariables = Exact<{
 }>;
 
 
-export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceBtc: number }, aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string, symbol: string }, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number } }>, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
+export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, coinGeckoID: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceBtc: number }, aavePools: Array<{ __typename?: 'AavePool', id: string, underlyingAsset: string, name: string, symbol: string, decimals: number, totalLiquidity: number, liquidityRate: number, stableBorrowRate: number, variableBorrowRate: number, aEmissionPerSecond: number, vEmissionPerSecond: number, sEmissionPerSecond: number, availableLiquidity: number, utilizationRate: number, totalATokenSupply: number, totalCurrentVariableDebt: number, totalPrincipalStableDebt: number, totalLiquidityAsCollateral: number, baseLTVasCollateral: number, reserveLiquidationThreshold: number, reserveLiquidationBonus: number, usageAsCollateralEnabled: boolean, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', aTokenAddress: string, aTokenSymbol: string, stableDebtTokenAddress: string, variableDebtTokenAddress: string, decimals: number, address: string, symbol: string }, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number } }>, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
+
+export type PriceChartGqlQueryVariables = Exact<{
+  coinGeckoID: Scalars['String'];
+  contractAddress: Scalars['String'];
+}>;
+
+
+export type PriceChartGqlQuery = { __typename?: 'Query', priceChart: Array<{ __typename?: 'PriceChart', timestamp: number, price: number, data: string }> };

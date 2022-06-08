@@ -78,7 +78,6 @@ type BalanceItem {
   contractName: String!
   contractTickerSymbol: String!
   lastTransferredAt: String!
-  logoUrl: String!
   nftData: Float!
   quote: Float!
   quote24h: Float!
@@ -136,7 +135,7 @@ type HighAndLow {
 type LogEvent {
   blockHeight: Int!
   blockSignedAt: String!
-  decoded: LogEventDecoded
+  decoded: LogEventDecoded!
   logOffset: Int!
   rawLogData: String!
   rawLogTopics: [String]!
@@ -153,7 +152,7 @@ type LogEvent {
 
 type LogEventDecoded {
   name: String!
-  params: [LogEventParams!]!
+  params: [LogEventParams]!
   signature: String!
 }
 
@@ -204,6 +203,12 @@ type Price {
   symbolName: String!
 }
 
+type PriceChart {
+  date: String!
+  price: Float!
+  timestamp: Int!
+}
+
 type Query {
   "Aave Addresses "
   aaveAddresses(chainId: Int!): [AaveAddress!]!
@@ -216,6 +221,7 @@ type Query {
   gas: [GasStats!]!
   "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
+  priceChart(coinGeckoID: String! = ""): [PriceChart!]!
   "Recent Usd Prices "
   recentPrices: Map!
   todos: [Todo!]!
@@ -239,6 +245,7 @@ type Token {
   chainId: Int!
   circulatingSupply: Float!
   coinDescription: String!
+  coinGeckoID: String!
   contractAddress: String!
   decimals: Int!
   discordChannelId: String!

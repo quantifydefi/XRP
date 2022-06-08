@@ -104,6 +104,13 @@
         </v-col>
       </v-row>
       <token-aave-assets v-if="tokenData" :row-pool-data="tokenData.aavePools" />
+      <v-row v-if="tokenData">
+        <v-col>
+          <v-card tile outlined height="600">
+            <token-prices-chart :contract-address="contractAddress" :coin-gecko-id="tokenData.coinGeckoID" />
+          </v-card>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -116,8 +123,10 @@ import CoinMetrics from '~/components/coin-details/CoinMetrics.vue'
 import TokenNews from '~/components/news/TokenNews.vue'
 import TokenAaveAssets from '~/components/coin-details/TokenAaveAssets.vue'
 import TokenBalances from '~/components/coin-details/TokenBalances.vue'
+import TokenPricesChart from '~/components/coin-details/TokenPricesChart.vue'
 export default defineComponent({
   components: {
+    TokenPricesChart,
     TokenBalances,
     TokenAaveAssets,
     TokenNews,
