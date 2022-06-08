@@ -118,7 +118,6 @@ export default defineComponent({
   components: {
     TeamMemberProfileDialog,
   },
-  transition: 'slide-x-transition',
   setup() {
     const team = ref<TeamMember[]>([
       {

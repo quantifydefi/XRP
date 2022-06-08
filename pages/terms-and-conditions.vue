@@ -146,7 +146,6 @@ import { useMetaTags } from '~/composables/useMetaTags'
 
 export default defineComponent({
   name: 'TermsAndConditions',
-  transition: 'slide-x-transition',
   setup() {
     // META TAGS
     const { metaTags } = useMetaTags()
