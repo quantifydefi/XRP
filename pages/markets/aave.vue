@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="10">
+    <v-col lg="10" md="12">
       <protocol-header
         :name="header.name"
         :symbol="header.symbol"
@@ -51,7 +51,7 @@
       </v-row>
 
       <v-row class="mt-6" align="center">
-        <v-col cols="3">
+        <v-col cols="3" class="hidden-sm-and-down">
           <v-text-field v-model="searchString" append-icon="mdi-magnify" color="primary" outlined dense hide-details />
         </v-col>
         <v-col class="text-right">

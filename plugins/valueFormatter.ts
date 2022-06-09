@@ -2,7 +2,8 @@ import { defineNuxtPlugin } from '@nuxtjs/composition-api'
 import { Context } from '@nuxt/types'
 import Vue from 'vue'
 
-const applyCommas = (val: string) => val.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
+// const applyCommas = (val: string) => val.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
+const applyCommas = (val: string) => Intl.NumberFormat('en').format(parseFloat(val))
 
 function applyNumber(val: number, roundTo: number, pre: string) {
   if (val < 10 ** 3) {

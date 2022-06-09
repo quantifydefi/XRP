@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col>
+    <v-col lg="4" md="12" cols="12">
       <v-card tile outlined elevation="0" class="pa-4" height="100%">
         <v-row no-gutters align="center">
           <v-col cols="4" sm="2" md="1">

@@ -1,7 +1,7 @@
 <template>
   <div class="mb-4">
     <v-row justify="center" class="mt-4">
-      <v-col cols="11" class="text-center">
+      <v-col lg="10" md="12" class="text-center">
         <h1 class="v-heading text-h2 font-weight-regular">EVMX</h1>
         <div class="v-heading text-h4 font-weight-light mt-3 grey--text">DeFi and NFT Portfolio Manager</div>
         <div class="mt-4">
@@ -32,7 +32,7 @@
     </v-row>
 
     <v-row justify="center">
-      <v-col cols="10">
+      <v-col lg="10" md="12">
         <v-row>
           <v-col>
             <div class="text-h4 mt-5">Roadmap</div>
@@ -40,7 +40,7 @@
         </v-row>
 
         <v-row justify="center">
-          <v-col v-for="item in items" :key="item.header" cols="12" md="4" sm="6">
+          <v-col v-for="item in items" :key="item.header" cols="12" md="6" lg="4">
             <v-hover v-slot="{ hover }">
               <v-card height="100%" tile outlined class="pa-2 text-center" :elevation="hover ? 10 : 0">
                 <v-avatar size="40" class="mt-3" :color="ui[theme].innerCardLighten">

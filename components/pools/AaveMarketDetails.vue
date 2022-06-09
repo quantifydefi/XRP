@@ -1,6 +1,6 @@
 <template>
   <v-row class="py-8">
-    <v-col cols="7">
+    <v-col lg="7" md="12">
       <v-row align="center">
         <v-col>
           <div :class="[textClass, 'text-right', 'text-caption']">
