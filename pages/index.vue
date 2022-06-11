@@ -62,6 +62,7 @@
 import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
 import { State } from '~/types/state'
 import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
+import { useMetaTags } from '~/composables/useMetaTags'
 
 export default defineComponent({
   components: { RecentPricesChart },
@@ -128,8 +129,12 @@ export default defineComponent({
     const ui = computed(() => store.state.ui)
     const theme = computed(() => store.state.ui.theme)
 
+    // META TAGS
+    useMetaTags({ title: 'EVM Finance' })
+
     return { items, animatedFeatures, ui, theme }
   },
+  head: {},
 })
 </script>
 
@@ -138,9 +143,11 @@ export default defineComponent({
   color: #e91e63ff;
   align-items: center;
 }
+
 .vue-typer .custom.caret {
   animation: rocking 1s ease-in-out 0s infinite;
 }
+
 .vue-typer .custom.caret {
   width: 5px;
   background-color: #e91e63ff;

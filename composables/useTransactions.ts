@@ -63,6 +63,7 @@ export default function () {
 
   // Offset page index
   watch(currentPage, (newVal) => {
+    loading.value = true
     pagination.page = newVal - 1
   })
 
