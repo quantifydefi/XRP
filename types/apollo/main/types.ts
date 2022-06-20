@@ -154,21 +154,14 @@ export type HighAndLow = {
 
 export type LogEvent = {
   __typename?: 'LogEvent';
-  blockHeight: Scalars['Int'];
-  blockSignedAt: Scalars['String'];
   decoded: LogEventDecoded;
   logOffset: Scalars['Int'];
-  rawLogData: Scalars['String'];
-  rawLogTopics: Array<Maybe<Scalars['String']>>;
-  rawLogTopicsBytes: Scalars['String'];
   senderAddress: Scalars['String'];
-  senderAddressLabel: Scalars['String'];
   senderContractDecimals: Scalars['Int'];
   senderContractTickerSymbol: Scalars['String'];
   senderLogoUrl: Scalars['String'];
   senderName: Scalars['String'];
   txHash: Scalars['String'];
-  txOffset: Scalars['Int'];
 };
 
 export type LogEventDecoded = {
@@ -181,7 +174,6 @@ export type LogEventDecoded = {
 export type LogEventParams = {
   __typename?: 'LogEventParams';
   decoded: Scalars['Boolean'];
-  indexed: Scalars['Boolean'];
   name: Scalars['String'];
   type: Scalars['String'];
   value: Scalars['String'];
@@ -242,7 +234,7 @@ export type Price = {
 
 export type PriceChart = {
   __typename?: 'PriceChart';
-  data: Scalars['String'];
+  date: Scalars['String'];
   price: Scalars['Float'];
   timestamp: Scalars['Int'];
 };
@@ -288,7 +280,6 @@ export type QueryBalancesArgs = {
 
 export type QueryPriceChartArgs = {
   coinGeckoID?: Scalars['String'];
-  contractAddress?: Scalars['String'];
 };
 
 
@@ -377,27 +368,21 @@ export type Transaction = {
 
 export type TransactionItem = {
   __typename?: 'TransactionItem';
-  blockHeight: Scalars['Int'];
   blockSignedAt: Scalars['String'];
   fromAddress: Scalars['String'];
   fromAddressIsContract: Scalars['Boolean'];
-  fromAddressLabel: Scalars['String'];
   fromAddressName: Scalars['String'];
   fromAddressSymbol: Scalars['String'];
-  gasOffered: Scalars['Float'];
   gasPrice: Scalars['Float'];
   gasQuote: Scalars['Float'];
-  gasQuoteRate: Scalars['Float'];
   gasSpent: Scalars['Float'];
   logEvents?: Maybe<Array<LogEvent>>;
   successful: Scalars['Boolean'];
   toAddress: Scalars['String'];
   toAddressIsContract: Scalars['Boolean'];
-  toAddressLabel: Scalars['String'];
   toAddressName: Scalars['String'];
   toAddressSymbol: Scalars['String'];
   txHash: Scalars['String'];
-  txOffset: Scalars['Int'];
   value: Scalars['String'];
   valueQuote: Scalars['Float'];
 };
@@ -451,7 +436,7 @@ export type TransactionsGqlQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, blockHeight: number, txHash: string, txOffset: number, successful: boolean, fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasOffered: number, gasSpent: number, gasPrice: number, gasQuote: number, gasQuoteRate: number, logEvents?: Array<{ __typename?: 'LogEvent', blockSignedAt: string, blockHeight: number, txOffset: number, logOffset: number, txHash: string, rawLogTopics: Array<string | null>, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderAddressLabel: string, senderLogoUrl: string, rawLogData: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, indexed: boolean, decoded: boolean, value: string } | null> } }> | null }> } };
+export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, txHash: string, successful: boolean, fromAddress: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasQuote: number, gasPrice: number, gasSpent: number, logEvents?: Array<{ __typename?: 'LogEvent', logOffset: number, txHash: string, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, decoded: boolean, value: string } | null> } }> | null }> } };
 
 export type TokenQueryGqlQueryVariables = Exact<{
   qcKey: Scalars['String'];
@@ -467,8 +452,7 @@ export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: '
 
 export type PriceChartGqlQueryVariables = Exact<{
   coinGeckoID: Scalars['String'];
-  contractAddress: Scalars['String'];
 }>;
 
 
-export type PriceChartGqlQuery = { __typename?: 'Query', priceChart: Array<{ __typename?: 'PriceChart', timestamp: number, price: number, data: string }> };
+export type PriceChartGqlQuery = { __typename?: 'Query', priceChart: Array<{ __typename?: 'PriceChart', timestamp: number, price: number, date: string }> };

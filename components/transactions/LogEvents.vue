@@ -2,6 +2,7 @@
   <v-row justify="center" class="overflow-auto my-0 mx-n4" style="max-height: 625px">
     <v-col cols="11">
       <div v-for="log in logEventsData" :key="log.txHash + '_' + log.logOffset" class="pb-3">
+        <!--    decoded function signature name -->
         <div class="subtitle-2 pink--text">
           {{ log.decoded['name'].replace(/([A-Z])/g, ' $1').trim() }}
         </div>
@@ -108,7 +109,9 @@ export default defineComponent({
     const store = useStore<State>()
 
     // COMPUTED
-    const logEventsData = computed<LogEvent[]>(() => transactionLogEvents.value.slice(0, numOfLogEventsToLoad.value))
+    const logEventsData = computed<LogEvent[]>(() => {
+      return transactionLogEvents.value.slice(0, numOfLogEventsToLoad.value)
+    })
 
     // METHODS
     function approvalRenderer(value: string): string {

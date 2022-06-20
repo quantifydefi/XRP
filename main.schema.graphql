@@ -133,21 +133,14 @@ type HighAndLow {
 }
 
 type LogEvent {
-  blockHeight: Int!
-  blockSignedAt: String!
   decoded: LogEventDecoded!
   logOffset: Int!
-  rawLogData: String!
-  rawLogTopics: [String]!
-  rawLogTopicsBytes: String!
   senderAddress: String!
-  senderAddressLabel: String!
   senderContractDecimals: Int!
   senderContractTickerSymbol: String!
   senderLogoUrl: String!
   senderName: String!
   txHash: String!
-  txOffset: Int!
 }
 
 type LogEventDecoded {
@@ -158,7 +151,6 @@ type LogEventDecoded {
 
 type LogEventParams {
   decoded: Boolean!
-  indexed: Boolean!
   name: String!
   type: String!
   value: String!
@@ -283,27 +275,21 @@ type Transaction {
 }
 
 type TransactionItem {
-  blockHeight: Int!
   blockSignedAt: String!
   fromAddress: String!
   fromAddressIsContract: Boolean!
-  fromAddressLabel: String!
   fromAddressName: String!
   fromAddressSymbol: String!
-  gasOffered: Float!
   gasPrice: Float!
   gasQuote: Float!
-  gasQuoteRate: Float!
   gasSpent: Float!
   logEvents: [LogEvent!]
   successful: Boolean!
   toAddress: String!
   toAddressIsContract: Boolean!
-  toAddressLabel: String!
   toAddressName: String!
   toAddressSymbol: String!
   txHash: String!
-  txOffset: Int!
   value: String!
   valueQuote: Float!
 }
