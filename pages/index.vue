@@ -1,10 +1,15 @@
 <template>
-  <div class="mb-4">
-    <v-row justify="center" class="mt-4">
-      <v-col lg="10" md="12" class="text-center">
-        <h1 class="v-heading text-h2 font-weight-regular">EVMX</h1>
-        <div class="v-heading text-h4 font-weight-light mt-3 grey--text">DeFi and NFT Portfolio Manager</div>
-        <div class="mt-4">
+  <v-row no-gutters justify="center">
+    <vue-particles />
+
+    <v-col cols="12" style="z-index: 1">
+      <v-row justify="center" class="text-center">
+        <v-col cols="12" class="mt-6">
+          <h1 class="v-heading text-h2 font-weight-regular">EVM Finance</h1>
+          <div class="v-heading text-h4 font-weight-light mt-3 grey--text">DeFi and NFT Portfolio Manager</div>
+        </v-col>
+
+        <v-col cols="12">
           <client-only>
             <vue-typer
               class="v-heading text-h4 font-weight-light"
@@ -21,53 +26,52 @@
               caret-animation="smooth"
             ></vue-typer>
           </client-only>
-        </div>
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
+    </v-col>
 
-    <v-row>
-      <v-col>
-        <recent-prices-chart />
-      </v-col>
-    </v-row>
+    <v-col cols="12" style="z-index: 1">
+      <defi-node-tree />
+    </v-col>
 
-    <v-row justify="center">
-      <v-col lg="10" md="12">
-        <v-row>
-          <v-col>
-            <div class="text-h4 mt-5">Roadmap</div>
-          </v-col>
-        </v-row>
-
-        <v-row justify="center">
-          <v-col v-for="item in items" :key="item.header" cols="12" md="6" lg="4">
-            <v-hover v-slot="{ hover }">
-              <v-card height="100%" tile outlined class="pa-2 text-center" :elevation="hover ? 10 : 0">
-                <v-avatar size="40" class="mt-3" :color="ui[theme].innerCardLighten">
+    <v-col cols="11" lg="10" class="text-center mt-16 pt-16" style="z-index: 1">
+      <v-row>
+        <v-col cols="12">
+          <h2 class="text-h4 text-left">Roadmap</h2>
+        </v-col>
+        <v-col cols="12" class="justify-center">
+          <v-row justify="center">
+            <v-col v-for="item in items" :key="item.header" cols="12" sm="6" md="4">
+              <outline-glow color="black">
+                <v-avatar size="40" class="mt-5">
                   <v-icon size="30" color="primary">{{ item.icon }}</v-icon>
                 </v-avatar>
 
-                <p class="text-h5 mt-5" v-text="item.header" />
-                <p class="mt-5 grey--text" v-text="item.desc" />
-              </v-card>
-            </v-hover>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </div>
+                <p class="text-h5 pt-5 px-5" v-text="item.header" />
+                <p class="pt-5 px-5 grey--text" v-text="item.desc" />
+              </outline-glow>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
+
 import { State } from '~/types/state'
-import RecentPricesChart from '~/components/common/RecentPricesChart.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
+import OutlineGlow from '~/components/common/ui/custom/OutlineGlow.vue'
+import DefiNodeTree from '~/components/common/DefiNodeTree.vue'
+import VueParticles from '~/components/common/ui/custom/VueParticless.vue'
 
 export default defineComponent({
-  components: { RecentPricesChart },
+  components: { VueParticles, DefiNodeTree, OutlineGlow },
   setup() {
     // STATE
+
     const items = ref([
       {
         color: 'primary lighten-2',
@@ -92,7 +96,7 @@ export default defineComponent({
         color: 'primary lighten-2',
         icon: 'mdi-bridge',
         header: 'Multi Chain Bridging',
-        desc: 'Support for Ethereum Mainnet, Binance Smart Change, Matic, Fantom, Avalanche networks and more',
+        desc: 'Support for Ethereum Mainnet, Binance Smart Chain, Matic, Fantom Opera, Avalanche networks and more',
       },
       {
         color: 'red lighten-2',

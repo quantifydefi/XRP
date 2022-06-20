@@ -1,5 +1,5 @@
 <template>
-  <v-footer padless class="mt-10 overflow-hidden">
+  <v-footer padless class="mt-10 overflow-hidden" style="z-index: 1">
     <v-row no-gutters>
       <v-col class="pa-0">
         <v-card flat tile outlined class="text-center">
