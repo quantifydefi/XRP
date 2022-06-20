@@ -6,7 +6,9 @@
       <v-row justify="center" class="text-center">
         <v-col cols="12" class="mt-6">
           <h1 class="v-heading text-h2 font-weight-regular">EVM Finance</h1>
-          <div class="v-heading text-h4 font-weight-light mt-3 grey--text">DeFi and NFT Portfolio Manager</div>
+          <div class="v-heading text-h4 font-weight-light mt-3 grey--text">
+            Asset Management & Strategic Investments
+          </div>
         </v-col>
 
         <v-col cols="12">
@@ -75,15 +77,15 @@ export default defineComponent({
     const items = ref([
       {
         color: 'primary lighten-2',
-        icon: 'mdi-transit-connection-variant',
-        header: 'DeFi Gateway',
-        desc: 'Actionable interfaces for leading DeFi platforms',
+        icon: 'mdi-tablet-dashboard',
+        header: 'Aave Professional Trader',
+        desc: 'Easier Interface using Aave smart contracts',
       },
       {
         color: 'red lighten-2',
-        icon: 'mdi-panorama-variant',
-        header: 'NFT Aggregator',
-        desc: 'Favorite NFTs and your balances together',
+        icon: 'mdi-wallet-outline',
+        header: 'Asset Management',
+        desc: 'Full Wallet Balance, Chain Balances, Token Balance',
       },
 
       {
@@ -93,16 +95,16 @@ export default defineComponent({
         desc: 'Balances, investment options, and metrics on a single screen',
       },
       {
-        color: 'primary lighten-2',
-        icon: 'mdi-bridge',
-        header: 'Multi Chain Bridging',
-        desc: 'Support for Ethereum Mainnet, Binance Smart Chain, Matic, Fantom Opera, Avalanche networks and more',
-      },
-      {
         color: 'red lighten-2',
         icon: 'mdi-history',
         header: 'Transaction History',
-        desc: 'Providing a transaction displays',
+        desc: 'Best in class transaction displays',
+      },
+      {
+        color: 'primary lighten-2',
+        icon: 'mdi-transit-connection-variant',
+        header: 'Self Custody',
+        desc: 'Support for Ethereum Mainnet, Binance Smart Chain, Matic, Fantom Opera, Avalanche networks and more',
       },
       {
         color: 'red lighten-2',
@@ -112,18 +114,13 @@ export default defineComponent({
       },
     ])
     const animatedFeatures = ref([
-      'DeFi Gateway',
-      'NFT Aggregator',
-      'Advanced Portfolio Visualization',
-      'Uniswap Trader',
-      'Easier DeFi and NFT Transactions',
-      'Aave Smart Connect',
       'Token Pages',
-      'Curve Crypto Pools Interface',
-      'Balancer Index Manager',
+      'Aave Professional Interface',
+      'Multi Chain Balances Advanced Analytics',
       'Transaction History',
-      'NFT Manager',
-      'Multi Chain Swaps',
+      'Easier Aave Transaction',
+      'Self-Custody',
+      'Portfolio Management',
     ])
 
     // COMPOSABLE
