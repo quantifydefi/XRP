@@ -40,7 +40,7 @@ export default function () {
 
   /** COMPUTED **/
   const transactionsData = computed(() => {
-    return plainToClass(Transactions, result.value.transactions.items as Transactions[]) ?? []
+    return plainToClass(Transactions, result.value?.transactions.items as Transactions[]) ?? []
   }) as Ref<Transactions[]>
 
   /** EVENTS **/

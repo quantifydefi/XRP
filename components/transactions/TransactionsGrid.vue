@@ -286,10 +286,7 @@ export default defineComponent({
 
       // returns array of log events function names
       // i.e. ['Transfer', 'Approval']
-      const logs = events.map((event: LogEvent) => {
-        return event.decoded.name.replace(/([A-Z])/g, ' $1').trim()
-      })
-
+      const logs = events.map((event: LogEvent) => event.decoded.name.replace(/([A-Z])/g, ' $1').trim())
       return logs.join(', ')
     }
 
