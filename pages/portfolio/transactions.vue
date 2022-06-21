@@ -21,7 +21,12 @@
             </v-card>
 
             <div v-else>
-              <transactions-grid :transactions="transactionsData"></transactions-grid>
+              <transactions-grid
+                :transactions="transactionsData"
+                :account="account"
+                :chain-symbol="currentChain.symbol"
+                @navigate-to-explorer="navigateToExplorer"
+              ></transactions-grid>
             </div>
 
             <v-pagination
@@ -52,6 +57,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const {
+      account,
       walletReady,
       loading,
       chains,
@@ -68,6 +74,7 @@ export default defineComponent({
     useMetaTags({ title: 'Transactions History | EVM Finance', subDirectory: 'portfolio/transactions' })
 
     return {
+      account,
       walletReady,
       loading,
       chains,

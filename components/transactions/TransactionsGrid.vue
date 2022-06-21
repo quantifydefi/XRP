@@ -22,7 +22,7 @@
       <!-- expanded column items -->
       <template #expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <log-events :key="item.txHash" :wallet-address="walletAddress" :log-events="item.logEvents"></log-events>
+          <log-events :key="item.txHash" :wallet-address="account" :log-events="item.logEvents"></log-events>
         </td>
       </template>
 
@@ -102,7 +102,7 @@
         <div class="text-no-wrap">
           <tx-address-label
             label="From:"
-            :wallet-address="walletAddress"
+            :wallet-address="account"
             :is-contract="item.fromAddressIsContract"
             :address="item.fromAddress.toString()"
             :name="item.fromAddressName"
@@ -111,7 +111,7 @@
 
           <tx-address-label
             label="To:"
-            :wallet-address="walletAddress"
+            :wallet-address="account"
             :is-contract="item.toAddressIsContract"
             :address="item.toAddress.toString()"
             :name="item.toAddressName"
@@ -124,7 +124,7 @@
       <template #[`item.value`]="{ item }">
         <div class="py-2">
           <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
-            {{ $nf(item.value / 10 ** 18, 0, 6) }} {{ currentChain.symbol }}
+            {{ $nf(item.value / 10 ** 18, 0, 6) }} {{ chainSymbol }}
           </div>
           <span>$ {{ $nf(item.valueQuote, 2, 2) }}</span>
         </div>
@@ -134,8 +134,8 @@
       <template #[`item.txnFee`]="{ item }">
         <div class="py-2">
           <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-            {{ $nf(txnFee(item.gasPrice, item.gasSpent), 0, 6) }}
-            {{ currentChain.symbol }}
+            {{ $nf((item.gasPrice / 10 ** 18) * item.gasSpent, 0, 6) }}
+            {{ chainSymbol }}
           </div>
           <span>$ {{ $nf(item.gasQuote, 2, 2) }}</span>
         </div>
@@ -184,14 +184,16 @@
 import { computed, defineComponent, PropType, ref, useStore } from '@nuxtjs/composition-api'
 import { LogEvent, TransactionItem } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
-import useTransactions from '~/composables/useTransactions'
 import LogEvents from '~/components/transactions/LogEvents.vue'
 import TxAddressLabel from '~/components/transactions/TxAddressLabel.vue'
+import { EmitEvents } from '~/types/events'
 
 export default defineComponent({
   name: 'TransactionsGrid',
   components: { TxAddressLabel, LogEvents },
   props: {
+    account: { type: String, default: '', required: true },
+    chainSymbol: { type: String, default: '', required: true },
     transactions: {
       type: Array as PropType<TransactionItem[]>,
       default: () => [] as TransactionItem[],
@@ -201,16 +203,15 @@ export default defineComponent({
       default: 15,
     },
   },
-  setup() {
+  setup(props, { emit }) {
     /** COMPOSABLES **/
     const store = useStore<State>()
-    const { account, currentChain, transactionsData, onNetworkSelectChange, navigateToExplorer } = useTransactions()
 
     /** COMPUTED **/
-    const walletAddress = computed(() => account.value ?? '')
     const ui = computed(() => store.state.ui)
     const theme = computed(() => store.state.ui.theme)
 
+    /** COMPUTED **/
     const headers = ref([
       {
         text: '',
@@ -273,8 +274,8 @@ export default defineComponent({
       },
     ])
 
-    function txnFee(gasPrice: number, gasSpent: number): number {
-      return (gasPrice / 10 ** 18) * gasSpent
+    function navigateToExplorer(txHash: string) {
+      emit(EmitEvents.navigateToExplorer, txHash)
     }
 
     /** Styling and Text Renderer Methods **/
@@ -290,11 +291,14 @@ export default defineComponent({
 
       // returns array of log events function names
       // i.e. ['Transfer', 'Approval']
-      const logs = events.map((event: LogEvent) => {
-        return event.decoded.name.replace(/([A-Z])/g, ' $1').trim()
+      let logs = events.map((event: any) => {
+        return event.decoded?.name.replace(/([A-Z])/g, ' $1').trim()
       })
 
-      return logs.join(', ')
+      // Filter out empty strings
+      logs = logs.filter(Boolean)
+
+      return logs.length === 0 ? 'Transfer' : logs.join(', ')
     }
 
     function isInboundRenderer(item: TransactionItem): { color: string; text: string } {
@@ -302,13 +306,13 @@ export default defineComponent({
       if (item.logEvents && item.logEvents.length > 0) {
         if (methodTextRenderer(item.logEvents) === 'Transfer') {
           const param = Object.values(item.logEvents[0].decoded.params).filter((el: any) => el.name === 'to')[0]
-          if (param && param.value === walletAddress.value.toLowerCase()) {
+          if (param && param.value === props.account.toLowerCase()) {
             return { color: 'green', text: 'IN' }
           }
         }
       }
 
-      if (item.toAddress.toLowerCase() === walletAddress.value.toLowerCase()) {
+      if (item.toAddress.toLowerCase() === props.account.toLowerCase()) {
         return { color: 'green', text: 'IN' }
       }
 
@@ -322,16 +326,11 @@ export default defineComponent({
     return {
       ui,
       theme,
-      walletAddress,
       headers,
-      currentChain,
-      transactionsData,
       /** Methods **/
-      onNetworkSelectChange,
       navigateToExplorer,
       isInboundRenderer,
       methodTextRenderer,
-      txnFee,
     }
   },
 })
