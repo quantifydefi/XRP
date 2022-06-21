@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters justify="center">
-    <v-col cols="11" lg="10">
+    <v-col cols="12" lg="10">
       <template v-if="!walletReady">
         <connect-wallet-memo></connect-wallet-memo>
       </template>
@@ -29,7 +29,6 @@
               class="mt-4"
               :total-visible="pagination.visible"
               :length="pagination.total"
-              @input="loading = true"
             ></v-pagination>
           </v-col>
         </v-row>
@@ -66,10 +65,7 @@ export default defineComponent({
     } = useTransactions()
 
     // META TAGS
-    const { metaTags } = useMetaTags()
-
-    metaTags.title = 'Transactions History | EVM Finance'
-    metaTags.subDirectory = 'portfolio/transactions'
+    useMetaTags({ title: 'Transactions History | EVM Finance', subDirectory: 'portfolio/transactions' })
 
     return {
       walletReady,

@@ -1,71 +1,66 @@
-import { useMeta, reactive, computed } from '@nuxtjs/composition-api'
+import { useMeta, computed } from '@nuxtjs/composition-api'
 
-const TWITTER_HANDLE = 'EVMX_IO'
-
-export function useMetaTags() {
-  const metaTags = reactive({
-    title: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
-    description: 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
-    subDirectory: '',
-    imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
-    imgAlt: 'EVM Finance Homepage',
-  })
-
+export function useMetaTags({
+  title = 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
+  description = 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
+  subDirectory = '',
+  imgUrl = 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
+  imgAlt = 'EVM Finance Homepage',
+  twitterHandle = 'EVMX_IO',
+}) {
   const meta = computed(() => {
     return [
       {
         name: 'description',
         hid: 'description',
-        content: metaTags.description,
+        content: description,
       },
 
       // Open Graph
       {
         name: 'og:title',
-        content: metaTags.title,
+        content: title,
       },
       {
         name: 'og:description',
-        content: metaTags.description,
+        content: description,
       },
       { name: 'og:type', content: 'website' },
       {
         name: 'og:url',
-        content: `${process.env.BASE_URL}${metaTags.subDirectory}`,
+        content: `${process.env.BASE_URL}${subDirectory}`,
       },
       {
         name: 'og:image',
-        content: metaTags.imgUrl,
+        content: imgUrl,
       },
 
       {
         name: 'og:image:alt',
-        content: metaTags.imgAlt,
+        content: imgAlt,
       },
 
       // Twitter Card
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:site', content: TWITTER_HANDLE },
+      { name: 'twitter:site', content: twitterHandle },
       {
         name: 'twitter:title',
-        content: metaTags.title,
+        content: title,
       },
       {
         name: 'twitter:description',
-        content: metaTags.description,
+        content: description,
       },
       {
         name: 'twitter:image',
-        content: metaTags.imgUrl,
+        content: imgUrl,
       },
       {
         name: 'twitter:image:alt',
-        content: metaTags.imgAlt,
+        content: imgAlt,
       },
     ]
   })
 
-  useMeta(() => ({ title: metaTags.title, meta: meta.value }))
-
-  return { metaTags }
+  useMeta(() => ({ title, meta: meta.value }))
 }

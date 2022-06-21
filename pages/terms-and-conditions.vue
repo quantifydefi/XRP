@@ -148,10 +148,7 @@ export default defineComponent({
   name: 'TermsAndConditions',
   setup() {
     // META TAGS
-    const { metaTags } = useMetaTags()
-
-    metaTags.title = 'Terms and Conditions | EVM Finance'
-    metaTags.subDirectory = 'terms-and-conditions'
+    useMetaTags({ title: 'Terms and Conditions | EVM Finance', subDirectory: 'terms-and-conditions' })
   },
   head: {},
 })

@@ -10,9 +10,10 @@
       single-expand
       hide-default-footer
     >
+      <!--  expanded buttons   -->
       <template #item.data-table-expand="{ item, isExpanded, expand }">
         <div style="width: 16px">
-          <v-btn v-if="item.logEvents.length > 0" small icon @click="expandRow(expand, !isExpanded)">
+          <v-btn v-if="item.logEvents.length > 0" small icon @click="expand(!isExpanded)">
             <v-icon>mdi-chevron-{{ isExpanded ? 'up' : 'down' }}</v-icon>
           </v-btn>
         </div>
@@ -25,18 +26,19 @@
         </td>
       </template>
 
+      <!--   Txn Date   -->
       <template #[`item.blockSignedAt`]="{ item }">
         <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
           {{ new Date(item.blockSignedAt).toLocaleString() }}
         </div>
       </template>
 
+      <!--   Method   -->
       <template #[`item.method`]="{ item }">
-        <div class="text-truncate" style="width: 120px">
+        <div class="text-truncate">
           <v-tooltip right color="black">
             <template #activator="{ on, attrs }">
               <v-btn
-                primary
                 style="max-width: 120px"
                 outlined
                 small
@@ -48,132 +50,21 @@
                 v-on="on"
               >
                 <div
-                  :class="[
-                    ui[ui.theme].headerTextClass,
-                    'text-truncate text-capitalize',
-                    'px-2',
-                    'font-weight-regular',
-                  ]"
+                  :class="[ui[ui.theme].headerTextClass, 'text-truncate text-capitalize px-2 font-weight-regular']"
                   style="max-width: 120px"
                 >
-                  {{ methodRenderer(item.logEvents) }}
+                  {{ methodTextRenderer(item.logEvents) }}
                 </div>
               </v-btn>
             </template>
-            <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize', 'caption']">
-              {{ methodRenderer(item.logEvents) }}
+            <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize caption']">
+              {{ methodTextRenderer(item.logEvents) }}
             </span>
           </v-tooltip>
         </div>
       </template>
 
-      <template #[`item.isOut`]="{ item }">
-        <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-          <v-btn
-            style="pointer-events: none"
-            width="50"
-            :color="isOutStyleRenderer(item).color"
-            small
-            class="rounded-sm"
-            text
-          >
-            {{ isOutStyleRenderer(item).text }}
-          </v-btn>
-        </div>
-      </template>
-
-      <template #[`item.fromTo`]="{ item }">
-        <div class="text-no-wrap">
-          <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap d-flex">
-            From:
-            <v-tooltip top color="black">
-              <template #activator="{ on, attrs }">
-                <div
-                  v-if="item.fromAddressIsContract"
-                  v-bind="attrs"
-                  :class="[ui[theme].headerTextClass, 'ml-1', 'cursor-copy']"
-                  v-on="on"
-                  @click="$copyAddressToClipboard(item.fromAddress)"
-                >
-                  <v-avatar v-if="item.fromAddressSymbol" size="16" style="margin-top: -2px">
-                    <img
-                      :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.fromAddressSymbol.toLowerCase()}.png`"
-                      :alt="`${item.fromAddressSymbol} logo`"
-                      @error="$setAltImageUrl"
-                    />
-                  </v-avatar>
-                  <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
-                  {{ !item.fromAddressName ? $truncateAddress(item.fromAddress, 4, 10) : item.fromAddressName }}
-                </div>
-
-                <div
-                  v-else
-                  v-bind="attrs"
-                  :class="[
-                    'cursor-copy',
-                    'ml-1',
-                    item.fromAddress.toLowerCase() === walletAddress.toLowerCase()
-                      ? 'pink--text'
-                      : ui[theme].headerTextClass,
-                  ]"
-                  v-on="on"
-                  @click="$copyAddressToClipboard(item.fromAddress)"
-                >
-                  {{ $truncateAddress(item.fromAddress, 4, 10) }}
-                </div>
-              </template>
-              <span class="caption">{{ item.fromAddress }}</span>
-            </v-tooltip>
-          </div>
-
-          <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap d-flex">
-            To:
-            <v-tooltip top color="black" class="ma-0 pa-0">
-              <template #activator="{ on, attrs }">
-                <div
-                  v-if="item.toAddressIsContract"
-                  v-bind="attrs"
-                  :class="[ui[theme].headerTextClass, 'ml-1', 'cursor-copy']"
-                  v-on="on"
-                  @click="$copyAddressToClipboard(item.toAddress)"
-                >
-                  <v-avatar v-if="item.toAddressSymbol" size="16" style="margin-top: -2px">
-                    <img
-                      :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.toAddressSymbol.toLowerCase()}.png`"
-                      :alt="`${item.toAddressSymbol} logo`"
-                      @error="$setAltImageUrl"
-                    />
-                  </v-avatar>
-                  <v-icon v-else class="ml-1 mt-n1" small>mdi-file-sign</v-icon>
-                  {{ !item.toAddressName ? $truncateAddress(item.toAddress, 4, 10) : item.toAddressName }}
-                </div>
-
-                <div v-else-if="!item.toAddress" :class="[ui[theme].headerTextClass]">
-                  <v-icon class="mx-1 mt-n1" small>mdi-file-sign</v-icon>
-                  Contract Creation
-                </div>
-
-                <div
-                  v-else
-                  v-bind="attrs"
-                  :class="[
-                    'cursor-copy',
-                    item.toAddress.toLowerCase() === walletAddress.toLowerCase()
-                      ? 'pink--text'
-                      : ui[theme].headerTextClass,
-                  ]"
-                  v-on="on"
-                  @click="$copyAddressToClipboard(item.toAddress)"
-                >
-                  {{ $truncateAddress(item.toAddress, 4, 10) }}
-                </div>
-              </template>
-              <span class="caption">{{ item.toAddress }}</span>
-            </v-tooltip>
-          </div>
-        </div>
-      </template>
-
+      <!--   Txn Hash   -->
       <template #[`item.txHash`]="{ item }">
         <v-tooltip top color="black">
           <template #activator="{ on, attrs }">
@@ -190,6 +81,46 @@
         </v-tooltip>
       </template>
 
+      <!--   isInbound   -->
+      <template #[`item.isInbound`]="{ item }">
+        <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
+          <v-btn
+            style="pointer-events: none"
+            width="50"
+            :color="isInboundRenderer(item).color"
+            small
+            class="rounded-sm"
+            text
+          >
+            {{ isInboundRenderer(item).text }}
+          </v-btn>
+        </div>
+      </template>
+
+      <!--   from and to   -->
+      <template #[`item.fromTo`]="{ item }">
+        <div class="text-no-wrap">
+          <tx-address-label
+            label="From:"
+            :wallet-address="walletAddress"
+            :is-contract="item.fromAddressIsContract"
+            :address="item.fromAddress.toString()"
+            :name="item.fromAddressName"
+            :symbol="item.fromAddressSymbol"
+          ></tx-address-label>
+
+          <tx-address-label
+            label="To:"
+            :wallet-address="walletAddress"
+            :is-contract="item.toAddressIsContract"
+            :address="item.toAddress.toString()"
+            :name="item.toAddressName"
+            :symbol="item.toAddressSymbol"
+          ></tx-address-label>
+        </div>
+      </template>
+
+      <!--   value   -->
       <template #[`item.value`]="{ item }">
         <div class="py-2">
           <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
@@ -199,6 +130,7 @@
         </div>
       </template>
 
+      <!--   txn fee   -->
       <template #[`item.txnFee`]="{ item }">
         <div class="py-2">
           <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
@@ -209,6 +141,7 @@
         </div>
       </template>
 
+      <!--   status   -->
       <template #[`item.successful`]="{ item }">
         <v-btn
           width="90"
@@ -253,10 +186,11 @@ import { LogEvent, TransactionItem } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
 import useTransactions from '~/composables/useTransactions'
 import LogEvents from '~/components/transactions/LogEvents.vue'
+import TxAddressLabel from '~/components/transactions/TxAddressLabel.vue'
 
 export default defineComponent({
   name: 'TransactionsGrid',
-  components: { LogEvents },
+  components: { TxAddressLabel, LogEvents },
   props: {
     transactions: {
       type: Array as PropType<TransactionItem[]>,
@@ -270,15 +204,19 @@ export default defineComponent({
   setup() {
     /** COMPOSABLES **/
     const store = useStore<State>()
-
     const {
-      account,
+      // account,
       currentChain,
       transactionsData,
-
       onNetworkSelectChange,
       navigateToExplorer,
     } = useTransactions()
+
+    /** COMPUTED **/
+    // const walletAddress = computed(() => account.value ?? '')
+    const walletAddress = computed(() => '0xF705b9ba1908cA505537F309B08E6949C1b8f31F')
+    const ui = computed(() => store.state.ui)
+    const theme = computed(() => store.state.ui.theme)
 
     const headers = ref([
       {
@@ -306,7 +244,7 @@ export default defineComponent({
       {
         text: '',
         align: 'start',
-        value: 'isOut',
+        value: 'isInbound',
         class: 'py-2',
       },
       {
@@ -342,55 +280,60 @@ export default defineComponent({
       },
     ])
 
-    /** Styling Methods **/
-    function isOutStyleRenderer(item: TransactionItem): { color: string; text: string } {
-      if (item.toAddress.toLowerCase() === item.fromAddress.toLowerCase()) {
-        return { color: 'grey', text: 'SELF' }
+    /** Styling and Text Renderer Methods **/
+
+    function methodTextRenderer(events: LogEvent[]): string {
+      if (events.length === 0) {
+        return 'Transfer'
       }
 
-      if (item.toAddress.toLowerCase() === account.value.toLowerCase()) {
+      if (events.length > 2) {
+        return 'Multicall'
+      }
+
+      // returns array of log events function names
+      // i.e. ['Transfer', 'Approval']
+      const logs = events.map((event: LogEvent) => {
+        return event.decoded.name.replace(/([A-Z])/g, ' $1').trim()
+      })
+
+      return logs.join(', ')
+    }
+
+    function isInboundRenderer(item: TransactionItem): { color: string; text: string } {
+      // if transaction is solely a Transfer, and logEvent toAddress === wallet address; return as IN
+      if (item.logEvents && item.logEvents.length > 0) {
+        if (methodTextRenderer(item.logEvents) === 'Transfer') {
+          const param = Object.values(item.logEvents[0].decoded.params).filter((el: any) => el.name === 'to')[0]
+          if (param && param.value === walletAddress.value.toLowerCase()) {
+            return { color: 'green', text: 'IN' }
+          }
+        }
+      }
+
+      if (item.toAddress.toLowerCase() === walletAddress.value.toLowerCase()) {
         return { color: 'green', text: 'IN' }
+      }
+
+      if (item.toAddress.toLowerCase() === item.fromAddress.toLowerCase()) {
+        return { color: 'grey', text: 'SELF' }
       }
 
       return { color: 'pink', text: 'OUT' }
     }
 
-    // list method names separated by comma
-    function methodRenderer(events: LogEvent[]): string {
-      let logs = events.map((event: any) => {
-        return event.decoded?.name.replace(/([A-Z])/g, ' $1').trim()
-      })
-
-      logs = logs.filter(Boolean)
-
-      if (logs.length === 0) {
-        return 'Transfer'
-      }
-
-      if (logs.length > 2) {
-        return 'Multicall'
-      }
-
-      return logs.join(', ')
-    }
-
-    function expandRow(expand: any, isExpand: boolean): void {
-      expand(isExpand)
-    }
-
     return {
-      ui: computed(() => store.state.ui),
-      theme: computed(() => store.state.ui.theme),
-      walletAddress: computed(() => account.value ?? ''),
+      ui,
+      theme,
+      walletAddress,
       headers,
       currentChain,
       transactionsData,
       /** Methods **/
       onNetworkSelectChange,
       navigateToExplorer,
-      expandRow,
-      isOutStyleRenderer,
-      methodRenderer,
+      isInboundRenderer,
+      methodTextRenderer,
     }
   },
 })

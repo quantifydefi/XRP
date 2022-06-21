@@ -19,7 +19,7 @@ const defaultChain: Chain = {
 
 export const state = () =>
   ({
-    title: 'EVMX',
+    title: 'EVM',
     globalStats: null,
     gasStats: null,
     chains: [],

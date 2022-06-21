@@ -6,6 +6,7 @@
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, useContext } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { RecentPricesGQL } from '~/apollo/main/config.query.graphql'
+
 let am4core: any = null
 let forceDirected: any = null
 if (process.browser) {
@@ -15,7 +16,7 @@ if (process.browser) {
 export default defineComponent({
   setup() {
     // STATE
-    const chartHeight = ref(600)
+    const chartHeight = ref(650)
     const chartDiv = ref(null)
     const chart: any = ref(null)
 
@@ -26,70 +27,108 @@ export default defineComponent({
 
     // COMPUTED
     const dataFormatted = computed(() => {
-      const supportedTokens: string[] = [
-        'BTC',
-        'ETH',
-        'CRV',
-        'DAI',
-        'USDC',
-        'WBTC',
-        'LINK',
-        'AAVE',
-        'MKR',
-        'FEI',
-        'CRV',
-        'XSUSHI',
-        'FRAX',
-        'SUSD',
-        'YFI',
-        'MANA',
-        'UNI',
-        'DPI',
-        'BUSD',
-        'PAX',
-        'ENJ',
-        'GUSD',
-        'BAL',
-      ]
-      const nftCollection = [
-        {
-          name: 'OpenSea',
-          image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/opensea.png',
-        },
-        {
-          name: 'The Sandbox',
-          image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/sand.png',
-        },
-        {
-          name: 'Bored Ape Yacht Club',
-          image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/bayc.png',
-        },
-        {
-          name: 'CryptoPunks',
-          image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/cryptopunk.png',
-        },
-        {
-          name: 'WorldOfWomen',
-          image: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/nft-logo/worldofwomen.png',
-        },
-      ]
-      const tokens: Record<string, any>[] = [...nftCollection]
+      const protocols: { aave: string[]; uniswap: string[] } = {
+        aave: [
+          'ETH',
+          'WBTC',
+          'DAI',
+          'USDT',
+          'BUSD',
+          'FEI',
+          'FRAX',
+          'LINK',
+          'AVAX',
+          'MATIC',
+          'FTM',
+          'BAL',
+          'CRV',
+          'AMPL',
+          'ENJ',
+          'MANA',
+          'REN',
+          'SNX',
+          'YFI',
+          'ZRX',
+        ],
+        uniswap: [
+          'ENS',
+          'RAI',
+          'WETH',
+          'SHIB',
+          'ACH',
+          'AGLD',
+          'ALICE',
+          'AMP',
+          'ANKR',
+          'APE',
+          'API3',
+          'AUDIO',
+          'AXS',
+          'BADGER',
+          'GNO',
+          'BAT',
+          'BOND',
+          'MKR',
+          'CEL',
+          'USDC',
+        ],
+      }
+
+      const childNode: { aave: Record<string, any>[]; uniswap: Record<string, any>[] } = {
+        aave: [],
+        uniswap: [],
+      }
+
       for (const [key, value] of Object.entries(recentPrices.value)) {
-        if (supportedTokens.includes(key)) {
-          tokens.push({
+        if (protocols.aave.includes(key)) {
+          childNode.aave.push({
             name: key,
             price: value,
             value: 1,
+            width: 38,
+            height: 38,
+            image: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${key.toLowerCase()}.png`,
+          })
+        }
+
+        if (protocols.uniswap.includes(key)) {
+          childNode.uniswap.push({
+            name: key,
+            price: value,
+            value: 1,
+            width: 38,
+            height: 38,
             image: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${key.toLowerCase()}.png`,
           })
         }
       }
+
       return [
         {
-          name: 'QC',
-          value: 1,
-          image: `/img/logo/evmx-dark.svg`,
-          children: tokens.sort(() => 0.5 - Math.random()),
+          name: 'EVM Finance',
+          image: `/img/logo/evmfinance-logo.svg`,
+          width: 55,
+          height: 55,
+          children: [
+            {
+              name: 'Aave',
+              value: 1,
+              price: recentPrices.value.AAVE,
+              image: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/aave.png`,
+              width: 50,
+              height: 50,
+              children: childNode.aave.sort(() => 0.5 - Math.random()),
+            },
+            {
+              name: 'Uniswap',
+              value: 1,
+              price: recentPrices.value.UNI,
+              width: 50,
+              height: 50,
+              image: `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/uni.png`,
+              children: childNode.uniswap.sort(() => 0.5 - Math.random()),
+            },
+          ],
         },
       ]
     })
@@ -138,11 +177,11 @@ export default defineComponent({
       // Configure icons
       const icon = series.nodes.template.createChild(am4core.Image)
       icon.propertyFields.href = 'image'
+      icon.propertyFields.width = 'width'
+      icon.propertyFields.height = 'height'
       icon.horizontalCenter = 'middle'
       icon.verticalCenter = 'middle'
-      icon.width = 38
-      icon.height = 38
-      series.centerStrength = 0.2
+      series.centerStrength = 0.3
       series.links.template.distance = 4
       series.nodes.template.outerCircle.disabled = true
 

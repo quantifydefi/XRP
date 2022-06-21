@@ -3,29 +3,32 @@
     <v-app-bar app elevation="0" outlined height="60" class="hidden-xs-and-down">
       <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = true"></v-app-bar-nav-icon>
 
-      <v-avatar size="38">
+      <v-avatar size="32" class="rounded-0">
         <v-img :src="imageUrl" :lazy-src="imageUrl" />
       </v-avatar>
+
       <nuxt-link to="/" class="text-decoration-none mr-10" style="color: inherit">
-        <v-toolbar-title class="ml-2">
-          {{ title }}
-          <small class="text-caption grey--text ml-2">BETA</small>
+        <v-toolbar-title class="ml-2 d-flex">
+          <div>
+            <div class="subtitle-1 mb-n2">EVM</div>
+            <div class="caption">Finance</div>
+          </div>
+          <small class="grey--text ml-2 caption" style="margin-top: 20px">BETA</small>
         </v-toolbar-title>
       </nuxt-link>
+
       <client-only>
-        <v-btn
-          v-for="(link, i) in links"
-          :key="i"
-          tile
-          class="text-capitalize font-weight-regular hidden-sm-and-down"
-          text
-          :to="link.to"
-          v-text="link.name"
-        />
+        <div v-if="$vuetify.breakpoint.mdAndUp">
+          <v-btn v-for="(link, i) in links" :key="i" tile text :to="link.to">
+            <span class="text-capitalize">{{ link.name }}</span>
+          </v-btn>
+        </div>
       </client-only>
 
       <v-spacer />
-      <client-only> <gas-info class="hidden-xs-and-down" /></client-only>
+      <client-only>
+        <gas-info class="hidden-xs-and-down" />
+      </client-only>
       <wallet-connector class="hidden-sm-and-down" />
     </v-app-bar>
 
@@ -61,6 +64,7 @@ import useInitTheme from '~/composables/useInitTheme'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
 import { State } from '~/types/state'
 import MainFooter from '~/components/common/ui/footers/MainFooter.vue'
+
 export default defineComponent({
   components: {
     MainFooter,
@@ -83,7 +87,7 @@ export default defineComponent({
     useInitTheme()
 
     // COMPUTED
-    const imageUrl = computed(() => `/img/logo/evmx-${state.ui.theme}.svg`)
+    const imageUrl = computed(() => `/img/logo/evmfinance-logo.svg`)
 
     return { title: state.configs.title, links, notificationComponent, imageUrl, drawer }
   },

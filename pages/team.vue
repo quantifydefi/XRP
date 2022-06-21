@@ -318,11 +318,11 @@ export default defineComponent({
     }
 
     // META TAGS
-    const { metaTags } = useMetaTags()
-
-    metaTags.title = 'Meet Our Team and Advisors | EVM Finance'
-    metaTags.description = 'The cryptocurrency team working to improve the crypto modal experience'
-    metaTags.subDirectory = 'team'
+    useMetaTags({
+      title: 'Meet Our Team and Advisors | EVM Finance',
+      description: 'The cryptocurrency team working to improve the crypto modal experience',
+      subDirectory: 'team',
+    })
 
     return { team, advisors, toggleBio }
   },
