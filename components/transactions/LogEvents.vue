@@ -2,7 +2,7 @@
   <v-row justify="center" class="overflow-auto my-0 mx-n4" style="max-height: 625px">
     <v-col cols="11">
       <div v-for="log in logEventsData" :key="log.txHash + '_' + log.logOffset" class="pb-3">
-        <!--    decoded function signature name -->
+        <!--    function signature name -->
         <div class="subtitle-2 pink--text">
           {{ log.decoded['name'].replace(/([A-Z])/g, ' $1').trim() }}
         </div>
@@ -14,6 +14,7 @@
                 {{ param['name'].replace('_', '') }}:
               </div>
 
+              <!--      if funcSignature  === Approval        -->
               <div v-if="log.decoded['name'] === 'Approval'" class="pr-10">
                 <div v-if="param['type'] === 'address'">
                   <v-tooltip top color="black">
@@ -35,10 +36,15 @@
                 </div>
               </div>
 
-              <div v-else-if="param['type'].startsWith('uint') && param['name'] === 'value'" class="pr-10">
+              <!--      format value       -->
+              <div
+                v-else-if="(param['type'].startsWith('uint') && param['name'] === 'value') || param['name'] === 'wad'"
+                class="pr-10"
+              >
                 {{ $nf(+param['value'] / 10 ** log.senderContractDecimals, 0, 6) }}
               </div>
 
+              <!--      address format        -->
               <div
                 v-else-if="
                   param['type'] === 'address' || param['name'] === 'functionSignature' || param['name'] === 'owner'
@@ -53,7 +59,9 @@
                       v-on="on"
                       @click="$copyAddressToClipboard(param['value'])"
                     >
-                      {{ $truncateAddress(param['value'], 8, 10) }}
+                      <span :class="walletAddress === param['value'] ? 'primary--text' : ''">
+                        {{ $truncateAddress(param['value'], 8, 10) }}
+                      </span>
                     </div>
                   </template>
                   <span class="caption">{{ param['value'] }}</span>
@@ -65,6 +73,8 @@
               </div>
             </div>
           </div>
+
+          <!--    Token      -->
           <v-row v-if="log.senderName && log.decoded['params'].length > 0" no-gutters class="ml-n12 mt-5">
             <v-avatar size="16" style="margin-top: 2px">
               <img :src="log.senderLogoUrl" :alt="`${log.senderName} logo`" @error="$setAltImageUrl" />
@@ -98,6 +108,7 @@ export default defineComponent({
       type: Array as PropType<LogEvent[]>,
       default: () => [] as LogEvent[],
     },
+    walletAddress: { type: String, default: '' },
   },
   setup(props) {
     // STATE
