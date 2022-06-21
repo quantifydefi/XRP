@@ -58,6 +58,13 @@
         our Services.
       </p>
 
+      <p class="text-h6">Wallet Disclaimer</p>
+      <p class="body-2 grey--text">
+        It is required to use a software wallet, like MetaMask, to perform DeFi transactions. EVM Finance does not claim
+        to be the official website of MetaMask or any other software wallet. EVM Finance is not liable for any error,
+        hacks, or thefts that occur to using MetaMask or any other cryptocurrency wallet.
+      </p>
+
       <p class="text-h6">Blockchain fees Disclaimer</p>
       <p class="body-2 grey--text">
         All transactions using blockchains require the payment of gas fees, which are essentially transaction fees paid
