@@ -53,7 +53,7 @@
           <v-col lg="3">
             <div class="text-no-wrap">
               <span class="font-weight-bold">
-                <span class="ml-1 font-weight-bold" v-text="`Low: ${$f(intervalData.high, { roundTo: 2 })}`" />
+                <span class="ml-1 font-weight-bold" v-text="`High: ${$f(intervalData.high, { roundTo: 2 })}`" />
               </span>
               <v-btn
                 id="intervalSelectorToggle"
