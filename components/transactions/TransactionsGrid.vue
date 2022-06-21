@@ -134,7 +134,7 @@
       <template #[`item.txnFee`]="{ item }">
         <div class="py-2">
           <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-            {{ $nf(item.txnFee, 0, 6) }}
+            {{ $nf(txnFee(item.gasPrice, item.gasSpent), 0, 6) }}
             {{ currentChain.symbol }}
           </div>
           <span>$ {{ $nf(item.gasQuote, 2, 2) }}</span>
@@ -273,6 +273,10 @@ export default defineComponent({
       },
     ])
 
+    function txnFee(gasPrice: number, gasSpent: number): number {
+      return (gasPrice / 10 ** 18) * gasSpent
+    }
+
     /** Styling and Text Renderer Methods **/
 
     function methodTextRenderer(events: LogEvent[]): string {
@@ -327,6 +331,7 @@ export default defineComponent({
       navigateToExplorer,
       isInboundRenderer,
       methodTextRenderer,
+      txnFee,
     }
   },
 })

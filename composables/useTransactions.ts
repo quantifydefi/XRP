@@ -1,13 +1,10 @@
-import 'reflect-metadata'
-import { plainToClass } from 'class-transformer'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { computed, inject, reactive, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
-import { Transactions } from '~/models/transaction'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { State } from '~/types/state'
-import { Chain } from '~/types/apollo/main/types'
+import { Chain, TransactionItem } from '~/types/apollo/main/types'
 
 export default function () {
   const { state, dispatch, getters } = useStore<State>()
@@ -39,9 +36,7 @@ export default function () {
   )
 
   /** COMPUTED **/
-  const transactionsData = computed(() => {
-    return plainToClass(Transactions, result.value.transactions.items as Transactions[]) ?? []
-  }) as Ref<Transactions[]>
+  const transactionsData = computed(() => result.value?.transactions.items ?? []) as Ref<TransactionItem[]>
 
   /** EVENTS **/
   onResult((queryResult) => {
