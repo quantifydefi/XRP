@@ -22,7 +22,7 @@
       <!-- expanded column items -->
       <template #expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <log-events :key="item.txHash" :log-events="item.logEvents"></log-events>
+          <log-events :key="item.txHash" :wallet-address="walletAddress" :log-events="item.logEvents"></log-events>
         </td>
       </template>
 
@@ -204,17 +204,10 @@ export default defineComponent({
   setup() {
     /** COMPOSABLES **/
     const store = useStore<State>()
-    const {
-      // account,
-      currentChain,
-      transactionsData,
-      onNetworkSelectChange,
-      navigateToExplorer,
-    } = useTransactions()
+    const { account, currentChain, transactionsData, onNetworkSelectChange, navigateToExplorer } = useTransactions()
 
     /** COMPUTED **/
-    // const walletAddress = computed(() => account.value ?? '')
-    const walletAddress = computed(() => '0xF705b9ba1908cA505537F309B08E6949C1b8f31F')
+    const walletAddress = computed(() => account.value ?? '')
     const ui = computed(() => store.state.ui)
     const theme = computed(() => store.state.ui.theme)
 
