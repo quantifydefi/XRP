@@ -185,8 +185,12 @@ export default defineComponent<Props>({
       columnSeries.dataFields.categoryY = 'category'
       columnSeries.columns.template.strokeWidth = 0
       columnSeries.columns.template.tooltipText = '{categoryY}: [bold]' + '$' + '{valueX}[/]'
+
       // Add simple vertical scrollbar
       columnChart.scrollbarY = new am4core.Scrollbar()
+
+      // Pre-zoom 8 first elements
+      chart.events.on('ready', () => categoryAxis.zoomToIndexes(0, 8))
     }
 
     return { chartDiv, chartHeight }

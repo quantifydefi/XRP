@@ -47,8 +47,8 @@ export default defineComponent({
           'MANA',
           'REN',
           'SNX',
-          'YFI',
-          'ZRX',
+          // 'YFI',
+          // 'ZRX',
         ],
         uniswap: [
           'ENS',
@@ -69,8 +69,8 @@ export default defineComponent({
           'BAT',
           'BOND',
           'MKR',
-          'CEL',
-          'USDC',
+          // 'CEL',
+          // 'USDC',
         ],
       }
 

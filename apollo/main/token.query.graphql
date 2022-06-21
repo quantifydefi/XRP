@@ -18,7 +18,7 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
       qcKey
       symbolName
       priceUsd
-      priceBtc
+      priceEth
     }
 
     price24h
@@ -42,52 +42,6 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
 
     coinDescription
 
-    aavePools {
-      id
-      underlyingAsset
-      name
-      symbol
-      decimals
-      totalLiquidity
-      price {
-        id
-        priceInEth
-        priceUsd
-      }
-      liquidityRate
-      stableBorrowRate
-      variableBorrowRate
-      aEmissionPerSecond
-      vEmissionPerSecond
-      sEmissionPerSecond
-      availableLiquidity
-      utilizationRate
-      totalATokenSupply
-      totalCurrentVariableDebt
-      totalPrincipalStableDebt
-      addresses {
-        aTokenAddress
-        aTokenSymbol
-        stableDebtTokenAddress
-        variableDebtTokenAddress
-        decimals
-        address
-        symbol
-      }
-      portfolioVal {
-        totalDeposits
-        walletBal
-        stableBorrow
-        variableBorrow
-      }
-
-      totalLiquidityAsCollateral
-      baseLTVasCollateral
-      reserveLiquidationThreshold
-      reserveLiquidationBonus
-      usageAsCollateralEnabled
-    }
-
     news{
       id
       title
@@ -104,10 +58,9 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
   }
 }
 
-query PriceChartGQL($coinGeckoID:String!){
-  priceChart(coinGeckoID: $coinGeckoID){
-    timestamp
-    price
+query DailyChartGQL($contractAddress:String!,$symbol:String!){
+  dailyChart(contractAddress: $contractAddress, symbol: $symbol){
     date
+    priceUsd
   }
 }

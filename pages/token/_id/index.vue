@@ -74,7 +74,7 @@
             <v-col cols="12">
               <coin-metrics
                 :price-usd="tokenData.price.priceUsd"
-                :price-btc="tokenData.price.priceBtc"
+                :price-eth="tokenData.price.priceEth"
                 :price24h="tokenData.price24h"
                 :interval-data="tokenData.tokenInterval"
                 :market-cap="tokenData.marketcap"
@@ -107,7 +107,7 @@
       <v-row v-if="tokenData">
         <v-col>
           <v-card tile outlined height="600">
-            <token-prices-chart :contract-address="contractAddress" :coin-gecko-id="tokenData.coinGeckoID" />
+            <token-prices-chart :contract-address="contractAddress" :symbol="tokenData.qcKey" />
           </v-card>
         </v-col>
       </v-row>
