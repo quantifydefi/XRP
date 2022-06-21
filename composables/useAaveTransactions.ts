@@ -38,8 +38,8 @@ const configs: { [key: number]: MarketConfig } = {
 }
 
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-const ETH_GAS_LIMIT_WEI = 1000000
-const ETH_GAS_PRICE_GWEI = 105
+const ETH_GAS_LIMIT_WEI = 400000
+const ETH_GAS_PRICE_GWEI = 16
 
 interface Transaction {
   loading: boolean
@@ -117,11 +117,14 @@ export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInToken
         account.value,
         0
       )
+
       depositCall.gasLimit = ethers.utils.parseUnits(`${ETH_GAS_LIMIT_WEI}`, 'wei')
       depositCall.gasPrice = ethers.utils.parseUnits(`${ETH_GAS_PRICE_GWEI}`, 'gwei')
       depositCall.value = amount
+
       const depositResult = await signer.value.sendTransaction(depositCall)
       const resp = await depositResult.wait()
+
       return { isCompleted: true, receipt: resp }
     } catch (error) {
       return { isCompleted: false, receipt: error }

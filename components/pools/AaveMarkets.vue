@@ -172,12 +172,12 @@ import {
   computed,
   defineComponent,
   inject,
-  onMounted,
   PropType,
   ref,
   toRefs,
   UnwrapRef,
   useStore,
+  watch,
 } from '@nuxtjs/composition-api'
 import { AavePoolCl } from '~/composables/useAavePools'
 import { State } from '~/types/state'
@@ -328,20 +328,21 @@ export default defineComponent<Props>({
         })
       }
     }
-
+    // METHODS
     function navigateToExplorer(address: string) {
       const url = `${state.configs.currentAaveMarket.blockExplorerUrl}address/${address}`
       window.open(url)
     }
 
     function expendSingleRow() {
-      if (props.expandFirstRow) {
+      if (props.expandFirstRow && aavePools.value.length > 0) {
         const firstRow: AavePoolCl = aavePools.value[0]
         expanded.value.push(firstRow)
       }
     }
 
-    onMounted(() => expendSingleRow())
+    // WATCHERS
+    watch(aavePools, () => expendSingleRow())
 
     return {
       // DATA

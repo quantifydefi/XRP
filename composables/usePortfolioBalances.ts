@@ -26,9 +26,7 @@ export default function () {
   )
 
   // EVENTS
-  onResult((queryResult) => {
-    loading.value = queryResult.loading
-  })
+  onResult((queryResult) => (loading.value = queryResult.loading))
 
   // WATCHERS
   watch(account, () => (loading.value = true))

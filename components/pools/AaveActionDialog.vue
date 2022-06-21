@@ -53,7 +53,6 @@
               </a>
             </v-col>
           </v-row>
-
           <aave-actioin-form
             :amount="amount"
             :price-usd="pool.price.priceUsd"

@@ -2,9 +2,9 @@
   <v-row>
     <v-col>
       <v-row>
-        <v-col class="mb-1 caption">{{ actionAllowance.text }}:</v-col>
+        <v-col class="mb-1 caption" v-text="actionAllowance.text + ':'" />
         <v-col class="text-right caption">
-          <span class="font-weight-medium" v-text="allowance.value" />
+          <span class="font-weight-medium" v-text="actionAllowance.value" />
         </v-col>
       </v-row>
       <v-form ref="form">
@@ -22,7 +22,7 @@
           <template #prepend-inner>
             <v-row class="ml-0 my-0 mr-1">
               <div class="text-no-wrap">
-                <v-avatar size="19"><v-img :alt="logo" :src="logoUrl" /></v-avatar>
+                <v-avatar size="19"><v-img :alt="logo" :src="logo" /></v-avatar>
                 <span class="mx-2 subtitle-2" :class="[textClass]" v-text="symbol" />
               </div>
               <v-divider class="mx-3" vertical></v-divider>
@@ -82,10 +82,11 @@ export default defineComponent<Props>({
         } else amountVal.value = 0
       },
     })
-    const amountInUsd = computed(() => $f(amountVal.value * props.priceUsd, { roundTo: 2, pre: '$ ' }))
-
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
+    const amountInUsd = computed(() => $f(amountVal.value * props.priceUsd, { roundTo: 2, pre: '$ ' }))
+    const actionAllowance = computed(() => props.allowance)
+    const fromRules = computed(() => props.rules)
 
     // WATCH
     watch(amountVal, () =>
@@ -97,9 +98,8 @@ export default defineComponent<Props>({
       amountInUsd,
       textClass,
       form,
-      actionAllowance: props.allowance,
-      logoUrl: props.logo,
-      fromRules: props.rules,
+      actionAllowance,
+      fromRules,
     }
   },
 })

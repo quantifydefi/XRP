@@ -24,8 +24,9 @@
 
           <v-col cols="12">
             <div class="font-weight-medium subtitle-1 ml-2 text-no-wrap">
-              <span v-text="$f(tokenPriceBtc, { roundTo: 6 })" />
-              <span class="font-weight-regular ml-1 grey--text text-caption">BTC</span>
+              <!--              <span v-text="$f(tokenPriceEth, { roundTo: 6 })" />-->
+              <span v-text="tokenPriceEth" />
+              <span class="font-weight-regular ml-1 grey--text text-caption">ETH</span>
             </div>
           </v-col>
         </v-row>
@@ -123,7 +124,7 @@ import { messages } from '~/constants/messages'
 
 type Props = {
   priceUsd: number
-  priceBtc: number
+  priceEth: number
   price24h: number
   intervalData: HighAndLow
   marketCap: number
@@ -138,7 +139,7 @@ export default defineComponent<Props>({
 
   props: {
     priceUsd: { type: Number, required: true },
-    priceBtc: { type: Number, required: true },
+    priceEth: { type: Number, required: true },
     price24h: { type: Number, required: true },
     intervalData: { type: Object as PropType<HighAndLow>, required: true },
     marketCap: { type: Number, default: 0 },
@@ -155,7 +156,7 @@ export default defineComponent<Props>({
 
     // STATE
     const tokenPriceUsd = toRefs(props).priceUsd
-    const tokenPriceBtc = toRefs(props).priceBtc
+    const tokenPriceEth = toRefs(props).priceEth
     const tokenPrice24h = toRefs(props).price24h
     const tokenInterval = toRefs(props).intervalData
     const priceTextClass = ref('')
@@ -219,7 +220,7 @@ export default defineComponent<Props>({
 
     return {
       tokenPriceUsd,
-      tokenPriceBtc,
+      tokenPriceEth,
       tokenPrice24h,
       priceTextClass,
       intervalModel,

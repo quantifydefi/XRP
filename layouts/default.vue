@@ -74,7 +74,7 @@ export default defineComponent({
     const drawer = ref(false)
     const links = ref([
       { name: 'Aave Markets', to: '/markets/aave' },
-      { name: 'Balances', to: '/portfolio-balances' },
+      { name: 'Balances', to: '/portfolio/balances' },
       { name: 'Transactions', to: '/portfolio/transactions' },
     ])
 

@@ -14,8 +14,8 @@ import {
   watch,
 } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
-import { PriceChartGQL } from '~/apollo/main/token.query.graphql'
-import { PriceChart } from '~/types/apollo/main/types'
+import { DailyChartGQL } from '~/apollo/main/token.query.graphql'
+import { DailyChart } from '~/types/apollo/main/types'
 
 let am4core: any = null
 let am4charts: any = null
@@ -27,11 +27,13 @@ if (process.browser) {
 }
 
 type Props = {
-  coinGeckoId: string
+  symbol: string
+  contractAddress: string
 }
 export default defineComponent<Props>({
   props: {
-    coinGeckoId: { type: String, required: true },
+    contractAddress: { type: String, required: true },
+    symbol: { type: String, required: true },
   },
   setup(props) {
     // STATE
@@ -42,14 +44,21 @@ export default defineComponent<Props>({
     // COMPOSABLES
     const { env } = useContext()
     const { result } = useQuery(
-      PriceChartGQL,
+      DailyChartGQL,
       () => ({
-        coinGeckoID: props.coinGeckoId,
+        contractAddress: props.contractAddress,
+        symbol: props.symbol,
       }),
       { fetchPolicy: 'no-cache', prefetch: false }
     )
 
-    const chartData = computed(() => result.value?.priceChart ?? []) as Ref<PriceChart[]>
+    const chartData = computed(
+      () =>
+        result.value?.dailyChart.map((v: DailyChart) => ({
+          ...v,
+          dateFormatted: new Date(v.date * 1000).toISOString().slice(0, 10),
+        })) ?? []
+    ) as Ref<DailyChart[]>
 
     function renderChart() {
       am4core.useTheme(am4themesDark.default)
@@ -68,8 +77,8 @@ export default defineComponent<Props>({
 
       // Create series
       const series = chart.series.push(new am4charts.LineSeries())
-      series.dataFields.valueY = 'price'
-      series.dataFields.dateX = 'date'
+      series.dataFields.valueY = 'priceUsd'
+      series.dataFields.dateX = 'dateFormatted'
       series.strokeWidth = 2
       series.minBulletDistance = 10
       series.tooltipText = '{valueY}'
