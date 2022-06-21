@@ -11,9 +11,8 @@
         <v-toolbar-title class="ml-2 d-flex">
           <div>
             <div class="subtitle-1 mb-n2">EVM</div>
-            <div class="caption">Finance</div>
+            <div class="caption grey--text">finance</div>
           </div>
-          <small class="grey--text ml-2 caption" style="margin-top: 20px">BETA</small>
         </v-toolbar-title>
       </nuxt-link>
 
