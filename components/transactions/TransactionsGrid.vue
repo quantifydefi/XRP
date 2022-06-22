@@ -28,9 +28,7 @@
 
       <!--   Txn Date   -->
       <template #[`item.blockSignedAt`]="{ item }">
-        <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-          {{ new Date(item.blockSignedAt).toLocaleString() }}
-        </div>
+        <span class="text-no-wrap grey--text" v-text="new Date(item.blockSignedAt).toLocaleString()"></span>
       </template>
 
       <!--   Method   -->
