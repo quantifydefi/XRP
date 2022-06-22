@@ -122,7 +122,7 @@
       <template #[`item.value`]="{ item }">
         <div class="py-2">
           <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
-            {{ $nf(item.value / 10 ** 18, 0, 6) }} {{ chainSymbol }}
+            {{ $nf(item.txnValue) }} {{ chainSymbol }}
           </div>
           <span>$ {{ $nf(item.valueQuote, 2, 2) }}</span>
         </div>
@@ -132,7 +132,7 @@
       <template #[`item.txnFee`]="{ item }">
         <div class="py-2">
           <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-            {{ $nf((item.gasPrice / 10 ** 18) * item.gasSpent, 0, 6) }}
+            {{ $nf(item.txnFee) }}
             {{ chainSymbol }}
           </div>
           <span>$ {{ $nf(item.gasQuote, 2, 2) }}</span>
@@ -140,19 +140,17 @@
       </template>
 
       <!--   status   -->
-      <template #[`item.successful`]="{ item }">
+      <template #[`item.isSuccess`]="{ item }">
         <v-btn
           width="90"
           outlined
           small
           depressed
           rounded
-          class="text-capitalize cursor-text"
-          :color="item.successful ? 'green' : 'pink'"
+          class="text-capitalize cursor-text caption"
+          :color="item.isSuccess.color"
         >
-          <span class="caption" :class="[ui[theme].headerTextClass]">
-            {{ item.successful ? 'Success' : 'Failed' }}
-          </span>
+          <span class="white--text" v-text="item.isSuccess.text" />
         </v-btn>
       </template>
 
@@ -185,6 +183,7 @@ import { State } from '~/types/state'
 import LogEvents from '~/components/transactions/LogEvents.vue'
 import TxAddressLabel from '~/components/transactions/TxAddressLabel.vue'
 import { EmitEvents } from '~/types/events'
+import { Transactions } from '~/composables/useTransactions'
 
 export default defineComponent({
   name: 'TransactionsGrid',
@@ -193,8 +192,8 @@ export default defineComponent({
     account: { type: String, default: '', required: true },
     chainSymbol: { type: String, default: '', required: true },
     transactions: {
-      type: Array as PropType<TransactionItem[]>,
-      default: () => [] as TransactionItem[],
+      type: Array as PropType<Transactions[]>,
+      default: () => [] as Transactions[],
     },
     itemsPerPage: {
       type: Number,
@@ -260,7 +259,7 @@ export default defineComponent({
       {
         text: 'Status',
         align: 'start',
-        value: 'successful',
+        value: 'isSuccess',
         class: 'py-2',
       },
 

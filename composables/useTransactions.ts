@@ -1,10 +1,44 @@
+import 'reflect-metadata'
+import { plainToClass } from 'class-transformer'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { computed, inject, reactive, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { State } from '~/types/state'
-import { Chain, TransactionItem } from '~/types/apollo/main/types'
+import { Chain, LogEvent, TransactionItem } from '~/types/apollo/main/types'
+
+export class Transactions implements TransactionItem {
+  readonly blockSignedAt!: string
+  readonly fromAddress!: string
+  readonly fromAddressIsContract!: boolean
+  readonly fromAddressName!: string
+  readonly fromAddressSymbol!: string
+  readonly gasPrice!: number
+  readonly gasQuote!: number
+  readonly gasSpent!: number
+  readonly logEvents!: LogEvent[]
+  readonly successful!: boolean
+  readonly toAddress!: string
+  readonly toAddressIsContract!: boolean
+  readonly toAddressName!: string
+  readonly toAddressSymbol!: string
+  readonly txHash!: string
+  readonly value!: string
+  readonly valueQuote!: number
+
+  get txnValue(): number {
+    return +this.value / 10 ** 18
+  }
+
+  get txnFee(): number {
+    return (this.gasPrice / 10 ** 18) * this.gasSpent
+  }
+
+  get isSuccess(): { text: string; color: string } {
+    return this.successful ? { text: 'Success', color: 'green' } : { text: 'Failed', color: 'pink' }
+  }
+}
 
 export default function () {
   const { state, dispatch, getters } = useStore<State>()
@@ -36,7 +70,9 @@ export default function () {
   )
 
   /** COMPUTED **/
-  const transactionsData = computed(() => result.value?.transactions.items ?? []) as Ref<TransactionItem[]>
+  const transactionsData = computed(() => {
+    return plainToClass(Transactions, result.value.transactions.items as Transactions[]) ?? []
+  }) as Ref<Transactions[]>
 
   /** EVENTS **/
   onResult((queryResult) => {
