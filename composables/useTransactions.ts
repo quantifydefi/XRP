@@ -6,9 +6,9 @@ import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { State } from '~/types/state'
-import { Chain, LogEvent, TransactionItem } from '~/types/apollo/main/types'
+import { LogEvent, TransactionItem } from '~/types/apollo/main/types'
 
-export class Transactions implements TransactionItem {
+export class TransactionModel implements TransactionItem {
   readonly blockSignedAt!: string
   readonly fromAddress!: string
   readonly fromAddressIsContract!: boolean
@@ -27,6 +27,28 @@ export class Transactions implements TransactionItem {
   readonly value!: string
   readonly valueQuote!: number
 
+  get txDate(): string {
+    return new Date(this.blockSignedAt).toLocaleString()
+  }
+
+  get methodTextRenderer(): string {
+    if (this.logEvents.length === 0) {
+      return 'Transfer'
+    }
+
+    if (this.logEvents.length > 2) {
+      return 'Multicall'
+    }
+
+    // returns array of log events function names
+    // i.e. ['Transfer', 'Approval']
+    const logs = this.logEvents
+      .map((event: any) => event.decoded?.name.replace(/([A-Z])/g, ' $1').trim())
+      .filter(Boolean)
+
+    return logs.length === 0 ? 'Transfer' : logs.join(', ')
+  }
+
   get txnValue(): number {
     return +this.value / 10 ** 18
   }
@@ -41,11 +63,10 @@ export class Transactions implements TransactionItem {
 }
 
 export default function () {
-  const { state, dispatch, getters } = useStore<State>()
-  const chains = computed(() => getters['configs/transactionsChains'])
+  const { state } = useStore<State>()
   const currentChain = computed(() => state.configs.currentTransactionChain)
 
-  /** STATE **/
+  // STATE
   const loading = ref(true)
   const currentPage = ref(1)
   const hasMore = ref(false)
@@ -56,23 +77,23 @@ export default function () {
     perPage: 15,
   })
 
-  /** COMPOSABLES **/
+  // COMPOSABLES
   const { account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, error, onResult } = useQuery(
     TransactionsGQL,
     () => ({
       chainId: currentChain.value.chainId,
-      address: account.value,
+      address: account.value ?? '',
       pageNumber: pagination.page,
       pageSize: pagination.perPage,
     }),
     { fetchPolicy: 'no-cache', pollInterval: 60000 }
   )
 
-  /** COMPUTED **/
-  const transactionsData = computed(() => {
-    return plainToClass(Transactions, result.value.transactions.items as Transactions[]) ?? []
-  }) as Ref<Transactions[]>
+  // COMPUTED
+  const transactionsData = computed(
+    () => plainToClass(TransactionModel, result.value?.transactions?.items as TransactionModel[]) ?? []
+  ) as Ref<TransactionModel[]>
 
   /** EVENTS **/
   onResult((queryResult) => {
@@ -98,13 +119,25 @@ export default function () {
   })
 
   /** METHODS **/
-  async function onNetworkSelectChange(chain: Ref<Chain>) {
-    await dispatch('configs/changeCurrentTransactionChain', chain.value)
-  }
+  function isInboundRenderer(item: TransactionModel): { color: string; text: string } {
+    if (item.logEvents && item.logEvents.length > 0) {
+      if (item.methodTextRenderer === 'Transfer') {
+        const param = Object.values(item.logEvents[0].decoded.params).filter((el: any) => el.name === 'to')[0]
+        if (param && param.value === account.value.toLowerCase()) {
+          return { color: 'green', text: 'IN' }
+        }
+      }
+    }
 
-  function navigateToExplorer(address: string): void {
-    const url = `${currentChain.value.blockExplorerUrl}/tx/${address}`
-    window.open(url)
+    if (item.toAddress.toLowerCase() === account.value.toLowerCase()) {
+      return { color: 'green', text: 'IN' }
+    }
+
+    if (item.toAddress.toLowerCase() === item.fromAddress.toLowerCase()) {
+      return { color: 'grey', text: 'SELF' }
+    }
+
+    return { color: 'pink', text: 'OUT' }
   }
 
   return {
@@ -112,14 +145,12 @@ export default function () {
     error,
     walletReady,
     account,
-    chains,
     currentChain,
     transactionsData,
     hasMore,
     currentPage,
     pagination,
 
-    onNetworkSelectChange,
-    navigateToExplorer,
+    isInboundRenderer,
   }
 }

@@ -1,6 +1,6 @@
 import { computed, inject, reactive, Ref } from '@nuxtjs/composition-api'
 import { ethers } from 'ethers'
-import type { AavePoolCl } from '~/composables/useAavePools'
+import type { AavePoolModel } from '~/composables/useAavePools'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import wethGatewayAbi from '~/constracts/abi/aave/wethGatewayAbi.json'
 import erc20Abi from '~/constracts/abi/erc20Abi.json'
@@ -47,7 +47,7 @@ interface Transaction {
   receipt: any
 }
 
-export default function useAaveTransactions(pool: Ref<AavePoolCl>, amountInTokens: Ref<number>) {
+export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTokens: Ref<number>) {
   // COMPUTED
   const { signer, provider, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 

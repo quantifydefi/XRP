@@ -1,15 +1,11 @@
 <template>
-  <v-menu v-if="currentSelectedChain" :close-on-content-click="false" nudge-bottom="13" offset-y>
+  <v-menu v-if="currentChain" :close-on-content-click="false" nudge-bottom="13" offset-y>
     <template #activator="{ on, attrs }">
       <v-btn elevation="0" class="px-2" color="transparent" tile v-bind="attrs" v-on="on">
         <v-avatar size="26" class="mr-2" tile>
-          <v-img
-            :src="currentSelectedChain.logoUrl"
-            :lazy-src="currentSelectedChain.logoUrl"
-            :alt="`${currentSelectedChain.name} logo`"
-          />
+          <v-img :src="$imageUrlBySymbol(currentChain.symbol)" :lazy-src="$imageUrlBySymbol(currentChain.symbol)" />
         </v-avatar>
-        <span class="text-capitalize" v-text="currentSelectedChain.label" />
+        <span class="text-capitalize" v-text="currentChain.label" />
         <v-icon class="ml-1">mdi-chevron-down</v-icon>
       </v-btn>
     </template>
@@ -18,14 +14,13 @@
       <v-row no-gutters>
         <v-col>
           <v-list dense>
-            <v-list-item-group v-model="currentSelectedChain" mandatory color="primary">
-              <v-list-item v-for="item in chains" :key="item.chainId" :value="item">
+            <v-subheader>V2 Markets</v-subheader>
+            <v-list-item-group v-model="selectedChainId" mandatory color="primary">
+              <v-list-item v-for="item in chains" :key="item.chainId" :value="item.chainId">
                 <v-list-item-avatar size="24">
-                  <v-img :src="item.logoUrl" :lazy-src="item.logoUrl" :alt="`${item.name} logo`" />
+                  <v-img :src="$imageUrlBySymbol(item.symbol)" :lazy-src="$imageUrlBySymbol(item.symbol)" />
                 </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.label" />
-                </v-list-item-content>
+                <v-list-item-content><v-list-item-title v-text="item.label" /></v-list-item-content>
               </v-list-item>
             </v-list-item-group>
           </v-list>
@@ -36,38 +31,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRef, ref, watch } from '@nuxtjs/composition-api'
-
+import { defineComponent, ref, computed, useStore, watch } from '@nuxtjs/composition-api'
 import { Chain } from '~/types/apollo/main/types'
-import { EmitEvents } from '~/types/events'
+import { State } from '~/types/state'
 
 export default defineComponent({
-  name: 'NetworkSelectionMenu',
-  props: {
-    chains: {
-      type: Array as PropType<Chain[]>,
-      default: [] as Chain[],
-      required: true,
-    },
-    selectedChain: {
-      type: Object as PropType<Chain>,
-      default: null,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
-    const selectedChainId = ref(1)
-    const currentSelectedChain = ref<Chain>(props.selectedChain)
-    const supportedChains = toRef(props, 'chains')
+  setup() {
+    // COMPOSABELES
+    const { state, getters, dispatch } = useStore<State>()
 
-    watch(currentSelectedChain, () => {
-      emit(EmitEvents.onNetworkSelectChange, currentSelectedChain)
+    // COMPUTED
+    const currentChain = computed<Chain>(() => state.configs.currentTransactionChain)
+    const selectedChainId = ref<number>(currentChain.value.chainId)
+    const chains = computed<Chain[]>(() => getters['configs/transactionsChains'])
+
+    // WATCHERS
+    watch(selectedChainId, async (newChainId) => {
+      const chain: Chain | undefined = chains.value.find((elem: { chainId: number }) => elem.chainId === newChainId)
+      if (chain) {
+        await dispatch('configs/changeCurrentTransactionChain', chain)
+      }
     })
 
     return {
+      currentChain,
       selectedChainId,
-      supportedChains,
-      currentSelectedChain,
+      chains,
     }
   },
 })

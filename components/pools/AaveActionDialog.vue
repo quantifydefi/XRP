@@ -110,7 +110,7 @@ import {
   useStore,
   watch,
 } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/composables/useAavePools'
+import { AavePoolModel } from '~/composables/useAavePools'
 import { actionTypes, aaveActions } from '~/models/web3'
 import { State } from '~/types/state'
 import AaveActioinForm from '~/components/pools/AaveActioinForm.vue'
@@ -154,7 +154,7 @@ export default defineComponent<Props>({
     // STATE
     const dialog = ref(false)
     const action = ref<actionTypes>('deposit')
-    const pool = ref() as Ref<AavePoolCl>
+    const pool = ref() as Ref<AavePoolModel>
     const amount = ref<number>(0)
     const isActionButtonDisabled = ref(true)
     const isVariableBorrow = ref(true)
@@ -344,7 +344,7 @@ export default defineComponent<Props>({
       return stats[action.value]
     })
 
-    function init(currentAction: actionTypes, currentPool: AavePoolCl) {
+    function init(currentAction: actionTypes, currentPool: AavePoolModel) {
       pool.value = currentPool
       action.value = currentAction
       dialog.value = true
