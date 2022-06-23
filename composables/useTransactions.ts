@@ -63,21 +63,15 @@ export class TransactionModel implements TransactionItem {
 }
 
 export default function () {
-  const { state } = useStore<State>()
-  const currentChain = computed(() => state.configs.currentTransactionChain)
-
   // STATE
   const loading = ref(true)
   const currentPage = ref(1)
   const hasMore = ref(false)
-
-  const pagination = reactive({
-    page: 0,
-    total: 1,
-    perPage: 15,
-  })
+  const pagination = reactive({ page: 0, total: 1, perPage: 15 })
 
   // COMPOSABLES
+  const { state } = useStore<State>()
+  const currentChain = computed(() => state.configs.currentTransactionChain)
   const { account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, error, onResult } = useQuery(
     TransactionsGQL,
@@ -95,7 +89,7 @@ export default function () {
     () => plainToClass(TransactionModel, result.value?.transactions?.items as TransactionModel[]) ?? []
   ) as Ref<TransactionModel[]>
 
-  /** EVENTS **/
+  // EVENTS
   onResult((queryResult) => {
     hasMore.value = queryResult.data.transactions.pagination.hasMore
     loading.value = queryResult.loading
@@ -118,7 +112,7 @@ export default function () {
     pagination.page = newVal - 1
   })
 
-  /** METHODS **/
+  // METHODS
   function isInboundRenderer(item: TransactionModel): { color: string; text: string } {
     if (item.logEvents && item.logEvents.length > 0) {
       if (item.methodTextRenderer === 'Transfer') {
