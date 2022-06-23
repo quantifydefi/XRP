@@ -30,6 +30,16 @@
                 />
               </v-col>
             </v-row>
+            <v-row>
+              <v-col>
+                <v-pagination
+                  v-model="currentPage"
+                  class="mt-4"
+                  :total-visible="pagination.visible"
+                  :length="pagination.total"
+                />
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-col>
@@ -73,7 +83,7 @@ export default defineComponent({
       currentPage,
       pagination,
 
-      /** Methods **/
+      // METHODS
       isInboundRenderer,
     }
   },
