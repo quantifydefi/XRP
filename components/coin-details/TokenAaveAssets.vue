@@ -36,7 +36,7 @@
 <script lang="ts">
 import { computed, defineComponent, inject, PropType, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import { AavePool } from '~/types/apollo/main/types'
-import useAavePools, { AavePoolCl } from '~/composables/useAavePools'
+import useAavePools, { AavePoolModel } from '~/composables/useAavePools'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
@@ -73,7 +73,7 @@ export default defineComponent<Props>({
     const marketId = computed(() => state.configs.currentAaveMarket.chainId)
     const { fetchPortfolio } = usePortfolio(addresses)
     const pools = computed(() => {
-      const pools: AavePoolCl[] = []
+      const pools: AavePoolModel[] = []
       aavePoolsData.value.forEach((elem) => {
         elem.portfolio = portfolio.value[elem.id] || elem.portfolio
         pools.push(elem)
@@ -89,7 +89,7 @@ export default defineComponent<Props>({
     async function updatePortfolio() {
       portfolio.value = await fetchPortfolio()
     }
-    function initAction({ action, pool }: { action: actionTypes; pool: AavePoolCl }) {
+    function initAction({ action, pool }: { action: actionTypes; pool: AavePoolModel }) {
       actionDialog.value.init(action, pool)
     }
 

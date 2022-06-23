@@ -2,8 +2,8 @@ import { defineNuxtPlugin } from '@nuxtjs/composition-api'
 import { Context } from '@nuxt/types'
 import Vue from 'vue'
 
-// const applyCommas = (val: string) => val.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
-const applyCommas = (val: string) => Intl.NumberFormat('en').format(parseFloat(val))
+const applyCommas = (val: string) => val.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
+// const applyCommas = (val: string) => Intl.NumberFormat('en').format(parseFloat(val))
 
 function applyNumber(val: number, roundTo: number, pre: string) {
   if (val < 10 ** 3) {
@@ -37,11 +37,8 @@ const imageUrlBySymbol = (symbol: string | null) =>
     ? `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
     : `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`
 
-const truncateAddress = (address: string, zeroIndexTo: number, endIndexMinus: number): string => {
-  return address
-    ? address.slice(0, zeroIndexTo) + '...' + address.slice(address.length - endIndexMinus, address.length)
-    : ''
-}
+const truncateAddress = (address: string, zeroIndexTo: number, endIndexMinus: number): string =>
+  address ? address.slice(0, zeroIndexTo) + '...' + address.slice(address.length - endIndexMinus, address.length) : ''
 
 // Returns a formatted string with specified minimum and maximum fractional digits
 const numFormat = (val: number, minFracDigits = 2, maxFracDigits = 6): string => {
