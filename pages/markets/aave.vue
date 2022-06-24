@@ -5,6 +5,7 @@
         :name="header.name"
         :symbol="header.symbol"
         :twitter="header.twitter"
+        :title="header.title"
         :description="header.description"
         :url="header.url"
       />
@@ -77,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import protocolHeader from '~/components/ProtocolHeader.vue'
 import useAavePools, { AavePoolCl } from '~/composables/useAavePools'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
@@ -92,6 +93,7 @@ import { State } from '~/types/state'
 import NetworkSelection from '~/components/common/NetworkSelection.vue'
 import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
 import SwitchNetworkDialog from '~/components/common/SwithNetworkDialog.vue'
+import { useMetaTags } from '~/composables/useMetaTags'
 
 export default defineComponent({
   components: {
@@ -109,7 +111,9 @@ export default defineComponent({
       name: 'AAVE',
       symbol: 'AAVE',
       twitter: 'AaveAave',
-      description: 'Aave is an Open Source and Non-Custodial protocol to earn interest on deposits and borrow assets',
+      title: 'Aave Professiona Interface',
+      description:
+        'Aave is the leading DeFi lending protocol for cryptocurrency loans. Our interface uses Aave smart contracts to Deposit, Borrow, Repay and Withdraw. Our Aave grant award proudly supports the development of this interface.',
       url: 'https://aave.com',
     })
 
@@ -174,6 +178,9 @@ export default defineComponent({
       actionDialog.value.init(action, pool)
     }
 
+    // META TAGS
+    useMetaTags('aave_v2', useRoute().value.path)
+
     return {
       // COMPUTED
       loading,
@@ -201,6 +208,7 @@ export default defineComponent({
       changeToRequiredChain,
     }
   },
+  head: {},
 })
 </script>
 

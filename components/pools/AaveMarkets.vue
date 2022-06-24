@@ -38,7 +38,7 @@
                       class="text-capitalize font-weight-bold pink--text text-decoration-none"
                       :to="{
                         path: `/token/${item.symbol}`,
-                        query: { contract: item.addresses.address, decimals: item.addresses.decimals },
+                        query: { name: item.name, contract: item.addresses.address, decimals: item.addresses.decimals },
                       }"
                       v-text="item.name"
                     />

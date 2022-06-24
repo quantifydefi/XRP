@@ -1,6 +1,7 @@
 <template>
   <v-row no-gutters justify="center">
     <v-col cols="12" lg="10">
+      <h1 class="headline">WEB3 transaction history for Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom.</h1>
       <template v-if="!walletReady">
         <connect-wallet-memo></connect-wallet-memo>
       </template>
@@ -38,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useRoute } from '@nuxtjs/composition-api'
 import useTransactions from '~/composables/useTransactions'
 import { useMetaTags } from '~/composables/useMetaTags'
 
@@ -65,7 +66,7 @@ export default defineComponent({
     } = useTransactions()
 
     // META TAGS
-    useMetaTags({ title: 'Transactions History | EVM Finance', subDirectory: 'portfolio/transactions' })
+    useMetaTags('transactions', useRoute().value.path)
 
     return {
       walletReady,

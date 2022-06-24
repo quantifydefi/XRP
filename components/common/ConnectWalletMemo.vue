@@ -1,7 +1,7 @@
 <template>
-  <v-row justify="center" class="pt-3">
-    <v-col cols="12" md="5">
-      <v-card height="360" outlined tile>
+  <v-row justify="center">
+    <v-col cols="12">
+      <v-card height="580" outlined tile>
         <v-container fill-height>
           <v-row justify="center" align="center">
             <v-col cols="12" class="text-center">

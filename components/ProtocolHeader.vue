@@ -33,30 +33,32 @@
         <v-row>
           <v-col>
             <v-row no-gutters>
-              <v-col><p class="font-weight-medium ml-1">Description:</p></v-col>
+              <v-col cols="10">
+                <h1 class="headline" v-text="protocolPageTitle" />
+              </v-col>
+              <v-col class="text-right">
+                <v-btn
+                  width="20"
+                  height="20"
+                  class="mx-1 pa-0"
+                  color="primary"
+                  icon
+                  target="_blank"
+                  :href="`https://twitter.com/${protocolTwitter}`"
+                >
+                  <v-icon size="20">mdi-twitter</v-icon>
+                </v-btn>
+
+                <v-btn width="20" height="20" class="pa-0" color="primary" icon target="_blank" :href="protocolUrl">
+                  <v-icon size="20">mdi-web</v-icon>
+                </v-btn>
+              </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col>
-                <span class="font-weight-medium ml-1 grey--text text--lighten-1" v-text="protocolDescription" />
+                <span class="grey--text text--lighten-1" v-text="protocolDescription" />
               </v-col>
             </v-row>
-          </v-col>
-          <v-col cols="3" class="text-right">
-            <v-btn
-              width="20"
-              height="20"
-              class="mx-1 pa-0"
-              color="primary"
-              icon
-              target="_blank"
-              :href="`https://twitter.com/${protocolTwitter}`"
-            >
-              <v-icon size="20">mdi-twitter</v-icon>
-            </v-btn>
-
-            <v-btn width="20" height="20" class="pa-0" color="primary" icon target="_blank" :href="protocolUrl">
-              <v-icon size="20">mdi-web</v-icon>
-            </v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -73,6 +75,7 @@ type Props = {
   symbol: string
   url: string
   twitter: string
+  title: string
   description: string
 }
 export default defineComponent<Props>({
@@ -80,6 +83,7 @@ export default defineComponent<Props>({
     name: { type: String, required: true },
     symbol: { type: String, required: true },
     url: { type: String, required: true },
+    title: { type: String, required: true },
     description: { type: String, required: true },
     twitter: { type: String, required: true },
   },
@@ -93,6 +97,7 @@ export default defineComponent<Props>({
       protocolName: props.name,
       protocolSymbol: props.symbol,
       protocolUrl: props.url,
+      protocolPageTitle: props.title,
       protocolDescription: props.description,
       protocolTwitter: props.twitter,
       protocolImage,

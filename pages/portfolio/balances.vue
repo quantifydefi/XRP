@@ -1,82 +1,103 @@
 <template>
-  <div>
-    <v-row v-if="!walletReady" align="center" justify="center">
-      <v-col cols="11">
-        <connect-wallet-memo></connect-wallet-memo>
-      </v-col>
-    </v-row>
+  <v-row no-gutters justify="center">
+    <v-col cols="12" md="10">
+      <v-row>
+        <v-col cols="12" lg="10">
+          <h1 class="headline">Visualize your complete DeFi Balance</h1>
+          <span class="grey--text text--lighten-1">
+            Visualize your complete DeFi balance, blockchain protocol balances and all ERC token balances. Click on a
+            coin symbol for more metrics and information. Tokens proceeded by the letter “A” represent your borrows from
+            the Aave protocol, for example ALINK is borrowed LINK amount.
+          </span>
+        </v-col>
+      </v-row>
+      <v-row v-if="!walletReady" justify="center" no-gutters class="pt-6">
+        <v-col cols="12">
+          <connect-wallet-memo />
+        </v-col>
+      </v-row>
 
-    <v-row v-else justify="center">
-      <v-col lg="10" md="12">
-        <v-row>
-          <v-col lg="4" cols="12">
-            <v-card class="py-2 px-4" height="240" tile outlined>
-              <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="230" />
-              <div v-else>
-                <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Total Balance</h4>
-                <div
-                  class="d-inline-block text-truncate text-h3"
-                  v-text="$f(totalBalance, { pre: '$ ', roundTo: 2 })"
+      <v-row v-else justify="center" no-gutters class="pt-4">
+        <v-col>
+          <v-row>
+            <v-col lg="4" cols="12">
+              <v-card class="py-2 px-4" height="240" tile outlined>
+                <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="230" />
+                <div v-else>
+                  <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Total Balance</h4>
+                  <div
+                    class="d-inline-block text-truncate text-h3"
+                    v-text="$f(totalBalance, { pre: '$ ', roundTo: 2 })"
+                  />
+                  <v-simple-table class="mt-3">
+                    <template #default>
+                      <tbody class="text-subtitle-1 text-no-wrap">
+                        <tr v-for="(elem, i) in stats" :key="i">
+                          <td>
+                            <div class="text-no-wrap overflow-x-hidden">
+                              <v-avatar size="20" class="mr-2">
+                                <v-img
+                                  :src="$imageUrlBySymbol(elem.symbol)"
+                                  :lazy-src="$imageUrlBySymbol(elem.symbol)"
+                                />
+                              </v-avatar>
+                              {{ elem.name }}
+                            </div>
+                          </td>
+                          <td :class="textClass" v-text="$f(elem.total, { pre: '$ ', roundTo: 2 })" />
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </div>
+              </v-card>
+            </v-col>
+            <v-col>
+              <v-card tile outlined height="100%">
+                <v-skeleton-loader v-if="loading" type="image, image" height="240" />
+                <client-only>
+                  <balances-chart v-if="!loading" :balances="balanceData" />
+                </client-only>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row v-if="loading">
+            <v-col v-for="i in 4" :key="i" cols="6">
+              <v-card height="450" tile outlined class="pa-2">
+                <v-skeleton-loader :loading="loading" type="heading,table-tbody,table-tbody" height="420" />
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-show="!loading">
+            <v-col v-for="balance in balanceData" :key="balance.chainId" lg="6" md="12">
+              <portfolio-balance-grid :data="balance" />
+            </v-col>
+          </v-row>
+
+          <v-row v-show="!loading">
+            <v-col class="pb-0 mt-4">
+              <v-avatar size="40" class="mr-2">
+                <v-img
+                  :src="$imageUrlBySymbol('aave')"
+                  :lazy-src="$imageUrlBySymbol('aave')"
+                  @error="$setAltImageUrl"
                 />
-                <v-simple-table class="mt-3">
-                  <template #default>
-                    <tbody class="text-subtitle-1 text-no-wrap">
-                      <tr v-for="(elem, i) in stats" :key="i">
-                        <td>
-                          <div class="text-no-wrap overflow-x-hidden">
-                            <v-avatar size="20" class="mr-2">
-                              <v-img :src="$imageUrlBySymbol(elem.symbol)" :lazy-src="$imageUrlBySymbol(elem.symbol)" />
-                            </v-avatar>
-                            {{ elem.name }}
-                          </div>
-                        </td>
-                        <td :class="textClass" v-text="$f(elem.total, { pre: '$ ', roundTo: 2 })" />
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </div>
-            </v-card>
-          </v-col>
-          <v-col>
-            <v-card tile outlined height="100%">
-              <v-skeleton-loader v-if="loading" type="image, image" height="240" />
-              <client-only>
-                <balances-chart v-if="!loading" :balances="balanceData" />
-              </client-only>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row v-if="loading">
-          <v-col v-for="i in 4" :key="i" cols="6">
-            <v-card height="450" tile outlined class="pa-2">
-              <v-skeleton-loader :loading="loading" type="heading,table-tbody,table-tbody" height="420" />
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <v-row v-show="!loading">
-          <v-col v-for="balance in balanceData" :key="balance.chainId" lg="6" md="12">
-            <portfolio-balance-grid :data="balance" />
-          </v-col>
-        </v-row>
-
-        <v-row v-show="!loading">
-          <v-col class="pb-0 mt-4">
-            <v-avatar size="40" class="mr-2">
-              <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" @error="$setAltImageUrl" />
-            </v-avatar>
-            <nuxt-link to="/markets/aave" class="text-decoration-none"><span class="text-h5">AAVE V2</span></nuxt-link>
-          </v-col>
-        </v-row>
-        <balance-protocols v-show="!loading" :balances="balanceData" />
-      </v-col>
-    </v-row>
-  </div>
+              </v-avatar>
+              <nuxt-link to="/markets/aave" class="text-decoration-none"
+                ><span class="text-h5">AAVE V2</span></nuxt-link
+              >
+            </v-col>
+          </v-row>
+          <balance-protocols v-show="!loading" :balances="balanceData" />
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, useRoute, useStore } from '@nuxtjs/composition-api'
 import usePortfolioBalances from '~/composables/usePortfolioBalances'
 import PortfolioBalanceGrid from '~/components/portfolio/PortfolioBalanceGrid.vue'
 import { State } from '~/types/state'
@@ -105,7 +126,7 @@ export default defineComponent({
     )
 
     // META TAGS
-    useMetaTags({ title: 'Portfolio Balances | EVM Finance', subDirectory: 'portfolio-balance' })
+    useMetaTags('balances', useRoute().value.path)
 
     return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch }
   },

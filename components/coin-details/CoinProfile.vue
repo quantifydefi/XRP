@@ -99,7 +99,7 @@
         <v-row justify="center" no-gutters align="center" class="mt-1">
           <v-col>
             <v-card elevation="0" :max-height="180" class="pa-0 mt-4">
-              <h2 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
+              <h1 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
               <pre
                 style="white-space: pre-line; max-height: 180px"
                 class="overflow-y-auto subtitle-2 font-weight-regular pr-2 grey--text"

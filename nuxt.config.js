@@ -69,9 +69,9 @@ export default {
   },
   pwa: {
     manifest: {
-      name: 'Quantify Crypto',
-      description: 'Uniswap DEX NexGen Display  | DeFi Heatmap',
-      short_name: 'Quantify Crypto DeFi',
+      name: 'EVM Finance',
+      description: 'Uniswap DEX NexGen Display  | EVM Finance',
+      short_name: 'EVM Finance',
       lang: 'en',
       display: 'standalone',
       theme_color: '#1c31b5',
@@ -135,6 +135,7 @@ export default {
 
   env: {
     amChartLicense: process.env.AMCHARTS_LICENSE,
+    baseURL: process.env.BASE_URL,
   },
 
   server: { port: 3000, host: process.env.SERVER_HOST },
