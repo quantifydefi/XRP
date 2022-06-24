@@ -1,11 +1,10 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog v-model="dialog" max-width="525">
     <v-card tile outlined class="pa-4">
       <h5 class="text-h6 mb-2">Connect to a Wallet</h5>
       <p class="grey--text text--lighten-1">
-        By connecting a wallet, I agree to EVMX
-        <a href="#" class="text-decoration-none">Terms of Use, Cookies Policy</a> and
-        <a href="#" class="text-decoration-none">Privacy Policy</a> .
+        By connecting a wallet, I agree to EVM Finance
+        <nuxt-link to="/terms-and-conditions" class="text-decoration-none">Terms and Conditions</nuxt-link>
       </p>
       <v-alert v-model="errorAlert" color="error" dense dismissible>{{ error.message }}</v-alert>
       <v-list-item link :class="['mb-6', ui[theme].overlayColor]" @click="connectWallet('metamask')">
@@ -13,7 +12,7 @@
           <img width="60" height="60" :src="`/wallets/metamask.svg`" alt="metamask" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title class="text-h6"> Metamask </v-list-item-title>
+          <v-list-item-title class="text-h6"> Metamask</v-list-item-title>
         </v-list-item-content>
         <v-list-item-action v-if="walletReady">
           <v-icon color="green" size="30">mdi-checkbox-marked-circle</v-icon>
@@ -23,7 +22,7 @@
       <div :class="['pa-4', ui[theme].overlayColor]">
         <h6 class="text-subtitle-1 font-weight-bold">New to Ethereum?</h6>
         <small>
-          EVMX.io is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.
+          EVM Finance is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.
           <span>
             <a href="https://ethereum.org/en/wallets/" target="_blank" class="text-decoration-none">
               Learn More <v-icon size="14" color="primary">mdi-open-in-new</v-icon>
@@ -40,6 +39,7 @@ import { computed, defineComponent, ref, useStore, inject, watch } from '@nuxtjs
 import { State } from '~/types/state'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { Web3ErrorInterface } from '~/plugins/web3/connector'
+
 export default defineComponent({
   setup() {
     // COMPOSABLE
