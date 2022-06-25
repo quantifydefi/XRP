@@ -1,5 +1,5 @@
 <template>
-  <v-card tile outlined height="256">
+  <v-card tile outlined height="276">
     <h2 class="pb-3 subtitle-1 font-weight-bold pt-2 pl-4 pb-3" v-text="`Wallet Balances`" />
     <v-data-table
       v-if="walletReady"

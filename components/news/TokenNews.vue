@@ -1,5 +1,5 @@
 <template>
-  <v-card tile outlined height="256">
+  <v-card tile outlined height="276">
     <v-card-title class="pa-0">
       <h2 class="pb-3 subtitle-1 font-weight-bold pt-2 pl-4 pb-3" v-text="`Latest ${symbol} news`" />
       <v-spacer />
@@ -30,7 +30,7 @@
     <v-divider />
 
     <v-data-table
-      height="206"
+      height="226"
       dense
       :headers="cols"
       disable-sort

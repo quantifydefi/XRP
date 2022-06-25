@@ -1,5 +1,5 @@
 <template>
-  <v-card tile outlined class="pa-4" height="100%">
+  <v-card tile outlined class="pa-4" height="200">
     <v-row>
       <v-col cols="12" lg="4">
         <v-row no-gutters align="center">
@@ -24,7 +24,6 @@
 
           <v-col cols="12">
             <div class="font-weight-medium subtitle-1 ml-2 text-no-wrap">
-              <!--              <span v-text="$f(tokenPriceEth, { roundTo: 6 })" />-->
               <span v-text="tokenPriceEth" />
               <span class="font-weight-regular ml-1 grey--text text-caption">ETH</span>
             </div>
