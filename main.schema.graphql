@@ -99,6 +99,11 @@ type Chain {
   symbol: String!
 }
 
+type DailyChart {
+  date: Int!
+  priceUsd: Float!
+}
+
 type EthGasStatsResult {
   fastGasPrice: Float!
   gasUsedRatio: String!
@@ -189,16 +194,10 @@ type Pagination {
 
 type Price {
   dataSource: String!
-  priceBtc: Float!
+  priceEth: Float!
   priceUsd: Float!
   qcKey: String!
   symbolName: String!
-}
-
-type PriceChart {
-  date: String!
-  price: Float!
-  timestamp: Int!
 }
 
 type Query {
@@ -209,11 +208,11 @@ type Query {
   "Portfolio Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chains: [Chain!]!
+  dailyChart(coinGeckoID: String! = ""): [DailyChart!]!
   "Gas Stats for ETH"
   gas: [GasStats!]!
   "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
-  priceChart(coinGeckoID: String! = ""): [PriceChart!]!
   "Recent Usd Prices "
   recentPrices: Map!
   todos: [Todo!]!
@@ -232,6 +231,7 @@ type Todo {
 type Token {
   ID: ID
   aavePools: [AavePool!]!
+  aaveSymbol: String!
   balances: [Balance!]!
   bitbucketRepos: JSONMap
   chainId: Int!
@@ -245,6 +245,8 @@ type Token {
   facebookUrl: String!
   githubRepos: JSONMap
   interval: TimeInterval!
+  isAaveToken: Boolean!
+  isQCToken: Boolean!
   marketcap: Float!
   news: [News!]!
   price: Price!
@@ -289,9 +291,23 @@ type TransactionItem {
   toAddressIsContract: Boolean!
   toAddressName: String!
   toAddressSymbol: String!
+  txDetails: [TxDetail!]
   txHash: String!
   value: String!
   valueQuote: Float!
+}
+
+type TxDetail {
+  fromAddress: String!
+  method: String!
+  priceUSD: Float!
+  toAddress: String!
+  tokenAddress: String!
+  tokenContractDecimals: Int!
+  tokenContractSymbol: String!
+  tokenLogoUrl: String!
+  tokenSymbolName: String!
+  value: String!
 }
 
 type User {

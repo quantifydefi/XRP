@@ -27,13 +27,11 @@ if (process.browser) {
 }
 
 type Props = {
-  symbol: string
-  contractAddress: string
+  coinGeckoId: string
 }
 export default defineComponent<Props>({
   props: {
-    contractAddress: { type: String, required: true },
-    symbol: { type: String, required: true },
+    coinGeckoId: { type: String, required: true },
   },
   setup(props) {
     // STATE
@@ -43,14 +41,10 @@ export default defineComponent<Props>({
 
     // COMPOSABLES
     const { env } = useContext()
-    const { result } = useQuery(
-      DailyChartGQL,
-      () => ({
-        contractAddress: props.contractAddress,
-        symbol: props.symbol,
-      }),
-      { fetchPolicy: 'no-cache', prefetch: false }
-    )
+    const { result } = useQuery(DailyChartGQL, () => ({ coinGeckoID: props.coinGeckoId }), {
+      fetchPolicy: 'no-cache',
+      prefetch: false,
+    })
 
     const chartData = computed(
       () =>

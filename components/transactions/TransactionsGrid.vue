@@ -13,7 +13,12 @@
       <!--  expanded buttons   -->
       <template #item.data-table-expand="{ item, isExpanded, expand }">
         <div style="width: 16px">
-          <v-btn v-if="item.logEvents.length > 0" small icon @click="expand(!isExpanded)">
+          <v-btn
+            v-if="item.logEvents.length > 0 && item.methodTextRenderer !== 'Transfer'"
+            small
+            icon
+            @click="expand(!isExpanded)"
+          >
             <v-icon>mdi-chevron-{{ isExpanded ? 'up' : 'down' }}</v-icon>
           </v-btn>
         </div>
@@ -22,7 +27,12 @@
       <!-- expanded column items -->
       <template #expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <log-events :key="item.txHash" :wallet-address="account" :log-events="item.logEvents" />
+          <log-events
+            :key="item.txHash"
+            :wallet-address="account"
+            :log-events="item.logEvents"
+            @navigate-to-explorer="navigateToExplorer"
+          />
         </td>
       </template>
 
@@ -87,38 +97,63 @@
       <!--   from and to   -->
       <template #[`item.fromTo`]="{ item }">
         <div class="text-no-wrap">
-          <tx-address-label
-            label="From:"
-            :wallet-address="account.toLowerCase()"
-            :is-contract="item.fromAddressIsContract"
-            :address="item.fromAddress.toString().toLowerCase()"
-            :name="item.fromAddressName"
-            :symbol="item.fromAddressSymbol"
-            :navigate-to-explorer="navigateToExplorer"
-          ></tx-address-label>
+          <template v-if="item.txDetail">
+            <tx-address-label
+              label="From:"
+              :wallet-address="account.toLowerCase()"
+              :address="item.txDetail.fromAddress.toLowerCase()"
+              :navigate-to-explorer="navigateToExplorer"
+            />
 
-          <tx-address-label
-            label="To:"
-            :wallet-address="account.toLowerCase()"
-            :is-contract="item.toAddressIsContract"
-            :address="item.toAddress.toString().toLowerCase()"
-            :name="item.toAddressName"
-            :symbol="item.toAddressSymbol"
-            :navigate-to-explorer="navigateToExplorer"
-          ></tx-address-label>
+            <tx-address-label
+              label="To:"
+              :wallet-address="account.toLowerCase()"
+              :address="item.txDetail.toAddress.toLowerCase()"
+              :navigate-to-explorer="navigateToExplorer"
+            />
+          </template>
+
+          <template v-else>
+            <tx-address-label
+              label="From:"
+              :wallet-address="account.toLowerCase()"
+              :address="item.fromAddress.toString().toLowerCase()"
+              :symbol="item.fromAddressSymbol.toLowerCase()"
+              :name="item.fromAddressName"
+              :is-contract="item.fromAddressIsContract"
+              :navigate-to-explorer="navigateToExplorer"
+            />
+
+            <tx-address-label
+              label="To:"
+              :wallet-address="account.toLowerCase()"
+              :address="item.toAddress.toString().toLowerCase()"
+              :symbol="item.toAddressSymbol.toLowerCase()"
+              :name="item.toAddressName"
+              :is-contract="item.toAddressIsContract"
+              :navigate-to-explorer="navigateToExplorer"
+            />
+          </template>
         </div>
       </template>
 
       <!--   value   -->
       <template #[`item.value`]="{ item }">
-        <div class="text-no-wrap grey--text" v-text="`${$nf(item.txnValue)} ${chainSymbol}`" />
-        <div v-text="$f(item.valueQuote, { roundTo: 2, pre: '$ ' })" />
+        <template>
+          <div
+            class="text-no-wrap grey--text"
+            v-text="
+              `${$nf(item.txnValue.amount, 2, 2)} ${item.txDetail ? item.txDetail.tokenContractSymbol : chainSymbol}`
+            "
+          />
+          <div class="text-no-wrap" v-text="$f(item.txnValue.priceUsd, { roundTo: 2, pre: '$ ' })" />
+        </template>
       </template>
 
       <!--   txn fee   -->
       <template #[`item.txnFee`]="{ item }">
         <div class="text-no-wrap grey--text" v-text="`${$nf(item.txnFee)} ${chainSymbol}`" />
-        <div v-text="$f(item.gasQuote, { roundTo: 2, pre: '$ ' })" />
+        <div class="text-no-wrap" v-text="$f(item.gasQuote, { roundTo: 2, pre: '$ ' })" />
       </template>
 
       <!--   status   -->

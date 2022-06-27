@@ -278,8 +278,7 @@ export type QueryBalancesArgs = {
 
 
 export type QueryDailyChartArgs = {
-  contractAddress?: Scalars['String'];
-  symbol?: Scalars['String'];
+  coinGeckoID?: Scalars['String'];
 };
 
 
@@ -323,6 +322,7 @@ export type Token = {
   __typename?: 'Token';
   ID?: Maybe<Scalars['ID']>;
   aavePools: Array<AavePool>;
+  aaveSymbol: Scalars['String'];
   balances: Array<Balance>;
   bitbucketRepos?: Maybe<Scalars['JSONMap']>;
   chainId: Scalars['Int'];
@@ -336,6 +336,8 @@ export type Token = {
   facebookUrl: Scalars['String'];
   githubRepos?: Maybe<Scalars['JSONMap']>;
   interval: TimeInterval;
+  isAaveToken: Scalars['Boolean'];
+  isQCToken: Scalars['Boolean'];
   marketcap: Scalars['Float'];
   news: Array<News>;
   price: Price;
@@ -382,9 +384,24 @@ export type TransactionItem = {
   toAddressIsContract: Scalars['Boolean'];
   toAddressName: Scalars['String'];
   toAddressSymbol: Scalars['String'];
+  txDetails?: Maybe<Array<TxDetail>>;
   txHash: Scalars['String'];
   value: Scalars['String'];
   valueQuote: Scalars['Float'];
+};
+
+export type TxDetail = {
+  __typename?: 'TxDetail';
+  fromAddress: Scalars['String'];
+  method: Scalars['String'];
+  priceUSD: Scalars['Float'];
+  toAddress: Scalars['String'];
+  tokenAddress: Scalars['String'];
+  tokenContractDecimals: Scalars['Int'];
+  tokenContractSymbol: Scalars['String'];
+  tokenLogoUrl: Scalars['String'];
+  tokenSymbolName: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type User = {
@@ -436,7 +453,7 @@ export type TransactionsGqlQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, txHash: string, successful: boolean, fromAddress: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasQuote: number, gasPrice: number, gasSpent: number, logEvents?: Array<{ __typename?: 'LogEvent', logOffset: number, txHash: string, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, decoded: boolean, value: string } | null> } }> | null }> } };
+export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, txHash: string, successful: boolean, fromAddress: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasQuote: number, gasPrice: number, gasSpent: number, txDetails?: Array<{ __typename?: 'TxDetail', fromAddress: string, toAddress: string, value: string, tokenSymbolName: string, tokenContractSymbol: string, tokenContractDecimals: number, tokenAddress: string, tokenLogoUrl: string, priceUSD: number }> | null, logEvents?: Array<{ __typename?: 'LogEvent', logOffset: number, txHash: string, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, decoded: boolean, value: string } | null> } }> | null }> } };
 
 export type TokenQueryGqlQueryVariables = Exact<{
   qcKey: Scalars['String'];
@@ -448,11 +465,10 @@ export type TokenQueryGqlQueryVariables = Exact<{
 }>;
 
 
-export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, coinGeckoID: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceEth: number }, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
+export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, aaveSymbol: string, isAaveToken: boolean, isQCToken: boolean, coinGeckoID: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceEth: number }, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
 
 export type DailyChartGqlQueryVariables = Exact<{
-  contractAddress: Scalars['String'];
-  symbol: Scalars['String'];
+  coinGeckoID: Scalars['String'];
 }>;
 
 
