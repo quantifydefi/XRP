@@ -3,8 +3,8 @@
     <v-col lg="10" md="12">
       <v-row v-if="loading">
         <v-col cols="12" lg="4">
-          <v-card height="480" tile outlined>
-            <v-skeleton-loader type="article,list-item-three-line@4" height="450" />
+          <v-card height="500" tile outlined>
+            <v-skeleton-loader type="article,list-item-three-line@4" height="470" />
           </v-card>
         </v-col>
 
@@ -34,13 +34,13 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <v-card tile outlined height="256">
-                <v-skeleton-loader type="table-heading,divider,table-tbody" height="256" />
+              <v-card tile outlined height="276">
+                <v-skeleton-loader type="table-heading,divider,table-tbody" height="276" />
               </v-card>
             </v-col>
             <v-col cols="6">
-              <v-card tile outlined height="256">
-                <v-skeleton-loader type="table-heading,divider,table-tbody" height="256" />
+              <v-card tile outlined height="276">
+                <v-skeleton-loader type="table-heading,divider,table-tbody" height="276" />
               </v-card>
             </v-col>
           </v-row>
@@ -57,6 +57,9 @@
           <coin-profile
             :symbol="tokenData.symbolName"
             :qc-key="tokenData.qcKey"
+            :aave-symbol="tokenData.aaveSymbol"
+            :is-aave-token="tokenData.isAaveToken"
+            :is-q-c-token="tokenData.isQCToken"
             :contract-address="contractAddress"
             :website-links="tokenData.websiteUrl"
             :bit-bucket-repos="tokenData.bitbucketRepos"
@@ -89,9 +92,7 @@
           </v-row>
           <v-row>
             <v-col lg="6" sm="12">
-              <v-card tile outlined height="256">
-                <token-news :token-symbol="tokenData.qcKey" :news="tokenData.news" :symbol="tokenData.qcKey" />
-              </v-card>
+              <token-news :token-symbol="tokenData.qcKey" :news="tokenData.news" :symbol="tokenData.qcKey" />
             </v-col>
             <v-col lg="6" sm="12">
               <token-balances
@@ -103,11 +104,11 @@
           </v-row>
         </v-col>
       </v-row>
-      <token-aave-assets v-if="tokenData" :row-pool-data="tokenData.aavePools" />
+      <token-aave-assets v-if="tokenData" :token-key="tokenData.qcKey" />
       <v-row v-if="tokenData">
         <v-col>
           <v-card tile outlined height="600">
-            <token-prices-chart :contract-address="contractAddress" :symbol="tokenData.qcKey" />
+            <token-prices-chart :coin-gecko-id="tokenData.coinGeckoID" />
           </v-card>
         </v-col>
       </v-row>

@@ -1,5 +1,5 @@
 import { computed, Ref, useContext } from '@nuxtjs/composition-api'
-import type { AavePoolCl } from '~/composables/useAavePools'
+import type { AavePoolModel } from '~/composables/useAavePools'
 
 interface PortfolioCompositionInterface {
   name: string
@@ -7,7 +7,7 @@ interface PortfolioCompositionInterface {
   headers?: { name: string; value: string }[]
 }
 
-export default function useAavePoolsStats(pools: Ref<AavePoolCl[]>) {
+export default function useAavePoolsStats(pools: Ref<AavePoolModel[]>) {
   const { $f } = useContext()
   const collateralPools = computed(() => pools.value.filter((elem) => elem.usageAsCollateralEnabled))
 

@@ -178,14 +178,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, PropType, useStore } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/composables/useAavePools'
+import { AavePoolModel } from '~/composables/useAavePools'
 import { State } from '~/types/state'
 import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
 import AaveBalanceChart from '~/components/pools/AaveBalanceChart.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 type Props = {
-  pool: AavePoolCl
+  pool: AavePoolModel
 }
 export default defineComponent<Props>({
   components: {
@@ -193,7 +193,7 @@ export default defineComponent<Props>({
     AaveCompositionChart,
   },
   props: {
-    pool: { type: Object as PropType<AavePoolCl>, required: true },
+    pool: { type: Object as PropType<AavePoolModel>, required: true },
   },
   setup(props) {
     // COMPOSABLE

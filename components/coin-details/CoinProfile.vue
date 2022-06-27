@@ -1,16 +1,38 @@
 <template>
-  <v-card tile outlined height="480" class="pa-4">
+  <v-card tile outlined height="500" class="pa-4">
     <v-row no-gutters>
       <v-col cols="12">
-        <v-row align="center" class="mb-2">
-          <v-col cols="12" class="flex-no-wrap d-flex">
-            <v-avatar size="30px" class="mt-1 mr-1">
-              <v-img alt="Avatar" :src="$imageUrlBySymbol(qcKey)" />
-            </v-avatar>
-            <h2 class="text-h4 d-inline-block text-truncate" style="max-width: 350px">
+        <v-row align="center">
+          <v-col class="d-flex">
+            <div class="mr-2 d-flex">
+              <v-img :src="$imageUrlBySymbol(qcKey)" :lazy-src="$imageUrlBySymbol(qcKey)" width="36" max-height="36" />
+              <v-img v-if="isAaveToken" max-height="15" max-width="15" :src="$imageUrlBySymbol('aave')" />
+            </div>
+            <h2 class="text-h4 d-inline-block text-truncate" style="max-width: 360px">
               {{ symbol }}
-              <span class="text-h6 pink--text ml-2 mt-2" v-text="qcKey" />
+              <span class="text-h6 pink--text ml-2 mt-2" v-text="isAaveToken ? aaveSymbol : qcKey" />
             </h2>
+          </v-col>
+        </v-row>
+        <v-row no-gutters class="mt-2">
+          <v-col>
+            <v-chip
+              v-for="(item, i) in tags"
+              v-show="item.active"
+              :key="i"
+              label
+              pill
+              small
+              class="mb-4 mr-1 px-2"
+              :link="item.link"
+              color="#272727"
+              @click="item.action ? item.action() : null"
+            >
+              <v-avatar v-if="item.img" left class="mr-0 pr-0">
+                <v-img max-height="20" max-width="20" :src="item.img" :lazy-src="item.img" />
+              </v-avatar>
+              {{ item.text }}
+            </v-chip>
           </v-col>
         </v-row>
 
@@ -19,7 +41,7 @@
             <span class="subtitle-2 text-no-wrap grey--text" v-text="`Contract:`" />
           </v-col>
           <v-col cols="9">
-            <span class="ml-2 d-inline-block text-truncate" style="max-width: 250px" v-text="contractAddress" />
+            <span class="ml-2 d-inline-block text-truncate" v-text="$truncateAddress(contractAddress, 12, 12)" />
           </v-col>
           <v-col cols="1">
             <div class="text-right">
@@ -42,7 +64,6 @@
                   label
                   class="text-lowercase text-truncate font-weight-medium text-highlight rounded-0"
                   color="transparent"
-                  style="max-width: 350px"
                   v-on="on"
                 >
                   <div class="text-truncate" v-text="elem.items[0]" />
@@ -98,10 +119,10 @@
 
         <v-row justify="center" no-gutters align="center" class="mt-1">
           <v-col>
-            <v-card elevation="0" :max-height="180" class="pa-0 mt-4">
-              <h1 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
+            <v-card elevation="0" :max-height="130" class="pa-0 mt-4">
+              <h2 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
               <pre
-                style="white-space: pre-line; max-height: 180px"
+                style="white-space: pre-line; max-height: 170px"
                 class="overflow-y-auto subtitle-2 font-weight-regular pr-2 grey--text"
                 v-text="coinDescription"
               />
@@ -117,8 +138,11 @@
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
 type Props = {
-  symbol: string
   qcKey: string
+  symbol: string
+  isAaveToken: boolean
+  isQCToken: boolean
+  aaveSymbol: string
 
   websiteLinks: { links?: string[] } | null
   bitBucketRepos: { links?: string[] } | null
@@ -136,6 +160,9 @@ export default defineComponent<Props>({
   props: {
     qcKey: { type: String, required: true },
     symbol: { type: String, required: true },
+    isAaveToken: { type: Boolean, default: false },
+    isQCToken: { type: Boolean, default: false },
+    aaveSymbol: { type: String, default: '' },
     coinDescription: { type: String, default: '' },
 
     // links
@@ -175,7 +202,21 @@ export default defineComponent<Props>({
       { link: props.facebookUrl, icon: 'mdi-facebook', style: { color: '#536af6' } },
       { link: props.discordChannelId, icon: 'mdi-discord', style: { color: '#536af6' } },
     ])
-    return { resourcesUrls, socials }
+
+    const tags = computed<{ text: string; active: boolean; link?: boolean; img?: string; action?: () => void }[]>(
+      () => [
+        { text: 'DeFi', active: true },
+        { text: 'Token', active: true },
+        {
+          text: 'QC-500',
+          active: props.isQCToken,
+          img: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/logo/logo-100.png',
+          link: true,
+          action: () => window.open(`https://quantifycrypto.com/coin-screener`, '_blank'),
+        },
+      ]
+    )
+    return { resourcesUrls, socials, tags }
   },
 })
 </script>

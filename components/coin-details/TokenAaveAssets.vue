@@ -34,9 +34,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
-import { AavePool } from '~/types/apollo/main/types'
-import useAavePools, { AavePoolCl } from '~/composables/useAavePools'
+import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
+import useAavePools, { AavePoolModel } from '~/composables/useAavePools'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
@@ -47,22 +46,18 @@ import AaveActionDialog from '~/components/pools/AaveActionDialog.vue'
 import UseAavePoolsStats from '~/composables/useAavePoolsStats'
 import { actionTypes } from '~/models/web3'
 
-type Props = {
-  rowPoolData: AavePool[]
-}
-export default defineComponent<Props>({
+export default defineComponent({
   components: { NetworkSelection, AaveMarkets, AaveActionDialog },
   props: {
-    rowPoolData: { type: Array as PropType<AavePool[]>, default: () => [], required: true },
+    tokenKey: { type: String, required: true },
   },
 
-  setup() {
+  setup(props) {
     // COMPOSABELS
     const portfolio = ref<PortfolioMap>({})
     const actionDialog = ref<any>(null)
     const { walletReady, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
     const { state } = useStore<State>()
-    const route = useRoute()
     const { isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
 
     // COMPUTED
@@ -73,7 +68,7 @@ export default defineComponent<Props>({
     const marketId = computed(() => state.configs.currentAaveMarket.chainId)
     const { fetchPortfolio } = usePortfolio(addresses)
     const pools = computed(() => {
-      const pools: AavePoolCl[] = []
+      const pools: AavePoolModel[] = []
       aavePoolsData.value.forEach((elem) => {
         elem.portfolio = portfolio.value[elem.id] || elem.portfolio
         pools.push(elem)
@@ -81,7 +76,7 @@ export default defineComponent<Props>({
       return pools
     })
 
-    const poolsToDisplay = computed(() => pools.value.filter((elem) => elem.symbol === route.value.params.id))
+    const poolsToDisplay = computed(() => pools.value.filter((elem) => elem.symbol === props.tokenKey))
 
     const { totalCollateralUsd, totalBorrowedUsd, healthFactor, maxLtv } = UseAavePoolsStats(pools)
 
@@ -89,7 +84,7 @@ export default defineComponent<Props>({
     async function updatePortfolio() {
       portfolio.value = await fetchPortfolio()
     }
-    function initAction({ action, pool }: { action: actionTypes; pool: AavePoolCl }) {
+    function initAction({ action, pool }: { action: actionTypes; pool: AavePoolModel }) {
       actionDialog.value.init(action, pool)
     }
 

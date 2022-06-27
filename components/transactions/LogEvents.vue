@@ -111,13 +111,13 @@ export default defineComponent({
     walletAddress: { type: String, default: '' },
   },
   setup(props) {
+    // COMPOSABLES
+    const store = useStore<State>()
+
     // STATE
     const MAX_UINT256 = 2 ** 256 - 1
     const transactionLogEvents = toRefs(props).logEvents
     const numOfLogEventsToLoad = ref(5)
-
-    // COMPOSABLES
-    const store = useStore<State>()
 
     // COMPUTED
     const logEventsData = computed<LogEvent[]>(() => {

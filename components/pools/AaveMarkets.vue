@@ -179,7 +179,7 @@ import {
   useStore,
   watch,
 } from '@nuxtjs/composition-api'
-import { AavePoolCl } from '~/composables/useAavePools'
+import { AavePoolModel } from '~/composables/useAavePools'
 import { State } from '~/types/state'
 import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
 import { aaveActions, actionTypes } from '~/models/web3'
@@ -187,7 +187,7 @@ import { EmitEvents } from '~/types/events'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 type Props = {
-  pools: AavePoolCl[]
+  pools: AavePoolModel[]
   loading: boolean
   search: string | null
   hideActionCols: boolean
@@ -196,7 +196,7 @@ type Props = {
 export default defineComponent<Props>({
   components: { AaveMarketDetails },
   props: {
-    pools: { type: Array as PropType<UnwrapRef<AavePoolCl[]>>, default: () => [], required: true },
+    pools: { type: Array as PropType<UnwrapRef<AavePoolModel[]>>, default: () => [], required: true },
     loading: { type: Boolean, default: true },
     search: { type: String as PropType<string | null>, default: null, required: false },
     hideActionCols: { type: Boolean, default: false },
@@ -211,7 +211,7 @@ export default defineComponent<Props>({
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
 
     // STATE
-    const expanded: any = ref<AavePoolCl[]>([])
+    const expanded: any = ref<AavePoolModel[]>([])
     const datatable: any = ref(null)
     const cols = computed(() => {
       const cols = [
@@ -311,14 +311,14 @@ export default defineComponent<Props>({
 
     // METHODS
     function initAction(poolAddress: string, action: actionTypes) {
-      const pool: AavePoolCl | undefined = aavePools.value.find((elem) => elem.id === poolAddress)
+      const pool: AavePoolModel | undefined = aavePools.value.find((elem) => elem.id === poolAddress)
       if (pool) {
         emit(EmitEvents.initAction, { action, pool })
       }
     }
 
     async function importToMetamask(poolId: string) {
-      const pool: AavePoolCl | undefined = aavePools.value.find((elem) => elem.id === poolId)
+      const pool: AavePoolModel | undefined = aavePools.value.find((elem) => elem.id === poolId)
       if (pool) {
         await importTokenToMetamask({
           address: pool.underlyingAsset,
@@ -336,7 +336,7 @@ export default defineComponent<Props>({
 
     function expendSingleRow() {
       if (props.expandFirstRow && aavePools.value.length > 0) {
-        const firstRow: AavePoolCl = aavePools.value[0]
+        const firstRow: AavePoolModel = aavePools.value[0]
         expanded.value.push(firstRow)
       }
     }

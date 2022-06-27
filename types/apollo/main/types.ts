@@ -278,8 +278,7 @@ export type QueryBalancesArgs = {
 
 
 export type QueryDailyChartArgs = {
-  contractAddress?: Scalars['String'];
-  symbol?: Scalars['String'];
+  coinGeckoID?: Scalars['String'];
 };
 
 
@@ -323,6 +322,7 @@ export type Token = {
   __typename?: 'Token';
   ID?: Maybe<Scalars['ID']>;
   aavePools: Array<AavePool>;
+  aaveSymbol: Scalars['String'];
   balances: Array<Balance>;
   bitbucketRepos?: Maybe<Scalars['JSONMap']>;
   chainId: Scalars['Int'];
@@ -336,6 +336,8 @@ export type Token = {
   facebookUrl: Scalars['String'];
   githubRepos?: Maybe<Scalars['JSONMap']>;
   interval: TimeInterval;
+  isAaveToken: Scalars['Boolean'];
+  isQCToken: Scalars['Boolean'];
   marketcap: Scalars['Float'];
   news: Array<News>;
   price: Price;
@@ -448,11 +450,10 @@ export type TokenQueryGqlQueryVariables = Exact<{
 }>;
 
 
-export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, coinGeckoID: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceEth: number }, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
+export type TokenQueryGqlQuery = { __typename?: 'Query', token: { __typename?: 'Token', ID?: string | null, walletAddress: string, interval: TimeInterval, qcKey: string, aaveSymbol: string, isAaveToken: boolean, isQCToken: boolean, coinGeckoID: string, symbolName: string, rank: number, chainId: number, price24h: number, marketcap: number, volume24h: number, circulatingSupply: number, support1h: number, resistance1h: number, safeScore: number, websiteUrl?: any | null, bitbucketRepos?: any | null, githubRepos?: any | null, explorerUrls?: any | null, telegramChannelId: string, twitterUrl: string, subredditUrl: string, facebookUrl: string, coinDescription: string, tokenInterval: { __typename?: 'HighAndLow', high: number, low: number, interval: string, unixTime: number }, price: { __typename?: 'Price', qcKey: string, symbolName: string, priceUsd: number, priceEth: number }, news: Array<{ __typename?: 'News', id: number, title: string, url: string, publishedAt: string, currencies: Array<{ __typename?: 'NewsCurrency', code: string, title: string, slug: string, url: string }> }>, balances: Array<{ __typename?: 'Balance', chainId: number, items: Array<{ __typename?: 'BalanceItem', balance: number }> }> } };
 
 export type DailyChartGqlQueryVariables = Exact<{
-  contractAddress: Scalars['String'];
-  symbol: Scalars['String'];
+  coinGeckoID: Scalars['String'];
 }>;
 
 

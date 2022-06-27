@@ -6,7 +6,7 @@ import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio } from '~/types/apo
 import { State } from '~/types/state'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 
-export class AavePoolCl implements AavePool {
+export class AavePoolModel implements AavePool {
   readonly id!: string
   readonly aEmissionPerSecond!: number
   readonly availableLiquidity!: number
@@ -133,7 +133,7 @@ export default function () {
   )
 
   // COMPUTED
-  const aavePoolsData = computed(() => plainToClass(AavePoolCl, result.value?.aavePools as AavePool[]) ?? [])
+  const aavePoolsData = computed(() => plainToClass(AavePoolModel, result.value?.aavePools as AavePoolModel[]) ?? [])
   const marketId = computed(() => state.configs.currentAaveMarket.chainId)
 
   // EVENTS

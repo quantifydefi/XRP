@@ -95,7 +95,7 @@ import { computed, ComputedRef, defineComponent, PropType, useStore } from '@nux
 import { plainToClass } from 'class-transformer'
 import { AavePool, Balance, Chain } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
-import { AavePoolCl } from '~/composables/useAavePools'
+import { AavePoolModel } from '~/composables/useAavePools'
 
 type Props = {
   balances: Balance[]
@@ -159,11 +159,11 @@ export default defineComponent<Props>({
       },
     ]
 
-    const pools: ComputedRef<{ chain: Chain; pool: AavePoolCl[]; total: number }[]> = computed(() =>
+    const pools: ComputedRef<{ chain: Chain; pool: AavePoolModel[]; total: number }[]> = computed(() =>
       props.balances
         .map((elem) => ({
           chain: getters['configs/chainInfo'](elem.chainId) ?? state.configs.currentAaveMarket,
-          pool: plainToClass(AavePoolCl, elem.aavePools as AavePool[]),
+          pool: plainToClass(AavePoolModel, elem.aavePools as AavePool[]),
           total: elem.aavePools.reduce((a, b) => a + b.price.priceUsd * b.portfolioVal.walletBal, 0),
         }))
         .filter((elem) => elem.pool.length > 0)

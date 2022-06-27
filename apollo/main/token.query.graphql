@@ -4,6 +4,11 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
     walletAddress
     interval
     qcKey
+
+    aaveSymbol
+    isAaveToken
+    isQCToken
+
     coinGeckoID
     symbolName
     rank
@@ -58,8 +63,8 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
   }
 }
 
-query DailyChartGQL($contractAddress:String!,$symbol:String!){
-  dailyChart(contractAddress: $contractAddress, symbol: $symbol){
+query DailyChartGQL($coinGeckoID:String!){
+  dailyChart(coinGeckoID: $coinGeckoID){
     date
     priceUsd
   }

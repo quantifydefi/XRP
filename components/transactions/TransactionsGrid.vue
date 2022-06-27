@@ -22,15 +22,13 @@
       <!-- expanded column items -->
       <template #expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <log-events :key="item.txHash" :wallet-address="walletAddress" :log-events="item.logEvents"></log-events>
+          <log-events :key="item.txHash" :wallet-address="account" :log-events="item.logEvents" />
         </td>
       </template>
 
       <!--   Txn Date   -->
       <template #[`item.blockSignedAt`]="{ item }">
-        <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-          {{ new Date(item.blockSignedAt).toLocaleString() }}
-        </div>
+        <span class="text-no-wrap grey--text" v-text="item.txDate"></span>
       </template>
 
       <!--   Method   -->
@@ -39,9 +37,9 @@
           <v-tooltip right color="black">
             <template #activator="{ on, attrs }">
               <v-btn
-                style="max-width: 120px"
                 outlined
                 small
+                width="120"
                 depressed
                 rounded
                 class="cursor-text"
@@ -49,41 +47,30 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <div
-                  :class="[ui[ui.theme].headerTextClass, 'text-truncate text-capitalize px-2 font-weight-regular']"
+                <span
+                  class="text-capitalize px-2 font-weight-regular white--text text-truncate"
                   style="max-width: 120px"
-                >
-                  {{ methodTextRenderer(item.logEvents) }}
-                </div>
+                  v-text="item.methodTextRenderer"
+                />
               </v-btn>
             </template>
-            <span :class="[ui[ui.theme].headerTextClass, 'text-capitalize caption']">
-              {{ methodTextRenderer(item.logEvents) }}
-            </span>
+            <span class="text-capitalize" v-text="item.methodTextRenderer" />
           </v-tooltip>
         </div>
       </template>
 
       <!--   Txn Hash   -->
       <template #[`item.txHash`]="{ item }">
-        <v-tooltip top color="black">
-          <template #activator="{ on, attrs }">
-            <div
-              :class="[ui[theme].innerCardLighten, 'cursor-copy']"
-              v-bind="attrs"
-              v-on="on"
-              @click="$copyAddressToClipboard(item.txHash)"
-            >
-              {{ $truncateAddress(item.txHash, 10, 4) }}
-            </div>
-          </template>
-          <span class="caption">{{ item.txHash }}</span>
-        </v-tooltip>
+        <a
+          class="text-decoration-none grey--text"
+          @click="navigateToExplorer(item.txHash, 'tx')"
+          v-text="$truncateAddress(item.txHash, 10, 4)"
+        />
       </template>
 
       <!--   isInbound   -->
       <template #[`item.isInbound`]="{ item }">
-        <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
+        <div class="text-no-wrap">
           <v-btn
             style="pointer-events: none"
             width="50"
@@ -102,78 +89,85 @@
         <div class="text-no-wrap">
           <tx-address-label
             label="From:"
-            :wallet-address="walletAddress"
+            :wallet-address="account.toLowerCase()"
             :is-contract="item.fromAddressIsContract"
-            :address="item.fromAddress.toString()"
+            :address="item.fromAddress.toString().toLowerCase()"
             :name="item.fromAddressName"
             :symbol="item.fromAddressSymbol"
+            :navigate-to-explorer="navigateToExplorer"
           ></tx-address-label>
 
           <tx-address-label
             label="To:"
-            :wallet-address="walletAddress"
+            :wallet-address="account.toLowerCase()"
             :is-contract="item.toAddressIsContract"
-            :address="item.toAddress.toString()"
+            :address="item.toAddress.toString().toLowerCase()"
             :name="item.toAddressName"
             :symbol="item.toAddressSymbol"
+            :navigate-to-explorer="navigateToExplorer"
           ></tx-address-label>
         </div>
       </template>
 
       <!--   value   -->
       <template #[`item.value`]="{ item }">
-        <div class="py-2">
-          <div :class="[ui[theme].innerCardLighten]" class="text-no-wrap">
-            {{ $nf(item.value / 10 ** 18, 0, 6) }} {{ currentChain.symbol }}
-          </div>
-          <span>$ {{ $nf(item.valueQuote, 2, 2) }}</span>
-        </div>
+        <div class="text-no-wrap grey--text" v-text="`${$nf(item.txnValue)} ${chainSymbol}`" />
+        <div v-text="$f(item.valueQuote, { roundTo: 2, pre: '$ ' })" />
       </template>
 
       <!--   txn fee   -->
       <template #[`item.txnFee`]="{ item }">
-        <div class="py-2">
-          <div class="text-no-wrap" :class="[ui[theme].innerCardLighten]">
-            {{ $nf(item.txnFee, 0, 6) }}
-            {{ currentChain.symbol }}
-          </div>
-          <span>$ {{ $nf(item.gasQuote, 2, 2) }}</span>
-        </div>
+        <div class="text-no-wrap grey--text" v-text="`${$nf(item.txnFee)} ${chainSymbol}`" />
+        <div v-text="$f(item.gasQuote, { roundTo: 2, pre: '$ ' })" />
       </template>
 
       <!--   status   -->
-      <template #[`item.successful`]="{ item }">
+      <template #[`item.isSuccess`]="{ item }">
         <v-btn
           width="90"
           outlined
           small
           depressed
           rounded
-          class="text-capitalize cursor-text"
-          :color="item.successful ? 'green' : 'pink'"
+          class="text-capitalize cursor-text caption"
+          :color="item.isSuccess.color"
         >
-          <span class="caption" :class="[ui[theme].headerTextClass]">
-            {{ item.successful ? 'Success' : 'Failed' }}
-          </span>
+          <span class="white--text" v-text="item.isSuccess.text" />
         </v-btn>
       </template>
 
       <template #[`item.action`]="{ item }">
-        <v-tooltip top color="black">
+        <v-tooltip bottom color="black">
           <template #activator="{ on, attrs }">
-            <div v-bind="attrs" style="cursor: pointer; width: 25px" v-on="on">
-              <v-btn
-                small
-                icon
-                color="primary"
-                class="caption text-capitalize"
-                @click="navigateToExplorer(item.txHash)"
-              >
-                <v-icon small class="ml-1">mdi-open-in-new</v-icon>
-              </v-btn>
-            </div>
+            <v-btn
+              color="primary"
+              v-bind="attrs"
+              x-small
+              class="mb-1 ml-1"
+              icon
+              v-on="on"
+              @click="$copyAddressToClipboard(item.txHash)"
+            >
+              <v-icon size="18">mdi-content-copy</v-icon>
+            </v-btn>
           </template>
-          <span class="caption">View on Block Explorer</span>
+          Copy Transaction Hash
+        </v-tooltip>
+        <v-tooltip bottom color="black">
+          <template #activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              v-bind="attrs"
+              x-small
+              class="mb-1 ml-1"
+              icon
+              v-on="on"
+              @click="navigateToExplorer(item.txHash, 'tx')"
+            >
+              <v-icon size="18">mdi-open-in-new</v-icon>
+            </v-btn>
+          </template>
+          Open in Block Explorer
         </v-tooltip>
       </template>
     </v-data-table>
@@ -182,35 +176,22 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, useStore } from '@nuxtjs/composition-api'
-import { LogEvent, TransactionItem } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
-import useTransactions from '~/composables/useTransactions'
 import LogEvents from '~/components/transactions/LogEvents.vue'
 import TxAddressLabel from '~/components/transactions/TxAddressLabel.vue'
-
+import { TransactionModel } from '~/composables/useTransactions'
+type inboundFunctionType = (item: TransactionModel) => { color: string; text: string }
 export default defineComponent({
   name: 'TransactionsGrid',
   components: { TxAddressLabel, LogEvents },
   props: {
-    transactions: {
-      type: Array as PropType<TransactionItem[]>,
-      default: () => [] as TransactionItem[],
-    },
-    itemsPerPage: {
-      type: Number,
-      default: 15,
-    },
+    isInboundRenderer: { type: Function as PropType<inboundFunctionType>, required: true },
+    transactions: { type: Array as PropType<TransactionModel[]>, default: () => [] },
+    itemsPerPage: { type: Number, default: 15 },
+    account: { type: String, default: '' },
   },
   setup() {
-    /** COMPOSABLES **/
-    const store = useStore<State>()
-    const { account, currentChain, transactionsData, onNetworkSelectChange, navigateToExplorer } = useTransactions()
-
-    /** COMPUTED **/
-    const walletAddress = computed(() => account.value ?? '')
-    const ui = computed(() => store.state.ui)
-    const theme = computed(() => store.state.ui.theme)
-
+    // STATE
     const headers = ref([
       {
         text: '',
@@ -221,30 +202,35 @@ export default defineComponent({
         align: 'start',
         value: 'blockSignedAt',
         class: 'py-2',
+        cellClass: 'py-4',
       },
       {
         text: 'Method',
         align: 'start',
         value: 'method',
         class: 'py-2',
+        sortable: false,
       },
       {
         text: 'Txn Hash',
         align: 'start',
         value: 'txHash',
         class: 'py-2',
+        sortable: false,
       },
       {
         text: '',
         align: 'start',
         value: 'isInbound',
         class: 'py-2',
+        sortable: false,
       },
       {
         text: '',
         align: 'start',
         value: 'fromTo',
         class: 'py-2',
+        sortable: false,
       },
       {
         text: 'Value',
@@ -261,69 +247,37 @@ export default defineComponent({
       {
         text: 'Status',
         align: 'start',
-        value: 'successful',
+        value: 'isSuccess',
         class: 'py-2',
       },
 
       {
         text: '',
+        sortable: false,
         align: 'start',
         value: 'action',
         class: 'py-2',
+        width: '100px',
       },
     ])
 
-    /** Styling and Text Renderer Methods **/
+    const { state } = useStore<State>()
 
-    function methodTextRenderer(events: LogEvent[]): string {
-      if (events.length === 0) {
-        return 'Transfer'
-      }
+    // COMPUTED
+    const currentChain = computed(() => state.configs.currentTransactionChain)
+    const chainSymbol = computed(() => currentChain.value.symbol)
 
-      if (events.length > 2) {
-        return 'Multicall'
-      }
-
-      // returns array of log events function names
-      // i.e. ['Transfer', 'Approval']
-      const logs = events.map((event: LogEvent) => event.decoded.name.replace(/([A-Z])/g, ' $1').trim())
-      return logs.join(', ')
-    }
-
-    function isInboundRenderer(item: TransactionItem): { color: string; text: string } {
-      // if transaction is solely a Transfer, and logEvent toAddress === wallet address; return as IN
-      if (item.logEvents && item.logEvents.length > 0) {
-        if (methodTextRenderer(item.logEvents) === 'Transfer') {
-          const param = Object.values(item.logEvents[0].decoded.params).filter((el: any) => el.name === 'to')[0]
-          if (param && param.value === walletAddress.value.toLowerCase()) {
-            return { color: 'green', text: 'IN' }
-          }
-        }
-      }
-
-      if (item.toAddress.toLowerCase() === walletAddress.value.toLowerCase()) {
-        return { color: 'green', text: 'IN' }
-      }
-
-      if (item.toAddress.toLowerCase() === item.fromAddress.toLowerCase()) {
-        return { color: 'grey', text: 'SELF' }
-      }
-
-      return { color: 'pink', text: 'OUT' }
+    function navigateToExplorer(address: string, type: 'tx' | 'address' = 'address'): void {
+      const url = `${currentChain.value.blockExplorerUrl}${type}/${address}`
+      window.open(url)
     }
 
     return {
-      ui,
-      theme,
-      walletAddress,
       headers,
-      currentChain,
-      transactionsData,
-      /** Methods **/
-      onNetworkSelectChange,
+      chainSymbol,
+
+      // METHODS
       navigateToExplorer,
-      isInboundRenderer,
-      methodTextRenderer,
     }
   },
 })
