@@ -4,15 +4,16 @@
       <v-row>
         <v-col cols="12" lg="10">
           <h1 class="headline">Visualize your complete DeFi Balance</h1>
-          <span class="grey--text text--lighten-1">
+          <div class="grey--text text--lighten-1">
             Visualize your complete DeFi balance, blockchain protocol balances and all ERC token balances. Click on a
             coin symbol for more metrics and information. Tokens proceeded by the letter “A” represent your borrows from
             the Aave protocol, for example ALINK is borrowed LINK amount.
-          </span>
+          </div>
         </v-col>
       </v-row>
-      <v-row v-if="!walletReady" justify="center" no-gutters class="pt-6">
-        <v-col cols="12">
+
+      <v-row v-if="!walletReady" justify="center">
+        <v-col cols="12" sm="10" lg="6">
           <connect-wallet-memo />
         </v-col>
       </v-row>

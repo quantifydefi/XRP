@@ -1,50 +1,46 @@
 <template>
-  <div>
-    <v-row v-if="!walletReady" align="center" justify="center">
-      <v-col cols="11">
-        <connect-wallet-memo></connect-wallet-memo>
-      </v-col>
-    </v-row>
+  <v-row no-gutters justify="center">
+    <v-col cols="12" md="10">
+      <h1 class="headline">WEB3 transaction history for Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom.</h1>
 
-    <v-row v-else justify="center">
-      <v-col lg="10" md="12">
-        <v-row v-if="loading">
+      <template v-if="!walletReady">
+        <v-row justify="center" class="pt-6">
+          <v-col cols="12" sm="10" lg="6">
+            <connect-wallet-memo />
+          </v-col>
+        </v-row>
+      </template>
+
+      <template v-if="walletReady">
+        <v-row justify="end" class="pt-3">
+          <network-selection-menu></network-selection-menu>
+        </v-row>
+
+        <v-row justify="center">
           <v-col cols="12">
-            <v-card tile outlined>
+            <v-card v-if="loading" tile outlined>
               <v-skeleton-loader height="933" type="table-heading,divider,table-tbody@3"></v-skeleton-loader>
             </v-card>
-          </v-col>
-        </v-row>
 
-        <v-row v-else>
-          <v-col>
-            <v-row class="pt-3">
-              <v-col class="text-right"><network-selection-menu /></v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0">
-                <transactions-grid
-                  :is-inbound-renderer="isInboundRenderer"
-                  :transactions="transactionsData"
-                  :account="account"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-pagination
-                  v-model="currentPage"
-                  class="mt-4"
-                  :total-visible="pagination.visible"
-                  :length="pagination.total"
-                />
-              </v-col>
-            </v-row>
+            <div v-else>
+              <transactions-grid
+                :is-inbound-renderer="isInboundRenderer"
+                :transactions="transactionsData"
+                :account="account"
+              />
+            </div>
+
+            <v-pagination
+              v-model="currentPage"
+              class="mt-4"
+              :total-visible="pagination.visible"
+              :length="pagination.total"
+            ></v-pagination>
           </v-col>
         </v-row>
-      </v-col>
-    </v-row>
-  </div>
+      </template>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

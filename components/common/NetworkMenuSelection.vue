@@ -14,7 +14,6 @@
       <v-row no-gutters>
         <v-col>
           <v-list dense>
-            <v-subheader>V2 Markets</v-subheader>
             <v-list-item-group v-model="selectedChainId" mandatory color="primary">
               <v-list-item v-for="item in chains" :key="item.chainId" :value="item.chainId">
                 <v-list-item-avatar size="24">
@@ -37,7 +36,7 @@ import { State } from '~/types/state'
 
 export default defineComponent({
   setup() {
-    // COMPOSABELES
+    // COMPOSABLES
     const { state, getters, dispatch } = useStore<State>()
 
     // COMPUTED
