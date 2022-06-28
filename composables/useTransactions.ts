@@ -6,7 +6,7 @@ import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { State } from '~/types/state'
-import { LogEvent, TransactionItem } from '~/types/apollo/main/types'
+import { LogEvent, TransactionItem, TxDetail } from '~/types/apollo/main/types'
 
 export class TransactionModel implements TransactionItem {
   readonly blockSignedAt!: string
@@ -17,6 +17,7 @@ export class TransactionModel implements TransactionItem {
   readonly gasPrice!: number
   readonly gasQuote!: number
   readonly gasSpent!: number
+  readonly txDetails!: TxDetail[]
   readonly logEvents!: LogEvent[]
   readonly successful!: boolean
   readonly toAddress!: string
@@ -29,6 +30,12 @@ export class TransactionModel implements TransactionItem {
 
   get txDate(): string {
     return new Date(this.blockSignedAt).toLocaleString()
+  }
+
+  get txDetail(): TxDetail | undefined {
+    if (this.methodTextRenderer === 'Transfer' && this.txDetails) {
+      return this.txDetails[0]
+    }
   }
 
   get methodTextRenderer(): string {
@@ -49,8 +56,19 @@ export class TransactionModel implements TransactionItem {
     return logs.length === 0 ? 'Transfer' : logs.join(', ')
   }
 
-  get txnValue(): number {
-    return +this.value / 10 ** 18
+  get txnValue(): { amount: number; priceUsd: number } {
+    if (this.txDetail) {
+      const formattedValue = +this.txDetail.value / 10 ** this.txDetail.tokenContractDecimals
+      return {
+        priceUsd: this.txDetail.priceUSD * formattedValue,
+        amount: formattedValue,
+      }
+    }
+
+    return {
+      priceUsd: this.valueQuote,
+      amount: +this.value / 10 ** 18,
+    }
   }
 
   get txnFee(): number {
@@ -67,11 +85,12 @@ export default function () {
   const loading = ref(true)
   const currentPage = ref(1)
   const hasMore = ref(false)
-  const pagination = reactive({ page: 0, total: 1, perPage: 15 })
+  const pagination = reactive({ page: 0, total: 1, perPage: 15, visible: 30 })
 
   // COMPOSABLES
   const { state } = useStore<State>()
   const currentChain = computed(() => state.configs.currentTransactionChain)
+
   const { account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, error, onResult } = useQuery(
     TransactionsGQL,
@@ -123,12 +142,12 @@ export default function () {
       }
     }
 
-    if (item.toAddress.toLowerCase() === account.value.toLowerCase()) {
-      return { color: 'green', text: 'IN' }
-    }
-
     if (item.toAddress.toLowerCase() === item.fromAddress.toLowerCase()) {
       return { color: 'grey', text: 'SELF' }
+    }
+
+    if (item.toAddress.toLowerCase() === account.value.toLowerCase()) {
+      return { color: 'green', text: 'IN' }
     }
 
     return { color: 'pink', text: 'OUT' }

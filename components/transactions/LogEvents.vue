@@ -3,81 +3,52 @@
     <v-col cols="11">
       <div v-for="log in logEventsData" :key="log.txHash + '_' + log.logOffset" class="pb-3">
         <!--    function signature name -->
-        <div class="subtitle-2 pink--text">
-          {{ log.decoded['name'].replace(/([A-Z])/g, ' $1').trim() }}
-        </div>
+        <div class="subtitle-2 pink--text" v-text="log.decoded.name.replace(/([A-Z])/g, ' $1').trim()" />
 
-        <v-row no-gutters :class="[ui[theme].innerCardLighten]">
-          <div v-for="(param, i) in log.decoded['params']" :key="i">
+        <v-row no-gutters class="grey--text text--lighten-1">
+          <div v-for="(param, i) in Object.values(log.decoded.params)" :key="i">
             <div class="pr-5">
-              <div :class="[ui[ui.theme].headerTextClass, 'text-capitalize text-caption']">
-                {{ param['name'].replace('_', '') }}:
-              </div>
+              <!--      LABEL        -->
+              <label class="white--text text-capitalize text-caption" v-text="`${param.name.replace('_', '')}:`" />
 
-              <!--      if funcSignature  === Approval        -->
-              <div v-if="log.decoded['name'] === 'Approval'" class="pr-10">
-                <div v-if="param['type'] === 'address'">
-                  <v-tooltip top color="black">
-                    <template #activator="{ on, attrs }">
-                      <div
-                        :class="[ui[theme].innerCardLighten, 'cursor-copy']"
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="$copyAddressToClipboard(param['value'])"
-                      >
-                        {{ $truncateAddress(param['value'], 8, 10) }}
-                      </div>
-                    </template>
-                    <span class="caption">{{ param['value'] }}</span>
-                  </v-tooltip>
-                </div>
-                <div v-else>
-                  {{ approvalRenderer(param['value']) }}
-                </div>
+              <!--     VALUES         -->
+              <div v-if="log.decoded.name === 'Approval'" class="pr-10 caption">
+                <div
+                  v-if="param.type === 'address'"
+                  class="cursor-pointer"
+                  @click="navigateToExplorer(param.value)"
+                  v-text="$truncateAddress(param.value, 8, 10)"
+                />
+                <div v-else v-text="approvalRenderer(param.value)"></div>
               </div>
 
               <!--      format value       -->
               <div
-                v-else-if="(param['type'].startsWith('uint') && param['name'] === 'value') || param['name'] === 'wad'"
+                v-else-if="(param.type.startsWith('uint') && param.name === 'value') || param.name === 'wad'"
                 class="pr-10"
-              >
-                {{ $nf(+param['value'] / 10 ** log.senderContractDecimals, 0, 6) }}
-              </div>
+                v-text="$nf(+param.value / 10 ** log.senderContractDecimals, 0, 6)"
+              />
 
               <!--      address format        -->
               <div
-                v-else-if="
-                  param['type'] === 'address' || param['name'] === 'functionSignature' || param['name'] === 'owner'
-                "
-                class="pr-10"
-              >
-                <v-tooltip top color="black">
-                  <template #activator="{ on, attrs }">
-                    <div
-                      :class="[ui[theme].innerCardLighten, 'cursor-copy']"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="$copyAddressToClipboard(param['value'])"
-                    >
-                      <span :class="walletAddress === param['value'] ? 'primary--text' : ''">
-                        {{ $truncateAddress(param['value'], 8, 10) }}
-                      </span>
-                    </div>
-                  </template>
-                  <span class="caption">{{ param['value'] }}</span>
-                </v-tooltip>
-              </div>
+                v-else-if="param.type === 'address' || param.name === 'functionSignature' || param.name === 'owner'"
+                class="pr-10 cursor-pointer"
+                @click="navigateToExplorer(param.value)"
+                v-text="$truncateAddress(param.value, 8, 10)"
+              />
 
-              <div v-else class="pr-10">
-                {{ param['value'].substring(0, 300) }}
-              </div>
+              <div v-else class="pr-10" v-text="param.value.substring(0, 300)" />
             </div>
           </div>
 
           <!--    Token      -->
-          <v-row v-if="log.senderName && log.decoded['params'].length > 0" no-gutters class="ml-n12 mt-5">
+          <v-row v-if="log.senderName && log.decoded.params.length > 0" no-gutters class="ml-n12 mt-5">
             <v-avatar size="16" style="margin-top: 2px">
-              <img :src="log.senderLogoUrl" :alt="`${log.senderName} logo`" @error="$setAltImageUrl" />
+              <img
+                :src="$imageUrlBySymbol(log.senderContractTickerSymbol)"
+                :alt="`${log.senderName} logo`"
+                @error="$setAltImageUrl"
+              />
             </v-avatar>
             <div class="pl-2">
               {{ log.senderName }}
@@ -89,7 +60,7 @@
 
       <v-row v-if="numOfLogEventsToLoad < logEvents.length" no-gutters>
         <v-btn height="24" block small class="text-capitalize" outlined color="primary" tile @click="loadMoreLogEvents">
-          <span :class="ui[theme].headerTextClass">Load more...</span>
+          <span class="white--text" v-text="`Load more...`" />
         </v-btn>
       </v-row>
     </v-col>
@@ -99,6 +70,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, toRefs, useStore } from '@nuxtjs/composition-api'
 import { LogEvent } from '~/types/apollo/main/types'
+import { EmitEvents } from '~/types/events'
 import { State } from '~/types/state'
 
 export default defineComponent({
@@ -110,7 +82,7 @@ export default defineComponent({
     },
     walletAddress: { type: String, default: '' },
   },
-  setup(props) {
+  setup(props, { emit }) {
     // COMPOSABLES
     const store = useStore<State>()
 
@@ -138,6 +110,10 @@ export default defineComponent({
       numOfLogEventsToLoad.value = numOfLogEventsToLoad.value + 3
     }
 
+    function navigateToExplorer(address: string) {
+      emit(EmitEvents.navigateToExplorer, address)
+    }
+
     return {
       ui: computed(() => store.state.ui),
       theme: computed(() => store.state.ui.theme),
@@ -149,6 +125,7 @@ export default defineComponent({
       // METHODS
       loadMoreLogEvents,
       approvalRenderer,
+      navigateToExplorer,
     }
   },
 })
