@@ -5,8 +5,14 @@
         <v-row align="center">
           <v-col class="d-flex">
             <div class="mr-2 d-flex">
-              <v-img :src="$imageUrlBySymbol(qcKey)" :lazy-src="$imageUrlBySymbol(qcKey)" width="36" max-height="36" />
-              <v-img v-if="isAaveToken" max-height="15" max-width="15" :src="$imageUrlBySymbol('aave')" />
+              <img :src="$imageUrlBySymbol(qcKey)" width="36" height="36" @error="$setAltImageUrl" />
+              <img
+                v-if="isAaveToken"
+                height="15"
+                width="15"
+                :src="$imageUrlBySymbol('aave')"
+                @error="$setAltImageUrl"
+              />
             </div>
             <h2 class="text-h4 d-inline-block text-truncate" style="max-width: 360px">
               {{ symbol }}
