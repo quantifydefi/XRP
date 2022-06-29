@@ -291,9 +291,23 @@ type TransactionItem {
   toAddressIsContract: Boolean!
   toAddressName: String!
   toAddressSymbol: String!
+  txDetails: [TxDetail!]
   txHash: String!
   value: String!
   valueQuote: Float!
+}
+
+type TxDetail {
+  fromAddress: String!
+  method: String!
+  priceUSD: Float!
+  toAddress: String!
+  tokenAddress: String!
+  tokenContractDecimals: Int!
+  tokenContractSymbol: String!
+  tokenLogoUrl: String!
+  tokenSymbolName: String!
+  value: String!
 }
 
 type User {

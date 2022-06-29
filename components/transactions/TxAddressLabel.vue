@@ -27,8 +27,8 @@ export default defineComponent({
     walletAddress: { type: String, required: true },
     isContract: { type: Boolean, default: false },
     address: { type: String, required: true },
-    name: { type: String, required: true },
-    symbol: { type: String, required: true },
+    name: { type: String, default: '' },
+    symbol: { type: String, default: '' },
     navigateToExplorer: { type: Function as PropType<navigateToExplorerType>, required: true },
   },
 })
