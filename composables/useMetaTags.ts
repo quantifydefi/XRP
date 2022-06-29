@@ -1,7 +1,15 @@
 import { useMeta, computed, reactive } from '@nuxtjs/composition-api'
 
 const TWITTER_HANDLE = 'EVMX_IO'
-type PageKeyType = 'homepage' | 'aave_v2' | 'balances' | 'transactions' | 'termsAndConditions' | 'teams' | 'tokenPage'
+type PageKeyType =
+  | 'homepage'
+  | 'aave_v2'
+  | 'balances'
+  | 'transactions'
+  | 'termsAndConditions'
+  | 'teams'
+  | 'tokenPage'
+  | 'about'
 
 export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymbol = '') {
   const metadata = reactive({
@@ -40,14 +48,20 @@ export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymb
       imgAlt: 'EVM Finance Homepage',
     },
     teams: {
-      title: 'Meet Our Team and Advisors | EVM Finance',
-      description: 'The cryptocurrency team working to improve the crypto modal experience',
+      title: 'Aave DeFi Interface | EVM Finance Team',
+      description: 'Aave Pro interface, Balances, Transactions, ‘A’ token pages, price charts',
       imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
       imgAlt: 'EVM Finance Homepage',
     },
     tokenPage: {
       title: `DeFi Metrics for ${coinName} | ${coinSymbol} Strategy Trading Interface | EVM Finance`,
       description: `Professional AAVE interface for ${coinName} | Deposit Borrow Repay Withdraw | Live Prices, Charts, Trends, News, Metric, and more`,
+      imgUrl: `https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg`,
+      imgAlt: 'EVM Finance Homepage',
+    },
+    about: {
+      title: `Web3 Investing Portal | Defi Metrics | EVM Finance`,
+      description: `DeFi Asset Management and Strategic Investments | Aave Pro Interface | Live Metrics`,
       imgUrl: `https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg`,
       imgAlt: 'EVM Finance Homepage',
     },

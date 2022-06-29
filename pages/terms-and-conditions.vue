@@ -1,12 +1,12 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" class="body-2 grey--text text--lighten-1">
     <v-col cols="11" lg="8" md="9">
-      <h1 class="text-h4 py-3">Terms and Conditions</h1>
+      <h1 class="text-h4 white--text py-3">Terms and Conditions</h1>
       <v-divider />
-      <div class="py-3 body-2">Last update: June 2022</div>
+      <div class="py-3 white--text">Last update: June 2022</div>
 
-      <p class="text-h6 pt-6">Conditions of Use</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Conditions of Use</h2>
+      <p>
         By using our site, you completely agree to the following Terms and Conditions. Please take the time to read them
         carefully. Buying and trading cryptocurrencies should be considered a high-risk activity. EVM Finance strongly
         encourages you to consult with a registered investment adviser or qualified investment professional and to do
@@ -15,8 +15,8 @@
         content you read on the site.
       </p>
 
-      <p class="text-h6">Purpose and Content Disclaimer</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Purpose and Content Disclaimer</h2>
+      <p>
         EVM Finance is an informational website that provides market data, technical analytics and links to news and
         commentary sources. Information published on EVM Finance platform should not be taken as investment advice in
         any way. EVM Finance is not an investment adviser and you agree to not site the EVM Finance platform or content
@@ -26,8 +26,8 @@
         in any cryptocurrencies, initial coin offerings, or other financial instruments.
       </p>
 
-      <p class="text-h6">Data Disclaimer</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Data Disclaimer</h2>
+      <p>
         By reading data on the coin ranking homepage and the individual coin pages, you agree that it is solely for
         informational purposes and that it is not meant for investment advice or solicitation. The term coin “rankings”
         refers to sorting the cryptocurrencies by market cap from greatest to least. The rankings are not an endorsement
@@ -39,8 +39,8 @@
         considering any trading.
       </p>
 
-      <p class="text-h6">Crypto Asset Disclaimer</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Crypto Asset Disclaimer</h2>
+      <p>
         It is important to understand that neither we nor any affiliated entity is a party to any transaction on the
         blockchain networks underlying the Aave and Uniswap Protocols that EVM.Finance interfaces with; we do not have
         possession, custody or control over any cryptoassets appearing on the Services; and we do not have possession,
@@ -58,31 +58,31 @@
         our Services.
       </p>
 
-      <p class="text-h6">Wallet Disclaimer</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Wallet Disclaimer</h2>
+      <p>
         It is required to use a software wallet, like MetaMask, to perform DeFi transactions. EVM Finance does not claim
         to be the official website of MetaMask or any other software wallet. EVM Finance is not liable for any error,
         hacks, or thefts that occur to using MetaMask or any other cryptocurrency wallet.
       </p>
 
-      <p class="text-h6">Blockchain fees Disclaimer</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Blockchain fees Disclaimer</h2>
+      <p>
         All transactions using blockchains require the payment of gas fees, which are essentially transaction fees paid
         on every transaction that occurs on the selected blockchain network. Please note that gas fees are
         non-refundable. We do not provide any services to users or deliver, hold, and/or receive payment for
         cryptoassets. We do not receive any fees for any transactions, the Services, or the Site.
       </p>
 
-      <p class="text-h6">News Disclaimer</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">News Disclaimer</h2>
+      <p>
         The technical analytics shared on EVM Finance website platform should not be taken as investment advice. EVM
         Finance does not endorse any project that may be mentioned or linked to within our news content feeds. We
         strongly encourage you to do your own due diligence and to seek the advice of a registered professional
         investment adviser before taking any action related to linked news content.
       </p>
 
-      <p class="text-h6">Links to Other Sites</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Links to Other Sites</h2>
+      <p>
         Our technical indicators, coin listings, news and commentary may contain links to other sites. If you click on a
         third-party link, you will be directed to that site. These links are purely for informational purposes and do
         not constitute any endorsement of the linked site’s operator or its content. Therefore, we strongly advise you
@@ -90,8 +90,8 @@
         content, privacy policies, or practices of any third-party sites or services.
       </p>
 
-      <p class="text-h6">Use of Cookies</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Use of Cookies</h2>
+      <p>
         Cookies are files with a small amount of data that is commonly used as an anonymous unique identifier. These are
         sent to your browser from the website that you visit and are stored on your computer’s hard drive. Our website
         uses these “cookies” to ensure certain website features function properly. This data is not mined, shared, or
@@ -103,8 +103,8 @@
         visiting our website and using its features.
       </p>
 
-      <p class="text-h6">Copyright</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Copyright</h2>
+      <p>
         All content included on this site, such as text, graphics, logos, button icons, images, audio clips, digital
         downloads, data compilations, and software, is the property of EVM Finance or its content suppliers and
         protected by international copyright laws unless otherwise cited to its original copyright owners. Warranty
@@ -123,8 +123,8 @@
         contact us by sending correspondence to that address or by emailing us at admin@QuantifyCrypto.net
       </p>
 
-      <p class="text-h6">Consent to Electronic Communications</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Consent to Electronic Communications</h2>
+      <p>
         By contacting us through email support, you consent to receiving certain electronic communications from us in
         return. You agree that any notices, agreements, disclosures, or other communications that we send to you
         electronically will satisfy any legal communication requirements, including that those communications be in
@@ -137,8 +137,8 @@
         local law.
       </p>
 
-      <p class="text-h6">Changes to This Agreement</p>
-      <p class="body-2 grey--text">
+      <h2 class="text-h6 py-3 white--text">Changes to This Agreement</h2>
+      <p>
         EVM Finance may update these Terms and Conditions from time to time. Thus, we advise you to review this page
         periodically for any changes. We will notify you of any changes by posting the new Terms and Conditions on this
         page. These changes are effective immediately after they are posted.
