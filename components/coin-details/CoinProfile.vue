@@ -5,9 +5,10 @@
         <v-row align="center">
           <v-col class="d-flex">
             <div class="mr-2 d-flex">
-              <img :src="$imageUrlBySymbol(qcKey)" width="36" height="36" @error="$setAltImageUrl" />
+              <img alt="" :src="$imageUrlBySymbol(qcKey)" width="36" height="36" @error="$setAltImageUrl" />
               <img
                 v-if="isAaveToken"
+                alt=""
                 height="15"
                 width="15"
                 :src="$imageUrlBySymbol('aave')"
