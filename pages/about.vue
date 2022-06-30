@@ -29,7 +29,7 @@
         <a class="white--text text-hover-primary" target="_blank" href="https://www.defisafety.com/app/pqrs/18">
           link
         </a>
-        for more information
+        for more information.
       </p>
 
       <h2 class="text-h6 py-3 white--text">Aave Professional Interface</h2>
@@ -39,11 +39,17 @@
         We are privileged to have our grant proposal accepted, uniting our efforts to advance the Aave platform.
       </p>
       <p>
-        The EVM platform uses the identical Aave V2 smart contracts audited by defisafety.com. We offer visual displays,
-        software frameworks, and metrics computed by Quantify Crypto. We have also added detailed wallet balances, loan
-        positions and transaction history to benefit users on our platform. Additional add on features, from Quantify
-        Crypto metrics, include price trends; support and resistance levels; and live prices. Our design philosophy is
-        providing as much quality information as possible on a single screen.
+        The EVM platform uses the identical Aave V2 smart contracts audited by
+        <a
+          class="white--text text-hover-primary"
+          target="_blank"
+          href="https://www.defisafety.com/"
+          v-text="`defisafety.com.`"
+        />
+        We offer visual displays, software frameworks, and metrics computed by Quantify Crypto. We have also added
+        detailed wallet balances, loan positions and transaction history to benefit users on our platform. Additional
+        add on features, from Quantify Crypto metrics, include price trends; support and resistance levels; and live
+        prices. Our design philosophy is providing as much quality information as possible on a single screen.
       </p>
 
       <h2 class="text-h6 py-3 white--text">Key points about EVM Finance</h2>
@@ -55,7 +61,13 @@
 
       <p>
         The best part, there are no fees added by EVM Finance site for this service. A special thanks goes out to the
-        AaveGrant.lens program
+        <a
+          class="white--text text-hover-primary"
+          target="_blank"
+          href="https://lenster.xyz/u/aavegrants.lens"
+          v-text="`AaveGrant.lens`"
+        />
+        program
       </p>
 
       <h3 class="py-3 white--text">The EVM Finance Team</h3>

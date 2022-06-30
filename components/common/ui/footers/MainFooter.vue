@@ -37,18 +37,17 @@
                 <div class="mt-sm-n12">
                   <v-btn
                     v-for="icon in communityLinks"
-                    :key="icon.title"
+                    :key="icon.url"
                     :href="icon.url"
                     target="_blank"
-                    class="mx-1 text-hover-primary"
+                    class="mx-1 text-hover-primary grey--text"
                     icon
-                    color="grey"
                   >
-                    <v-icon v-if="icon.icon.startsWith('mdi')" size="24">
+                    <v-icon v-if="icon.icon.startsWith('mdi')" size="22">
                       {{ icon.icon }}
                     </v-icon>
 
-                    <v-avatar v-else size="24">
+                    <v-avatar v-else size="22">
                       <v-img class="color-icon-primary" :src="icon.icon" :lazy-src="icon.icon" />
                     </v-avatar>
                   </v-btn>
@@ -78,31 +77,15 @@ export default defineComponent({
     ]
 
     const communityLinks = [
+      { icon: 'mdi-twitter', url: 'https://twitter.com/EVMX_IO' },
+      { icon: 'mdi-linkedin', url: 'https://www.linkedin.com/company/quantifycrypto' },
+      { icon: 'mdi-discord', url: 'https://discord.gg/J8ChDJGh' },
       {
-        title: 'Twitter',
-        icon: 'mdi-twitter',
-        url: 'https://twitter.com/EVMX_IO',
-      },
-      {
-        title: 'Linkedin',
-        icon: 'mdi-linkedin',
-        url: 'https://www.linkedin.com/company/quantifycrypto',
-      },
-      {
-        title: 'Discord',
-        icon: 'mdi-discord',
-        url: 'https://discord.gg/J8ChDJGh',
-      },
-      {
-        title: 'Telegram',
         icon: '/socials/telegram.svg',
         url: 'https://t.me/Quantify_Crypto',
+        style: { filter: 'invert(56%) sepia(95%) saturate(0%) hue-rotate(185deg) brightness(93%) contrast(98%)' },
       },
-      {
-        title: 'Lenster',
-        icon: '/socials/lenster.svg',
-        url: 'https://lenster.xyz/u/evmfi.lens',
-      },
+      { icon: '/socials/lenster.svg', url: 'https://lenster.xyz/u/evmfi.lens' },
     ]
 
     return { footerLinks, communityLinks, headerTextClass }
