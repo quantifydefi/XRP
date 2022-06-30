@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, useRoute, useStore } from '@nuxtjs/composition-api'
 import usePortfolioBalances from '~/composables/usePortfolioBalances'
 import PortfolioBalanceGrid from '~/components/portfolio/PortfolioBalanceGrid.vue'
 import { State } from '~/types/state'
@@ -97,7 +97,7 @@ export default defineComponent({
     )
 
     // META TAGS
-    useMetaTags({ title: 'Portfolio Balances | EVM Finance', subDirectory: 'portfolio-balance' })
+    useMetaTags('balances', useRoute().value.path)
 
     return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch }
   },

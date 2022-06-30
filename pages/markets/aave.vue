@@ -111,9 +111,11 @@ export default defineComponent({
       name: 'AAVE',
       symbol: 'AAVE',
       twitter: 'AaveAave',
-      title: 'Aave Professiona Interface',
+      title: 'Aave Professional Dashboard',
       description:
-        'Aave is the leading DeFi lending protocol for cryptocurrency loans. Our interface uses Aave smart contracts to Deposit, Borrow, Repay and Withdraw. Our Aave grant award proudly supports the development of this interface.',
+        'Aave is the leading DeFi lending protocol for cryptocurrency loans. Our interface uses Aave smart ' +
+        'contracts to Deposit, Borrow, Repay and Withdraw. Our Aave grant award proudly supports the development ' +
+        'of this UI.',
       url: 'https://aave.com',
     })
 

@@ -1,7 +1,7 @@
 <template>
   <v-row no-gutters justify="center">
     <v-col cols="12" md="10">
-      <h1 class="headline">WEB3 transaction history for Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom.</h1>
+      <h1 class="headline">Transaction History</h1>
 
       <template v-if="!walletReady">
         <v-row justify="center" class="pt-6">
