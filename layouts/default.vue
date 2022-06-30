@@ -17,7 +17,7 @@
       </nuxt-link>
 
       <client-only>
-        <div v-if="$vuetify.breakpoint.mdAndUp" class="text-no-wrap">
+        <div v-if="$vuetify.breakpoint.smAndUp" class="text-no-wrap">
           <nuxt-link
             v-for="(link, i) in links"
             :key="i"
