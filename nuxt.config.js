@@ -11,7 +11,7 @@ export default {
 
   plugins: [
     '~/plugins/initConfigs.ts',
-    '~/plugins/valueFormatter.ts',
+    '~/plugins/helper.ts',
     '~/plugins/apolloClient.ts',
     '~/plugins/web3/web3.ts',
     '~/plugins/typer.client.ts',

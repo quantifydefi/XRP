@@ -63,53 +63,53 @@
         </template>
 
         <template #item.portfolio.walletBal="{ item }">
-          <div v-text="$f(item.portfolio.walletBal, { roundTo: 6 })" />
+          <div v-text="$f(item.portfolio.walletBal, { minDigits: 2, maxDigits: 6 })" />
           <div
             :class="textClass"
-            v-text="$f(item.portfolio.walletBal * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
+            v-text="$f(item.portfolio.walletBal * item.price.priceUsd, { minDigits: 2, pre: '$ ' })"
           />
         </template>
 
         <template #item.portfolio.totalDeposits="{ item }">
-          <div v-text="$f(item.portfolio.totalDeposits, { roundTo: 6 })" />
+          <div v-text="$f(item.portfolio.totalDeposits, { minDigits: 2, maxDigits: 6 })" />
           <div
             :class="textClass"
-            v-text="$f(item.portfolio.totalDeposits * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
+            v-text="$f(item.portfolio.totalDeposits * item.price.priceUsd, { minDigits: 2, pre: '$ ' })"
           />
         </template>
 
         <template #item.portfolio.variableBorrow="{ item }">
-          <div v-text="$f(item.portfolio.variableBorrow, { roundTo: 6 })" />
+          <div v-text="$f(item.portfolio.variableBorrow, { minDigits: 2, maxDigits: 6 })" />
           <div
             :class="textClass"
-            v-text="$f(item.portfolio.variableBorrow * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
+            v-text="$f(item.portfolio.variableBorrow * item.price.priceUsd, { minDigits: 2, pre: '$ ' })"
           />
         </template>
 
         <template #item.price.priceUsd="{ item }">
-          <div v-text="$f(item.price.priceUsd, { roundTo: 2, pre: '$ ' })" />
+          <div v-text="$f(item.price.priceUsd, { minDigits: 2, pre: '$ ' })" />
         </template>
 
         <template #item.depositAPY="{ item }">
           <div :class="textClass">
             <span v-if="item.depositAPY === -1">--</span>
-            <span v-else v-text="$f(item.depositAPY * 100, { roundTo: 2, after: ' %' })" />
+            <span v-else v-text="$f(item.depositAPY * 100, { minDigits: 2, after: ' %' })" />
           </div>
         </template>
 
         <template #item.variableBorrowAPY="{ item }">
           <div :class="textClass">
             <span v-if="item.variableBorrowAPY === -1">--</span>
-            <span v-else v-text="$f(item.variableBorrowAPY * 100, { roundTo: 2, after: ' %' })" />
+            <span v-else v-text="$f(item.variableBorrowAPY * 100, { minDigits: 2, after: ' %' })" />
           </div>
         </template>
 
         <template #item.usdBalance="{ item }">
-          <span v-text="$f(item.usdBalance, { roundTo: 2, pre: '$ ', useSymbol: true })" />
+          <span v-text="$f(item.usdBalance, { minDigits: 2, pre: '$ ', useSymbol: true })" />
         </template>
 
         <template #item.totalBorrowBalanceUsd="{ item }">
-          <span v-text="$f(item.totalBorrowBalanceUsd, { roundTo: 2, pre: '$ ', useSymbol: true })" />
+          <span v-text="$f(item.totalBorrowBalanceUsd, { minDigits: 2, pre: '$ ', useSymbol: true })" />
         </template>
 
         <template #item.link="{ item }">

@@ -211,15 +211,17 @@ export default defineComponent<Props>({
           overview: [
             {
               text: 'Deposit APY',
-              value: pool.value.depositAPY === -1 ? '--' : $f(pool.value.depositAPY * 100, { roundTo: 2, after: ' %' }),
+              value:
+                pool.value.depositAPY === -1 ? '--' : $f(pool.value.depositAPY * 100, { minDigits: 2, after: ' %' }),
             },
             {
               text: 'Deposit APR',
-              value: pool.value.depositAPR === -1 ? '--' : $f(pool.value.depositAPR * 100, { roundTo: 2, after: ' %' }),
+              value:
+                pool.value.depositAPR === -1 ? '--' : $f(pool.value.depositAPR * 100, { minDigits: 2, after: ' %' }),
             },
             {
               text: 'Health Factor',
-              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { roundTo: 2 }),
+              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
             },
             {
               text: 'Used as collateral',
@@ -235,7 +237,7 @@ export default defineComponent<Props>({
           ],
           allowance: {
             text: 'Allowed To Deposit',
-            value: `${$f(pool.value.portfolio.walletBal, { roundTo: 6 })} ${pool.value.symbol}`,
+            value: `${$f(pool.value.portfolio.walletBal, { minDigits: 6 })} ${pool.value.symbol}`,
           },
           successMessage: `You Deposited ${amount.value} ${pool.value.symbol}`,
         },
@@ -248,14 +250,14 @@ export default defineComponent<Props>({
                   value:
                     pool.value.variableBorrowAPY === -1
                       ? '--'
-                      : $f(pool.value.variableBorrowAPY * 100, { roundTo: 2, after: ' %' }),
+                      : $f(pool.value.variableBorrowAPY * 100, { minDigits: 2, after: ' %' }),
                 }
               : {
                   text: 'Stable Borrow APY',
                   value:
                     pool.value.stableBorrowAPY === -1
                       ? '--'
-                      : $f(pool.value.stableBorrowAPY * 100, { roundTo: 2, after: ' %' }),
+                      : $f(pool.value.stableBorrowAPY * 100, { minDigits: 2, after: ' %' }),
                 },
 
             isVariableBorrow.value
@@ -264,19 +266,19 @@ export default defineComponent<Props>({
                   value:
                     pool.value.variableBorrowAPR === -1
                       ? '--'
-                      : $f(pool.value.variableBorrowAPR * 100, { roundTo: 2, after: ' %' }),
+                      : $f(pool.value.variableBorrowAPR * 100, { minDigits: 2, after: ' %' }),
                 }
               : {
                   text: 'Stable Borrow APR',
                   value:
                     pool.value.stableBorrowAPR === -1
                       ? '--'
-                      : $f(pool.value.stableBorrowAPR * 100, { roundTo: 2, after: ' %' }),
+                      : $f(pool.value.stableBorrowAPR * 100, { minDigits: 2, after: ' %' }),
                 },
 
             {
               text: 'Health Factor',
-              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { roundTo: 2 }),
+              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
             },
             {
               text: 'Used as collateral',
@@ -287,7 +289,7 @@ export default defineComponent<Props>({
           rules: [rules.value.required, rules.value.mustBeNumber, rules.value.musBeMoreThen0],
           allowance: {
             text: 'Allowed To Borrow',
-            value: `${$f(allowedToBorrow.value, { roundTo: 6 })}  ${pool.value.symbol}`,
+            value: `${$f(allowedToBorrow.value, { minDigits: 6 })}  ${pool.value.symbol}`,
           },
           successMessage: `You Borrowed ${amount.value} ${pool.value.symbol}`,
         },
@@ -296,15 +298,15 @@ export default defineComponent<Props>({
           overview: [
             {
               text: 'Your Borrows',
-              value: `${$f(pool.value.portfolio.variableBorrow, { roundTo: 6 })}  ${pool.value.symbol}`,
+              value: `${$f(pool.value.portfolio.variableBorrow, { minDigits: 6 })}  ${pool.value.symbol}`,
             },
             {
               text: 'Your Wallet Balance',
-              value: `${$f(pool.value.portfolio.walletBal, { roundTo: 6 })}  ${pool.value.symbol}`,
+              value: `${$f(pool.value.portfolio.walletBal, { minDigits: 6 })}  ${pool.value.symbol}`,
             },
             {
               text: 'Health Factor',
-              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { roundTo: 2 }),
+              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
             },
           ],
           rules: [rules.value.required, rules.value.mustBeNumber, rules.value.musBeMoreThen0],
@@ -312,8 +314,8 @@ export default defineComponent<Props>({
             text: 'Allowed to Repay',
             value: `${
               pool.value.portfolio.walletBal >= pool.value.portfolio.variableBorrow
-                ? `${$f(pool.value.portfolio.variableBorrow, { roundTo: 6 })}  ${pool.value.symbol}`
-                : `${$f(pool.value.portfolio.walletBal, { roundTo: 6 })} ${pool.value.symbol}`
+                ? `${$f(pool.value.portfolio.variableBorrow, { minDigits: 6 })}  ${pool.value.symbol}`
+                : `${$f(pool.value.portfolio.walletBal, { minDigits: 6 })} ${pool.value.symbol}`
             }`,
           },
           successMessage: `You Repayed  ${amount.value} ${pool.value.symbol}`,
@@ -323,21 +325,21 @@ export default defineComponent<Props>({
           overview: [
             {
               text: 'Your Deposits',
-              value: `${$f(pool.value.portfolio.totalDeposits, { roundTo: 6 })}  ${pool.value.symbol}`,
+              value: `${$f(pool.value.portfolio.totalDeposits, { minDigits: 6 })}  ${pool.value.symbol}`,
             },
             {
               text: 'Your Wallet Balance',
-              value: `${$f(pool.value.portfolio.walletBal, { roundTo: 6 })}  ${pool.value.symbol}`,
+              value: `${$f(pool.value.portfolio.walletBal, { minDigits: 6 })}  ${pool.value.symbol}`,
             },
             {
               text: 'Health Factor',
-              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { roundTo: 2 }),
+              value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
             },
           ],
           rules: [rules.value.required, rules.value.mustBeNumber, rules.value.musBeMoreThen0],
           allowance: {
             text: 'Allowed To Withdraw',
-            value: `${$f(allowedToWithdraw.value, { roundTo: 6 })}  ${pool.value.symbol}`,
+            value: `${$f(allowedToWithdraw.value, { minDigits: 6 })}  ${pool.value.symbol}`,
           },
         },
       }

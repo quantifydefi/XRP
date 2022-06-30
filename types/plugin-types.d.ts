@@ -1,7 +1,8 @@
 import Vue from 'vue'
 
 interface Params {
-  roundTo?: number
+  minDigits?: number
+  maxDigits?: number
   pre?: string
   after?: string
   useSymbol?: boolean
@@ -20,6 +21,5 @@ declare module 'vue/types/vue' {
     $setAltImageUrl(event: any): string
     $imageUrlBySymbol(symbol: string): string
     $truncateAddress(address: string, zeroIndexTo: number, endIndexMinus: number): string
-    $nf(val: number, minDecimals?: number, maxDecimals?: number): string
   }
 }

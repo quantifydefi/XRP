@@ -48,9 +48,9 @@
                   </small>
                 </div>
               </td>
-              <td class="green--text">{{ $f(elem.gas.safeGasPrice, { roundTo: 0 }) }} gwei</td>
-              <td class="primary--text text--lighten-1">{{ $f(elem.gas.proposeGasPrice, { roundTo: 0 }) }} gwei</td>
-              <td class="red--text">{{ $f(elem.gas.fastGasPrice, { roundTo: 0 }) }} gwei</td>
+              <td class="green--text">{{ $f(elem.gas.safeGasPrice, { minDigits: 0 }) }} gwei</td>
+              <td class="primary--text text--lighten-1">{{ $f(elem.gas.proposeGasPrice, { minDigits: 0 }) }} gwei</td>
+              <td class="red--text">{{ $f(elem.gas.fastGasPrice, { minDigits: 0 }) }} gwei</td>
             </tr>
           </tbody>
         </template>

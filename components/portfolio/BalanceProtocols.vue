@@ -1,99 +1,106 @@
 <template>
-  <v-row>
-    <v-col v-for="(item, i) in pools" :key="i">
-      <v-card tile outlined height="100%">
-        <v-card-title class="pa-0 ma-0">
-          <v-col class="d-flex">
-            <v-avatar size="24px">
-              <v-img :src="item.chain.logoUrl" :lazy-src="item.chain.logoUrl"></v-img>
-            </v-avatar>
-            <h4 class="text-subtitle-1 pl-3 text-truncate">{{ item.chain.name }}</h4>
-          </v-col>
-          <v-col cols="4" class="text-right">
-            <h4
-              class="text-subtitle-1 text-truncate pink--text font-weight-medium"
-              v-text="$f(item.total, { pre: '$ ', roundTo: 2 })"
-            />
-          </v-col>
-        </v-card-title>
-        <v-divider />
-        <v-data-table
-          id="balances-grid"
-          :headers="columns"
-          :items="item.pool"
-          :sort-desc="[true]"
-          height="100%"
-          :items-per-page="10 * 10 ** 12"
-          class="elevation-0"
-          :mobile-breakpoint="0"
-          hide-default-footer
-        >
-          <template #[`item.symbol`]="{ item }">
-            <div class="text-no-wrap overflow-x-hidden">
-              <v-avatar size="20" class="mr-2">
-                <v-img
-                  :src="$imageUrlBySymbol(item.symbol)"
-                  :lazy-src="$imageUrlBySymbol(item.symbol)"
-                  @error="$setAltImageUrl"
+  <div>
+    <v-row class="mt-6">
+      <v-col>
+        <v-avatar size="32">
+          <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" />
+        </v-avatar>
+        <nuxt-link to="/markets/aave" class="text-decoration-none text-h6">AAVE V2</nuxt-link>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col v-for="(item, i) in pools" :key="i">
+        <v-card tile outlined height="100%">
+          <v-card-title class="pa-0 ma-0">
+            <v-row class="pa-2">
+              <v-col class="d-flex" lg="3">
+                <v-avatar size="24px">
+                  <v-img :src="item.chain.logoUrl" :lazy-src="item.chain.logoUrl"></v-img>
+                </v-avatar>
+                <h4 class="text-subtitle-1 pl-3 text-truncate">{{ item.chain.name }}</h4>
+              </v-col>
+              <v-col class="text-right hidden-sm-and-down" lg="9">
+                <span v-for="(balance, index) in item.balances" :key="index" class="text-caption grey--text mr-2">
+                  {{ balance.text }}:
+                  <span
+                    class="text-subtitle-1 text-truncate pink--text font-weight-medium"
+                    v-text="$f(balance.value, { pre: '$', minDigits: 2 })"
+                  />
+                </span>
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <v-divider />
+          <v-data-table
+            id="balances-grid"
+            :headers="columns"
+            :items="item.pool"
+            :sort-desc="[true]"
+            height="100%"
+            :items-per-page="10 * 10 ** 12"
+            class="elevation-0"
+            :mobile-breakpoint="0"
+            hide-default-footer
+          >
+            <template #[`item.symbol`]="{ item }">
+              <div class="text-no-wrap overflow-x-hidden">
+                <v-avatar size="20" class="mr-2">
+                  <v-img
+                    :src="$imageUrlBySymbol(item.symbol)"
+                    :lazy-src="$imageUrlBySymbol(item.symbol)"
+                    @error="$setAltImageUrl"
+                  />
+                </v-avatar>
+                <nuxt-link
+                  class="text-capitalize text-decoration-none white--text"
+                  :to="{
+                    path: `/token/${item.symbol}`,
+                    query: { contract: item.addresses.address, decimals: item.addresses.decimals },
+                  }"
+                  v-text="item.symbol"
                 />
-              </v-avatar>
-              <nuxt-link
-                class="text-capitalize text-decoration-none white--text"
-                :to="{
-                  path: `/token/${item.symbol}`,
-                  query: { contract: item.addresses.address, decimals: item.addresses.decimals },
-                }"
-                v-text="item.symbol"
-              />
-            </div>
-          </template>
+              </div>
+            </template>
 
-          <template #item.portfolio.walletBal="{ item }">
-            <div v-text="$f(item.portfolio.walletBal, { roundTo: 6 })" />
-            <div
-              class="grey--text"
-              v-text="$f(item.portfolio.walletBal * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
-            />
-          </template>
+            <template #item.portfolio.walletBal="{ item }">
+              <div v-text="$f(item.portfolio.walletBal, { minDigits: 2, maxDigits: 6 })" />
+              <div class="grey--text" v-text="$f(item.portfolio.walletBal * item.price.priceUsd, { pre: '$ ' })" />
+            </template>
 
-          <template #item.portfolio.totalDeposits="{ item }">
-            <div v-text="$f(item.portfolio.totalDeposits, { roundTo: 6 })" />
-            <div
-              class="grey--text"
-              v-text="$f(item.portfolio.totalDeposits * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
-            />
-          </template>
+            <template #item.portfolio.totalDeposits="{ item }">
+              <div v-text="$f(item.portfolio.totalDeposits, { minDigits: 2, maxDigits: 6 })" />
+              <div class="grey--text" v-text="$f(item.portfolio.totalDeposits * item.price.priceUsd, { pre: '$ ' })" />
+            </template>
 
-          <template #item.portfolio.variableBorrow="{ item }">
-            <div v-text="$f(item.portfolio.variableBorrow, { roundTo: 6 })" />
-            <div
-              class="grey--text"
-              v-text="$f(item.portfolio.variableBorrow * item.price.priceUsd, { roundTo: 2, pre: '$ ' })"
-            />
-          </template>
+            <template #item.portfolio.variableBorrow="{ item }">
+              <div v-text="$f(item.portfolio.variableBorrow, { minDigits: 2, maxDigits: 6 })" />
+              <div class="grey--text" v-text="$f(item.portfolio.variableBorrow * item.price.priceUsd, { pre: '$ ' })" />
+            </template>
 
-          <template #item.depositAPY="{ item }">
-            <div class="grey--text">
-              <span v-if="item.depositAPY === -1">--</span>
-              <span v-else v-text="$f(item.depositAPY * 100, { roundTo: 2, after: ' %' })" />
-            </div>
-          </template>
+            <template #item.depositAPY="{ item }">
+              <div class="grey--text">
+                <span v-if="item.depositAPY === -1">--</span>
+                <span v-else v-text="$f(item.depositAPY * 100, { minDigits: 2, after: ' %' })" />
+              </div>
+            </template>
 
-          <template #item.variableBorrowAPY="{ item }">
-            <div class="grey--text">
-              <span v-if="item.variableBorrowAPY === -1">--</span>
-              <span v-else v-text="$f(item.variableBorrowAPY * 100, { roundTo: 2, after: ' %' })" />
-            </div>
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-col>
-  </v-row>
+            <template #item.variableBorrowAPY="{ item }">
+              <div class="grey--text">
+                <span v-if="item.variableBorrowAPY === -1">--</span>
+                <span v-else v-text="$f(item.variableBorrowAPY * 100, { minDigits: 2, after: ' %' })" />
+              </div>
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
 import { plainToClass } from 'class-transformer'
-import { AavePool, Balance, Chain } from '~/types/apollo/main/types'
+import { Balance, Chain } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
 import { AavePoolModel } from '~/composables/useAavePools'
 
@@ -111,6 +118,7 @@ export default defineComponent<Props>({
 
   setup(props) {
     const { getters, state } = useStore<State>()
+    // const { $f } = useContext()
     const columns = [
       {
         text: 'Token',
@@ -159,15 +167,31 @@ export default defineComponent<Props>({
       },
     ]
 
-    const pools: ComputedRef<{ chain: Chain; pool: AavePoolModel[]; total: number }[]> = computed(() =>
-      props.balances
-        .map((elem) => ({
-          chain: getters['configs/chainInfo'](elem.chainId) ?? state.configs.currentAaveMarket,
-          pool: plainToClass(AavePoolModel, elem.aavePools as AavePool[]),
-          total: elem.aavePools.reduce((a, b) => a + b.price.priceUsd * b.portfolioVal.walletBal, 0),
-        }))
-        .filter((elem) => elem.pool.length > 0)
-    )
+    const pools: ComputedRef<{ chain: Chain; pool: AavePoolModel[]; balances: { text: string; value: number }[] }[]> =
+      computed(() =>
+        props.balances
+          .map((elem) => ({
+            chain: getters['configs/chainInfo'](elem.chainId) ?? state.configs.currentAaveMarket,
+            pool: plainToClass(AavePoolModel, elem.aavePools as AavePoolModel[]),
+            balances: [
+              {
+                text: 'Net Worth',
+                value:
+                  elem.aavePools.reduce((a, b) => a + b.price.priceUsd * b.portfolioVal.totalDeposits, 0) -
+                  elem.aavePools.reduce((a, b) => a + b.price.priceUsd * b.portfolioVal.variableBorrow, 0),
+              },
+              {
+                text: 'Deposits',
+                value: elem.aavePools.reduce((a, b) => a + b.price.priceUsd * b.portfolioVal.totalDeposits, 0),
+              },
+              {
+                text: 'Borrows',
+                value: elem.aavePools.reduce((a, b) => a + b.price.priceUsd * b.portfolioVal.variableBorrow, 0),
+              },
+            ],
+          }))
+          .filter((elem) => elem.pool.length > 0)
+      )
 
     return { columns, pools }
   },

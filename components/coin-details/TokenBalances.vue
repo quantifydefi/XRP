@@ -66,8 +66,8 @@ export default defineComponent<Props>({
             symbol: getters['configs/chainInfo'](balance.chainId)?.symbol ?? '',
             name: getters['configs/chainInfo'](balance.chainId)?.label ?? '',
             link: getters['configs/chainInfo'](balance.chainId)?.blockExplorerUrl + `/token/${props.contract}` ?? '',
-            balance: $f(elem.balance, { roundTo: 4 }),
-            value: $f(props.priceUsd * elem.balance, { pre: '$ ', roundTo: 2 }),
+            balance: $f(elem.balance, { minDigits: 4 }),
+            value: $f(props.priceUsd * elem.balance, { pre: '$ ', minDigits: 2 }),
           }))[0]
       )
     )

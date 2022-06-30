@@ -143,17 +143,18 @@
           <div
             class="text-no-wrap grey--text"
             v-text="
-              `${$nf(item.txnValue.amount, 2, 2)} ${item.txDetail ? item.txDetail.tokenContractSymbol : chainSymbol}`
+              `${$f(item.txnValue.amount, { maxDigits: 2 })}
+              ${item.txDetail ? item.txDetail.tokenContractSymbol : chainSymbol}`
             "
           />
-          <div class="text-no-wrap" v-text="$f(item.txnValue.priceUsd, { roundTo: 2, pre: '$ ' })" />
+          <div class="text-no-wrap" v-text="$f(item.txnValue.priceUsd, { minDigits: 2, pre: '$ ' })" />
         </template>
       </template>
 
       <!--   txn fee   -->
       <template #[`item.txnFee`]="{ item }">
-        <div class="text-no-wrap grey--text" v-text="`${$nf(item.txnFee)} ${chainSymbol}`" />
-        <div class="text-no-wrap" v-text="$f(item.gasQuote, { roundTo: 2, pre: '$ ' })" />
+        <div class="text-no-wrap grey--text" v-text="`${$f(item.txnFee, { minDigits: 2 })} ${chainSymbol}`" />
+        <div class="text-no-wrap" v-text="$f(item.gasQuote, { minDigits: 2, pre: '$ ' })" />
       </template>
 
       <!--   status   -->

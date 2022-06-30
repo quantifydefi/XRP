@@ -10,7 +10,7 @@
       <v-col cols="4" class="text-right">
         <h4
           class="text-subtitle-1 text-truncate pink--text font-weight-medium"
-          v-text="$f(totalBalance, { pre: '$ ', roundTo: 2 })"
+          v-text="$f(totalBalance, { pre: '$ ', minDigits: 2 })"
         />
       </v-col>
     </v-card-title>
@@ -43,15 +43,18 @@
       </template>
 
       <template #[`item.balance`]="{ item }">
-        <span :class="textClass" v-text="$f(item.balance / Math.pow(10, item.contractDecimals), { roundTo: 4 })" />
+        <span
+          :class="textClass"
+          v-text="$f(item.balance / Math.pow(10, item.contractDecimals), { minDigits: 2, maxDigits: 6 })"
+        />
       </template>
 
       <template #[`item.quoteRate`]="{ item }">
-        <span :class="textClass" v-text="$f(item.quoteRate, { pre: '$ ', roundTo: 4 })" />
+        <span :class="textClass" v-text="$f(item.quoteRate, { pre: '$ ', minDigits: 2 })" />
       </template>
 
       <template #[`item.quote`]="{ item }">
-        <span :class="textClass" v-text="$f(item.quote, { pre: '$ ', roundTo: 2 })" />
+        <span :class="textClass" v-text="$f(item.quote, { pre: '$ ', minDigits: 2 })" />
       </template>
     </v-data-table>
     <v-divider />

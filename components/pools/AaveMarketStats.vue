@@ -57,37 +57,37 @@ export default defineComponent<Props>({
         text: 'Net Worth',
         value: isNaN(props.healthFactor)
           ? 0
-          : $f(props.totalDepositUsd - props.totalBorrowedUsd, { roundTo: 2, pre: '$ ' }),
+          : $f(props.totalDepositUsd - props.totalBorrowedUsd, { minDigits: 2, pre: '$ ' }),
         icon: 'mdi-wallet-outline',
       },
 
       {
         text: 'Health Factor',
-        value: isNaN(props.healthFactor) ? 0 : $f(props.healthFactor, { roundTo: 2 }),
+        value: isNaN(props.healthFactor) ? 0 : $f(props.healthFactor, { minDigits: 2 }),
         icon: 'mdi-heart-outline',
         tooltip: messages.tooltips.healthFactor,
       },
       {
         text: 'Max LTV',
-        value: isNaN(props.maxLtv) ? 0 : $f(props.maxLtv, { roundTo: 2, after: '%' }),
+        value: isNaN(props.maxLtv) ? 0 : $f(props.maxLtv, { minDigits: 2, after: '%' }),
         icon: 'mdi-chart-box-plus-outline',
         tooltip: messages.tooltips.loanToValueRatio,
       },
       {
         text: 'Current LTV',
-        value: isNaN(props.currentLtv) ? 0 : $f(props.currentLtv, { roundTo: 2, after: '%' }),
+        value: isNaN(props.currentLtv) ? 0 : $f(props.currentLtv, { minDigits: 2, after: '%' }),
         icon: 'mdi-chart-timeline-variant',
         tooltip: messages.tooltips.loanToValueRatio,
       },
       {
         text: 'Liquidation Threshold',
-        value: isNaN(props.liquidationThreshold) ? 0 : $f(props.liquidationThreshold, { roundTo: 2, after: '%' }),
+        value: isNaN(props.liquidationThreshold) ? 0 : $f(props.liquidationThreshold, { minDigits: 2, after: '%' }),
         icon: 'mdi-chart-timeline',
         tooltip: messages.tooltips.liquidationThreshold,
       },
       {
         text: 'Borrowing Power Used',
-        value: isNaN(props.borrowingPowerUsed) ? 0 : $f(props.borrowingPowerUsed, { roundTo: 2, after: '%' }),
+        value: isNaN(props.borrowingPowerUsed) ? 0 : $f(props.borrowingPowerUsed, { minDigits: 2, after: '%' }),
         icon: 'mdi-power-settings',
       },
     ])

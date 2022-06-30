@@ -5,7 +5,7 @@
         <v-row no-gutters align="center">
           <v-col cols="12">
             <h2 :class="['text-h4 font-weight-medium', 'ml-1', 'text-no-wrap', priceTextClass]">
-              {{ $f(tokenPriceUsd, { pre: '$ ', roundTo: 2 }) }}
+              {{ $f(tokenPriceUsd, { pre: '$ ', minDigits: 2 }) }}
               <span class="grey--text text-caption">USD</span>
               <span class="ml-3">
                 <v-btn
@@ -16,7 +16,7 @@
                   :color="tokenPrice24h > 0 ? 'green' : 'red'"
                   class="px-2 subtitle-2"
                 >
-                  {{ $f(tokenPrice24h * 100, { roundTo: 2, after: ' %' }) }}
+                  {{ $f(tokenPrice24h * 100, { minDigits: 2, after: ' %' }) }}
                 </v-btn>
               </span>
             </h2>
@@ -35,7 +35,7 @@
         <v-row no-gutters class="mt-2 flex-no-wrap mt-lg-6" justify="center">
           <v-col cols="auto" lg="3" class="d-flex justify-end">
             <div class="text-no-wrap">
-              <span class="ml-1 font-weight-bold" v-text="`Low: ${$f(intervalData.low, { roundTo: 2 })}`" />
+              <span class="ml-1 font-weight-bold" v-text="`Low: ${$f(intervalData.low, { minDigits: 2 })}`" />
             </div>
           </v-col>
 
@@ -52,7 +52,7 @@
           <v-col lg="3">
             <div class="text-no-wrap">
               <span class="font-weight-bold">
-                <span class="ml-1 font-weight-bold" v-text="`High: ${$f(intervalData.high, { roundTo: 2 })}`" />
+                <span class="ml-1 font-weight-bold" v-text="`High: ${$f(intervalData.high, { minDigits: 2 })}`" />
               </span>
               <v-btn
                 id="intervalSelectorToggle"
@@ -198,10 +198,10 @@ export default defineComponent<Props>({
       { title: 'Market Cap', value: $f(props.marketCap, { useSymbol: true, pre: '$' }) },
       { title: 'Volume', value: $f(props.volume, { useSymbol: true, pre: '$' }) },
       { title: 'Circ. Supply', value: $f(props.circSupply, { useSymbol: true, pre: '$' }) },
-      { title: 'Support', value: $f(props.support, { roundTo: 2, pre: '$' }), tooltip: messages.tooltips.support },
+      { title: 'Support', value: $f(props.support, { minDigits: 2, pre: '$' }), tooltip: messages.tooltips.support },
       {
         title: 'Resistance ',
-        value: $f(props.resistance, { roundTo: 2, pre: '$' }),
+        value: $f(props.resistance, { minDigits: 2, pre: '$' }),
         tooltip: messages.tooltips.resistance,
       },
       { title: 'Safety Score ', value: props.safetyScore },

@@ -26,7 +26,7 @@
               <div
                 v-else-if="(param.type.startsWith('uint') && param.name === 'value') || param.name === 'wad'"
                 class="pr-10"
-                v-text="$nf(+param.value / 10 ** log.senderContractDecimals, 0, 6)"
+                v-text="$f(+param.value / 10 ** log.senderContractDecimals, { minDigits: 0, maxDigits: 6 })"
               />
 
               <!--      address format        -->

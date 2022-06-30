@@ -2,7 +2,7 @@
   <div>
     <v-row v-if="!walletReady" align="center" justify="center">
       <v-col cols="11">
-        <connect-wallet-memo></connect-wallet-memo>
+        <connect-wallet-memo />
       </v-col>
     </v-row>
 
@@ -16,7 +16,7 @@
                 <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Total Balance</h4>
                 <div
                   class="d-inline-block text-truncate text-h3"
-                  v-text="$f(totalBalance, { pre: '$ ', roundTo: 2 })"
+                  v-text="$f(totalBalance, { pre: '$ ', minDigits: 2 })"
                 />
                 <v-simple-table class="mt-3">
                   <template #default>
@@ -30,7 +30,7 @@
                             {{ elem.name }}
                           </div>
                         </td>
-                        <td :class="textClass" v-text="$f(elem.total, { pre: '$ ', roundTo: 2 })" />
+                        <td :class="textClass" v-text="$f(elem.total, { pre: '$ ', minDigits: 2 })" />
                       </tr>
                     </tbody>
                   </template>
@@ -38,7 +38,7 @@
               </div>
             </v-card>
           </v-col>
-          <v-col>
+          <v-col class="hidden-sm-and-down">
             <v-card tile outlined height="100%">
               <v-skeleton-loader v-if="loading" type="image, image" height="240" />
               <client-only>
@@ -61,14 +61,6 @@
           </v-col>
         </v-row>
 
-        <v-row v-show="!loading">
-          <v-col class="pb-0 mt-4">
-            <v-avatar size="40" class="mr-2">
-              <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" @error="$setAltImageUrl" />
-            </v-avatar>
-            <nuxt-link to="/markets/aave" class="text-decoration-none"><span class="text-h5">AAVE V2</span></nuxt-link>
-          </v-col>
-        </v-row>
         <balance-protocols v-show="!loading" :balances="balanceData" />
       </v-col>
     </v-row>

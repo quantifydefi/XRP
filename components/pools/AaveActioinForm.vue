@@ -84,7 +84,7 @@ export default defineComponent<Props>({
     })
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
-    const amountInUsd = computed(() => $f(amountVal.value * props.priceUsd, { roundTo: 2, pre: '$ ' }))
+    const amountInUsd = computed(() => $f(amountVal.value * props.priceUsd, { minDigits: 2, pre: '$ ' }))
     const actionAllowance = computed(() => props.allowance)
     const fromRules = computed(() => props.rules)
 
