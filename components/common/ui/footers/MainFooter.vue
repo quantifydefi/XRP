@@ -7,16 +7,19 @@
             <v-row>
               <v-col cols="8" class="text-left">
                 <v-row>
-                  <v-col class="pl-6 b-0 text-left d-sm-flex">
+                  <v-col class="b-0 text-left d-sm-flex">
                     <div v-for="link in footerLinks" :key="link.title">
-                      <v-btn tile text small :to="link.url" color="transparent">
-                        <span class="white--text text-hover-primary">{{ link.title }}</span>
-                      </v-btn>
+                      <nuxt-link
+                        :to="link.url"
+                        active-class="underline-glow-active"
+                        class="white--text text-uppercase caption underline-glow-hover ml-3 mr-3 font-weight-medium pb-1"
+                        v-text="link.title"
+                      />
                     </div>
                   </v-col>
                 </v-row>
 
-                <div class="font-weight-medium grey--text py-2 pl-6">
+                <div class="font-weight-medium grey--text py-2 pl-3">
                   &copy;
                   {{ new Date().getFullYear() }} - EVM Finance
                   <span class="caption pl-2">
@@ -31,19 +34,22 @@
                 </div>
               </v-col>
               <v-col class="text-right" cols="4" align-self="end">
-                <div class="mt-n13">
+                <div class="mt-sm-n12">
                   <v-btn
                     v-for="icon in communityLinks"
-                    :key="icon.title"
+                    :key="icon.url"
                     :href="icon.url"
                     target="_blank"
-                    class="mx-1 text-hover-primary"
+                    class="mx-1 text-hover-primary grey--text"
                     icon
-                    color="grey"
                   >
-                    <v-icon size="24" :style="icon.title === 'Telegram' ? { transform: 'rotate(-36deg)' } : {}">
+                    <v-icon v-if="icon.icon.startsWith('mdi')" size="22">
                       {{ icon.icon }}
                     </v-icon>
+
+                    <v-avatar v-else size="22">
+                      <v-img class="color-icon-primary" :src="icon.icon" :lazy-src="icon.icon" />
+                    </v-avatar>
                   </v-btn>
                 </div>
               </v-col>
@@ -71,21 +77,15 @@ export default defineComponent({
     ]
 
     const communityLinks = [
+      { icon: 'mdi-twitter', url: 'https://twitter.com/EVMX_IO' },
+      { icon: 'mdi-linkedin', url: 'https://www.linkedin.com/company/quantifycrypto' },
+      { icon: 'mdi-discord', url: 'https://discord.gg/J8ChDJGh' },
       {
-        title: 'Twitter',
-        icon: 'mdi-twitter',
-        url: 'https://twitter.com/EVMX_IO',
-      },
-      {
-        title: 'Linkedin',
-        icon: 'mdi-linkedin',
-        url: 'https://www.linkedin.com/company/quantifycrypto',
-      },
-      {
-        title: 'Telegram',
-        icon: 'mdi-send',
+        icon: '/socials/telegram.svg',
         url: 'https://t.me/Quantify_Crypto',
+        style: { filter: 'invert(56%) sepia(95%) saturate(0%) hue-rotate(185deg) brightness(93%) contrast(98%)' },
       },
+      { icon: '/socials/lenster.svg', url: 'https://lenster.xyz/u/evmfi.lens' },
     ]
 
     return { footerLinks, communityLinks, headerTextClass }

@@ -1,8 +1,8 @@
 <template>
   <v-row justify="center">
-    <v-col cols="11">
+    <v-col cols="12" lg="10">
       <v-row justify="center" class="pt-10 pb-5">
-        <v-col cols="11" lg="4" class="pl-lg-12">
+        <v-col cols="11" lg="4">
           <h1 class="text-h4">Our Team</h1>
           <p class="mt-2 grey--text text--lighten-1">
             Our team's goal is empowering cryptocurrency enthusiasts and traders for success. We know from our own
@@ -56,7 +56,7 @@
       <v-divider></v-divider>
 
       <v-row justify="center" class="pt-10">
-        <v-col cols="11" lg="4" class="pl-lg-12">
+        <v-col cols="11" lg="4">
           <h2 class="text-h4">Our Advisors</h2>
           <p class="mt-2 grey--text text--lighten-1">
             Our Advisors are some of the top performers to work and interface with financial trading systems. All have

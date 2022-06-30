@@ -45,8 +45,11 @@ export default defineComponent({
   transform: translate(-50%, -50%);
 }
 
-.outer-glow:hover span {
+.outer-glow:hover span:nth-child(2) {
   filter: blur(7px);
+}
+.outer-glow:hover span:nth-child(3) {
+  filter: blur(14px);
 }
 
 .outer-glow:hover {

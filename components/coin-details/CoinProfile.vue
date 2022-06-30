@@ -43,26 +43,17 @@
           </v-col>
         </v-row>
 
-        <v-row no-gutters>
-          <v-col cols="2">
-            <span class="subtitle-2 text-no-wrap grey--text" v-text="`Contract:`" />
-          </v-col>
-          <v-col cols="9">
-            <span class="ml-2 d-inline-block text-truncate" v-text="$truncateAddress(contractAddress, 12, 12)" />
-          </v-col>
-          <v-col cols="1">
-            <div class="text-right">
-              <v-btn color="primary" x-small class="mb-1 ml-1" icon @click="$copyAddressToClipboard(contractAddress)">
-                <v-icon size="18">mdi-content-copy</v-icon>
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row v-for="(elem, i) in resourcesUrls" :key="i" justify="center" no-gutters align="center">
-          <v-col cols="2">
-            <span class="subtitle-2 text-no-wrap grey--text" v-text="elem.title" />
-          </v-col>
-          <v-col cols="10">
+        <div class="d-flex text-no-wrap subtitle-2 text-truncate">
+          <div class="grey--text pb-1" style="min-width: 70px" v-text="`Contract:`"></div>
+          <div class="pl-3" style="width: 320px" v-text="$truncateAddress(contractAddress, 12, 12)"></div>
+          <v-btn color="primary" x-small class="mb-1 ml-1" icon @click="$copyAddressToClipboard(contractAddress)">
+            <v-icon size="18">mdi-content-copy</v-icon>
+          </v-btn>
+        </div>
+
+        <div v-for="(elem, i) in resourcesUrls" :key="i" class="d-flex subtitle-2 text-no-wrap text-truncate">
+          <div class="grey--text py-1" style="min-width: 70px" v-text="elem.title"></div>
+          <div style="width: 320px">
             <v-menu v-if="elem.items.length > 1" nudge-top="15" nudge-left="5">
               <template #activator="{ on, attrs }">
                 <v-chip
@@ -90,7 +81,6 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-
             <v-chip
               v-for="link in elem.items"
               v-else
@@ -103,34 +93,38 @@
               v-text="link"
             >
             </v-chip>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
 
-        <v-row no-gutters align="center" class="mt-1 text-no-wrap">
-          <v-col cols="2"><span class="subtitle-2 text-no-wrap grey--text">Socials:</span></v-col>
-          <v-col cols="9" class="ma-1">
+        <div class="d-flex text-no-wrap subtitle-2">
+          <div class="grey--text pt-2" style="min-width: 70px" v-text="`Socials:`"></div>
+          <div class="pt-1" style="width: 320px">
             <v-btn
               v-for="(elem, i) in socials"
               :key="i"
-              elevation="1"
-              class="mx-1 text-highlight"
+              class="mx-2 text-hover-primary grey--text"
+              target="_blank"
               fab
               x-small
-              target="_blank"
+              color="grey darken-4"
               :href="elem.link"
             >
-              <v-icon :style="elem.style">{{ elem.icon }}</v-icon>
+              <v-icon v-if="elem.icon.startsWith('mdi')" size="22">{{ elem.icon }}</v-icon>
+
+              <v-avatar v-else size="22">
+                <v-img class="color-icon-primary" :src="elem.icon" :lazy-src="elem.link" />
+              </v-avatar>
             </v-btn>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
 
         <v-row justify="center" no-gutters align="center" class="mt-1">
           <v-col>
             <v-card elevation="0" :max-height="130" class="pa-0 mt-4">
-              <h2 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
+              <h1 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
               <pre
                 style="white-space: pre-line; max-height: 170px"
-                class="overflow-y-auto subtitle-2 font-weight-regular pr-2 grey--text"
+                class="pr-2 overflow-y-auto subtitle-2 font-weight-regular grey--text"
                 v-text="coinDescription"
               />
             </v-card>
@@ -201,13 +195,13 @@ export default defineComponent<Props>({
     const socials = computed<{ link: string; icon: string; style?: Object }[]>(() => [
       {
         link: `https://t.me/${props.telegramChannelId}`,
-        icon: 'mdi-send',
-        style: { transform: 'rotate(-45deg)', color: '#536af6' },
+        icon: '/socials/telegram.svg',
+        style: { filter: 'invert(99%) sepia(76%) saturate(53%) hue-rotate(178deg) brightness(114%) contrast(96%)' },
       },
-      { link: props.twitterUrl, icon: 'mdi-twitter', style: { color: '#536af6' } },
-      { link: props.subredditUrl, icon: 'mdi-reddit', style: { color: '#536af6' } },
-      { link: props.facebookUrl, icon: 'mdi-facebook', style: { color: '#536af6' } },
-      { link: props.discordChannelId, icon: 'mdi-discord', style: { color: '#536af6' } },
+      { link: props.subredditUrl, icon: 'mdi-reddit' },
+      { link: props.facebookUrl, icon: 'mdi-facebook' },
+      { link: props.twitterUrl, icon: 'mdi-twitter' },
+      { link: props.discordChannelId, icon: 'mdi-discord' },
     ])
 
     const tags = computed<{ text: string; active: boolean; link?: boolean; img?: string; action?: () => void }[]>(

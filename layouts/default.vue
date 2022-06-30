@@ -17,10 +17,17 @@
       </nuxt-link>
 
       <client-only>
-        <div v-if="$vuetify.breakpoint.mdAndUp">
-          <v-btn v-for="(link, i) in links" :key="i" tile text :to="link.to">
-            <span class="text-capitalize">{{ link.name }}</span>
-          </v-btn>
+        <div v-if="$vuetify.breakpoint.mdAndUp" class="text-no-wrap">
+          <nuxt-link
+            v-for="(link, i) in links"
+            :key="i"
+            active-class="underline-glow-active"
+            class="underline-glow-hover white--text mr-4 pb-2 px-1"
+            tile
+            text
+            :to="link.to"
+            v-text="link.name"
+          />
         </div>
       </client-only>
 
@@ -79,6 +86,7 @@ export default defineComponent({
       { name: 'Aave Markets', to: '/markets/aave' },
       { name: 'Balances', to: '/portfolio/balances' },
       { name: 'Transactions', to: '/portfolio/transactions' },
+      { name: 'About', to: '/about' },
     ])
 
     // COMPOSABLE

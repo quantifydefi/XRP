@@ -3,6 +3,12 @@
 // The variables you want to modify
 // $font-size-root: 20px;
 
+$primary-color-filter: invert(52%) sepia(57%) saturate(4371%) hue-rotate(213deg) brightness(90%);
+
+a {
+  text-decoration: none;
+}
+
 .text-transform-none {
   text-transform: none;
 }
@@ -282,4 +288,26 @@ tbody {
     background: #202020;
     border-left: 1px solid #2c2c2c;
   }
+}
+
+// CUSTOM
+.underline-glow-active, .underline-glow-hover{
+  display: inline;
+  background-image: linear-gradient(#48a5be, #807bae, #a25fa4);
+  height: 22px;
+  background-size: 0% 2px;
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  transition: background 0.3s linear;
+  animation: rotate 1.5s linear infinite;
+}
+
+.underline-glow-active,  .underline-glow-hover:hover{
+  color: grey;
+  background-size: 100% 2px;
+}
+
+// for custom svg color
+.color-icon-primary:hover {
+  filter: $primary-color-filter;
 }

@@ -7,9 +7,7 @@
         <v-col cols="12" class="mt-6">
           <h1 class="text-h2 font-weight-regular">
             EVM Finance <br />
-            <span class="text-h4 font-weight-light mt-3 grey--text">
-              DeFi Asset Management & Strategic Investments
-            </span>
+            <span class="text-h4 font-weight-light mt-3 grey--text"> Unified Interface for Decentralized Finance </span>
           </h1>
         </v-col>
 
@@ -38,7 +36,7 @@
       <defi-node-tree />
     </v-col>
 
-    <v-col cols="11" lg="10" class="text-center mt-16 pt-16" style="z-index: 1">
+    <v-col cols="11" xl="7" lg="10" class="text-center mt-16 pt-16" style="z-index: 1">
       <v-row>
         <v-col cols="12">
           <h2 class="text-h4 text-left">Roadmap</h2>
@@ -122,6 +120,7 @@ export default defineComponent({
       'Easier Aave Transaction',
       'Self-Custody',
       'Portfolio Management',
+      'Strategic Investments',
     ])
 
     // COMPOSABLE
