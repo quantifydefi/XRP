@@ -1,66 +1,118 @@
-import { useMeta, computed } from '@nuxtjs/composition-api'
+import { useMeta, computed, reactive } from '@nuxtjs/composition-api'
 
-export function useMetaTags({
-  title = 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
-  description = 'NexGen Defi Tools, Tracking, Explorer, Price Alerts and Analysis | EVM Finance',
-  subDirectory = '',
-  imgUrl = 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/EVMXHomePage.jpg',
-  imgAlt = 'EVM Finance Homepage',
-  twitterHandle = 'EVMX_IO',
-}) {
+const TWITTER_HANDLE = 'EVMX_IO'
+type PageKeyType = 'homepage' | 'aave_v2' | 'balances' | 'transactions' | 'termsAndConditions' | 'teams' | 'tokenPage'
+
+export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymbol = '') {
+  const metadata = reactive({
+    homepage: {
+      title: 'EVM is Ethereum Virtual Machine Finance | Defi interfaces | Web3 Data',
+      description:
+        'Professional Web3 Dashboard | DeFi Made Simple Interfaces | Multi Chains | Metrics | Live Prices | Balances | Transaction History | Multi Chain Support',
+      imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
+      imgAlt: 'EVM Finance Homepage',
+    },
+    aave_v2: {
+      title: 'Aave DeFi Trading Interface | ERC Token Transactions and Balances',
+      description:
+        'Aave interface for Pro Traders and Novice Users | Secure | Aave Smart Contracts | Deposits | Borrows | Withdraws | Repays ',
+      imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
+      imgAlt: 'EVM Finance Homepage',
+    },
+    balances: {
+      title: 'DeFi Asset Management for ERC20 tokens | EVM Ethereum Virtual Machine Finance',
+      description:
+        'Aesthetic display of DeFi Balances, Deposits, and Loans | Metamask Balances | Ethereum Binance Polygon Fantom Chain Balances | Individual Token Balances',
+      imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
+      imgAlt: 'EVM Finance Homepage',
+    },
+    transactions: {
+      title: 'DeFi Transaction History | EVM Ethereum Virtual Machine Finance',
+      description: 'DeFi transactions for Ethereum Mainnet, Polygon, Binance Smart Chain, Fantom Opera',
+      imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
+      imgAlt: 'EVM Finance Homepage',
+    },
+    termsAndConditions: {
+      title: 'Terms and Conditions | EVM Finance',
+      description:
+        'Professional Web3 Dashboard | DeFi Made Simple Interfaces | Multi Chains | Metrics | Live Prices | Balances | Transaction History | Multi Chain Support',
+      imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
+      imgAlt: 'EVM Finance Homepage',
+    },
+    teams: {
+      title: 'Meet Our Team and Advisors | EVM Finance',
+      description: 'The cryptocurrency team working to improve the crypto modal experience',
+      imgUrl: 'https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg',
+      imgAlt: 'EVM Finance Homepage',
+    },
+    tokenPage: {
+      title: `DeFi Metrics for ${coinName} | ${coinSymbol} Strategy Trading Interface | EVM Finance`,
+      description: `Professional AAVE interface for ${coinName} | Deposit Borrow Repay Withdraw | Live Prices, Charts, Trends, News, Metric, and more`,
+      imgUrl: `https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg`,
+      imgAlt: 'EVM Finance Homepage',
+    },
+  })
+
   const meta = computed(() => {
     return [
       {
         name: 'description',
         hid: 'description',
-        content: description,
+        content: metadata[key].description,
       },
-
       // Open Graph
       {
         name: 'og:title',
-        content: title,
+        content: metadata[key].title,
       },
       {
         name: 'og:description',
-        content: description,
+        content: metadata[key].description,
       },
       { name: 'og:type', content: 'website' },
       {
         name: 'og:url',
-        content: `${process.env.BASE_URL}${subDirectory}`,
+        content: `${process.env.baseURL}${path}`,
       },
       {
         name: 'og:image',
-        content: imgUrl,
+        content: metadata[key].imgUrl,
       },
 
       {
         name: 'og:image:alt',
-        content: imgAlt,
+        content: metadata[key].imgAlt,
       },
 
       // Twitter Card
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:site', content: twitterHandle },
+      { name: 'twitter:site', content: TWITTER_HANDLE },
       {
         name: 'twitter:title',
-        content: title,
+        content: metadata[key].title,
       },
       {
         name: 'twitter:description',
-        content: description,
+        content: metadata[key].description,
       },
       {
         name: 'twitter:image',
-        content: imgUrl,
+        content: metadata[key].imgUrl,
       },
       {
         name: 'twitter:image:alt',
-        content: imgAlt,
+        content: metadata[key].imgAlt,
+      },
+    ]
+  })
+  const link = computed(() => {
+    return [
+      {
+        rel: 'canonical',
+        href: `${process.env.baseURL}${path}`,
       },
     ]
   })
 
-  useMeta(() => ({ title, meta: meta.value }))
+  useMeta(() => ({ title: metadata[key].title, meta: meta.value, link: link.value }))
 }

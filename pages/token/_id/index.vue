@@ -117,7 +117,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useRoute } from '@nuxtjs/composition-api'
 import useToken from '~/composables/useToken'
 import CoinProfile from '~/components/coin-details/CoinProfile.vue'
 import CoinMetrics from '~/components/coin-details/CoinMetrics.vue'
@@ -125,6 +125,7 @@ import TokenNews from '~/components/news/TokenNews.vue'
 import TokenAaveAssets from '~/components/coin-details/TokenAaveAssets.vue'
 import TokenBalances from '~/components/coin-details/TokenBalances.vue'
 import TokenPricesChart from '~/components/coin-details/TokenPricesChart.vue'
+import { useMetaTags } from '~/composables/useMetaTags'
 export default defineComponent({
   components: {
     TokenPricesChart,
@@ -135,8 +136,14 @@ export default defineComponent({
     CoinProfile,
   },
   setup() {
+    const { params, query } = useRoute().value
+
     const { tokenData, loading, contractAddress, setInterval } = useToken()
+
+    useMetaTags('tokenPage', `/token/${params.id}`, query.name as string, params.id)
+
     return { tokenData, loading, contractAddress, setInterval }
   },
+  head: {},
 })
 </script>

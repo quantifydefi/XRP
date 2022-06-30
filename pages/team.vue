@@ -57,7 +57,7 @@
 
       <v-row justify="center" class="pt-10">
         <v-col cols="11" lg="4" class="pl-lg-12">
-          <h1 class="text-h4">Our Advisors</h1>
+          <h2 class="text-h4">Our Advisors</h2>
           <p class="mt-2 grey--text text--lighten-1">
             Our Advisors are some of the top performers to work and interface with financial trading systems. All have
             been significant contributors at the New York Stock Exchange, they fully understand how trading systems work
@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
 import { useMetaTags } from '~/composables/useMetaTags'
 import TeamMemberProfileDialog from '~/components/team/TeamMemberProfileDialog.vue'
 import { TeamMember } from '~/types/team'
@@ -318,11 +318,7 @@ export default defineComponent({
     }
 
     // META TAGS
-    useMetaTags({
-      title: 'Meet Our Team and Advisors | EVM Finance',
-      description: 'The cryptocurrency team working to improve the crypto modal experience',
-      subDirectory: 'team',
-    })
+    useMetaTags('teams', useRoute().value.path)
 
     return { team, advisors, toggleBio }
   },

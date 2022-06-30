@@ -1,5 +1,5 @@
 <template>
-  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-46" left max-width="600">
+  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-46" left max-width="520">
     <template #activator="{ on, attrs }">
       <div class="d-flex">
         <v-btn class="subtitle-2 px-2 mr-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
@@ -27,17 +27,17 @@
 
           <tbody>
             <tr v-for="(elem, i) in gasData" :key="i">
-              <td>
-                <v-img :src="$imageUrlBySymbol(elem.symbol)" :lazy-src="$imageUrlBySymbol(elem.symbol)" width="20" />
+              <td style="max-width: 22px; padding-right: 0">
+                <v-img :src="$imageUrlBySymbol(elem.symbol)" :lazy-src="$imageUrlBySymbol(elem.symbol)" width="22" />
               </td>
-              <td>
+              <td class="pt-1">
                 <a
                   class="text-subtitle-2 text-decoration-none"
                   :href="elem.blockExplorer"
                   target="_blank"
                   v-text="elem.name"
                 />
-                <div>
+                <div class="mt-n1">
                   <small>
                     <a
                       target="_blank"

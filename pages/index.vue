@@ -5,10 +5,12 @@
     <v-col cols="12" style="z-index: 1">
       <v-row justify="center" class="text-center">
         <v-col cols="12" class="mt-6">
-          <h1 class="v-heading text-h2 font-weight-regular">EVM Finance</h1>
-          <div class="v-heading text-h4 font-weight-light mt-3 grey--text">
-            Asset Management & Strategic Investments
-          </div>
+          <h1 class="text-h2 font-weight-regular">
+            EVM Finance <br />
+            <span class="text-h4 font-weight-light mt-3 grey--text">
+              DeFi Asset Management & Strategic Investments
+            </span>
+          </h1>
         </v-col>
 
         <v-col cols="12">
@@ -73,7 +75,6 @@ export default defineComponent({
   components: { VueParticles, DefiNodeTree, OutlineGlow },
   setup() {
     // STATE
-
     const items = ref([
       {
         color: 'primary lighten-2',
@@ -131,7 +132,7 @@ export default defineComponent({
     const theme = computed(() => store.state.ui.theme)
 
     // META TAGS
-    useMetaTags({ title: 'EVM Finance' })
+    useMetaTags('homepage')
 
     return { items, animatedFeatures, ui, theme }
   },
