@@ -1,7 +1,6 @@
 overwrite: true
 schema:
-  #  - "https://graph.defiheatmap.com/query"
-  - "http://localhost:8080/query"
+  - ${BASE_GRAPHQL_SERVER_URL}
 documents: "apollo/main/**/*.graphql"
 generates:
   types/apollo/main/graphql.d.ts:
