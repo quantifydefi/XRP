@@ -67,6 +67,7 @@
             :explorer-urls="tokenData.explorerUrls"
             :telegram-channel-id="tokenData.telegramChannelId"
             :twitter-url="tokenData.twitterUrl"
+            :discord-channel-id="tokenData.discordChannelId"
             :subreddit-url="tokenData.subredditUrl"
             :facebook-url="tokenData.facebookUrl"
             :coin-description="tokenData.coinDescription"

@@ -1,12 +1,11 @@
 <template>
   <div>
-    <v-row class="mt-6">
-      <v-col>
-        <v-avatar size="32">
-          <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" />
-        </v-avatar>
-        <nuxt-link to="/markets/aave" class="text-decoration-none text-h6">AAVE V2</nuxt-link>
-      </v-col>
+    <v-row class="mt-6" no-gutters>
+      <v-avatar size="30" class="mt-1">
+        <v-img alt="aave logo" :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" />
+      </v-avatar>
+
+      <div class="text-h5 font-weight-medium mt-1 ml-3">AAVE V2</div>
     </v-row>
 
     <v-row>

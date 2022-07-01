@@ -1,11 +1,13 @@
 <template>
   <div class="mt-4">
     <v-row align="center">
-      <v-col class="align-center">
+      <v-col class="align-center d-flex">
         <v-avatar size="30" class="mr-2">
           <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" @error="$setAltImageUrl" />
         </v-avatar>
-        <nuxt-link to="/markets/aave" class="text-decoration-none"><span class="text-h6">AAVE V2</span></nuxt-link>
+        <nuxt-link to="/markets/aave" class="text-h5 font-weight-medium ml-2 white--text text-hover-primary">
+          AAVE V2
+        </nuxt-link>
       </v-col>
       <v-col class="text-right">
         <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">

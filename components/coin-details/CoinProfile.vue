@@ -98,23 +98,25 @@
 
         <div class="d-flex text-no-wrap subtitle-2">
           <div class="grey--text pt-2" style="min-width: 70px" v-text="`Socials:`"></div>
-          <div class="pt-1" style="width: 320px">
-            <v-btn
-              v-for="(elem, i) in socials"
-              :key="i"
-              class="mx-2 text-hover-primary grey--text"
-              target="_blank"
-              fab
-              x-small
-              color="grey darken-4"
-              :href="elem.link"
-            >
-              <v-icon v-if="elem.icon.startsWith('mdi')" size="22">{{ elem.icon }}</v-icon>
+          <div class="pt-1 d-flex" style="width: 320px">
+            <div v-for="(elem, i) in socials" :key="i">
+              <v-btn
+                v-if="elem.link"
+                class="mx-2 text-hover-primary grey--text"
+                target="_blank"
+                fab
+                x-small
+                elevation="1"
+                :href="elem.link"
+                color="grey darken-4"
+              >
+                <v-icon v-if="elem.icon.startsWith('mdi')" size="20">{{ elem.icon }}</v-icon>
 
-              <v-avatar v-else size="22">
-                <v-img class="color-icon-primary" :src="elem.icon" :lazy-src="elem.link" />
-              </v-avatar>
-            </v-btn>
+                <v-avatar v-else size="20">
+                  <v-img class="color-icon-primary" :src="elem.icon" :lazy-src="elem.link" />
+                </v-avatar>
+              </v-btn>
+            </div>
           </div>
         </div>
 
@@ -173,11 +175,11 @@ export default defineComponent<Props>({
     explorerUrls: { type: Object as PropType<{ links: string[] } | null>, default: () => {} },
 
     // socials
-    telegramChannelId: { type: String, default: '#' },
-    twitterUrl: { type: String, default: '#' },
-    subredditUrl: { type: String, default: '#' },
-    facebookUrl: { type: String, default: '#' },
-    discordChannelId: { type: String, default: '#' },
+    telegramChannelId: { type: String, default: '' },
+    twitterUrl: { type: String, default: '' },
+    subredditUrl: { type: String, default: '' },
+    facebookUrl: { type: String, default: '' },
+    discordChannelId: { type: String, default: '' },
 
     // contract
     contractAddress: { type: String, default: '' },
@@ -194,7 +196,7 @@ export default defineComponent<Props>({
     ])
     const socials = computed<{ link: string; icon: string; style?: Object }[]>(() => [
       {
-        link: `https://t.me/${props.telegramChannelId}`,
+        link: props.telegramChannelId ? `https://t.me/${props.telegramChannelId}` : '',
         icon: '/socials/telegram.svg',
         style: { filter: 'invert(99%) sepia(76%) saturate(53%) hue-rotate(178deg) brightness(114%) contrast(96%)' },
       },

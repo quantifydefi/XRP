@@ -2,27 +2,26 @@
   <v-row>
     <v-col lg="4" md="12" cols="12">
       <v-card tile outlined elevation="0" class="pa-4" height="100%">
-        <v-row no-gutters align="center">
-          <v-col cols="4" sm="2" md="1">
-            <v-avatar size="30px"><v-img alt="Avatar" :src="protocolImage" :lazy-src="protocolImage" /></v-avatar>
-          </v-col>
-          <v-col>
-            <h2 class="text-h4 font-weight-medium ml-3">
-              {{ protocolName }}
-              <span>
-                <v-btn text small color="pink" tile>
-                  <span class="text-h6 font-weight-medium" v-text="protocolSymbol" />
-                </v-btn>
-              </span>
-            </h2>
-          </v-col>
+        <v-row no-gutters>
+          <v-avatar size="30" class="mt-1">
+            <v-img alt="Avatar" :src="protocolImage" :lazy-src="protocolImage" />
+          </v-avatar>
+
+          <h2 class="text-h4 font-weight-medium ml-3">
+            {{ protocolName }}
+            <span>
+              <v-btn text small color="pink" tile>
+                <span class="text-h6 font-weight-medium" v-text="protocolSymbol" />
+              </v-btn>
+            </span>
+          </h2>
         </v-row>
 
         <v-row no-gutters class="mb-2">
           <client-only>
             <v-col cols="12" class="mt-2">
-              <v-chip label small v-text="`Protocol`" />
-              <v-chip label small v-text="'DeFi'" />
+              <v-chip color="grey darken-4" label small v-text="`Protocol`" />
+              <v-chip color="grey darken-4" label small v-text="'DeFi'" />
             </v-col>
           </client-only>
         </v-row>
@@ -55,9 +54,10 @@
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col>
-                <span class="grey--text text--lighten-1" v-text="protocolDescription" />
-              </v-col>
+              <div
+                class="text-subtitle-2 text-sm-subtitle-1 font-weight-regular grey--text"
+                v-text="protocolDescription"
+              />
             </v-row>
           </v-col>
         </v-row>
