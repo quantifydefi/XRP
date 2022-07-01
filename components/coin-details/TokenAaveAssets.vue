@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
-import useAavePools, { AavePoolModel } from '~/composables/useAavePools'
+import useAavePools, { AavePoolModel, actionTypes } from '~/composables/useAavePools'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
@@ -46,7 +46,6 @@ import { State } from '~/types/state'
 import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
 import AaveActionDialog from '~/components/pools/AaveActionDialog.vue'
 import UseAavePoolsStats from '~/composables/useAavePoolsStats'
-import { actionTypes } from '~/models/web3'
 
 export default defineComponent({
   components: { NetworkSelection, AaveMarkets, AaveActionDialog },

@@ -80,11 +80,10 @@
 <script lang="ts">
 import { computed, defineComponent, inject, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import protocolHeader from '~/components/ProtocolHeader.vue'
-import useAavePools, { AavePoolModel } from '~/composables/useAavePools'
+import useAavePools, { AavePoolModel, actionTypes } from '~/composables/useAavePools'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-import { actionTypes } from '~/models/web3'
 import UseAavePoolsStats from '~/composables/useAavePoolsStats'
 import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
 import AaveMarketStats from '~/components/pools/AaveMarketStats.vue'

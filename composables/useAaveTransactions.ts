@@ -90,7 +90,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
   }
 
   const isSpendingApproved = async () =>
-    ['ETH'].includes(pool.value.symbol) ? true : (await allowedSpending()) > amountInTokens.value
+    ['ETH', 'MATIC'].includes(pool.value.symbol) ? true : (await allowedSpending()) > amountInTokens.value
 
   async function approveMaxSpendingWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {

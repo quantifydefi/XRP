@@ -28,7 +28,7 @@ export default {
     [
       '@nuxtjs/google-analytics',
       {
-        ua: 'UA-119114337-5',
+        ua: process.env.GA_ID,
         debug: { sendHitTask: true },
       },
     ],

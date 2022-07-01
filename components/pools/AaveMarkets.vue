@@ -180,10 +180,9 @@ import {
   useStore,
   watch,
 } from '@nuxtjs/composition-api'
-import { AavePoolModel } from '~/composables/useAavePools'
+import { AavePoolModel, aaveActions, actionTypes } from '~/composables/useAavePools'
 import { State } from '~/types/state'
 import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
-import { aaveActions, actionTypes } from '~/models/web3'
 import { EmitEvents } from '~/types/events'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
