@@ -20,6 +20,8 @@ pipelines:
             - docker
           script:
             - pip3 install awscli
+            - BASE_GRAPHQL_SERVER_URL="https://staging-graph.evmx.io/query"
+            - pip3 install awscli
             - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
-            - docker build -t  $IMAGE_NAME --build-arg BASE_GRAPHQL_SERVER_URL=$STAGINIG_BASE_GRAPHQL_SERVER_URL --build-arg AMCHARTS_LICENSE=$AMCHARTS_LICENSE .
+            - docker build -t  $IMAGE_NAME --build-arg BASE_GRAPHQL_SERVER_URL=$BASE_GRAPHQL_SERVER_URL --build-arg AMCHARTS_LICENSE=$AMCHARTS_LICENSE .
             - docker push $IMAGE_NAME
