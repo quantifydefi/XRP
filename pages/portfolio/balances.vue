@@ -1,30 +1,27 @@
 <template>
   <v-row no-gutters justify="center">
     <v-col cols="12" md="10">
-      <v-row>
-        <v-col cols="12" lg="8">
-          <h1 class="headline">Visualize your complete DeFi Balance</h1>
-          <div class="text-subtitle-2 font-weight-regular grey--text">
-            Visualize your complete DeFi balance, blockchain protocol balances and all ERC token balances. Click on a
-            coin symbol for more metrics and information. Tokens proceeded by the letter “A” represent your borrows from
-            the Aave protocol, for example ALINK is borrowed LINK amount.
-          </div>
-        </v-col>
-      </v-row>
-      <v-row v-if="!walletReady" justify="center" no-gutters class="pt-6">
+      <h1 class="text-h4">
+        DeFi Balances
+        <info-tooltip
+          text="Click on a coin symbol for more metrics and information. Tokens proceeded by the letter “A” represent your borrows from the Aave protocol, for example ALINK is your borrowed LINK amount."
+        ></info-tooltip>
+      </h1>
+
+      <v-row v-if="!walletReady" justify="center" no-gutters class="pt-3">
         <v-col cols="12" sm="10" lg="6">
           <connect-wallet-memo />
         </v-col>
       </v-row>
 
-      <v-row v-else justify="center">
+      <v-row v-else justify="center" class="pt-3">
         <v-col>
           <v-row>
             <v-col lg="4" cols="12">
               <v-card class="py-2 px-4" height="240" tile outlined>
                 <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="230" />
                 <div v-else>
-                  <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Total Balance</h4>
+                  <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Wallet Balance</h4>
                   <div
                     class="d-inline-block text-truncate text-h3"
                     v-text="$f(totalBalance, { pre: '$ ', minDigits: 2 })"
@@ -92,9 +89,10 @@ import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import BalanceProtocols from '~/components/portfolio/BalanceProtocols.vue'
 import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
+import InfoTooltip from '~/components/common/ui/InfoTooltip.vue'
 
 export default defineComponent({
-  components: { ConnectWalletMemo, BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
+  components: { InfoTooltip, ConnectWalletMemo, BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
   setup() {
     // COMPOSABLES
     const { walletReady } = inject(WEB3_PLUGIN_KEY) as Web3

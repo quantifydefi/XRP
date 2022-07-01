@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" no-gutters class="grey--text text--lighten-1 body-2">
     <v-col cols="11" lg="8" md="9">
-      <h1 class="text-h4 py-3 white--text">About Us</h1>
+      <div class="text-h4 py-3 white--text">About Us</div>
       <v-divider />
 
       <h1 class="text-h6 py-3 white--text">EVM Finance Launches - July 1, 2022!</h1>

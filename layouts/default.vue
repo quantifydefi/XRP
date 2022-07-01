@@ -46,15 +46,13 @@
     <wallet-select-dialog />
 
     <v-navigation-drawer v-model="drawer" fixed temporary>
-      <v-card>
-        <v-list nav>
-          <v-list-item-group color="primary">
-            <v-list-item v-for="(item, index) in links" :key="index" :to="item.to">
-              <v-list-item-title v-text="item.name" />
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-card>
+      <v-list elevation="0">
+        <v-list-item-group color="primary">
+          <v-list-item v-for="(item, index) in links" :key="index" :to="item.to">
+            <v-list-item-title v-text="item.name" />
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
     </v-navigation-drawer>
 
     <client-only>

@@ -9,7 +9,7 @@
       <v-alert v-model="errorAlert" color="error" dense dismissible>{{ error.message }}</v-alert>
       <v-list-item link :class="['mb-6', ui[theme].overlayColor]" @click="connectWallet('metamask')">
         <v-list-item-avatar tile width="60" height="60">
-          <img width="60" height="60" :src="`/wallets/metamask.svg`" alt="metamask" />
+          <img width="60" height="60" :src="`/img/metamask.svg`" alt="metamask" />
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="text-h6"> Metamask</v-list-item-title>

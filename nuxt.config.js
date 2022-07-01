@@ -2,9 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
-  head: {
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-  },
+  head: { link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }] },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],

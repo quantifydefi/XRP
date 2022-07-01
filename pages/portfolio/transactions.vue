@@ -1,16 +1,13 @@
 <template>
   <v-row no-gutters justify="center">
     <v-col cols="12" md="10">
-      <h1 class="headline">
-        WEB3 Transaction History
-
-        <div class="text-subtitle-2 font-weight-regular grey--text pb-2">
-          For Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom.
-        </div>
+      <h1 class="text-h4">
+        Web3 Transaction History
+        <info-tooltip text="For Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom"></info-tooltip>
       </h1>
 
       <template v-if="!walletReady">
-        <v-row justify="center" class="pt-6">
+        <v-row justify="center" class="pt-3">
           <v-col cols="12" sm="10" lg="6">
             <connect-wallet-memo />
           </v-col>
@@ -18,7 +15,7 @@
       </template>
 
       <template v-if="walletReady">
-        <v-row justify="end" class="pt-3">
+        <v-row justify="end" class="pt-4">
           <network-selection-menu></network-selection-menu>
         </v-row>
 
@@ -57,9 +54,10 @@ import { useMetaTags } from '~/composables/useMetaTags'
 import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import TransactionsGrid from '~/components/transactions/TransactionsGrid.vue'
 import NetworkSelectionMenu from '~/components/common/NetworkMenuSelection.vue'
+import InfoTooltip from '~/components/common/ui/InfoTooltip.vue'
 
 export default defineComponent({
-  components: { TransactionsGrid, ConnectWalletMemo, NetworkSelectionMenu },
+  components: { InfoTooltip, TransactionsGrid, ConnectWalletMemo, NetworkSelectionMenu },
   setup() {
     // COMPOSABLES
     const {

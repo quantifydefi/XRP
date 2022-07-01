@@ -197,7 +197,7 @@ export default defineComponent<Props>({
     const socials = computed<{ link: string; icon: string; style?: Object }[]>(() => [
       {
         link: props.telegramChannelId ? `https://t.me/${props.telegramChannelId}` : '',
-        icon: '/socials/telegram.svg',
+        icon: '/img/telegram.svg',
         style: { filter: 'invert(99%) sepia(76%) saturate(53%) hue-rotate(178deg) brightness(114%) contrast(96%)' },
       },
       { link: props.subredditUrl, icon: 'mdi-reddit' },
