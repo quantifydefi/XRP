@@ -9,5 +9,7 @@ export const messages = {
     support:
       'Support level identifies the bottom price point for a specific cryptocurrency based on its recent trading history.',
     resistance: 'Resistance price levels identities a price point when a positive price trend may slow down',
+    balanceHeaderDesc: `Click on a coin symbol for more metrics and information. Tokens proceeded by the letter “A” represent your borrows from the Aave protocol, for example ALINK is your borrowed LINK amount`,
+    txHeaderDesc: `For Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom`,
   },
 }

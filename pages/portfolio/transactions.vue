@@ -3,7 +3,7 @@
     <v-col cols="12" md="10">
       <h1 class="text-h4">
         Web3 Transaction History
-        <info-tooltip text="For Ethereum Mainnet, Polygon, Binance Smart Chain and Fantom"></info-tooltip>
+        <info-tooltip :text="messages.tooltips.txHeaderDesc" />
       </h1>
 
       <template v-if="!walletReady">
@@ -55,6 +55,7 @@ import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import TransactionsGrid from '~/components/transactions/TransactionsGrid.vue'
 import NetworkSelectionMenu from '~/components/common/NetworkMenuSelection.vue'
 import InfoTooltip from '~/components/common/ui/InfoTooltip.vue'
+import { messages } from '~/constants/messages'
 
 export default defineComponent({
   components: { InfoTooltip, TransactionsGrid, ConnectWalletMemo, NetworkSelectionMenu },
@@ -82,6 +83,7 @@ export default defineComponent({
       transactionsData,
       currentPage,
       pagination,
+      messages,
 
       // METHODS
       isInboundRenderer,

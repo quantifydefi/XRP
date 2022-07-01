@@ -3,9 +3,7 @@
     <v-col cols="12" md="10">
       <h1 class="text-h4">
         DeFi Balances
-        <info-tooltip
-          text="Click on a coin symbol for more metrics and information. Tokens proceeded by the letter “A” represent your borrows from the Aave protocol, for example ALINK is your borrowed LINK amount."
-        ></info-tooltip>
+        <info-tooltip :text="messages.tooltips.balanceHeaderDesc" />
       </h1>
 
       <v-row v-if="!walletReady" justify="center" no-gutters class="pt-3">
@@ -90,6 +88,7 @@ import BalanceProtocols from '~/components/portfolio/BalanceProtocols.vue'
 import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
 import InfoTooltip from '~/components/common/ui/InfoTooltip.vue'
+import { messages } from '~/constants/messages'
 
 export default defineComponent({
   components: { InfoTooltip, ConnectWalletMemo, BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
@@ -112,7 +111,7 @@ export default defineComponent({
     // META TAGS
     useMetaTags('balances', useRoute().value.path)
 
-    return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch }
+    return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch, messages }
   },
   head: {},
 })
