@@ -5,9 +5,9 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "qc-defi-nuxt-server-production",
+          "awslogs-group": "/ecs/evmx-ui",
           "awslogs-region": "us-west-2",
-          "awslogs-stream-prefix": "qc-defi-nuxt-server"
+          "awslogs-stream-prefix": "ecs"
         }
       },
       "portMappings": [
@@ -17,17 +17,35 @@
           "containerPort": 3000
         }
       ],
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "AMCHARTS_LICENSE",
+          "value": "$AMCHARTS_LICENSE"
+        },
+        {
+          "name": "BASE_GRAPHQL_SERVER_URL",
+          "value": "$BASE_GRAPHQL_SERVER_URL"
+        },
+        {
+          "name": "BASE_URL",
+          "value": "$BASE_URL"
+        },
+        {
+          "name": "SERVER_HOST",
+          "value": "$SERVER_HOST"
+        }
+      ],
       "image": "$IMAGE_NAME",
-      "name": "qc-defi-nuxt-server"
+      "name": "$CONTAINER_NAME"
     }
   ],
-  "placementConstraints": [],
-  "memory": "512",
   "taskRoleArn": "arn:aws:iam::488443597418:role/ecsTaskExecutionRole",
-  "family": "qc-defi-nuxt-server",
+  "family": "$CONTAINER_NAME",
   "requiresCompatibilities": [
     "FARGATE"
   ],
   "networkMode": "awsvpc",
-  "cpu": "256"
+  "memory": "$MEMORY",
+  "cpu": "$CPU"
 }
