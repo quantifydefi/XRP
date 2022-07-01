@@ -10,20 +10,20 @@ definitions:
 pipelines:
   custom:
     deploy-staging:
-#      - step:
-#          image: python:3.9-alpine
-#          name: Build Image
-#          services:
-#            - docker
-#          caches:
-#            - pip
-#            - docker
-#          script:
-#            - pip3 install awscli
-#            - pip3 install awscli
-#            - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
-#            - docker build -t  $IMAGE_NAME --build-arg BASE_GRAPHQL_SERVER_URL=$STAGINIG_BASE_GRAPHQL_SERVER_URL --build-arg AMCHARTS_LICENSE=$AMCHARTS_LICENSE .
-#            - docker push $IMAGE_NAME
+      - step:
+          image: python:3.9-alpine
+          name: Build Image
+          services:
+            - docker
+          caches:
+            - pip
+            - docker
+          script:
+            - pip3 install awscli
+            - pip3 install awscli
+            - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
+            - docker build -t  $IMAGE_NAME --build-arg BASE_GRAPHQL_SERVER_URL=$STAGINIG_BASE_GRAPHQL_SERVER_URL --build-arg AMCHARTS_LICENSE=$AMCHARTS_LICENSE .
+            - docker push $IMAGE_NAME
 
       - step:
           image: atlassian/default-image:2
