@@ -1,4 +1,4 @@
-import { useMeta, computed, reactive } from '@nuxtjs/composition-api'
+import { useMeta, computed, reactive, useContext } from '@nuxtjs/composition-api'
 
 const TWITTER_HANDLE = 'EVMX_IO'
 type PageKeyType =
@@ -12,6 +12,7 @@ type PageKeyType =
   | 'about'
 
 export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymbol = '') {
+  const { env } = useContext()
   const metadata = reactive({
     homepage: {
       title: 'EVM is Ethereum Virtual Machine Finance | Defi interfaces | Web3 Data',
@@ -123,7 +124,7 @@ export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymb
     return [
       {
         rel: 'canonical',
-        href: `${process.env.baseURL}${path}`,
+        href: `${env.baseURL}${path}`,
       },
     ]
   })

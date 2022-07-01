@@ -81,11 +81,11 @@ export default defineComponent({
       { icon: 'mdi-linkedin', url: 'https://www.linkedin.com/company/quantifycrypto' },
       { icon: 'mdi-discord', url: 'https://discord.gg/J8ChDJGh' },
       {
-        icon: '/socials/telegram.svg',
+        icon: '/img/telegram.svg',
         url: 'https://t.me/Quantify_Crypto',
         style: { filter: 'invert(56%) sepia(95%) saturate(0%) hue-rotate(185deg) brightness(93%) contrast(98%)' },
       },
-      { icon: '/socials/lenster.svg', url: 'https://lenster.xyz/u/evmfi.lens' },
+      { icon: '/img/lenster.svg', url: 'https://lenster.xyz/u/evmfi.lens' },
     ]
 
     return { footerLinks, communityLinks, headerTextClass }
