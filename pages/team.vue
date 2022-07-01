@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-col cols="12" lg="10">
-      <v-row justify="center" class="pt-10 pb-5">
+      <v-row justify="center" class="pt-md-10 pt-3 pb-5">
         <v-col cols="11" lg="4">
           <h1 class="text-h4">Our Team</h1>
           <p class="mt-2 grey--text text--lighten-1">

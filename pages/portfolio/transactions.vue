@@ -7,7 +7,7 @@
       </h1>
 
       <template v-if="!walletReady">
-        <v-row justify="center" class="pt-6">
+        <v-row justify="center" class="pt-3">
           <v-col cols="12" sm="10" lg="6">
             <connect-wallet-memo />
           </v-col>

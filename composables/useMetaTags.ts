@@ -10,6 +10,7 @@ type PageKeyType =
   | 'teams'
   | 'tokenPage'
   | 'about'
+  | 'faq'
 
 export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymbol = '') {
   const { env } = useContext()
@@ -63,6 +64,12 @@ export function useMetaTags(key: PageKeyType, path = '', coinName = '', coinSymb
     about: {
       title: `Web3 Investing Portal | Defi Metrics | EVM Finance`,
       description: `DeFi Asset Management and Strategic Investments | Aave Pro Interface | Live Metrics`,
+      imgUrl: `https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg`,
+      imgAlt: 'EVM Finance Homepage',
+    },
+    faq: {
+      title: `FAQ for Aave Lending and Borrowing | EVM Finance`,
+      description: `How to use the Aave Pro Interface for Lending and Borrowing`,
       imgUrl: `https://quantifycrypto.s3.us-west-2.amazonaws.com/pictures/website-img/evmfinancehomepage.jpg`,
       imgAlt: 'EVM Finance Homepage',
     },

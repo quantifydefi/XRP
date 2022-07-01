@@ -8,7 +8,7 @@
         ></info-tooltip>
       </h1>
 
-      <v-row v-if="!walletReady" justify="center" no-gutters>
+      <v-row v-if="!walletReady" justify="center" no-gutters class="pt-3">
         <v-col cols="12" sm="10" lg="6">
           <connect-wallet-memo />
         </v-col>
