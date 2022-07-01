@@ -17,7 +17,9 @@ RUN apk --no-cache add curl
 
 # copy the app, note .dockerignore
 COPY . /usr/src/evmx-ui/
+
 RUN npm install
+RUN npm generate-types
 
 # build necessary, even if no static files are needed,
 # since it builds the server as well
