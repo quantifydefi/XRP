@@ -1,5 +1,5 @@
 <template>
-  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-46" left max-width="520">
+  <v-menu v-if="ethMainNetInfo" :close-on-content-click="false" nudge-width="600" nudge-top="-46" left max-width="600">
     <template #activator="{ on, attrs }">
       <div class="d-flex">
         <v-btn class="subtitle-2 px-2 mr-2 text-capitalize font-weight-regular" text tile v-bind="attrs" v-on="on">
@@ -30,7 +30,7 @@
               <td style="max-width: 22px; padding-right: 0">
                 <v-img :src="$imageUrlBySymbol(elem.symbol)" :lazy-src="$imageUrlBySymbol(elem.symbol)" width="22" />
               </td>
-              <td class="pt-1">
+              <td class="pt-1 text-no-wrap">
                 <a
                   class="text-subtitle-2 text-decoration-none"
                   :href="elem.blockExplorer"

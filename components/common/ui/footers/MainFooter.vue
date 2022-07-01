@@ -3,11 +3,11 @@
     <v-row no-gutters>
       <v-col class="pa-0">
         <v-card flat tile outlined class="text-center">
-          <v-card-text>
+          <v-card-text class="px-2 pb-2">
             <v-row>
-              <v-col cols="8" class="text-left">
+              <v-col cols="7" class="text-left">
                 <v-row>
-                  <v-col class="b-0 text-left d-sm-flex">
+                  <v-col class="d-sm-flex">
                     <div v-for="link in footerLinks" :key="link.title">
                       <nuxt-link
                         :to="link.url"
@@ -19,10 +19,10 @@
                   </v-col>
                 </v-row>
 
-                <div class="font-weight-medium grey--text py-2 pl-3">
+                <div class="d-sm-flex font-weight-medium grey--text py-2 pl-3">
                   &copy;
                   {{ new Date().getFullYear() }} - EVM Finance
-                  <span class="caption pl-2">
+                  <div class="caption text-no-wrap pl-sm-2" style="margin-top: 2px">
                     contact us at
                     <a
                       href="mailto:admin@quantifycrypto.net"
@@ -30,11 +30,11 @@
                     >
                       admin@quantifycrypto.net
                     </a>
-                  </span>
+                  </div>
                 </div>
               </v-col>
-              <v-col class="text-right" cols="4" align-self="end">
-                <div class="mt-sm-n12">
+              <v-col class="text-right" align-self="end">
+                <div class="mt-sm-n13">
                   <v-btn
                     v-for="icon in communityLinks"
                     :key="icon.url"
@@ -43,11 +43,11 @@
                     class="mx-1 text-hover-primary grey--text"
                     icon
                   >
-                    <v-icon v-if="icon.icon.startsWith('mdi')" size="22">
+                    <v-icon v-if="icon.icon.startsWith('mdi')" size="20">
                       {{ icon.icon }}
                     </v-icon>
 
-                    <v-avatar v-else size="22">
+                    <v-avatar v-else size="20">
                       <v-img class="color-icon-primary" :src="icon.icon" :lazy-src="icon.icon" />
                     </v-avatar>
                   </v-btn>

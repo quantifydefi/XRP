@@ -17,6 +17,7 @@
         :single-expand="false"
         show-expand
         item-key="name"
+        mobile-breakpoint="0"
       >
         <template #expanded-item="{ headers, item }">
           <td :colspan="headers.length"><aave-market-details :pool="item" /></td>

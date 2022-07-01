@@ -15,14 +15,14 @@
     >
       <template #[`item.symbol`]="{ item }">
         <div class="text-no-wrap overflow-x-hidden">
-          <v-avatar size="20" class="mr-2">
+          <v-avatar size="19" class="mr-2">
             <img :src="$imageUrlBySymbol(item.symbol)" @error="$setAltImageUrl" />
           </v-avatar>
-          <a class="text-decoration-none" target="_blank" :href="item.link" v-text="item.name" />
+          <span v-text="item.name" />
         </div>
       </template>
     </v-data-table>
-    <div v-else class="text-center mt-6">
+    <div v-else class="text-center mt-16 pt-2">
       <v-btn tile depressed @click="dispatch('ui/walletDialogStatus', true)">Connect to Wallet</v-btn>
     </div>
   </v-card>
