@@ -9,11 +9,11 @@
       show-expand
       single-expand
       hide-default-footer
-      mobile-breakpoint="0"
+      :mobile-breakpoint="0"
     >
       <!--  expanded buttons   -->
       <template #item.data-table-expand="{ item, isExpanded, expand }">
-        <div style="width: 14px">
+        <div style="width: 16px">
           <v-btn
             v-if="item.logEvents.length > 0 && item.methodTextRenderer !== 'Transfer'"
             small
