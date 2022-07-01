@@ -11,7 +11,7 @@ pipelines:
   custom:
     build-and-deploy-evmx-staging:
       - step:
-          image: node:12.7.0-alpine
+          image: python:3.9-alpine
           name: Build Image
           services:
             - docker
@@ -19,16 +19,7 @@ pipelines:
             - pip
             - docker
           script:
-            - apk add gcc musl-dev python3-dev libffi-dev openssl-dev
             - pip3 install awscli
-
-            - IMAGE="488443597418.dkr.ecr.us-west-2.amazonaws.com/evmx-ui"
-            - SERVER_HOST="0.0.0.0"
-            - BASE_GRAPHQL_SERVER_URL="https://staging-graph.evmx.io/query"
-            - AMCHARTS_LICENSE="CH187387301"
-
-            - aws configure set aws_access_key_id "${AWS_KEY}"
-            - aws configure set aws_secret_access_key "${AWS_SECRET}"
             - eval $(aws ecr get-login --no-include-email --region "${AWS_REGION}" | sed 's;https://;;g')
-            - docker build -t  $IMAGE --build-arg BASE_GRAPHQL_SERVER_URL="${BASE_GRAPHQL_SERVER_URL}" --build-arg AMCHARTS_LICENSE="${AMCHARTS_LICENSE}" .
-            - docker push $IMAGE
+            - docker build -t  $IMAGE --build-arg BASE_GRAPHQL_SERVER_URL="${STAGINIG_BASE_GRAPHQL_SERVER_URL}" --build-arg AMCHARTS_LICENSE="${AMCHARTS_LICENSE}" .
+            - docker push $IMAGE_NAME
