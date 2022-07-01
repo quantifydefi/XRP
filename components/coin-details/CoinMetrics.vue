@@ -5,7 +5,7 @@
         <v-row no-gutters align="center">
           <v-col cols="12">
             <h2 :class="['text-h4 font-weight-medium', 'ml-1', 'text-no-wrap', priceTextClass]">
-              {{ $f(tokenPriceUsd, { pre: '$ ', minDigits: 2 }) }}
+              {{ $f(tokenPriceUsd, { pre: '$ ', minDigits: 2, maxDigits: 8 }) }}
               <span class="grey--text text-caption">USD</span>
               <span class="ml-3">
                 <v-btn
@@ -24,7 +24,7 @@
 
           <v-col cols="12">
             <div class="font-weight-medium subtitle-1 ml-2 text-no-wrap">
-              <span v-text="tokenPriceEth" />
+              <span v-text="$f(tokenPriceEth, { minDigits: 2, maxDigits: 18 })" />
               <span class="font-weight-regular ml-1 grey--text text-caption">ETH</span>
             </div>
           </v-col>

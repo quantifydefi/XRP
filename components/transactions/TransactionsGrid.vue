@@ -9,6 +9,7 @@
       show-expand
       single-expand
       hide-default-footer
+      :mobile-breakpoint="0"
     >
       <!--  expanded buttons   -->
       <template #item.data-table-expand="{ item, isExpanded, expand }">
