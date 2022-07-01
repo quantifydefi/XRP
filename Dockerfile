@@ -19,7 +19,6 @@ RUN apk --no-cache add curl
 COPY . /usr/src/evmx-ui/
 
 RUN npm install
-RUN npm audit fix
 RUN npm generate-types
 
 # build necessary, even if no static files are needed,
