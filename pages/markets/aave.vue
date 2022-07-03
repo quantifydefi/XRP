@@ -38,9 +38,9 @@
                 <v-simple-table>
                   <template #default>
                     <tbody class="text-subtitle-1 text-no-wrap">
-                      <tr v-for="(header, i) in item.headers" :key="i">
-                        <td :class="[textClass]" v-text="header.name" />
-                        <td class="font-weight-bold" v-text="header.value"></td>
+                      <tr v-for="(headerElem, i) in item.headers" :key="i">
+                        <td :class="[textClass]" v-text="headerElem.name" />
+                        <td class="font-weight-bold" v-text="headerElem.value"></td>
                       </tr>
                     </tbody>
                   </template>

@@ -9,18 +9,18 @@
     </v-row>
 
     <v-row>
-      <v-col v-for="(item, i) in pools" :key="i">
+      <v-col v-for="(poolElem, i) in pools" :key="i">
         <v-card tile outlined height="100%">
           <v-card-title class="pa-0 ma-0">
             <v-row class="pa-2">
               <v-col class="d-flex" lg="3">
                 <v-avatar size="24px">
-                  <v-img :src="item.chain.logoUrl" :lazy-src="item.chain.logoUrl"></v-img>
+                  <v-img :src="poolElem.chain.logoUrl" :lazy-src="poolElem.chain.logoUrl"></v-img>
                 </v-avatar>
-                <h4 class="text-subtitle-1 pl-3 text-truncate">{{ item.chain.name }}</h4>
+                <h4 class="text-subtitle-1 pl-3 text-truncate">{{ poolElem.chain.name }}</h4>
               </v-col>
               <v-col class="text-right hidden-sm-and-down" lg="9">
-                <span v-for="(balance, index) in item.balances" :key="index" class="text-caption grey--text mr-2">
+                <span v-for="(balance, index) in poolElem.balances" :key="index" class="text-caption grey--text mr-2">
                   {{ balance.text }}:
                   <span
                     class="text-subtitle-1 text-truncate pink--text font-weight-medium"
@@ -34,7 +34,7 @@
           <v-data-table
             id="balances-grid"
             :headers="columns"
-            :items="item.pool"
+            :items="poolElem.pool"
             :sort-desc="[true]"
             height="100%"
             :items-per-page="10 * 10 ** 12"

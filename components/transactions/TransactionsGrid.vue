@@ -2,7 +2,7 @@
   <v-card tile outlined>
     <v-data-table
       :items-per-page="itemsPerPage"
-      :headers="headers"
+      :headers="cols"
       :items="transactions"
       item-key="txHash"
       class="elevation-0"
@@ -140,16 +140,14 @@
 
       <!--   value   -->
       <template #[`item.value`]="{ item }">
-        <template>
-          <div
-            class="text-no-wrap grey--text"
-            v-text="
-              `${$f(item.txnValue.amount, { maxDigits: 2 })}
+        <div
+          class="text-no-wrap grey--text"
+          v-text="
+            `${$f(item.txnValue.amount, { maxDigits: 2 })}
               ${item.txDetail ? item.txDetail.tokenContractSymbol : chainSymbol}`
-            "
-          />
-          <div class="text-no-wrap" v-text="$f(item.txnValue.priceUsd, { minDigits: 2, pre: '$ ' })" />
-        </template>
+          "
+        />
+        <div class="text-no-wrap" v-text="$f(item.txnValue.priceUsd, { minDigits: 2, pre: '$ ' })" />
       </template>
 
       <!--   txn fee   -->
@@ -229,7 +227,7 @@ export default defineComponent({
   },
   setup() {
     // STATE
-    const headers = ref([
+    const cols = ref([
       {
         text: '',
         value: 'data-table-expand',
@@ -310,7 +308,7 @@ export default defineComponent({
     }
 
     return {
-      headers,
+      cols,
       chainSymbol,
 
       // METHODS
