@@ -91,7 +91,7 @@ import AaveActionDialog from '~/components/pools/AaveActionDialog.vue'
 import { State } from '~/types/state'
 import NetworkSelection from '~/components/common/NetworkSelection.vue'
 import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
-import SwitchNetworkDialog from '~/components/common/SwithNetworkDialog.vue'
+import SwitchNetworkDialog from '~/components/common/SwitchNetworkDialog.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
 
 export default defineComponent({

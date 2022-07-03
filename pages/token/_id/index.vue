@@ -120,12 +120,12 @@
 <script lang="ts">
 import { defineComponent, useRoute } from '@nuxtjs/composition-api'
 import useToken from '~/composables/useToken'
-import CoinProfile from '~/components/coin-details/CoinProfile.vue'
-import CoinMetrics from '~/components/coin-details/CoinMetrics.vue'
+import CoinProfile from '~/components/token-details/CoinProfile.vue'
+import CoinMetrics from '~/components/token-details/CoinMetrics.vue'
 import TokenNews from '~/components/news/TokenNews.vue'
-import TokenAaveAssets from '~/components/coin-details/TokenAaveAssets.vue'
-import TokenBalances from '~/components/coin-details/TokenBalances.vue'
-import TokenPricesChart from '~/components/coin-details/TokenPricesChart.vue'
+import TokenAaveAssets from '~/components/token-details/TokenAaveAssets.vue'
+import TokenBalances from '~/components/token-details/TokenBalances.vue'
+import TokenPricesChart from '~/components/token-details/TokenPricesChart.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
 export default defineComponent({
   components: {

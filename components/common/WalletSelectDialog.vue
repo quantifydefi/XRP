@@ -7,7 +7,7 @@
         <nuxt-link to="/terms-and-conditions" class="text-decoration-none">Terms and Conditions</nuxt-link>
       </p>
       <v-alert v-model="errorAlert" color="error" dense dismissible>{{ error.message }}</v-alert>
-      <v-list-item link :class="['mb-6', ui[theme].overlayColor]" @click="connectWallet('metamask')">
+      <v-list-item link class="mb-6 grey--text" @click="connectWallet('metamask')">
         <v-list-item-avatar tile width="60" height="60">
           <img width="60" height="60" :src="`/img/metamask.svg`" alt="metamask" />
         </v-list-item-avatar>
@@ -19,7 +19,7 @@
         </v-list-item-action>
       </v-list-item>
 
-      <div :class="['pa-4', ui[theme].overlayColor]">
+      <div class="pa-4 grey--text">
         <h6 class="text-subtitle-1 font-weight-bold">New to Ethereum?</h6>
         <small>
           EVM Finance is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.
@@ -50,8 +50,6 @@ export default defineComponent({
     const errorAlert = ref(false)
 
     // COMPUTED
-    const ui = computed(() => store.state.ui)
-    const theme = computed(() => store.state.ui.theme)
     const dialog = computed({
       get() {
         return store.state.ui.walletSelectionDialog
@@ -88,8 +86,6 @@ export default defineComponent({
 
       dialog,
       walletReady,
-      ui,
-      theme,
       error,
       errorAlert,
     }

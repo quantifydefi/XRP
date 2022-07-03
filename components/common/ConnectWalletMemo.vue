@@ -10,7 +10,7 @@
           <div class="title">Wallet Not Connected</div>
           <div class="subtitle-2">To start using EVMX, please connect your Metamask Wallet</div>
           <div class="pt-3">
-            <wallet-connector></wallet-connector>
+            <v-btn tile depressed @click="dispatch('ui/walletDialogStatus', true)">Connect to Wallet</v-btn>
           </div>
         </v-col>
       </v-row>
@@ -19,8 +19,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
-import WalletConnector from '~/components/common/WalletConnector.vue'
+import { defineComponent, useStore } from '@nuxtjs/composition-api'
+import { State } from '~/types/state'
 
-export default defineComponent({ name: 'ConnectWalletMemo', components: { WalletConnector } })
+export default defineComponent({
+  setup() {
+    // COMPOSABLE
+    const { dispatch } = useStore<State>()
+    return { dispatch }
+  },
+})
 </script>

@@ -63,7 +63,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
-import Notification from '../components/common/Notification.vue'
 import GasInfo from '~/components/common/GasInfo.vue'
 import WalletConnector from '~/components/common/WalletConnector.vue'
 import useInitTheme from '~/composables/useInitTheme'

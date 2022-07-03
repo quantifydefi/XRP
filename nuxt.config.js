@@ -21,7 +21,6 @@ export default {
 
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
     'cookie-universal-nuxt',
     [
       '@nuxtjs/google-analytics',
@@ -64,18 +63,6 @@ export default {
     google: {
       families: ['Roboto:100,300,400,500,700,900&display=swap'],
     },
-  },
-  pwa: {
-    manifest: {
-      name: 'EVM Finance',
-      description: 'Uniswap DEX NexGen Display  | EVM Finance',
-      short_name: 'EVM Finance',
-      lang: 'en',
-      display: 'standalone',
-      theme_color: '#1c31b5',
-      start_url: '/',
-    },
-    workbox: false,
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   loading: false,

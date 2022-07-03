@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import { plainToClass } from 'class-transformer'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { computed, inject, reactive, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'

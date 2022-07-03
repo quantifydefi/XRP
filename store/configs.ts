@@ -36,7 +36,7 @@ export const mutations: MutationTree<ConfigState> = {
     state.chains = chains
   },
 
-  SET_CHAIN: (state, chain: Chain) => {
+  SET_AAVE_CHAIN: (state, chain: Chain) => {
     state.currentAaveMarket = chain
   },
 
@@ -57,7 +57,7 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
   },
 
   changeAaveMarket({ commit }, chain: Chain) {
-    commit('SET_CHAIN', chain)
+    commit('SET_AAVE_CHAIN', chain)
   },
 
   changeCurrentTransactionChain({ commit }, chain: Chain) {
