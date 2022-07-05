@@ -181,7 +181,7 @@ export default defineComponent({
       icon.propertyFields.height = 'height'
       icon.horizontalCenter = 'middle'
       icon.verticalCenter = 'middle'
-      series.centerStrength = 0.35
+      series.centerStrength = 0.25
       series.links.template.distance = 4
       series.nodes.template.outerCircle.disabled = true
 
