@@ -4,7 +4,7 @@
       <div class="text-h4 py-3 white--text">About Us</div>
       <v-divider />
 
-      <h1 class="text-h6 py-3 white--text">EVM Finance Launches - July 1, 2022!</h1>
+      <h1 class="text-h6 py-3 white--text">EVM Finance Launches - July 2022!</h1>
       <p>
         We are proud to announce the launch of the EVM.Finance platform, made possible through a grant from the Aave
         Community. EVM.Finance was built by the
