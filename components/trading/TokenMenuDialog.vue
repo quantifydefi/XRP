@@ -1,10 +1,10 @@
 <template>
   <v-dialog v-model="dialog" persistent hide-overlay max-width="375">
-    <v-card tile outlined>
+    <v-card v-if="!sourcesToggle" tile outlined>
       <v-card-title class="subtitle-1 pa-3">
         Select Token
         <v-spacer />
-        <v-btn icon @click="$emit('close-dialog')">
+        <v-btn icon @click="dialog = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -12,111 +12,145 @@
       <v-row justify="center" no-gutters>
         <v-col cols="11">
           <v-text-field
-            v-model="tokenAddressSearch"
             dense
+            color="pink"
             class="rounded-0"
             outlined
             solo
             clearable
             label="Search or paste token address"
+            @input="onSearchChange"
           >
-            <!--                      <template #append>-->
-            <!--                        <v-fade-transition leave-absolute>-->
-            <!--                          <v-progress-circular v-if="loading" size="24" indeterminate></v-progress-circular>-->
-            <!--                          <v-icon v-else-if="!loading && isValidAddress" color="success">mdi-check-circle-outline </v-icon>-->
-            <!--                          <v-icon v-else-if="!loading && isValidAddress === false" color="red accent"-->
-            <!--                            >mdi-close-circle-outline-->
-            <!--                          </v-icon>-->
-            <!--                        </v-fade-transition>-->
-            <!--                      </template>-->
           </v-text-field>
         </v-col>
       </v-row>
 
       <v-divider />
-      <v-list class="text-left overflow-y-auto" max-height="340">
-        <v-list-item v-for="item in tokenList" :key="item.contract_symbol" @click="$emit('close-dialog')">
-          <v-row no-gutters class="py-1">
-            <v-col cols="2">
-              <v-list-item-title class="subtitle-2 font-weight-regular">
-                <v-avatar size="28" class="mt-2">
-                  <img
-                    :src="`https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${item.contract_symbol}.png`"
-                  />
-                </v-avatar>
-              </v-list-item-title>
-            </v-col>
-            <v-col cols="7" class="ml-n3">
-              <div class="subtitle-1 font-weight-medium">
-                {{ item.contract_name }}
-              </div>
-              <div class="mt-n1 subtitle-2 font-weight-regular">
-                {{ item.contract_symbol.toUpperCase() }}
-              </div>
-            </v-col>
-            <v-col class="text-right"> <div class="mt-2 number-font">0</div></v-col>
-          </v-row>
-        </v-list-item>
+      <div v-if="loading" style="height: 500px">
+        <v-skeleton-loader v-for="i in 7" :key="i" type="list-item-avatar-two-line" />
+      </div>
+
+      <v-list v-show="!loading" class="text-left overflow-y-auto" height="500" dense>
+        <v-list-item-group v-model="selectedAddress" color="primary">
+          <v-list-item v-for="(item, i) in tokenList" :key="i" :value="item">
+            <v-list-item-icon>
+              <v-avatar size="28">
+                <img :src="$imageUrlBySymbol(item.symbol)" alt="" @error="$setAltImageUrl" />
+              </v-avatar>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title class="subtitle-1 font-weight-medium" v-text="item.symbol" />
+              <v-list-item-subtitle class="grey--text" v-text="item.name" />
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-tooltip v-if="item.symbol !== 'ETH'" bottom color="black">
+                <template #activator="{ on, attrs }">
+                  <v-btn icon color="grey" x-small v-bind="attrs" v-on="on" @click="importToMetaMask(item)">
+                    <v-icon size="14">mdi-wallet</v-icon>
+                  </v-btn>
+                </template>
+                <span v-text="'Import To Metamask Wallet'" />
+              </v-tooltip>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list-item-group>
+        <div v-if="hasMoreElements" class="mt-1 text-center text-caption" @click="nextPage">
+          <nuxt-link class="pink--text" to="#">Load More</nuxt-link>
+        </div>
+      </v-list>
+      <v-divider />
+      <div class="text-center py-2" @click="sourcesToggle = !sourcesToggle">
+        <nuxt-link to="#">Manage Token List</nuxt-link>
+      </div>
+    </v-card>
+
+    <v-card v-if="sourcesToggle" tile outlined>
+      <v-card-title class="subtitle-1 pa-3">
+        <v-btn icon class="mr-2" @click="sourcesToggle = !sourcesToggle"><v-icon>mdi-arrow-left</v-icon></v-btn>
+        Manage Token Source
+        <v-spacer />
+        <v-btn icon @click="sourcesToggle = !sourcesToggle"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
+
+      <v-divider />
+
+      <v-list class="text-left overflow-y-auto" max-height="340" dense>
+        <v-list-item-group color="primary">
+          <v-list-item v-for="(item, i) in sources" :key="i">
+            <v-list-item-icon>
+              <v-avatar size="28">
+                <v-img :src="item.image" :lazy-src="item.image" />
+              </v-avatar>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title class="subtitle-1 font-weight-medium" v-text="item.name" />
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-switch v-model="item.active" />
+            </v-list-item-action>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRef } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api'
+import useSwapTokensList from '~/composables/useSwapTokensList'
+import { UniswapToken } from '~/types/apollo/main/types'
+import { EmitEvents } from '~/types/events'
 
-export default defineComponent({
-  name: 'TokenMenuDialog',
+type importTokenToMetamaskFunction = (params: any) => void
+
+type Props = {
+  importTokenToMetamask: importTokenToMetamaskFunction
+}
+
+export default defineComponent<Props>({
   props: {
-    isVisible: {
-      type: Boolean,
-      default: false,
-    },
+    importTokenToMetamask: { type: Function as PropType<importTokenToMetamaskFunction>, required: true },
   },
-  setup(props) {
-    const loading = ref(false)
+
+  setup(props, { emit }) {
+    // STATE
     const tokenAddressSearch = ref('')
-    const dialog = toRef(props, 'isVisible')
+    const sourcesToggle = ref(false)
+    const dialog = ref(false)
+    const selectedAddress = ref<UniswapToken | null>(null)
+    const { sources, tokenList, hasMoreElements, loading, onSearchChange, nextPage } = useSwapTokensList()
+    const { $imageUrlBySymbol } = useContext()
 
-    const tokenList = [
-      {
-        contract_name: 'Ethereum',
-        contract_symbol: 'eth',
-        contract_address: '1',
-      },
-      {
-        contract_name: 'Aave',
-        contract_symbol: 'aave',
-        contract_address: '2',
-      },
-      {
-        contract_name: 'Balancer',
-        contract_symbol: 'bal',
-        contract_address: '3',
-      },
-      {
-        contract_name: 'Basic Attention Token',
-        contract_symbol: 'bat',
-        contract_address: '4',
-      },
-      {
-        contract_name: 'USD Coin',
-        contract_symbol: 'usdc',
-        contract_address: '5',
-      },
-      {
-        contract_name: 'Tether USD',
-        contract_symbol: 'usdt',
-        contract_address: '6',
-      },
-      {
-        contract_name: 'Uniswap',
-        contract_symbol: 'uni',
-        contract_address: '7',
-      },
-    ]
+    async function importToMetaMask(token: UniswapToken) {
+      await props.importTokenToMetamask({
+        address: token.address,
+        symbol: token.symbol,
+        decimals: token.decimals,
+        image: $imageUrlBySymbol(token.symbol),
+      })
+    }
 
-    return { loading, dialog, tokenList, tokenAddressSearch }
+    // WATCHERS
+    watch(selectedAddress, (newVal: UniswapToken | null) => {
+      if (newVal) {
+        emit(EmitEvents.onUniswapTokenSelect, newVal)
+        dialog.value = false
+      }
+    })
+
+    return {
+      dialog,
+      loading,
+      tokenList,
+      sources,
+      sourcesToggle,
+      tokenAddressSearch,
+      hasMoreElements,
+      selectedAddress,
+      onSearchChange,
+      nextPage,
+      importToMetaMask,
+    }
   },
 })
 </script>

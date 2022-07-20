@@ -8,6 +8,8 @@ export enum EmitEvents {
   onNetworkSelectChange = 'on-network-select-change',
   onIntervalChange = 'on-interval-change',
   navigateToExplorer = 'navigate-to-explorer',
+  onUniswapTokenSelect = 'on-uniswap-token-select',
+  onUniswapTokenMenuOpen = 'on-uniswap-token-menu-open',
 }
 
 export enum DefiEvents {

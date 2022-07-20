@@ -2,7 +2,7 @@ import { useQuery } from '@vue/apollo-composable/dist'
 import { computed, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { plainToClass } from 'class-transformer'
 import { AavePoolGQL } from '~/apollo/main/pools.query.graphql'
-import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio } from '~/types/apollo/main/types'
+import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio } from '@/types/apollo/main/types'
 import { State } from '~/types/state'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 

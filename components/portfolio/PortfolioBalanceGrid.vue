@@ -29,7 +29,7 @@
       <template #[`item.contractTickerSymbol`]="{ item }">
         <div class="text-no-wrap overflow-x-hidden">
           <v-avatar size="20" class="mr-2">
-            <img :src="$imageUrlBySymbol(item.contractTickerSymbol)" @error="$setAltImageUrl" />
+            <img :src="$imageUrlBySymbol(item.contractTickerSymbol)" alt="" @error="$setAltImageUrl" />
           </v-avatar>
           <nuxt-link
             class="text-capitalize text-decoration-none white--text"

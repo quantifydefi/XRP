@@ -165,11 +165,6 @@ type Mutation {
   createTodo(input: NewTodo!): Todo!
 }
 
-"""
-
-Returns news by coin symbol
-https://cryptopanic.com/api/v1/posts/?auth_token=API_KEY&currencies=COIN_SYMBOL
-"""
 type News {
   currencies: [NewsCurrency!]!
   id: Int!
@@ -201,24 +196,18 @@ type Price {
 }
 
 type Query {
-  "Aave Addresses "
   aaveAddresses(chainId: Int!): [AaveAddress!]!
-  "Aave Pool "
   aavePools(chainId: Int!): [AavePool!]!
-  "Portfolio Balances"
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chains: [Chain!]!
   dailyChart(coinGeckoID: String! = ""): [DailyChart!]!
-  "Gas Stats for ETH"
   gas: [GasStats!]!
-  "Global Staths for Coin Gaico"
   globalStats: GlobalStats!
-  "Recent Usd Prices "
   recentPrices: Map!
   todos: [Todo!]!
   token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
-  "Portfolio Transactions"
   transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
+  uniswapTokens(chainId: Int! = 1, pageNumber: Int! = 0, pageSize: Int! = 100, searchString: String! = "", source: [UniswapTokenSource!]!, userWallet: String! = ""): UniswapTokens!
 }
 
 type Todo {
@@ -310,6 +299,19 @@ type TxDetail {
   value: String!
 }
 
+type UniswapToken {
+  address: String!
+  chainId: Int!
+  decimals: Int!
+  name: String!
+  symbol: String!
+}
+
+type UniswapTokens {
+  items: [UniswapToken!]!
+  pagination: Pagination
+}
+
 type User {
   id: ID!
   name: String!
@@ -324,6 +326,13 @@ enum TimeInterval {
   INTERVAL_30MIN
   INTERVAL_4H
   INTERVAL_5MIN
+}
+
+enum UniswapTokenSource {
+  aave
+  coinGecko
+  uniswap
+  userBalances
 }
 
 scalar JSONMap

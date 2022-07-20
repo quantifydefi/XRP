@@ -2,30 +2,43 @@
   <v-row>
     <v-col>
       <v-form ref="form">
-        <v-text-field hide-details outlined color="pink" style="background: #121212" dense class="rounded-0 text-right">
+        <v-text-field
+          v-model="amount"
+          hide-details
+          outlined
+          color="pink"
+          dense
+          class="rounded-0 px-0"
+          :disabled="loading"
+          @input="onInput"
+        >
           <template #append>
-            <v-row class="ml-0 my-0 mr-1">
-              <v-divider class="mx-3" vertical></v-divider>
-              <div class="text-no-wrap">
-                <v-avatar size="22" class="mt-n1">
-                  <v-img
-                    alt="USDC"
-                    src="https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/usdc.png"
-                  />
-                </v-avatar>
-                <span class="ml-2 mr-1 subtitle-1 font-weight-medium grey--text text--lighten-1" v-text="`USDC`" />
-                <v-btn icon x-small class="mt-n1" @click="$emit('toggle-token-menu-dialog')">
-                  <v-icon size="22" color="grey lighten-1">mdi-chevron-down</v-icon>
-                </v-btn>
-              </div>
-            </v-row>
+            <v-divider class="mx-3 mb-2" vertical />
+            <img
+              width="24"
+              height="24"
+              style="margin-top: 2px"
+              :src="$imageUrlBySymbol(token.symbol)"
+              alt=""
+              @error="$setAltImageUrl"
+            />
+            <v-btn text class="mb-2 py-0" tile small :disabled="loading" @click="$emit(menuOpenEvent)">
+              <span class="text-subtitle-2" v-text="token.symbol" />
+              <v-icon right dark> mdi-chevron-down</v-icon>
+            </v-btn>
           </template>
         </v-text-field>
 
-        <v-row class="pt-2 px-1 grey--text text--lighten-1 caption">
-          <v-col v-text="`Balance: 1000`" />
-          <v-col class="text-right">
-            <span class="font-weight-medium" v-text="`$ 191.095 (~0.816% )`" />
+        <v-row class="mt-2 grey--text text--lighten-1 caption" no-gutters>
+          <v-col cols="7">
+            <v-skeleton-loader v-if="loading" type="heading" tile height="20" width="250" />
+            <!--            <span v-else>From Direction: {{ formTradeDirection }}</span>-->
+            <!--            <div>Quote: {{ expectedConvertQuote }}</div>-->
+            <!--            <div>Active {{ isActive }}</div>-->
+          </v-col>
+          <v-col class="text-right text-truncate" style="max-width: 170px">
+            <v-skeleton-loader v-if="loading" type="heading" tile height="20" class="ml-8" width="300" />
+            <span v-else class="mr-0" v-text="`Balance: ${balance}`" />
           </v-col>
         </v-row>
       </v-form>
@@ -34,9 +47,70 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, toRefs, watch } from '@nuxtjs/composition-api'
+import { TradeDirection } from 'simple-uniswap-sdk'
+import { UniswapToken } from '~/types/apollo/main/types'
+import { EmitEvents } from '~/types/events'
 
-export default defineComponent({
-  setup() {},
+type Props = {
+  token: UniswapToken
+  formTradeDirection: keyof typeof TradeDirection
+  tradeDirection: keyof typeof TradeDirection
+  balance: string
+  expectedConvertQuote: number
+  loading: boolean
+}
+
+export default defineComponent<Props>({
+  props: {
+    token: {
+      type: Object as PropType<UniswapToken | null>,
+      required: true,
+    },
+    formTradeDirection: { type: String as PropType<keyof typeof TradeDirection>, required: true },
+    tradeDirection: { type: String as PropType<keyof typeof TradeDirection>, required: true },
+    balance: { type: String, default: '0' },
+    expectedConvertQuote: { type: Number, required: true },
+    loading: { type: Boolean, default: false },
+  },
+
+  setup(props, { emit }) {
+    // STATE
+    const amountVal = ref<number>(0)
+    const menuOpenEvent = EmitEvents.onUniswapTokenMenuOpen
+    const isActive = computed(() => props.formTradeDirection === props.tradeDirection)
+
+    const amount = computed({
+      get() {
+        return new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 20 }).format(
+          amountVal.value
+        )
+      },
+      set(value: string) {
+        if (value && value.length > 0) {
+          const num = parseFloat(value.replace(/,/g, ''))
+          if (!isNaN(num)) {
+            amountVal.value = parseFloat(value.replace(/,/g, ''))
+          } else amountVal.value = 0
+        } else amountVal.value = 0
+      },
+    })
+
+    function onMenyOpen() {
+      emit(menuOpenEvent)
+    }
+
+    function onInput() {
+      const searchTimeout: any = null
+      clearTimeout(searchTimeout)
+      setTimeout(() => {
+        emit(EmitEvents.onValueChanged, { direction: props.formTradeDirection, value: amountVal.value })
+      }, 1000)
+    }
+
+    watch(toRefs(props).expectedConvertQuote, (val: number) => (!isActive.value ? (amount.value = `${val}`) : null))
+
+    return { amount, menuOpenEvent, isActive, onMenyOpen, onInput }
+  },
 })
 </script>

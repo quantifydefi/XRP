@@ -27,6 +27,7 @@
     "ethers": "^5.6.9",
     "nuxt": "^2.15.8",
     "particles.vue": "^3.1.0",
+    "simple-uniswap-sdk": "^3.6.2",
     "transformer": "^1.2.8",
     "tsparticles": "^2.1.0",
     "vue": "^2.6.14",
