@@ -6,8 +6,8 @@ import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 const checkAddress = (token: UniswapToken, chain: number): string => {
   const config: { [key: string]: { chainId: number; contract: string } } = {
-    // ETH: { chainId: 1, contract: ETH.MAINNET().contractAddress },
-    ETH: { chainId: 1337, contract: ETH.MAINNET().contractAddress },
+    ETH: { chainId: 1, contract: ETH.MAINNET().contractAddress },
+    // ETH: { chainId: 1337, contract: ETH.MAINNET().contractAddress },
   }
 
   const hasSymbolKey = token.symbol.toUpperCase() in config
@@ -44,7 +44,7 @@ export default function (
 
   const createFactory = async () => {
     const uniswapPair = new UniswapPair({
-      providerUrl: 'http://127.0.0.1:8545',
+      // providerUrl: 'http://127.0.0.1:8545',
       fromTokenContractAddress: checkAddress(fromToken.value, chainId.value ?? 1),
       toTokenContractAddress: checkAddress(toToken.value, chainId.value ?? 1),
       ethereumAddress: account.value,
