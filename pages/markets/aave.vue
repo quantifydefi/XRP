@@ -65,20 +65,27 @@
           <aave-markets :loading="loading" :pools="pools" :search="searchString" @init-action="initAction" />
         </v-col>
       </v-row>
-      <aave-action-dialog
-        ref="actionDialog"
-        :health-factor="healthFactor"
-        :total-borrowed-usd="totalBorrowedUsd"
-        :total-collateral-usd="totalCollateralUsd"
-        :max-ltv="maxLtv"
-        @transaction-success="updatePortfolio"
-      />
+
+      <v-dialog v-model="dialog" width="400">
+        <aave-actions
+          v-if="dialog"
+          :type="`dialog`"
+          :health-factor="healthFactor"
+          :total-borrowed-usd="totalBorrowedUsd"
+          :total-collateral-usd="totalCollateralUsd"
+          :max-ltv="maxLtv"
+          :pool-data="selectedPool"
+          :pool-action="poolAction"
+          @transaction-success="updatePortfolio"
+          @toggle-action-dialog="dialog = !dialog"
+        />
+      </v-dialog>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, Ref, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import protocolHeader from '~/components/ProtocolHeader.vue'
 import useAavePools, { AavePoolModel, actionTypes } from '~/composables/useAavePools'
 import AaveMarkets from '~/components/pools/AaveMarkets.vue'
@@ -87,18 +94,18 @@ import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import UseAavePoolsStats from '~/composables/useAavePoolsStats'
 import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
 import AaveMarketStats from '~/components/pools/AaveMarketStats.vue'
-import AaveActionDialog from '~/components/pools/AaveActionDialog.vue'
 import { State } from '~/types/state'
 import NetworkSelection from '~/components/common/NetworkSelection.vue'
 import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
 import SwitchNetworkDialog from '~/components/common/SwitchNetworkDialog.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
+import AaveActions from '~/components/pools/AaveActions.vue'
 
 export default defineComponent({
   components: {
+    AaveActions,
     SwitchNetworkDialog,
     NetworkSelection,
-    AaveActionDialog,
     AaveMarketStats,
     AaveCompositionChart,
     AaveMarkets,
@@ -118,8 +125,10 @@ export default defineComponent({
       url: 'https://aave.com',
     })
 
+    const dialog = ref(false)
     const portfolio = ref<PortfolioMap>({})
-    const poolAction = ref<any>(null)
+    const selectedPool = ref() as Ref<AavePoolModel>
+    const poolAction = ref('deposit') as Ref<actionTypes>
     const actionDialog = ref<any>(null)
     const searchString = ref('')
     const switchNetworkDialog = ref<any>(null)
@@ -176,7 +185,10 @@ export default defineComponent({
     }
 
     function initAction({ action, pool }: { action: actionTypes; pool: AavePoolModel }) {
-      actionDialog.value.init(action, pool)
+      // actionDialog.value.init(action, pool)
+      poolAction.value = action
+      selectedPool.value = pool
+      dialog.value = true
     }
 
     // META TAGS
@@ -184,10 +196,12 @@ export default defineComponent({
 
     return {
       // COMPUTED
+      dialog,
       loading,
       walletReady,
       header,
       pools,
+      selectedPool,
       totalCollateralUsd,
       totalBorrowedUsd,
       healthFactor,

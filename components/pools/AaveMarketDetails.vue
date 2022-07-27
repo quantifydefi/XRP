@@ -1,6 +1,6 @@
 <template>
-  <v-row class="py-8">
-    <v-col lg="7" md="12">
+  <v-row justify="center" class="py-8">
+    <v-col :lg="showBalanceChart ? 7 : 12" md="12">
       <v-row align="center">
         <v-col>
           <div :class="[textClass, 'text-right', 'text-caption']">
@@ -165,7 +165,7 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-col class="text-center">
+    <v-col v-if="showBalanceChart" class="text-center">
       <client-only>
         <v-btn v-if="!walletReady" tile depressed @click="dispatch('ui/walletDialogStatus', true)">
           Connect To Wallet
@@ -186,6 +186,7 @@ import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 type Props = {
   pool: AavePoolModel
+  showBalanceChart: Boolean
 }
 export default defineComponent<Props>({
   components: {
@@ -194,6 +195,7 @@ export default defineComponent<Props>({
   },
   props: {
     pool: { type: Object as PropType<AavePoolModel>, required: true },
+    showBalanceChart: { type: Boolean, default: true },
   },
   setup(props) {
     // COMPOSABLE

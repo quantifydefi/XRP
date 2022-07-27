@@ -7,7 +7,7 @@ import { State } from '~/types/state'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
 
 export type actionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
-export const aaveActions = ref<Array<actionTypes>>(['deposit', 'borrow', 'repay', 'withdraw'])
+export const aaveActions = ref<Array<actionTypes>>(['deposit', 'borrow', 'withdraw', 'repay'])
 
 export class AavePoolModel implements AavePool {
   readonly id!: string

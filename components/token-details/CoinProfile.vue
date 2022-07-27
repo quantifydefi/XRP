@@ -1,11 +1,17 @@
 <template>
-  <v-card tile outlined height="500" class="pa-4">
+  <v-card :height="height" tile outlined class="pa-4">
     <v-row no-gutters>
       <v-col cols="12">
         <v-row align="center">
           <v-col class="d-flex">
             <div class="mr-2 d-flex">
-              <img alt="" :src="$imageUrlBySymbol(qcKey)" width="36" height="36" @error="$setAltImageUrl" />
+              <img
+                :alt="qcKey + 'logo'"
+                :src="$imageUrlBySymbol(qcKey)"
+                width="36"
+                height="36"
+                @error="$setAltImageUrl"
+              />
               <img
                 v-if="isAaveToken"
                 alt=""
@@ -15,10 +21,10 @@
                 @error="$setAltImageUrl"
               />
             </div>
-            <h2 class="text-h4 d-inline-block text-truncate" style="max-width: 360px">
+            <h1 class="text-h4 d-inline-block text-truncate" style="max-width: 360px">
               {{ symbol }}
               <span class="text-h6 pink--text ml-2 mt-2" v-text="isAaveToken ? aaveSymbol : qcKey" />
-            </h2>
+            </h1>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-2">
@@ -26,7 +32,7 @@
             <v-chip
               v-for="(item, i) in tags"
               v-show="item.active"
-              :key="i"
+              :key="`tag_${i}`"
               label
               pill
               small
@@ -43,90 +49,172 @@
           </v-col>
         </v-row>
 
-        <div class="d-flex text-no-wrap subtitle-2 text-truncate">
-          <div class="grey--text pb-1" style="min-width: 70px" v-text="`Contract:`"></div>
-          <div class="pl-3" style="width: 320px" v-text="$truncateAddress(contractAddress, 12, 12)"></div>
-          <v-btn color="primary" x-small class="mb-1 ml-1" icon @click="$copyAddressToClipboard(contractAddress)">
-            <v-icon size="18">mdi-content-copy</v-icon>
-          </v-btn>
-        </div>
+        <v-row no-gutters>
+          <v-col v-if="contractAddress.length > 0" class="d-flex text-no-wrap">
+            <div
+              class="caption font-weight-medium grey--text mr-3 pb-2"
+              style="min-width: 70px"
+              v-text="`Contract Address`"
+            ></div>
+            <v-chip class="mb-2 mr-1 px-3 font-weight-medium cursor-text" color="#272727" label pill small>
+              <v-avatar left class="mr-0 pr-0"> <v-icon size="18" color="grey">mdi-file</v-icon> </v-avatar>
+              {{ $truncateAddress(contractAddress, 12, 12) }}
+              <v-icon size="12" class="ml-2 text-hover-primary" @click="$copyAddressToClipboard(contractAddress)">
+                mdi-content-copy
+              </v-icon>
+            </v-chip>
+          </v-col>
+        </v-row>
 
-        <div v-for="(elem, i) in resourcesUrls" :key="i" class="d-flex subtitle-2 text-no-wrap text-truncate">
-          <div class="grey--text py-1" style="min-width: 70px" v-text="elem.title"></div>
-          <div style="width: 320px">
+        <v-row v-for="(elem, i) in resourcesUrls" :key="`resource_${i}`" no-gutters>
+          <v-col class="d-flex">
+            <div class="caption font-weight-medium pb-3 grey--text pr-3" style="min-width: 70px" v-text="elem.title" />
+
             <v-menu v-if="elem.items.length > 1" nudge-top="15" nudge-left="5">
               <template #activator="{ on, attrs }">
                 <v-chip
                   v-bind="attrs"
-                  target="_blank"
                   label
-                  class="text-lowercase text-truncate font-weight-medium text-highlight rounded-0"
-                  color="transparent"
+                  pill
+                  small
+                  color="#272727"
+                  class="font-weight-medium mb-2 mr-1 px-3"
                   v-on="on"
                 >
-                  <div class="text-truncate" v-text="elem.items[0]" />
-                  <v-icon class="ml-2" small>mdi-chevron-down</v-icon>
+                  <v-avatar left class="mr-0 pr-0">
+                    <v-icon size="18" color="grey">{{ elem.icon }}</v-icon>
+                  </v-avatar>
+                  {{ cleanUrl(elem.items[0]) }}
+                  <v-icon size="14" class="ml-2">mdi-chevron-down</v-icon>
                 </v-chip>
               </template>
 
               <v-list dense max-width="360">
                 <v-list-item
-                  v-for="(url, index) in elem.items"
-                  :key="index"
-                  class="text-highlight"
+                  v-for="(url, j) in elem.items"
+                  :key="`item_${j}`"
+                  class="text-hover-primary"
                   :href="url"
                   target="_blank"
                 >
-                  <v-list-item-title class="font-weight-medium subtitle-2" v-text="url" />
+                  <v-list-item-title class="font-weight-medium caption" v-text="cleanUrl(url)" />
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-chip
-              v-for="link in elem.items"
-              v-else
-              :key="link"
-              :href="link"
-              target="_blank"
-              color="transparent"
-              label
-              class="text-lowercase font-weight-medium text-highlight rounded-0 text-truncate"
-              v-text="link"
-            >
-            </v-chip>
-          </div>
-        </div>
 
-        <div class="d-flex text-no-wrap subtitle-2">
-          <div class="grey--text pt-2" style="min-width: 70px" v-text="`Socials:`"></div>
-          <div class="pt-1 d-flex" style="width: 320px">
-            <div v-for="(elem, i) in socials" :key="i">
+            <v-chip
+              v-else-if="elem.items.length === 1"
+              target="_blank"
+              :href="elem.items[0]"
+              label
+              pill
+              small
+              class="font-weight-medium mb-2 mr-1 px-3"
+              color="#272727"
+            >
+              <v-avatar left class="mr-0 pr-0">
+                <v-icon size="18" color="grey">{{ elem.icon }}</v-icon>
+              </v-avatar>
+              {{ cleanUrl(elem.items[0]) }}
+              <v-icon size="10" class="ml-2">mdi-open-in-new</v-icon>
+            </v-chip>
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters>
+          <v-col class="d-flex">
+            <div
+              class="caption font-weight-medium pb-2 grey--text pr-3"
+              style="min-width: 70px"
+              v-text="`Source Code`"
+            />
+
+            <div v-for="(elem, i) in sourceCodes" :key="`source_${i}`">
+              <v-menu v-if="elem.items.length > 1" nudge-top="15" nudge-left="5">
+                <template #activator="{ on, attrs }">
+                  <v-chip
+                    v-bind="attrs"
+                    target="_blank"
+                    label
+                    pill
+                    small
+                    color="#272727"
+                    class="font-weight-medium mb-2 mr-1 px-3"
+                    v-on="on"
+                  >
+                    <v-avatar left class="mr-0 pr-0">
+                      <v-icon size="18" color="grey">{{ elem.icon }}</v-icon>
+                    </v-avatar>
+                    {{ cleanUrl(elem.items[0]) }}
+                    <v-icon size="14" class="ml-2">mdi-chevron-down</v-icon>
+                  </v-chip>
+                </template>
+
+                <v-list dense max-width="360">
+                  <v-list-item
+                    v-for="(url, j) in elem.items"
+                    :key="`source2_${j}`"
+                    class="text-hover-primary"
+                    :href="url"
+                    target="_blank"
+                  >
+                    <v-list-item-title class="font-weight-medium caption" v-text="url" />
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+
+              <v-chip
+                v-else-if="elem.items.length > 0"
+                target="_blank"
+                :href="elem.items[0]"
+                label
+                pill
+                small
+                class="font-weight-medium mb-2 mr-1 px-3"
+                color="#272727"
+              >
+                <v-avatar left class="mr-0 pr-0">
+                  <v-icon size="18" color="grey">{{ elem.icon }}</v-icon>
+                </v-avatar>
+                {{ cleanUrl(elem.items[0]) }}
+                <v-icon size="10" class="ml-2">mdi-open-in-new</v-icon>
+              </v-chip>
+            </div>
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters>
+          <v-col class="d-flex">
+            <div class="caption font-weight-medium pb-2 grey--text pr-3 pt-1">Community Links</div>
+            <div v-for="(elem, i) in socials" :key="`social_${i}`">
               <v-btn
                 v-if="elem.link"
-                class="mx-2 text-hover-primary grey--text"
-                target="_blank"
-                fab
+                :key="i"
+                class="mr-2"
                 x-small
-                elevation="1"
+                height="28"
+                width="28"
+                fab
                 :href="elem.link"
-                color="grey darken-4"
+                target="_blank"
               >
-                <v-icon v-if="elem.icon.startsWith('mdi')" size="20">{{ elem.icon }}</v-icon>
+                <v-icon v-if="elem.icon.startsWith('mdi')" size="18" color="grey">{{ elem.icon }}</v-icon>
 
-                <v-avatar v-else size="20">
+                <v-avatar v-else size="18">
                   <v-img class="color-icon-primary" :src="elem.icon" :lazy-src="elem.link" />
                 </v-avatar>
               </v-btn>
             </div>
-          </div>
-        </div>
+          </v-col>
+        </v-row>
 
-        <v-row justify="center" no-gutters align="center" class="mt-1">
+        <v-row justify="center" no-gutters align="center">
           <v-col>
-            <v-card elevation="0" :max-height="130" class="pa-0 mt-4">
-              <h1 class="subtitle-1 font-weight-medium" v-text="`About ${symbol}`" />
+            <h1 class="subtitle-2 pb-1" v-text="`About ${symbol}`" />
+            <v-card elevation="0" class="overflow-auto" :height="contractAddress.length > 0 ? 60 : 90">
               <pre
-                style="white-space: pre-line; max-height: 170px"
-                class="pr-2 overflow-y-auto subtitle-2 font-weight-regular grey--text"
+                style="white-space: pre-line"
+                class="overflow-y-auto pr-2 subtitle-2 font-weight-regular grey--text"
                 v-text="coinDescription"
               />
             </v-card>
@@ -141,11 +229,14 @@
 import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
 
 type Props = {
+  height: string
+
   qcKey: string
   symbol: string
   isAaveToken: boolean
   isQCToken: boolean
   aaveSymbol: string
+  coinDescription: string
 
   websiteLinks: { links?: string[] } | null
   bitBucketRepos: { links?: string[] } | null
@@ -161,6 +252,8 @@ type Props = {
 }
 export default defineComponent<Props>({
   props: {
+    height: { type: String, default: '272' },
+
     qcKey: { type: String, required: true },
     symbol: { type: String, required: true },
     isAaveToken: { type: Boolean, default: false },
@@ -186,14 +279,22 @@ export default defineComponent<Props>({
   },
   setup(props) {
     // COMPUTED
-    const resourcesUrls = computed<{ title: string; items: string[] }[]>(() => [
-      { title: 'Website:', items: props.websiteLinks?.links ?? [] },
-      { title: 'Explorer:', items: props.explorerUrls?.links ?? [] },
+    const resourcesUrls = computed<{ title: string; icon: string; items: string[] }[]>(() => [
+      { title: 'Website', icon: 'mdi-link-variant', items: props.websiteLinks?.links ?? [] },
+      { title: 'Explorer', icon: 'mdi-magnify', items: props.explorerUrls?.links ?? [] },
+    ])
+
+    const sourceCodes = computed<{ icon: string; items: string[] }[]>(() => [
       {
-        title: 'Source:',
-        items: [...(props.bitBucketRepos?.links ?? []), ...(props.gitHubRepos?.links ?? [])],
+        icon: 'mdi-github',
+        items: [...(props.gitHubRepos?.links ?? [])],
+      },
+      {
+        icon: 'mdi-bitbucket',
+        items: [...(props.bitBucketRepos?.links ?? [])],
       },
     ])
+
     const socials = computed<{ link: string; icon: string; style?: Object }[]>(() => [
       {
         link: props.telegramChannelId ? `https://t.me/${props.telegramChannelId}` : '',
@@ -203,7 +304,11 @@ export default defineComponent<Props>({
       { link: props.subredditUrl, icon: 'mdi-reddit' },
       { link: props.facebookUrl, icon: 'mdi-facebook' },
       { link: props.twitterUrl, icon: 'mdi-twitter' },
-      { link: props.discordChannelId, icon: 'mdi-discord' },
+      {
+        link: props.discordChannelId,
+        icon: '/img/telegram.svg',
+        style: { filter: 'invert(99%) sepia(76%) saturate(53%) hue-rotate(178deg) brightness(114%) contrast(96%)' },
+      },
     ])
 
     const tags = computed<{ text: string; active: boolean; link?: boolean; img?: string; action?: () => void }[]>(
@@ -219,7 +324,11 @@ export default defineComponent<Props>({
         },
       ]
     )
-    return { resourcesUrls, socials, tags }
+
+    function cleanUrl(url: string): string {
+      return url?.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0] ?? ''
+    }
+    return { resourcesUrls, sourceCodes, socials, tags, cleanUrl }
   },
 })
 </script>

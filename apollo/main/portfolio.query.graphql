@@ -102,3 +102,43 @@ query TransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pag
     }
   }
 }
+
+query TransfersGQL($chainId: Int!, $address: String!, $contractAddress: String!,  $pageNumber: Int!, $pageSize: Int!) {
+  transfers(chainId: $chainId, address: $address,  contractAddress: $contractAddress, pageNumber: $pageNumber, pageSize: $pageSize){
+    pagination {
+      hasMore
+      pageSize
+      pageNumber
+    }
+    items{
+      blockSignedAt
+      txHash
+      successful
+      gasSpent
+      gasPrice
+      gasQuote
+      transfers{
+        fromAddress
+        fromAddressLabel
+        fromAddressName
+        fromAddressSymbol
+        fromAddressIsContract
+
+        toAddress
+        toAddressLabel
+        toAddressName
+        toAddressSymbol
+        toAddressIsContract
+
+        contractDecimals
+        contractName
+        contractTickerSymbol
+        contractAddress
+        logoUrl
+        transferType
+        delta
+        deltaQuote
+      }
+    }
+  }
+}

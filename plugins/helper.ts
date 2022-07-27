@@ -46,6 +46,15 @@ const imageUrlBySymbol = (symbol: string | null) =>
 const truncateAddress = (address: string, zeroIndexTo: number, endIndexMinus: number): string =>
   address ? address.slice(0, zeroIndexTo) + '...' + address.slice(address.length - endIndexMinus, address.length) : ''
 
+const navigateToExplorer = (
+  address: string,
+  type: 'tx' | 'address' = 'address',
+  blockExplorerUrl = 'https://etherscan.io/'
+): void => {
+  const url = `${blockExplorerUrl}${type}/${address}`
+  window.open(url)
+}
+
 export default defineNuxtPlugin((context: Context) => {
   context.$f = helper
   context.$copyAddressToClipboard = copyAddressToClipboard
@@ -55,4 +64,5 @@ export default defineNuxtPlugin((context: Context) => {
   Vue.prototype.$setAltImageUrl = setAltImageUrl
   Vue.prototype.$imageUrlBySymbol = imageUrlBySymbol
   Vue.prototype.$truncateAddress = truncateAddress
+  Vue.prototype.$navigateToExplorer = navigateToExplorer
 })

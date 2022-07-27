@@ -102,6 +102,17 @@ export type BalanceItem = {
   type: Scalars['String'];
 };
 
+export type BlockTransactionContractTransfer = {
+  __typename?: 'BlockTransactionContractTransfer';
+  blockSignedAt: Scalars['String'];
+  gasPrice: Scalars['Int'];
+  gasQuote: Scalars['Float'];
+  gasSpent: Scalars['Int'];
+  successful: Scalars['Boolean'];
+  transfers: Array<TokenTransferItem>;
+  txHash: Scalars['String'];
+};
+
 export type Chain = {
   __typename?: 'Chain';
   blockExplorerUrl: Scalars['String'];
@@ -258,6 +269,8 @@ export type Query = {
   token: Token;
   /** Portfolio Transactions */
   transactions: Transaction;
+  /** ERC20 token transfers for address  */
+  transfers: Transfers;
 };
 
 
@@ -295,6 +308,15 @@ export type QueryTokenArgs = {
 export type QueryTransactionsArgs = {
   address: Scalars['String'];
   chainId?: Scalars['Int'];
+  pageNumber?: Scalars['Int'];
+  pageSize?: Scalars['Int'];
+};
+
+
+export type QueryTransfersArgs = {
+  address: Scalars['String'];
+  chainId?: Scalars['Int'];
+  contractAddress: Scalars['String'];
   pageNumber?: Scalars['Int'];
   pageSize?: Scalars['Int'];
 };
@@ -357,10 +379,32 @@ export type Token = {
   websiteUrl?: Maybe<Scalars['JSONMap']>;
 };
 
+export type TokenTransferItem = {
+  __typename?: 'TokenTransferItem';
+  contractAddress: Scalars['String'];
+  contractDecimals: Scalars['Int'];
+  contractName: Scalars['String'];
+  contractTickerSymbol: Scalars['String'];
+  delta: Scalars['String'];
+  deltaQuote: Scalars['Float'];
+  fromAddress: Scalars['String'];
+  fromAddressIsContract: Scalars['Boolean'];
+  fromAddressLabel: Scalars['String'];
+  fromAddressName: Scalars['String'];
+  fromAddressSymbol: Scalars['String'];
+  logoUrl: Scalars['String'];
+  toAddress: Scalars['String'];
+  toAddressIsContract: Scalars['Boolean'];
+  toAddressLabel: Scalars['String'];
+  toAddressName: Scalars['String'];
+  toAddressSymbol: Scalars['String'];
+  transferType: Scalars['String'];
+};
+
 export type Transaction = {
   __typename?: 'Transaction';
   address: Scalars['String'];
-  chainID: Scalars['Float'];
+  chainID: Scalars['Int'];
   items: Array<TransactionItem>;
   nextUpdateAt: Scalars['String'];
   pagination?: Maybe<Pagination>;
@@ -388,6 +432,17 @@ export type TransactionItem = {
   txHash: Scalars['String'];
   value: Scalars['String'];
   valueQuote: Scalars['Float'];
+};
+
+export type Transfers = {
+  __typename?: 'Transfers';
+  address: Scalars['String'];
+  chainId: Scalars['Int'];
+  items: Array<BlockTransactionContractTransfer>;
+  nextUpdateAt: Scalars['String'];
+  pagination: Pagination;
+  quoteCurrency: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type TxDetail = {
@@ -454,6 +509,17 @@ export type TransactionsGqlQueryVariables = Exact<{
 
 
 export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, txHash: string, successful: boolean, fromAddress: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasQuote: number, gasPrice: number, gasSpent: number, txDetails?: Array<{ __typename?: 'TxDetail', fromAddress: string, toAddress: string, value: string, tokenSymbolName: string, tokenContractSymbol: string, tokenContractDecimals: number, tokenAddress: string, tokenLogoUrl: string, priceUSD: number }> | null, logEvents?: Array<{ __typename?: 'LogEvent', logOffset: number, txHash: string, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, decoded: boolean, value: string } | null> } }> | null }> } };
+
+export type TransfersGqlQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+  address: Scalars['String'];
+  contractAddress: Scalars['String'];
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+}>;
+
+
+export type TransfersGqlQuery = { __typename?: 'Query', transfers: { __typename?: 'Transfers', pagination: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null }, items: Array<{ __typename?: 'BlockTransactionContractTransfer', blockSignedAt: string, txHash: string, successful: boolean, gasSpent: number, gasPrice: number, gasQuote: number, transfers: Array<{ __typename?: 'TokenTransferItem', fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressSymbol: string, toAddressIsContract: boolean, contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, logoUrl: string, transferType: string, delta: string, deltaQuote: number }> }> } };
 
 export type TokenQueryGqlQueryVariables = Exact<{
   qcKey: Scalars['String'];

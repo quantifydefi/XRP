@@ -18,6 +18,7 @@
           class="rounded-0 text-right"
           placeholder="Number of Tokens"
           :hint="amountInUsd"
+          :disabled="disabled"
         >
           <template #prepend-inner>
             <v-row class="ml-0 my-0 mr-1">
@@ -47,10 +48,12 @@ type Props = {
   logo: string
   rules: arrayOfOfFunction
   allowance?: { text: string; value: string | number }
+  disabled: boolean
 }
 
 export default defineComponent<Props>({
   props: {
+    disabled: { type: Boolean, default: false },
     symbol: { type: String, default: '', required: true },
     priceUsd: { type: Number, default: 0, required: true },
     logo: { type: String, default: '', required: true },

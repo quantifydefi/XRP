@@ -1,35 +1,40 @@
 <template>
   <v-dialog v-model="dialog" max-width="525">
     <v-card tile outlined class="pa-4">
-      <h5 class="text-h6 mb-2">Connect to a Wallet</h5>
-      <p class="grey--text text--lighten-1">
-        By connecting a wallet, I agree to EVM Finance
-        <nuxt-link to="/terms-and-conditions" class="text-decoration-none">Terms and Conditions</nuxt-link>
-      </p>
-      <v-alert v-model="errorAlert" color="error" dense dismissible>{{ error.message }}</v-alert>
-      <v-list-item link class="mb-6 grey--text" @click="connectWallet('metamask')">
-        <v-list-item-avatar tile width="60" height="60">
-          <img width="60" height="60" :src="`/img/metamask.svg`" alt="metamask" />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title class="text-h6"> Metamask</v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action v-if="walletReady">
-          <v-icon color="green" size="30">mdi-checkbox-marked-circle</v-icon>
-        </v-list-item-action>
-      </v-list-item>
+      <v-row>
+        <v-col class="pa-4">
+          <h5 class="text-h6 mb-2">Connect to a Wallet</h5>
+          <p class="subtitle-2 font-weight-regular grey--text text--lighten-1">
+            By connecting a wallet, I agree to EVM Finance
+            <nuxt-link to="/terms-and-conditions" class="text-decoration-none">Terms and Conditions</nuxt-link>
+          </p>
+          <v-alert v-model="errorAlert" color="error" dense dismissible>{{ error.message }}</v-alert>
 
-      <div class="pa-4 grey--text">
-        <h6 class="text-subtitle-1 font-weight-bold">New to Ethereum?</h6>
-        <small>
-          EVM Finance is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.
-          <span>
-            <a href="https://ethereum.org/en/wallets/" target="_blank" class="text-decoration-none">
-              Learn More <v-icon size="14" color="primary">mdi-open-in-new</v-icon>
-            </a>
-          </span>
-        </small>
-      </div>
+          <v-list-item link class="grey--text mb-2" @click="connectWallet('metamask')">
+            <v-list-item-avatar tile width="60" height="60">
+              <img width="60" height="60" :src="`/img/metamask.svg`" alt="metamask" />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="text-h6"> Metamask</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action v-if="walletReady">
+              <v-icon color="green" size="30">mdi-checkbox-marked-circle</v-icon>
+            </v-list-item-action>
+          </v-list-item>
+
+          <div class="grey--text">
+            <h6 class="text-subtitle-1 font-weight-bold">New to Ethereum?</h6>
+            <small>
+              EVM Finance is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.
+              <span>
+                <a href="https://ethereum.org/en/wallets/" target="_blank" class="text-decoration-none">
+                  Learn More <v-icon size="14" color="primary">mdi-open-in-new</v-icon>
+                </a>
+              </span>
+            </small>
+          </div>
+        </v-col>
+      </v-row>
     </v-card>
   </v-dialog>
 </template>

@@ -11,6 +11,7 @@ export enum EmitEvents {
 }
 
 export enum DefiEvents {
+  toggleActionDialog = 'toggle-action-dialog',
   toggleDepositModal = 'toggle-deposit-modal',
   toggleLendModal = 'toggle-lend-modal',
   toggleWithdrawModal = 'toggle-withdraw-modal',

@@ -1,9 +1,8 @@
 <template>
-  <v-card tile outlined height="276">
-    <h2 class="pb-3 subtitle-1 font-weight-bold pt-2 pl-4 pb-3" v-text="`Wallet Balances`" />
+  <v-card tile outlined :height="height">
+    <h2 class="subtitle-1 font-weight-bold px-3 py-2" v-text="`Wallet Balances`" />
     <v-data-table
       v-if="walletReady"
-      height="205px"
       dense
       :headers="cols"
       disable-sort
@@ -22,9 +21,10 @@
         </div>
       </template>
     </v-data-table>
-    <div v-else class="text-center mt-16 pt-2">
+
+    <v-card v-else class="d-flex align-center justify-center" height="160" elevation="0">
       <v-btn tile depressed @click="dispatch('ui/walletDialogStatus', true)">Connect to Wallet</v-btn>
-    </div>
+    </v-card>
   </v-card>
 </template>
 
@@ -38,12 +38,14 @@ type Props = {
   balances: Balance[]
   priceUsd: number
   contract: string
+  height: number
 }
 export default defineComponent<Props>({
   props: {
     balances: { type: Array as PropType<Balance[]>, default: () => [] },
     priceUsd: { type: Number, default: 0 },
     contract: { type: String, default: '' },
+    height: { type: String, default: '100%' },
   },
   setup(props) {
     // COMPOSABLES

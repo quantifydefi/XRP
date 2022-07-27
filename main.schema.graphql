@@ -87,6 +87,16 @@ type BalanceItem {
   type: String!
 }
 
+type BlockTransactionContractTransfer {
+  blockSignedAt: String!
+  gasPrice: Int!
+  gasQuote: Float!
+  gasSpent: Int!
+  successful: Boolean!
+  transfers: [TokenTransferItem!]!
+  txHash: String!
+}
+
 type Chain {
   blockExplorerUrl: String!
   chainId: Int!
@@ -219,6 +229,8 @@ type Query {
   token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
   "Portfolio Transactions"
   transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
+  "ERC20 token transfers for address "
+  transfers(address: String!, chainId: Int! = 0, contractAddress: String!, pageNumber: Int! = 0, pageSize: Int! = 100): Transfers!
 }
 
 type Todo {
@@ -266,9 +278,30 @@ type Token {
   websiteUrl: JSONMap
 }
 
+type TokenTransferItem {
+  contractAddress: String!
+  contractDecimals: Int!
+  contractName: String!
+  contractTickerSymbol: String!
+  delta: String!
+  deltaQuote: Float!
+  fromAddress: String!
+  fromAddressIsContract: Boolean!
+  fromAddressLabel: String!
+  fromAddressName: String!
+  fromAddressSymbol: String!
+  logoUrl: String!
+  toAddress: String!
+  toAddressIsContract: Boolean!
+  toAddressLabel: String!
+  toAddressName: String!
+  toAddressSymbol: String!
+  transferType: String!
+}
+
 type Transaction {
   address: String!
-  chainID: Float!
+  chainID: Int!
   items: [TransactionItem!]!
   nextUpdateAt: String!
   pagination: Pagination
@@ -295,6 +328,16 @@ type TransactionItem {
   txHash: String!
   value: String!
   valueQuote: Float!
+}
+
+type Transfers {
+  address: String!
+  chainId: Int!
+  items: [BlockTransactionContractTransfer!]!
+  nextUpdateAt: String!
+  pagination: Pagination!
+  quoteCurrency: String!
+  updatedAt: String!
 }
 
 type TxDetail {

@@ -32,7 +32,7 @@
             :key="item.txHash"
             :wallet-address="account"
             :log-events="item.logEvents"
-            @navigate-to-explorer="navigateToExplorer"
+            @navigate-to-explorer="$navigateToExplorer"
           />
         </td>
       </template>
@@ -74,7 +74,7 @@
       <template #[`item.txHash`]="{ item }">
         <a
           class="text-decoration-none grey--text"
-          @click="navigateToExplorer(item.txHash, 'tx')"
+          @click="$navigateToExplorer(item.txHash, 'tx', currentChain.blockExplorerUrl)"
           v-text="$truncateAddress(item.txHash, 10, 4)"
         />
       </template>
@@ -103,14 +103,14 @@
               label="From:"
               :wallet-address="account.toLowerCase()"
               :address="item.txDetail.fromAddress.toLowerCase()"
-              :navigate-to-explorer="navigateToExplorer"
+              :navigate-to-explorer="$navigateToExplorer"
             />
 
             <tx-address-label
               label="To:"
               :wallet-address="account.toLowerCase()"
               :address="item.txDetail.toAddress.toLowerCase()"
-              :navigate-to-explorer="navigateToExplorer"
+              :navigate-to-explorer="$navigateToExplorer"
             />
           </template>
 
@@ -122,7 +122,7 @@
               :symbol="item.fromAddressSymbol.toLowerCase()"
               :name="item.fromAddressName"
               :is-contract="item.fromAddressIsContract"
-              :navigate-to-explorer="navigateToExplorer"
+              :navigate-to-explorer="$navigateToExplorer"
             />
 
             <tx-address-label
@@ -132,7 +132,7 @@
               :symbol="item.toAddressSymbol.toLowerCase()"
               :name="item.toAddressName"
               :is-contract="item.toAddressIsContract"
-              :navigate-to-explorer="navigateToExplorer"
+              :navigate-to-explorer="$navigateToExplorer"
             />
           </template>
         </div>
@@ -197,7 +197,7 @@
               class="mb-1 ml-1"
               icon
               v-on="on"
-              @click="navigateToExplorer(item.txHash, 'tx')"
+              @click="$navigateToExplorer(item.txHash, 'tx', currentChain.blockExplorerUrl)"
             >
               <v-icon size="18">mdi-open-in-new</v-icon>
             </v-btn>
@@ -302,17 +302,10 @@ export default defineComponent({
     const currentChain = computed(() => state.configs.currentTransactionChain)
     const chainSymbol = computed(() => currentChain.value.symbol)
 
-    function navigateToExplorer(address: string, type: 'tx' | 'address' = 'address'): void {
-      const url = `${currentChain.value.blockExplorerUrl}${type}/${address}`
-      window.open(url)
-    }
-
     return {
       cols,
       chainSymbol,
-
-      // METHODS
-      navigateToExplorer,
+      currentChain,
     }
   },
 })

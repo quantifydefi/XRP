@@ -1,27 +1,48 @@
 <template>
-  <v-dialog v-model="dialog" width="400" max-width="400">
-    <v-card v-if="pool && dialog" tile outlined max-width="400" class="pa-4" height="100%">
-      <div>
-        <v-row no-gutters align="center">
-          <v-col cols="11">
-            <h6 class="text-h6"><span class="text-capitalize" v-text="action" /> {{ pool.symbol }}</h6>
-          </v-col>
-          <v-spacer />
+  <v-row no-gutters>
+    <v-col v-if="pool">
+      <v-card
+        tile
+        outlined
+        :min-height="type === 'dialog' ? '100%' : '468'"
+        :max-width="type === 'card' ? '100%' : '400'"
+      >
+        <v-row v-if="type === 'card'" no-gutters>
           <v-col>
-            <div class="text-right"><v-icon @click="dialog = false">mdi-close</v-icon></div>
+            <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
+              <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
+
+              <v-spacer />
+              <v-btn x-small icon @click="$emit('toggle-reserve-details')">
+                <v-icon>mdi-information-outline</v-icon>
+              </v-btn>
+            </v-card-title>
+
+            <v-divider />
           </v-col>
         </v-row>
-        <transaction-result
-          v-if="receipt"
-          :receipt="receipt"
-          :is-tx-mined="isTxMined"
-          :success-message="txOptions.successMessage"
-          @on-result-closed="dialog = false"
-        />
-        <div v-else>
-          <v-row no-gutters class="mb-8">
-            <v-col cols="12" class="pt-2">
-              <div class="text-center">
+
+        <v-card-title v-if="type === 'dialog'" class="py-3">
+          <h6 class="text-h6"><span class="text-capitalize" v-text="action" /> {{ pool.symbol }}</h6>
+          <v-spacer />
+          <v-icon @click="toggleDialog">mdi-close</v-icon>
+        </v-card-title>
+
+        <div class="px-4 pb-4 pt-2">
+          <v-row v-if="receipt">
+            <v-col cols="12">
+              <transaction-result
+                :receipt="receipt"
+                :is-tx-mined="isTxMined"
+                :success-message="txOptions.successMessage"
+                @on-result-closed="resetToDefault"
+              />
+            </v-col>
+          </v-row>
+
+          <div v-else>
+            <v-row no-gutters>
+              <v-col cols="12" class="text-center pb-2 mt-0">
                 <v-btn-toggle v-model="action" v color="primary" mandatory group>
                   <v-btn
                     v-for="elem in aaveActions"
@@ -36,65 +57,117 @@
                     {{ elem }}
                   </v-btn>
                 </v-btn-toggle>
-              </div>
-            </v-col>
-          </v-row>
+              </v-col>
 
-          <v-row>
-            <v-col class="py-0">
-              <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">
-                <small class="grey--text">
-                  Please Switch To
-                  <span
-                    class="red--text text--lighten-1 mr-4 font-weight-bold"
-                    v-text="isChainAndMarketMismatched.label"
-                  />
-                </small>
-              </a>
-            </v-col>
-          </v-row>
-          <aave-action-form
-            :amount="amount"
-            :price-usd="pool.price.priceUsd"
-            :symbol="pool.symbol"
-            :logo="pool.logoUrl"
-            :allowance="txOptions.allowance"
-            :rules="txOptions.rules"
-            @on-value-changed="onFormValueChanged"
-          />
+              <v-col v-if="type === 'card'" cols="12">
+                <v-row no-gutters>
+                  <v-col cols="12">
+                    <v-divider />
+                  </v-col>
 
-          <v-row no-gutters>
-            <v-col>
-              <small>Transaction overview</small>
-              <v-card tile outlined>
-                <v-simple-table>
-                  <template #default>
-                    <tbody>
-                      <tr v-for="(item, i) in txOptions.overview" :key="i">
-                        <td :class="[textClass]" v-text="item.text" />
-                        <td :class="[item.class]" v-text="item.value" />
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </v-card>
-            </v-col>
-          </v-row>
-          <v-btn
-            tile
-            :disabled="isActionButtonDisabled"
-            class="text-capitalize my-4"
-            block
-            color="primary"
-            :loading="txLoading"
-            @click="txOptions.txMethod"
-          >
-            {{ action }}
-          </v-btn>
+                  <v-col v-for="(item, i) in walletSummary" :key="i" cols="4" class="pa-3 grey--text text-center">
+                    <v-row>
+                      <v-col cols="12" style="min-height: 118px">
+                        <div class="caption font-weight-medium text-no-wrap" v-text="item.text" />
+                        <div class="subtitle-1 white--text text-no-wrap" v-text="item.value" />
+                        <div class="subtitle-2 font-weight-regular text-no-wrap text-truncate" v-text="item.priceUsd" />
+
+                        <v-chip v-if="item.apy" pill outlined class="pa-2" text-color="white" label x-small>
+                          <span v-if="item.apy === -1">--.--</span>
+                          <span v-else v-text="`${$f(item.apy * 100, { maxDigits: 2, after: ' %' })} APY`" />
+                        </v-chip>
+                      </v-col>
+
+                      <v-divider v-if="i < walletSummary.length - 1" style="" vertical />
+                    </v-row>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-divider />
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+
+            <v-row class="mt-1">
+              <v-col class="py-0">
+                <a
+                  v-if="isChainAndMarketMismatched"
+                  href="#"
+                  class="text-decoration-none"
+                  @click="changeToRequiredChain"
+                >
+                  <small class="grey--text">
+                    Please Switch To
+                    <span
+                      class="red--text text--lighten-1 ml-1 mr-4 font-weight-bold"
+                      v-text="isChainAndMarketMismatched.label"
+                    />
+                  </small>
+                </a>
+              </v-col>
+            </v-row>
+
+            <aave-action-form
+              :amount="amount"
+              :price-usd="pool.price.priceUsd"
+              :symbol="pool.symbol"
+              :logo="pool.logoUrl"
+              :allowance="txOptions.allowance"
+              :rules="txOptions.rules"
+              :disabled="!walletReady"
+              @on-value-changed="onFormValueChanged"
+            />
+
+            <v-row no-gutters>
+              <v-col>
+                <small v-if="type === 'dialog'">Transaction overview</small>
+                <v-card tile outlined>
+                  <v-simple-table>
+                    <template #default>
+                      <tbody>
+                        <tr
+                          v-for="(item, i) in type === 'card'
+                            ? txOptions.overview.filter((option) => option.isVisible)
+                            : txOptions.overview"
+                          :key="i"
+                        >
+                          <td :class="[textClass]" v-text="item.text" />
+                          <td :class="[item.class]" v-text="item.value" />
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-btn
+              tile
+              :disabled="isActionButtonDisabled"
+              class="text-capitalize mt-4"
+              block
+              color="primary"
+              :loading="txLoading"
+              @click="txOptions.txMethod"
+            >
+              {{ action }}
+            </v-btn>
+          </div>
         </div>
-      </div>
-    </v-card>
-  </v-dialog>
+      </v-card>
+    </v-col>
+
+    <v-col v-else>
+      <v-card disabled tile outlined min-height="468" :max-width="type === 'card' ? '100%' : '400'">
+        <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
+          <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
+        </v-card-title>
+        <v-divider />
+        <v-card height="300" class="d-flex text-center align-center" elevation="0">
+          <v-card-text>This token is not supported by AAVE</v-card-text>
+        </v-card>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -102,6 +175,8 @@ import {
   computed,
   ComputedRef,
   defineComponent,
+  onMounted,
+  PropType,
   reactive,
   Ref,
   ref,
@@ -112,22 +187,26 @@ import {
 } from '@nuxtjs/composition-api'
 import { AavePoolModel, actionTypes, aaveActions } from '~/composables/useAavePools'
 import { State } from '~/types/state'
+import AaveActionForm from '~/components/pools/AaveActionForm.vue'
 import useAaveTransactions from '~/composables/useAaveTransactions'
 import TransactionResult from '~/components/common/TransactionResult.vue'
-import { EmitEvents } from '~/types/events'
+import { DefiEvents, EmitEvents } from '~/types/events'
 import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
-import AaveActionForm from '~/components/pools/AaveActionForm.vue'
 
 type Props = {
+  // eslint-disable-next-line no-use-before-define
+  type: aaveComponentType
   totalCollateralUsd: number
   totalBorrowedUsd: number
   healthFactor: number
   maxLtv: number
   someData: number
+  poolData: AavePoolModel
+  poolAction: actionTypes
 }
 
 interface TxOption {
-  overview: { text: string; value: string | boolean; class?: string | string[] }[]
+  overview: { text: string; value: string | boolean; class?: string | string[]; isVisible: boolean }[]
   rules: ((v: string) => boolean | string)[]
   allowance: { text: string; value: string | number }
   successMessage?: string
@@ -137,12 +216,17 @@ type ActionOptions = {
   [actionType in actionTypes]: TxOption
 }
 
+type aaveComponentType = 'dialog' | 'card'
+
 export default defineComponent<Props>({
   components: {
-    AaveActionForm,
     TransactionResult,
+    AaveActionForm,
   },
   props: {
+    type: { type: String as PropType<aaveComponentType>, required: true },
+    poolData: { type: Object as PropType<AavePoolModel>, required: true },
+    poolAction: { type: String as PropType<actionTypes>, required: true },
     healthFactor: { type: Number, default: 0, required: true },
     totalCollateralUsd: { type: Number, default: 0, required: true },
     totalBorrowedUsd: { type: Number, default: 0, required: true },
@@ -151,12 +235,14 @@ export default defineComponent<Props>({
 
   setup(props, { emit }) {
     // STATE
+    const marketDetailDialog = ref(false)
     const dialog = ref(false)
-    const action = ref<actionTypes>('deposit')
-    const pool = ref() as Ref<AavePoolModel>
     const amount = ref<number>(0)
     const isActionButtonDisabled = ref(true)
     const isVariableBorrow = ref(true)
+
+    const action = ref<actionTypes>('deposit')
+    const pool = ref() as Ref<AavePoolModel>
 
     const marketStats = reactive({
       healthFactor: toRefs(props).healthFactor,
@@ -172,7 +258,7 @@ export default defineComponent<Props>({
       pool,
       amount
     )
-    const { isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
+    const { walletReady, isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
@@ -212,20 +298,24 @@ export default defineComponent<Props>({
               text: 'Deposit APY',
               value:
                 pool.value.depositAPY === -1 ? '--' : $f(pool.value.depositAPY * 100, { minDigits: 2, after: ' %' }),
+              isVisible: false,
             },
             {
               text: 'Deposit APR',
               value:
                 pool.value.depositAPR === -1 ? '--' : $f(pool.value.depositAPR * 100, { minDigits: 2, after: ' %' }),
+              isVisible: false,
             },
             {
               text: 'Health Factor',
               value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
+              isVisible: true,
             },
             {
               text: 'Used as collateral',
               class: pool.value.usageAsCollateralEnabled ? ['green--text'] : ['red--text'],
               value: pool.value.usageAsCollateralEnabled ? 'Yes' : 'No',
+              isVisible: true,
             },
           ],
           rules: [
@@ -250,6 +340,7 @@ export default defineComponent<Props>({
                     pool.value.variableBorrowAPY === -1
                       ? '--'
                       : $f(pool.value.variableBorrowAPY * 100, { minDigits: 2, after: ' %' }),
+                  isVisible: false,
                 }
               : {
                   text: 'Stable Borrow APY',
@@ -257,6 +348,7 @@ export default defineComponent<Props>({
                     pool.value.stableBorrowAPY === -1
                       ? '--'
                       : $f(pool.value.stableBorrowAPY * 100, { minDigits: 2, after: ' %' }),
+                  isVisible: false,
                 },
 
             isVariableBorrow.value
@@ -266,6 +358,7 @@ export default defineComponent<Props>({
                     pool.value.variableBorrowAPR === -1
                       ? '--'
                       : $f(pool.value.variableBorrowAPR * 100, { minDigits: 2, after: ' %' }),
+                  isVisible: false,
                 }
               : {
                   text: 'Stable Borrow APR',
@@ -273,16 +366,19 @@ export default defineComponent<Props>({
                     pool.value.stableBorrowAPR === -1
                       ? '--'
                       : $f(pool.value.stableBorrowAPR * 100, { minDigits: 2, after: ' %' }),
+                  isVisible: false,
                 },
 
             {
               text: 'Health Factor',
               value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
+              isVisible: true,
             },
             {
               text: 'Used as collateral',
               class: pool.value.usageAsCollateralEnabled ? ['green--text'] : ['red--text'],
               value: pool.value.usageAsCollateralEnabled ? 'Yes' : 'No',
+              isVisible: true,
             },
           ],
           rules: [rules.value.required, rules.value.mustBeNumber, rules.value.musBeMoreThen0],
@@ -298,14 +394,17 @@ export default defineComponent<Props>({
             {
               text: 'Your Borrows',
               value: `${$f(pool.value.portfolio.variableBorrow, { minDigits: 6 })}  ${pool.value.symbol}`,
+              isVisible: false,
             },
             {
               text: 'Your Wallet Balance',
               value: `${$f(pool.value.portfolio.walletBal, { minDigits: 6 })}  ${pool.value.symbol}`,
+              isVisible: false,
             },
             {
               text: 'Health Factor',
               value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
+              isVisible: true,
             },
           ],
           rules: [rules.value.required, rules.value.mustBeNumber, rules.value.musBeMoreThen0],
@@ -325,14 +424,17 @@ export default defineComponent<Props>({
             {
               text: 'Your Deposits',
               value: `${$f(pool.value.portfolio.totalDeposits, { minDigits: 6 })}  ${pool.value.symbol}`,
+              isVisible: false,
             },
             {
               text: 'Your Wallet Balance',
               value: `${$f(pool.value.portfolio.walletBal, { minDigits: 6 })}  ${pool.value.symbol}`,
+              isVisible: false,
             },
             {
               text: 'Health Factor',
               value: isNaN(marketStats.healthFactor) ? '--' : $f(marketStats.healthFactor, { minDigits: 2 }),
+              isVisible: true,
             },
           ],
           rules: [rules.value.required, rules.value.mustBeNumber, rules.value.musBeMoreThen0],
@@ -345,23 +447,61 @@ export default defineComponent<Props>({
       return stats[action.value]
     })
 
-    function init(currentAction: actionTypes, currentPool: AavePoolModel) {
-      pool.value = currentPool
-      action.value = currentAction
-      dialog.value = true
-    }
+    const walletSummary = computed<{ text: string; value: string; priceUsd: string; apy?: number }[]>(() => {
+      return [
+        {
+          text: 'Your Deposits',
+          value: $f(pool.value.portfolioVal.totalDeposits, { minDigits: 2, maxDigits: 4 }),
+          priceUsd: $f(pool.value.portfolioVal.totalDeposits * pool.value.price.priceUsd, {
+            pre: '$ ',
+            minDigits: 2,
+            maxDigits: 4,
+          }),
+          apy: pool.value.depositAPY,
+        },
+        {
+          text: 'Your Balance',
+          value: $f(pool.value.portfolioVal.walletBal, { minDigits: 2, maxDigits: 4 }),
+          priceUsd: $f(pool.value.portfolioVal.walletBal * pool.value.price.priceUsd, {
+            pre: '$ ',
+            minDigits: 2,
+            maxDigits: 4,
+          }),
+        },
+        {
+          text: 'Your Borrows',
+          value: $f(pool.value.portfolioVal.variableBorrow, { minDigits: 2, maxDigits: 4 }),
+          priceUsd: $f(pool.value.portfolioVal.variableBorrow * pool.value.price.priceUsd, {
+            pre: '$ ',
+            minDigits: 2,
+            maxDigits: 4,
+          }),
+          apy: pool.value.variableBorrowAPY,
+        },
+      ]
+    })
 
     function onFormValueChanged({ isFormValid, amountVal }: { isFormValid: boolean; amountVal: number }) {
       isActionButtonDisabled.value = !isFormValid
       amount.value = amountVal
     }
 
-    // Watch if dialog closed reset tx details
-    watch(dialog, (newVal: boolean) => (!newVal ? resetToDefault() : null))
+    function toggleDialog() {
+      dialog.value = false
+      emit(DefiEvents.toggleActionDialog)
+    }
+
+    watch(action, (newVal: actionTypes) => (newVal ? emit(EmitEvents.onValueChanged, newVal) : null))
     watch(isTxMined, (newVal: boolean) => (newVal ? emit(EmitEvents.transactionSuccess, newVal) : null))
+
+    onMounted(() => {
+      action.value = props.poolAction
+      pool.value = props.poolData
+    })
 
     return {
       dialog,
+      marketDetailDialog,
       action,
       isVariableBorrow,
       pool,
@@ -376,13 +516,16 @@ export default defineComponent<Props>({
       isTxMined,
       aaveActions,
       isChainAndMarketMismatched,
+      walletSummary,
+      walletReady,
 
       // METHODS
-      init,
       onFormValueChanged,
       deposit,
       borrow,
       changeToRequiredChain,
+      resetToDefault,
+      toggleDialog,
     }
   },
 })
