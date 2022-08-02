@@ -1,5 +1,5 @@
 import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref, watch } from '@nuxtjs/composition-api'
-import { Ether, Token } from '@uniswap/sdk-core'
+import { Token, Ether } from '@uniswap/sdk-core'
 import { AlphaRouter, parseAmount } from '@uniswap/smart-order-router'
 import { BigNumber } from 'ethers'
 import { Percent, TradeType, WETH } from '@uniswap/sdk'
@@ -195,18 +195,20 @@ export default function (
   }
 
   const onInputChanged = async () => {
-    try {
-      loading.value = true
-      enableDetails.value = true
-      errorMessage.value = null
-      stopAllListeners()
-      await getUniswapTrade()
-      runBlockListener()
-    } catch (e: any) {
-      console.log(e)
-      errorMessage.value = 'Address might be wrong or not supported'
-    } finally {
-      loading.value = false
+    if (walletReady.value) {
+      try {
+        loading.value = true
+        enableDetails.value = true
+        errorMessage.value = null
+        stopAllListeners()
+        await getUniswapTrade()
+        runBlockListener()
+      } catch (e: any) {
+        console.log(e)
+        errorMessage.value = 'Address might be wrong or not supported'
+      } finally {
+        loading.value = false
+      }
     }
   }
 
@@ -242,7 +244,7 @@ export default function (
     const isTokenOutNative = isNativeToken(toToken.value.chainId, toToken.value.symbol)
 
     const tokenIn = isTokenInNative
-      ? (Ether.onChain(NETWORK_ID.value) as Token | any)
+      ? (Ether.onChain(NETWORK_ID.value) as unknown as Token)
       : new Token(
           NETWORK_ID.value,
           fromToken.value.address,
@@ -252,7 +254,7 @@ export default function (
         )
 
     const tokenOut = isTokenOutNative
-      ? (Ether.onChain(NETWORK_ID.value) as Token | any)
+      ? (Ether.onChain(NETWORK_ID.value) as unknown as Token)
       : new Token(
           NETWORK_ID.value,
           toToken.value.address,
@@ -303,16 +305,20 @@ export default function (
     }
   }
 
-  watch([fromToken, toToken, amount, account, chainId], async () => {
-    console.log('CHANGE', fromToken.value.symbol, '>', toToken.value.symbol, tradeDirection.value)
-    tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])
-    if (amount.value <= 0 || isSameTokenSelected.value) {
-      stopAllListeners()
-      quoteResult.expectedConvertQuote = amount.value
-      return
-    }
-    await onInputChanged()
-  })
+  watch(
+    [fromToken, toToken, amount, account, chainId],
+    async () => {
+      console.log('CHANGE', fromToken.value.symbol, '>', toToken.value.symbol, tradeDirection.value)
+      tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])
+      if (amount.value <= 0 || isSameTokenSelected.value) {
+        stopAllListeners()
+        quoteResult.expectedConvertQuote = amount.value
+        return
+      }
+      await onInputChanged()
+    },
+    { immediate: false }
+  )
 
   watch([walletReady], () => {
     if (!walletReady.value) {

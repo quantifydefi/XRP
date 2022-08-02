@@ -21,7 +21,7 @@
     "@nuxtjs/composition-api": "^0.32.0",
     "@types/web3": "^1.2.2",
     "@uniswap/sdk": "^3.0.3",
-    "@uniswap/smart-order-router": "^2.8.0",
+    "@uniswap/smart-order-router": "^ 2.8.1",
     "@vue/apollo-composable": "^4.0.0-alpha.16",
     "blockies-ts": "^1.0.0",
     "class-transformer": "^0.3.1",
