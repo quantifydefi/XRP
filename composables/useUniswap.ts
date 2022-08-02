@@ -1,99 +1,210 @@
-import { computed, inject, reactive, ref, Ref, watch } from '@nuxtjs/composition-api'
-import type { TradeContext } from 'simple-uniswap-sdk'
-import { ChainId, ETH, TradeDirection, UniswapPair, UniswapVersion } from 'simple-uniswap-sdk'
+import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { Ether, Token } from '@uniswap/sdk-core'
+import { AlphaRouter, parseAmount } from '@uniswap/smart-order-router'
+import { BigNumber } from 'ethers'
+import { Percent, TradeType, WETH } from '@uniswap/sdk'
+import { useQuery } from '@vue/apollo-composable/dist'
 import { UniswapToken } from '~/types/apollo/main/types'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
+import useERC20 from '~/composables/useERC20'
+import { ERC20Balance } from '~/types/global'
+import { useHelpers } from '~/composables/useHelpers'
+import { FiatPricesGQL } from '~/apollo/main/config.query.graphql'
 
-const checkAddress = (token: UniswapToken, chain: number): string => {
-  const config: { [key: string]: { chainId: number; contract: string } } = {
-    ETH: { chainId: 1, contract: ETH.MAINNET().contractAddress },
-    // ETH: { chainId: 1337, contract: ETH.MAINNET().contractAddress },
+const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+interface QuoteResult {
+  expectedConvertQuote: number
+  minAmountConvertQuote: number
+  quote: string | null
+  gasAdjustedQuote: number
+  gasFeeUSD: number
+  routePath: string
+  txCallData: {
+    data: string | undefined
+    to: string
+    value: BigNumber | undefined
+    from: string
+    gasPrice: BigNumber | undefined | any
+    gasLimit?: string
   }
+}
+interface FiatCurrency {
+  [key: string]: { usd: number }
+}
 
-  const hasSymbolKey = token.symbol.toUpperCase() in config
-  if (hasSymbolKey) {
-    const symbolData: { chainId: number; contract: string } = config[token.symbol.toUpperCase()]
-    if (symbolData.chainId === chain) {
-      return symbolData.contract
-    }
-  }
-  return token.address
+const defaultQuoteData: QuoteResult = {
+  expectedConvertQuote: 0,
+  gasAdjustedQuote: 0,
+  gasFeeUSD: 0,
+  minAmountConvertQuote: 0,
+  quote: '',
+  routePath: '',
+  txCallData: { data: undefined, from: '', gasLimit: '', gasPrice: undefined, to: '', value: undefined },
 }
 
 export default function (
   fromToken: Ref<UniswapToken>,
   toToken: Ref<UniswapToken>,
   amount: Ref<number>,
-  tradeDirection: Ref<keyof typeof TradeDirection>
+  tradeDirection: Ref<keyof typeof TradeType>
 ) {
   // COMPUTED
-  const { chainId, account, provider, signer, importTokenToMetamask } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { account, provider, signer, chainId, walletReady, importTokenToMetamask } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { balanceMulticall, allowedSpending, approveMaxSpending } = useERC20()
+  const { isNativeToken } = useHelpers()
+
+  const fromTokenAddressOverride = computed(() =>
+    isNativeToken(fromToken.value.chainId, fromToken.value.symbol) ? WETH[1].address : fromToken.value.address
+  )
+  const toTokenAddressOverride = computed(() =>
+    isNativeToken(toToken.value.chainId, toToken.value.symbol) ? WETH[1].address : toToken.value.address
+  )
+
+  const { result } = useQuery(
+    FiatPricesGQL,
+    () => ({
+      addresses: [fromTokenAddressOverride.value, toTokenAddressOverride.value],
+    }),
+    { fetchPolicy: 'no-cache', pollInterval: 10000 }
+  )
 
   // STATE
-  const trade = ref<TradeContext | null>(null)
   const loading = ref(false)
   const enableDetails = ref(false)
-  const slippage = ref(0.005)
-  const txData = reactive<{ loading: boolean; isCompleted: boolean; receipt: any }>({
+  const errorMessage = ref<string | null>(null)
+  const quoteResult = reactive<QuoteResult>(defaultQuoteData)
+  const tokenBalances = ref<ERC20Balance[]>([])
+  const txResult = reactive<{ loading: boolean; isCompleted: boolean; receipt: any }>({
     loading: false,
     isCompleted: false,
     receipt: null,
   })
+  const SLIPPAGE: any = new Percent('5', '100') // 5% or 10_000?
+  const SUPPORTED_NETWORKS = [1, 1337]
+  const isNetworkSupported = computed<boolean>(() =>
+    walletReady.value ? SUPPORTED_NETWORKS.includes(chainId.value ?? 1) : false
+  )
+  // Support main net only
+  const NETWORK_ID = computed(() => (chainId.value === 1337 ? 1 : 1))
 
-  const errorMessage = ref<string | null>(null)
+  // trade type
+  const tradeType = computed(() =>
+    tradeDirection.value === 'EXACT_INPUT' ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT
+  )
 
-  const createFactory = async () => {
-    const uniswapPair = new UniswapPair({
-      // providerUrl: 'http://127.0.0.1:8545',
-      fromTokenContractAddress: checkAddress(fromToken.value, chainId.value ?? 1),
-      toTokenContractAddress: checkAddress(toToken.value, chainId.value ?? 1),
-      ethereumAddress: account.value,
-      ethereumProvider: provider,
-      chainId: ChainId.MAINNET,
-      settings: {
-        uniswapVersions:
-          tradeDirection.value === 'output' && fromToken.value.symbol !== 'ETH'
-            ? [UniswapVersion.v3]
-            : [UniswapVersion.v3, UniswapVersion.v2],
-        slippage: slippage.value,
-        deadlineMinutes: 20,
-        disableMultihops: false,
-      },
-    })
-    return await uniswapPair.createFactory()
-  }
+  // COMPUTED
+  // Quote Result
+  const expectedConvertQuote = computed(() => quoteResult.expectedConvertQuote)
+  const gasAdjustedQuote = computed(() => quoteResult.gasAdjustedQuote)
+  const gasFeeUSD = computed(() => quoteResult.gasFeeUSD)
+  const minAmountConvertQuote = computed(() => quoteResult.minAmountConvertQuote)
+  const quote = computed(() => quoteResult.quote)
+  const routePath = computed(() => quoteResult.routePath)
 
+  // balances
+  const fromTokenBalance = computed<number>(
+    () => tokenBalances.value.find((elem) => elem.address === fromToken.value.address)?.balance ?? 0
+  )
+  const toTokenBalance = computed<number>(
+    () => tokenBalances.value.find((elem) => elem.address === toToken.value.address)?.balance ?? 0
+  )
+
+  const fiatPrices = computed<FiatCurrency | null>(() => result.value?.fiatPrices ?? null)
+  const fromTokenFiatPrice = computed<number | null>(() =>
+    fiatPrices.value &&
+    Object.hasOwnProperty.call(fiatPrices.value, fromTokenAddressOverride.value.toLowerCase()) &&
+    expectedConvertQuote.value > 0
+      ? tradeType.value === TradeType.EXACT_INPUT
+        ? fiatPrices.value[fromTokenAddressOverride.value.toLowerCase()].usd * amount.value
+        : fiatPrices.value[fromTokenAddressOverride.value.toLowerCase()].usd * expectedConvertQuote.value
+      : null
+  )
+  const toTokenFiatPrice = computed<number | null>(() =>
+    fiatPrices.value &&
+    Object.hasOwnProperty.call(fiatPrices.value, toTokenAddressOverride.value.toLowerCase()) &&
+    expectedConvertQuote.value > 0
+      ? tradeType.value === TradeType.EXACT_OUTPUT
+        ? fiatPrices.value[toTokenAddressOverride.value.toLowerCase()].usd * amount.value
+        : fiatPrices.value[toTokenAddressOverride.value.toLowerCase()].usd * expectedConvertQuote.value
+      : null
+  )
+
+  // tx result
+  const txLoading = computed(() => txResult.loading)
+  const receipt = computed(() => txResult.receipt)
+  const isTxMined = computed(
+    () => !!(txResult.receipt && txResult.receipt.transactionHash && txResult.receipt.blockNumber)
+  )
+
+  const isSameTokenSelected = computed(
+    () => fromToken.value.address.toLowerCase() === toToken.value.address.toLowerCase()
+  )
+
+  // Action Button Control
+  const actionButton = computed<{ status: boolean; message: string }>(() => {
+    if (amount.value <= 0) {
+      return { status: false, message: `Input amount must be more then 0` }
+    }
+
+    if (fromTokenBalance.value < amount.value) {
+      return { status: false, message: `Insufficient  ${fromToken.value.symbol} balance` }
+    }
+    if (isSameTokenSelected.value) {
+      return { status: false, message: `Cant Swap Same Tokens` }
+    }
+
+    if (errorMessage.value) {
+      return { status: false, message: errorMessage.value }
+    }
+
+    return { status: true, message: 'Swap' }
+  })
+
+  // FUNCTIONS
   const clearTrade = () => {
     enableDetails.value = false
     errorMessage.value = null
-    txData.isCompleted = false
-    txData.receipt = null
-    txData.loading = false
-
-    if (trade.value) {
-      trade.value.destroy()
-      trade.value = null
-    }
+    amount.value = 0
+    quoteResult.expectedConvertQuote = 0
+    quoteResult.gasAdjustedQuote = 0
+    quoteResult.gasFeeUSD = 0
+    quoteResult.minAmountConvertQuote = 0
+    quoteResult.quote = ''
+    quoteResult.routePath = ''
+    quoteResult.txCallData = { data: undefined, from: '', gasLimit: '', gasPrice: undefined, to: '', value: undefined }
+    txResult.receipt = null
+    txResult.isCompleted = false
+    txResult.loading = false
   }
 
-  const createTrade = async () => {
-    enableDetails.value = true
-    loading.value = true
+  const runBlockListener = () => {
+    provider.value.on('block', (data: any) => {
+      console.log('Bloch change', data)
+      let debounceTimeout: any = null
+      clearTimeout(debounceTimeout)
+      debounceTimeout = setTimeout(async () => {
+        console.log('UPDATE QUOTE', data)
+        await getUniswapTrade()
+        debounceTimeout = null
+      }, 5000)
+    })
+  }
 
-    const factory = await createFactory()
+  const getQuoteToken = (tokenIn: Token, tokenOut: Token, tradeType: TradeType): Token => {
+    return tradeType === TradeType.EXACT_INPUT ? tokenOut : tokenIn
+  }
 
+  const onInputChanged = async () => {
     try {
-      const direction: TradeDirection = tradeDirection.value === 'input' ? TradeDirection.input : TradeDirection.output
-      trade.value = await factory.trade(`${amount.value}`, direction)
-
-      console.log(trade.value)
-
-      trade.value.quoteChanged$.subscribe((value: TradeContext) => {
-        console.log(value.expectedConvertQuote, value.quoteDirection, 'VVVVVVVVVVVVVVVVVVVVVVVV')
-        trade.value = value
-      })
+      loading.value = true
+      enableDetails.value = true
+      errorMessage.value = null
+      stopAllListeners()
+      await getUniswapTrade()
+      runBlockListener()
     } catch (e: any) {
-      e.message ? (errorMessage.value = e.message) : (errorMessage.value = 'Something Wrong')
+      console.log(e)
+      errorMessage.value = 'Address might be wrong or not supported'
     } finally {
       loading.value = false
     }
@@ -101,82 +212,142 @@ export default function (
 
   const sendTransaction = async (): Promise<{ isCompleted: boolean; receipt: any }> => {
     try {
-      if (trade.value?.approvalTransaction) {
-        const approved = await signer.value.sendTransaction(trade.value.approvalTransaction)
-        approved.wait()
-      }
-      const tx = await signer.value.sendTransaction(trade.value?.transaction)
+      const tx = await signer.value.sendTransaction(quoteResult.txCallData)
       const receipt = await tx.wait()
       return { isCompleted: true, receipt }
     } catch (e) {
-      console.log('TX Error', e)
       return { isCompleted: true, receipt: e }
+    } finally {
+      stopAllListeners()
     }
   }
 
   const swap = async () => {
-    txData.loading = true
+    txResult.loading = true
+    const isTokenInNative = isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
+    if (!isTokenInNative) {
+      const allowed = await allowedSpending(fromToken.value.address, V3_SWAP_ROUTER_ADDRESS)
+      if (allowed < amount.value) {
+        await approveMaxSpending(fromToken.value.address, V3_SWAP_ROUTER_ADDRESS)
+      }
+    }
     const { isCompleted, receipt } = await sendTransaction()
-    txData.receipt = receipt
-    txData.isCompleted = isCompleted
-    txData.loading = false
+    txResult.receipt = receipt
+    txResult.isCompleted = isCompleted
+    txResult.loading = false
   }
 
-  const fromTokenBalance = computed<string>(() => trade.value?.fromBalance.balance ?? '0')
-  const toTokenBalance = computed<string>(() => trade.value?.toBalance ?? '0')
+  const getUniswapTrade = async (): Promise<void> => {
+    const isTokenInNative = isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
+    const isTokenOutNative = isNativeToken(toToken.value.chainId, toToken.value.symbol)
 
-  const expectedConvertQuote = computed<number>(() => (trade.value ? parseFloat(trade.value.expectedConvertQuote) : 0))
-  const minAmountConvertQuote = computed<number>(() =>
-    trade.value && trade.value.minAmountConvertQuote ? parseFloat(trade.value.minAmountConvertQuote) : 0
-  )
+    const tokenIn = isTokenInNative
+      ? (Ether.onChain(NETWORK_ID.value) as Token | any)
+      : new Token(
+          NETWORK_ID.value,
+          fromToken.value.address,
+          fromToken.value.decimals,
+          fromToken.value.symbol,
+          fromToken.value.name
+        )
 
-  const quote = computed<string | null>(() => {
-    const quote = trade.value
-      ? parseFloat(trade.value.expectedConvertQuote) / parseFloat(trade.value.baseConvertRequest)
-      : 0
-    return quote === 0
-      ? null
-      : tradeDirection.value === 'input'
-      ? `1 ${fromToken.value.symbol} = ${quote} ${toToken.value.symbol}`
-      : `1 ${toToken.value.symbol} = ${quote} ${fromToken.value.symbol}`
-  })
-  const hasEnoughBalance = computed<{ status: boolean; message: string }>(() =>
-    trade.value
-      ? trade.value.fromBalance.hasEnough
-        ? { status: true, message: 'Swap' }
-        : { status: false, message: `Insufficient  ${fromToken.value.symbol} balance` }
-      : { status: false, message: `Swap` }
-  )
-  const liquidityProviderFee = computed<number>(() => (trade.value ? parseFloat(trade.value.liquidityProviderFee) : 0))
-  const routeText = computed<string>(() => (trade.value ? trade.value.routeText : ''))
+    const tokenOut = isTokenOutNative
+      ? (Ether.onChain(NETWORK_ID.value) as Token | any)
+      : new Token(
+          NETWORK_ID.value,
+          toToken.value.address,
+          toToken.value.decimals,
+          toToken.value.symbol,
+          toToken.value.name
+        )
 
-  const txLoading = computed(() => txData.loading)
-  const receipt = computed(() => txData.receipt)
-  const isTxMined = computed(() => !!(txData.receipt && txData.receipt.transactionHash && txData.receipt.blockNumber))
+    const amountValue =
+      tradeType.value === TradeType.EXACT_INPUT
+        ? parseAmount(`${amount.value}`, tokenIn)
+        : parseAmount(`${amount.value}`, tokenOut)
 
-  watch([fromToken, toToken, amount], async () => {
+    const router = new AlphaRouter({ chainId: NETWORK_ID.value, provider: provider.value })
+    const route = await router.route(amountValue, getQuoteToken(tokenIn, tokenOut, tradeType.value), tradeType.value, {
+      inputTokenPermit: undefined,
+      slippageTolerance: SLIPPAGE,
+      recipient: account.value,
+      deadline: Math.floor(Date.now() / 1000 + 1800),
+    })
+
+    console.log(route, typeof route?.quote)
+    console.log(`Quote Exact In: ${Number(route?.quote.toFixed(6))}`)
+    console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`)
+    console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`)
+
+    quoteResult.expectedConvertQuote = Number(route?.quote.toFixed(6))
+    quoteResult.minAmountConvertQuote = quoteResult.expectedConvertQuote - quoteResult.expectedConvertQuote * 0.05
+    quoteResult.quote = computed(() => {
+      const quote = quoteResult.expectedConvertQuote / amount.value ?? 0
+      return quote === 0
+        ? null
+        : tradeDirection.value === 'EXACT_INPUT'
+        ? `1 ${fromToken.value.symbol} = ${quote} ${toToken.value.symbol}`
+        : `1 ${toToken.value.symbol} = ${quote} ${fromToken.value.symbol}`
+    }).value
+
+    quoteResult.gasAdjustedQuote = Number(route?.quoteGasAdjusted.toFixed(6))
+    quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
+    quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
+
+    quoteResult.txCallData = {
+      data: route?.methodParameters?.calldata,
+      to: V3_SWAP_ROUTER_ADDRESS,
+      value: BigNumber.from(route?.methodParameters?.value),
+      from: account.value,
+      gasPrice: BigNumber.from(route?.gasPriceWei),
+    }
+  }
+
+  watch([fromToken, toToken, amount, account, chainId], async () => {
     console.log('CHANGE', fromToken.value.symbol, '>', toToken.value.symbol, tradeDirection.value)
-
-    if (amount.value <= 0) {
+    tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])
+    if (amount.value <= 0 || isSameTokenSelected.value) {
+      stopAllListeners()
+      quoteResult.expectedConvertQuote = amount.value
       return
     }
-    clearTrade()
-    await createTrade()
+    await onInputChanged()
   })
 
+  watch([walletReady], () => {
+    if (!walletReady.value) {
+      clearTrade()
+    }
+  })
+
+  onMounted(async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])))
+  onUnmounted(() => stopAllListeners())
+
+  function stopAllListeners() {
+    if (walletReady.value) {
+      provider.value.removeAllListeners()
+    }
+  }
   return {
     fromTokenBalance,
     toTokenBalance,
-    expectedConvertQuote,
+    fromTokenFiatPrice,
+    toTokenFiatPrice,
+
     loading,
     enableDetails,
-    quote,
-    hasEnoughBalance,
-    slippage,
-    minAmountConvertQuote,
-    liquidityProviderFee,
-    routeText,
     errorMessage,
+    SLIPPAGE,
+    isNetworkSupported,
+
+    expectedConvertQuote,
+    quote,
+    gasAdjustedQuote,
+    gasFeeUSD,
+    actionButton,
+    minAmountConvertQuote,
+    routePath,
+
     txLoading,
     receipt,
     isTxMined,

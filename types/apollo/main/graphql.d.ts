@@ -5,8 +5,9 @@ declare module '*/config.query.graphql' {
   export const SupportedChainsGQL: DocumentNode;
 export const GasGQL: DocumentNode;
 export const DeFiStats: DocumentNode;
-export const RecentPricesGQL: DocumentNode;
 export const UniswapTokensGQL: DocumentNode;
+export const RecentPricesGQL: DocumentNode;
+export const FiatPricesGQL: DocumentNode;
 
   export default defaultDocument;
 }
@@ -36,6 +37,7 @@ declare module '*/token.query.graphql' {
   const defaultDocument: DocumentNode;
   export const TokenQueryGQL: DocumentNode;
 export const DailyChartGQL: DocumentNode;
+export const PriceUpdateGQL: DocumentNode;
 
   export default defaultDocument;
 }

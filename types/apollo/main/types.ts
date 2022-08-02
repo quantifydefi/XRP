@@ -185,21 +185,6 @@ export type LogEventParams = {
   value: Scalars['String'];
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  createTodo: Todo;
-};
-
-
-export type MutationCreateTodoArgs = {
-  input: NewTodo;
-};
-
-export type NewTodo = {
-  text: Scalars['String'];
-  userId: Scalars['String'];
-};
-
 export type News = {
   __typename?: 'News';
   currencies: Array<NewsCurrency>;
@@ -241,10 +226,10 @@ export type Query = {
   balances: Array<Balance>;
   chains: Array<Chain>;
   dailyChart: Array<DailyChart>;
+  fiatPrices: Scalars['Map'];
   gas: Array<GasStats>;
   globalStats: GlobalStats;
   recentPrices: Scalars['Map'];
-  todos: Array<Todo>;
   token: Token;
   transactions: Transaction;
   uniswapTokens: UniswapTokens;
@@ -269,6 +254,11 @@ export type QueryBalancesArgs = {
 
 export type QueryDailyChartArgs = {
   coinGeckoID?: Scalars['String'];
+};
+
+
+export type QueryFiatPricesArgs = {
+  addresses: Array<Scalars['String']>;
 };
 
 
@@ -299,6 +289,11 @@ export type QueryUniswapTokensArgs = {
   userWallet?: Scalars['String'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  testSubs?: Maybe<Scalars['Float']>;
+};
+
 export enum TimeInterval {
   Interval_1H = 'INTERVAL_1H',
   Interval_1Week = 'INTERVAL_1WEEK',
@@ -309,14 +304,6 @@ export enum TimeInterval {
   Interval_24H = 'INTERVAL_24H',
   Interval_30Min = 'INTERVAL_30MIN'
 }
-
-export type Todo = {
-  __typename?: 'Todo';
-  done: Scalars['Boolean'];
-  id: Scalars['ID'];
-  text: Scalars['String'];
-  user: User;
-};
 
 export type Token = {
   __typename?: 'Token';
@@ -426,12 +413,6 @@ export type UniswapTokens = {
   pagination?: Maybe<Pagination>;
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-};
-
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -447,11 +428,6 @@ export type DeFiStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DeFiStatsQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: number, ethMarketCap: number, defiToEthRatio: number, tradingVolume24h: number, defiDominance: number, topCoinName: string, topCoinDefiDominance: number } };
 
-export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
-
 export type UniswapTokensGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
   userWallet: Scalars['String'];
@@ -463,6 +439,18 @@ export type UniswapTokensGqlQueryVariables = Exact<{
 
 
 export type UniswapTokensGqlQuery = { __typename?: 'Query', uniswapTokens: { __typename?: 'UniswapTokens', items: Array<{ __typename?: 'UniswapToken', chainId: number, address: string, symbol: string, name: string, decimals: number }>, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageNumber?: number | null, pageSize?: number | null, totalCount?: number | null } | null } };
+
+export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
+
+export type FiatPricesGqlQueryVariables = Exact<{
+  addresses: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type FiatPricesGqlQuery = { __typename?: 'Query', fiatPrices: any };
 
 export type AavePoolGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -507,3 +495,8 @@ export type DailyChartGqlQueryVariables = Exact<{
 
 
 export type DailyChartGqlQuery = { __typename?: 'Query', dailyChart: Array<{ __typename?: 'DailyChart', date: number, priceUsd: number }> };
+
+export type PriceUpdateGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PriceUpdateGqlSubscription = { __typename?: 'Subscription', testSubs?: number | null };

@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined tile width="440">
+  <v-card outlined tile width="440" :disabled="!isNetworkSupported">
     <div v-if="!receipt">
       <v-card-title class="subtitle-1 font-weight-medium py-3">
         Swap
@@ -13,14 +13,15 @@
           <v-row no-gutters>
             <v-col class="px-3">
               <token-input-field
-                form-trade-direction="input"
+                form-trade-direction="EXACT_INPUT"
                 :trade-direction="tradeDirection"
+                :fiat-price="fromTokenFiatPrice"
                 :token="fromToken"
                 :balance="fromTokenBalance"
                 :expected-convert-quote="expectedConvertQuote"
                 :loading="loading"
                 @on-value-changed="onAmountChange"
-                @on-uniswap-token-menu-open="onToggleTokenMenu('input')"
+                @on-uniswap-token-menu-open="onToggleTokenMenu('EXACT_INPUT')"
               />
             </v-col>
           </v-row>
@@ -34,14 +35,15 @@
           <v-row no-gutters>
             <v-col class="px-3">
               <token-input-field
-                form-trade-direction="output"
+                form-trade-direction="EXACT_OUTPUT"
                 :trade-direction="tradeDirection"
                 :token="toToken"
                 :balance="toTokenBalance"
+                :fiat-price="toTokenFiatPrice"
                 :expected-convert-quote="expectedConvertQuote"
                 :loading="loading"
                 @on-value-changed="onAmountChange"
-                @on-uniswap-token-menu-open="onToggleTokenMenu('output')"
+                @on-uniswap-token-menu-open="onToggleTokenMenu('EXACT_OUTPUT')"
               />
             </v-col>
           </v-row>
@@ -66,7 +68,7 @@
                   <v-spacer />
                   <div v-if="!expand" class="pr-2">
                     <v-icon color="grey lighten-1" size="17">mdi-gas-station</v-icon>
-                    <span class="grey--text text--lighten-1">$2.16</span>
+                    <span class="grey--text text--lighten-1" v-text="$f(gasFeeUSD, { maxDigits: 2, pre: '$' })" />
                   </div>
                   <v-btn color="grey lighten-1" height="22" width="22" icon @click="expand = !expand">
                     <v-icon size="22">mdi-chevron-{{ expand ? 'up' : 'down' }}</v-icon>
@@ -93,11 +95,11 @@
             tile
             block
             color="primary"
-            :disabled="!hasEnoughBalance.status || txLoading"
+            :disabled="!actionButton.status || txLoading"
             :loading="txLoading"
             @click="swap"
           >
-            {{ hasEnoughBalance.message }}
+            {{ actionButton.message }}
           </v-btn>
         </v-col>
 
@@ -122,8 +124,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
-import { TradeDirection } from 'simple-uniswap-sdk'
+import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { TradeType } from '@uniswap/sdk'
 import TokenMenuDialog from '~/components/trading/TokenMenuDialog.vue'
 import TokenInputField from '~/components/trading/TokenInputField.vue'
 import { UniswapToken } from '~/types/apollo/main/types'
@@ -135,7 +137,7 @@ const defaultToken: UniswapToken = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   symbol: 'USDC',
   name: 'USD Coin',
-  decimals: 0,
+  decimals: 6,
 }
 export default defineComponent({
   components: { TransactionResult, TokenMenuDialog, TokenInputField },
@@ -143,25 +145,36 @@ export default defineComponent({
   setup() {
     const dialog = ref(false)
     const expand = ref(false)
-    const tradeDirection = ref<keyof typeof TradeDirection>('input')
-    const tokenDirection = ref<keyof typeof TradeDirection>('input')
+    const tradeDirection = ref<keyof typeof TradeType>('EXACT_INPUT')
+    const tokenDirection = ref<keyof typeof TradeType>('EXACT_INPUT')
     const tokenMenuDialogComponent = ref<any>(null)
-    const fromToken = ref<UniswapToken>(defaultToken)
+    const fromToken = ref<UniswapToken>({
+      chainId: 1,
+      address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+      symbol: 'AAVE',
+      name: 'Aave',
+      decimals: 18,
+    })
     const toToken = ref<UniswapToken>(defaultToken)
     const amount = ref(0)
 
+    const { $f } = useContext()
     const {
       fromTokenBalance,
       toTokenBalance,
+      fromTokenFiatPrice,
+      toTokenFiatPrice,
       expectedConvertQuote,
       loading,
       enableDetails,
       quote,
-      hasEnoughBalance,
-      slippage,
+      routePath,
+      gasAdjustedQuote,
+      gasFeeUSD,
+      actionButton,
+      SLIPPAGE,
+      isNetworkSupported,
       minAmountConvertQuote,
-      liquidityProviderFee,
-      routeText,
       errorMessage,
       txLoading,
       receipt,
@@ -174,33 +187,35 @@ export default defineComponent({
     const details = computed(() => [
       { text: 'Expected Output', value: `${expectedConvertQuote.value} ${toToken.value.symbol}` },
       {
-        text: `Minimum Received (${slippage.value * 100} %)`,
+        text: `Minimum Received (${SLIPPAGE.toFixed(2)} %)`,
         value: `${minAmountConvertQuote.value} ${toToken.value.symbol}`,
       },
-      { text: 'Liquidity Provider Fee', value: `${liquidityProviderFee.value} ${fromToken.value.symbol}` },
-      { text: 'Route', value: routeText.value },
+      { text: 'Gas Adjusted Output', value: `${gasAdjustedQuote.value} ${toToken.value.symbol}` },
+      { text: 'Network Fee', value: $f(gasFeeUSD.value, { pre: '~$ ' }) },
+      { text: 'Route Path', value: routePath.value },
     ])
 
-    function onToggleTokenMenu(type: keyof typeof TradeDirection): void {
+    const onToggleTokenMenu = (type: keyof typeof TradeType): void => {
       tokenDirection.value = type
       tokenMenuDialogComponent.value.dialog = true
     }
 
-    function onTokenSelect(token: UniswapToken) {
-      tokenDirection.value === 'input' ? (fromToken.value = token) : (toToken.value = token)
+    const onTokenSelect = (token: UniswapToken) => {
+      tokenDirection.value === 'EXACT_INPUT' ? (fromToken.value = token) : (toToken.value = token)
     }
 
-    const onAmountChange = ({ direction, value }: { direction: keyof typeof TradeDirection; value: number }) => {
+    const onAmountChange = ({ direction, value }: { direction: keyof typeof TradeType; value: number }) => {
       tradeDirection.value = direction
       amount.value = value
     }
 
-    function onTokenChange() {
+    const onTokenChange = () => {
       const tempFromToken = toToken.value
       const tempToToken = fromToken.value
       fromToken.value = tempFromToken
       toToken.value = tempToToken
     }
+
     function resetTransaction() {
       amount.value = 0
       clearTrade()
@@ -217,16 +232,20 @@ export default defineComponent({
       // From composition
       fromTokenBalance,
       toTokenBalance,
+      fromTokenFiatPrice,
+      toTokenFiatPrice,
       expectedConvertQuote,
       loading,
       enableDetails,
       quote,
-      hasEnoughBalance,
+      actionButton,
       details,
       errorMessage,
       txLoading,
       receipt,
       isTxMined,
+      gasFeeUSD,
+      isNetworkSupported,
 
       onToggleTokenMenu,
       onTokenSelect,
