@@ -12,6 +12,7 @@ import { useHelpers } from '~/composables/useHelpers'
 import { FiatPricesGQL } from '~/apollo/main/config.query.graphql'
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+
 interface QuoteResult {
   expectedConvertQuote: number
   minAmountConvertQuote: number
@@ -24,8 +25,8 @@ interface QuoteResult {
     to: string
     value: BigNumber | undefined
     from: string
-    gasPrice: BigNumber | undefined | any
-    gasLimit?: string
+    gasPrice: BigNumber | undefined
+    gasLimit?: any
   }
 }
 interface FiatCurrency {
@@ -39,7 +40,7 @@ const defaultQuoteData: QuoteResult = {
   minAmountConvertQuote: 0,
   quote: '',
   routePath: '',
-  txCallData: { data: undefined, from: '', gasLimit: '', gasPrice: undefined, to: '', value: undefined },
+  txCallData: { data: undefined, from: '', gasLimit: undefined, gasPrice: undefined, to: '', value: undefined },
 }
 
 export default function (
@@ -171,7 +172,14 @@ export default function (
     quoteResult.minAmountConvertQuote = 0
     quoteResult.quote = ''
     quoteResult.routePath = ''
-    quoteResult.txCallData = { data: undefined, from: '', gasLimit: '', gasPrice: undefined, to: '', value: undefined }
+    quoteResult.txCallData = {
+      data: undefined,
+      from: '',
+      gasLimit: undefined,
+      gasPrice: undefined,
+      to: '',
+      value: undefined,
+    }
     txResult.receipt = null
     txResult.isCompleted = false
     txResult.loading = false
@@ -219,13 +227,12 @@ export default function (
       return { isCompleted: true, receipt }
     } catch (e) {
       return { isCompleted: true, receipt: e }
-    } finally {
-      stopAllListeners()
     }
   }
 
   const swap = async () => {
     txResult.loading = true
+    stopAllListeners()
     const isTokenInNative = isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
     if (!isTokenInNative) {
       const allowed = await allowedSpending(fromToken.value.address, V3_SWAP_ROUTER_ADDRESS)
@@ -302,6 +309,7 @@ export default function (
       value: BigNumber.from(route?.methodParameters?.value),
       from: account.value,
       gasPrice: BigNumber.from(route?.gasPriceWei),
+      // gasLimit: 400000,
     }
   }
 
@@ -334,6 +342,7 @@ export default function (
       provider.value.removeAllListeners()
     }
   }
+
   return {
     fromTokenBalance,
     toTokenBalance,

@@ -36,7 +36,20 @@
           </v-col>
           <v-col class="text-right text-truncate" style="max-width: 170px">
             <v-skeleton-loader v-if="loading" type="heading" tile height="20" class="ml-8" width="300" />
-            <span v-else class="mr-0" v-text="`Balance: ${balance}`" />
+            <span v-else>
+              <span class="mr-0" v-text="`Balance: ${$f(balance, { maxDigits: 6 })}`" />
+              <v-btn
+                v-if="isMaximumButtonVisible"
+                tile
+                color="primary"
+                class="pa-0 mb-1"
+                x-small
+                text
+                depressed
+                @click="setMax"
+                >MAX</v-btn
+              >
+            </span>
           </v-col>
         </v-row>
       </v-form>
@@ -96,7 +109,10 @@ export default defineComponent<Props>({
       },
     })
 
-    function onMenyOpen() {
+    const isMaximumButtonVisible = computed(
+      () => Number(props.balance) > 0 && Number(props.balance) !== amountVal.value
+    )
+    function onMenuOpen() {
       emit(menuOpenEvent)
     }
 
@@ -105,12 +121,18 @@ export default defineComponent<Props>({
       clearTimeout(searchTimeout)
       setTimeout(() => {
         emit(EmitEvents.onValueChanged, { direction: props.formTradeDirection, value: amountVal.value })
-      }, 1000)
+      }, 1500)
     }
 
+    function setMax() {
+      amountVal.value = Number(props.balance)
+      emit(EmitEvents.onValueChanged, { direction: props.formTradeDirection, value: amountVal.value })
+    }
+
+    // Watch  of expectedConvertQuote for both directions, if field isn't active set incoming val in the form
     watch(toRefs(props).expectedConvertQuote, (val: number) => (!isActive.value ? (amount.value = `${val}`) : null))
 
-    return { amount, menuOpenEvent, isActive, onMenyOpen, onInput }
+    return { amount, menuOpenEvent, isActive, isMaximumButtonVisible, onMenuOpen, onInput, setMax }
   },
 })
 </script>
