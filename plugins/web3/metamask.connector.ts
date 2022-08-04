@@ -104,6 +104,7 @@ export class MetamaskConnector implements ConnectorInterface {
   handleDisconnect() {
     // reset everything
     if (window.ethereum?.removeAllListeners) window.ethereum.removeAllListeners()
+    this.providerVal.removeAllListeners()
     this.providerVal = null
     this.accountVal = null
     this.chainIdVal = null

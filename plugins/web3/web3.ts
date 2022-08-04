@@ -107,6 +107,7 @@ export default (context: Context): void => {
 
     const importTokenToMetamask = (params: any) => {
       if (pluginState.connector) {
+        console.log(params)
         pluginState.connector.importTokenToMetamask(params)
       }
     }

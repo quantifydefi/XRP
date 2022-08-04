@@ -42,8 +42,17 @@ query DeFiStats{
 }
 
 
+query UniswapTokensGQL($chainId: Int!, $userWallet:String!, $searchString:String!  $source:[UniswapTokenSource!]!, $pageNumber:Int!, $pageSize:Int! ){
+  uniswapTokens(chainId: $chainId, userWallet:$userWallet , searchString:$searchString, source: $source, pageNumber:$pageNumber,  pageSize: $pageSize){
+    items{ chainId,address,symbol, name, decimals}
+    pagination{hasMore,pageNumber,pageSize,totalCount}
+  }
+}
 
 query RecentPricesGQL{
   recentPrices
 }
 
+query FiatPricesGQL($addresses:[String!]!){
+  fiatPrices(addresses: $addresses )
+}

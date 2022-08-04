@@ -1,4 +1,6 @@
-export enum Events {
-  GLOBAL_NOTIFICATION = 'GLOBAL_NOTIFICATION',
-  IMPORT_METAMASK_TOKEN = 'IMPORT_METAMASK_TOKEN',
+export interface ERC20Balance {
+  address: string
+  balance: number
+  isNative: boolean
+  uniqueKeyOrSymbol?: string
 }

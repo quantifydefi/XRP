@@ -12,7 +12,7 @@ declare module '@nuxt/types' {
     $f(val: number, params: Params): string
     $copyAddressToClipboard(value: string): Promise<void>
     $truncateAddress(address: string, zeroIndexTo: number, endIndexMinus: number): string
-    $navigateToExplorer(address: string, type: 'tx' | 'address', blockExplorerUrl: string): void
+    $imageUrlBySymbol(symbol: string | null): string
   }
 }
 declare module 'vue/types/vue' {
@@ -20,8 +20,7 @@ declare module 'vue/types/vue' {
     $f(val: number, params: Params): string
     $copyAddressToClipboard(value: string): Promise<void>
     $setAltImageUrl(event: any): string
-    $imageUrlBySymbol(symbol: string): string
+    $imageUrlBySymbol(symbol: string | null): string
     $truncateAddress(address: string, zeroIndexTo: number, endIndexMinus: number): string
-    $navigateToExplorer(address: string, type: 'tx' | 'address', blockExplorerUrl: string): void
   }
 }

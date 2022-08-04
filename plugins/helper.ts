@@ -19,7 +19,10 @@ function applyNumber(val: number, pre: string) {
     : pre + numFormat(val / 10 ** 9) + ' B'
 }
 
-const helper = (val: number, { minDigits = 2, maxDigits = 2, pre = '', after = '', useSymbol = false }): string => {
+const numberFormatter = (
+  val: number,
+  { minDigits = 2, maxDigits = 2, pre = '', after = '', useSymbol = false }
+): string => {
   if (useSymbol) {
     return applyNumber(val, pre)
   } else {
@@ -35,9 +38,9 @@ const copyAddressToClipboard = async (value: string): Promise<void> => {
   } catch (e) {}
 }
 
-const setAltImageUrl = (event: any) =>
-  (event.target.src = `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`)
-
+const setAltImageUrl = (event: any) => {
+  return (event.target.src = `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/generic.png`)
+}
 const imageUrlBySymbol = (symbol: string | null) =>
   symbol
     ? `https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/${symbol.toLowerCase()}.png`
@@ -56,10 +59,11 @@ const navigateToExplorer = (
 }
 
 export default defineNuxtPlugin((context: Context) => {
-  context.$f = helper
+  context.$f = numberFormatter
   context.$copyAddressToClipboard = copyAddressToClipboard
+  context.$imageUrlBySymbol = imageUrlBySymbol
 
-  Vue.prototype.$f = helper
+  Vue.prototype.$f = numberFormatter
   Vue.prototype.$copyAddressToClipboard = copyAddressToClipboard
   Vue.prototype.$setAltImageUrl = setAltImageUrl
   Vue.prototype.$imageUrlBySymbol = imageUrlBySymbol

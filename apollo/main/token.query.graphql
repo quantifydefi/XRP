@@ -69,3 +69,7 @@ query DailyChartGQL($coinGeckoID:String!){
     priceUsd
   }
 }
+
+subscription PriceUpdateGQL{
+  testSubs
+}

@@ -102,17 +102,6 @@ export type BalanceItem = {
   type: Scalars['String'];
 };
 
-export type BlockTransactionContractTransfer = {
-  __typename?: 'BlockTransactionContractTransfer';
-  blockSignedAt: Scalars['String'];
-  gasPrice: Scalars['Int'];
-  gasQuote: Scalars['Float'];
-  gasSpent: Scalars['Int'];
-  successful: Scalars['Boolean'];
-  transfers: Array<TokenTransferItem>;
-  txHash: Scalars['String'];
-};
-
 export type Chain = {
   __typename?: 'Chain';
   blockExplorerUrl: Scalars['String'];
@@ -196,25 +185,6 @@ export type LogEventParams = {
   value: Scalars['String'];
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  createTodo: Todo;
-};
-
-
-export type MutationCreateTodoArgs = {
-  input: NewTodo;
-};
-
-export type NewTodo = {
-  text: Scalars['String'];
-  userId: Scalars['String'];
-};
-
-/**
- * Returns news by coin symbol
- * https://cryptopanic.com/api/v1/posts/?auth_token=API_KEY&currencies=COIN_SYMBOL
- */
 export type News = {
   __typename?: 'News';
   currencies: Array<NewsCurrency>;
@@ -251,26 +221,18 @@ export type Price = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Aave Addresses  */
   aaveAddresses: Array<AaveAddress>;
-  /** Aave Pool  */
   aavePools: Array<AavePool>;
-  /** Portfolio Balances */
   balances: Array<Balance>;
   chains: Array<Chain>;
   dailyChart: Array<DailyChart>;
-  /** Gas Stats for ETH */
+  fiatPrices: Scalars['Map'];
   gas: Array<GasStats>;
-  /** Global Staths for Coin Gaico */
   globalStats: GlobalStats;
-  /** Recent Usd Prices  */
   recentPrices: Scalars['Map'];
-  todos: Array<Todo>;
   token: Token;
-  /** Portfolio Transactions */
   transactions: Transaction;
-  /** ERC20 token transfers for address  */
-  transfers: Transfers;
+  uniswapTokens: UniswapTokens;
 };
 
 
@@ -295,6 +257,11 @@ export type QueryDailyChartArgs = {
 };
 
 
+export type QueryFiatPricesArgs = {
+  addresses: Array<Scalars['String']>;
+};
+
+
 export type QueryTokenArgs = {
   chainId?: Scalars['Int'];
   contractAddress?: Scalars['String'];
@@ -313,12 +280,18 @@ export type QueryTransactionsArgs = {
 };
 
 
-export type QueryTransfersArgs = {
-  address: Scalars['String'];
+export type QueryUniswapTokensArgs = {
   chainId?: Scalars['Int'];
-  contractAddress: Scalars['String'];
   pageNumber?: Scalars['Int'];
   pageSize?: Scalars['Int'];
+  searchString?: Scalars['String'];
+  source: Array<UniswapTokenSource>;
+  userWallet?: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  testSubs?: Maybe<Scalars['Float']>;
 };
 
 export enum TimeInterval {
@@ -331,14 +304,6 @@ export enum TimeInterval {
   Interval_24H = 'INTERVAL_24H',
   Interval_30Min = 'INTERVAL_30MIN'
 }
-
-export type Todo = {
-  __typename?: 'Todo';
-  done: Scalars['Boolean'];
-  id: Scalars['ID'];
-  text: Scalars['String'];
-  user: User;
-};
 
 export type Token = {
   __typename?: 'Token';
@@ -379,32 +344,10 @@ export type Token = {
   websiteUrl?: Maybe<Scalars['JSONMap']>;
 };
 
-export type TokenTransferItem = {
-  __typename?: 'TokenTransferItem';
-  contractAddress: Scalars['String'];
-  contractDecimals: Scalars['Int'];
-  contractName: Scalars['String'];
-  contractTickerSymbol: Scalars['String'];
-  delta: Scalars['String'];
-  deltaQuote: Scalars['Float'];
-  fromAddress: Scalars['String'];
-  fromAddressIsContract: Scalars['Boolean'];
-  fromAddressLabel: Scalars['String'];
-  fromAddressName: Scalars['String'];
-  fromAddressSymbol: Scalars['String'];
-  logoUrl: Scalars['String'];
-  toAddress: Scalars['String'];
-  toAddressIsContract: Scalars['Boolean'];
-  toAddressLabel: Scalars['String'];
-  toAddressName: Scalars['String'];
-  toAddressSymbol: Scalars['String'];
-  transferType: Scalars['String'];
-};
-
 export type Transaction = {
   __typename?: 'Transaction';
   address: Scalars['String'];
-  chainID: Scalars['Int'];
+  chainID: Scalars['Float'];
   items: Array<TransactionItem>;
   nextUpdateAt: Scalars['String'];
   pagination?: Maybe<Pagination>;
@@ -434,17 +377,6 @@ export type TransactionItem = {
   valueQuote: Scalars['Float'];
 };
 
-export type Transfers = {
-  __typename?: 'Transfers';
-  address: Scalars['String'];
-  chainId: Scalars['Int'];
-  items: Array<BlockTransactionContractTransfer>;
-  nextUpdateAt: Scalars['String'];
-  pagination: Pagination;
-  quoteCurrency: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
 export type TxDetail = {
   __typename?: 'TxDetail';
   fromAddress: Scalars['String'];
@@ -459,10 +391,26 @@ export type TxDetail = {
   value: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
+export type UniswapToken = {
+  __typename?: 'UniswapToken';
+  address: Scalars['String'];
+  chainId: Scalars['Int'];
+  decimals: Scalars['Int'];
   name: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
+export enum UniswapTokenSource {
+  Aave = 'aave',
+  CoinGecko = 'coinGecko',
+  Uniswap = 'uniswap',
+  UserBalances = 'userBalances'
+}
+
+export type UniswapTokens = {
+  __typename?: 'UniswapTokens';
+  items: Array<UniswapToken>;
+  pagination?: Maybe<Pagination>;
 };
 
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
@@ -480,10 +428,29 @@ export type DeFiStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DeFiStatsQuery = { __typename?: 'Query', globalStats: { __typename?: 'GlobalStats', defiMarketCap: number, ethMarketCap: number, defiToEthRatio: number, tradingVolume24h: number, defiDominance: number, topCoinName: string, topCoinDefiDominance: number } };
 
+export type UniswapTokensGqlQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+  userWallet: Scalars['String'];
+  searchString: Scalars['String'];
+  source: Array<UniswapTokenSource> | UniswapTokenSource;
+  pageNumber: Scalars['Int'];
+  pageSize: Scalars['Int'];
+}>;
+
+
+export type UniswapTokensGqlQuery = { __typename?: 'Query', uniswapTokens: { __typename?: 'UniswapTokens', items: Array<{ __typename?: 'UniswapToken', chainId: number, address: string, symbol: string, name: string, decimals: number }>, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageNumber?: number | null, pageSize?: number | null, totalCount?: number | null } | null } };
+
 export type RecentPricesGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
+
+export type FiatPricesGqlQueryVariables = Exact<{
+  addresses: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type FiatPricesGqlQuery = { __typename?: 'Query', fiatPrices: any };
 
 export type AavePoolGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -510,17 +477,6 @@ export type TransactionsGqlQueryVariables = Exact<{
 
 export type TransactionsGqlQuery = { __typename?: 'Query', transactions: { __typename?: 'Transaction', pagination?: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null } | null, items: Array<{ __typename?: 'TransactionItem', blockSignedAt: string, txHash: string, successful: boolean, fromAddress: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressName: string, toAddressIsContract: boolean, toAddressSymbol: string, value: string, valueQuote: number, gasQuote: number, gasPrice: number, gasSpent: number, txDetails?: Array<{ __typename?: 'TxDetail', fromAddress: string, toAddress: string, value: string, tokenSymbolName: string, tokenContractSymbol: string, tokenContractDecimals: number, tokenAddress: string, tokenLogoUrl: string, priceUSD: number }> | null, logEvents?: Array<{ __typename?: 'LogEvent', logOffset: number, txHash: string, senderContractDecimals: number, senderName: string, senderContractTickerSymbol: string, senderAddress: string, senderLogoUrl: string, decoded: { __typename?: 'LogEventDecoded', name: string, signature: string, params: Array<{ __typename?: 'LogEventParams', name: string, type: string, decoded: boolean, value: string } | null> } }> | null }> } };
 
-export type TransfersGqlQueryVariables = Exact<{
-  chainId: Scalars['Int'];
-  address: Scalars['String'];
-  contractAddress: Scalars['String'];
-  pageNumber: Scalars['Int'];
-  pageSize: Scalars['Int'];
-}>;
-
-
-export type TransfersGqlQuery = { __typename?: 'Query', transfers: { __typename?: 'Transfers', pagination: { __typename?: 'Pagination', hasMore?: boolean | null, pageSize?: number | null, pageNumber?: number | null }, items: Array<{ __typename?: 'BlockTransactionContractTransfer', blockSignedAt: string, txHash: string, successful: boolean, gasSpent: number, gasPrice: number, gasQuote: number, transfers: Array<{ __typename?: 'TokenTransferItem', fromAddress: string, fromAddressLabel: string, fromAddressName: string, fromAddressSymbol: string, fromAddressIsContract: boolean, toAddress: string, toAddressLabel: string, toAddressName: string, toAddressSymbol: string, toAddressIsContract: boolean, contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, logoUrl: string, transferType: string, delta: string, deltaQuote: number }> }> } };
-
 export type TokenQueryGqlQueryVariables = Exact<{
   qcKey: Scalars['String'];
   walletAddress: Scalars['String'];
@@ -539,3 +495,8 @@ export type DailyChartGqlQueryVariables = Exact<{
 
 
 export type DailyChartGqlQuery = { __typename?: 'Query', dailyChart: Array<{ __typename?: 'DailyChart', date: number, priceUsd: number }> };
+
+export type PriceUpdateGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PriceUpdateGqlSubscription = { __typename?: 'Subscription', testSubs?: number | null };
