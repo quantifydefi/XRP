@@ -9,15 +9,6 @@ import { ERC20Balance } from '~/types/global'
 
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
-// enum nativeTokens {
-//   ETH = 'ETH',
-//   MATIC = 'MATIC',
-// }
-// const chainMap = {
-//   1: nativeTokens.ETH,
-//   137: nativeTokens.MATIC,
-// }
-
 export default function useERC20() {
   const { provider, account, signer, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
   const { isNativeToken } = useHelpers()

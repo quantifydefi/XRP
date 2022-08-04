@@ -11,7 +11,7 @@ import { ERC20Balance } from '~/types/global'
 import { useHelpers } from '~/composables/useHelpers'
 import { FiatPricesGQL } from '~/apollo/main/config.query.graphql'
 
-const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+const UNISWAP_V3_ROUTER2_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
 interface QuoteResult {
   expectedConvertQuote: number
@@ -71,6 +71,7 @@ export default function (
 
   // STATE
   const loading = ref(false)
+  const currentBlockNumber = ref<number | null>(null)
   const enableDetails = ref(false)
   const errorMessage = ref<string | null>(null)
   const quoteResult = reactive<QuoteResult>(defaultQuoteData)
@@ -147,9 +148,14 @@ export default function (
       return { status: false, message: `Input amount must be more then 0` }
     }
 
-    if (fromTokenBalance.value < amount.value) {
+    if (tradeDirection.value === 'EXACT_INPUT' && fromTokenBalance.value < amount.value) {
       return { status: false, message: `Insufficient  ${fromToken.value.symbol} balance` }
     }
+
+    if (tradeDirection.value === 'EXACT_OUTPUT' && fromTokenBalance.value < expectedConvertQuote.value) {
+      return { status: false, message: `Insufficient  ${fromToken.value.symbol} balance` }
+    }
+
     if (isSameTokenSelected.value) {
       return { status: false, message: `Cant Swap Same Tokens` }
     }
@@ -185,18 +191,7 @@ export default function (
     txResult.loading = false
   }
 
-  const runBlockListener = () => {
-    provider.value.on('block', (data: any) => {
-      console.log('Bloch change', data)
-      let debounceTimeout: any = null
-      clearTimeout(debounceTimeout)
-      debounceTimeout = setTimeout(async () => {
-        console.log('UPDATE QUOTE', data)
-        await getUniswapTrade()
-        debounceTimeout = null
-      }, 5000)
-    })
-  }
+  const runBlockListener = () => provider.value.on('block', (block: number) => (currentBlockNumber.value = block))
 
   const getQuoteToken = (tokenIn: Token, tokenOut: Token, tradeType: TradeType): Token => {
     return tradeType === TradeType.EXACT_INPUT ? tokenOut : tokenIn
@@ -213,7 +208,7 @@ export default function (
         runBlockListener()
       } catch (e: any) {
         console.log(e)
-        errorMessage.value = 'Address might be wrong or not supported'
+        errorMessage.value = 'Something Went Wrong'
       } finally {
         loading.value = false
       }
@@ -235,9 +230,9 @@ export default function (
     stopAllListeners()
     const isTokenInNative = isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
     if (!isTokenInNative) {
-      const allowed = await allowedSpending(fromToken.value.address, V3_SWAP_ROUTER_ADDRESS)
+      const allowed = await allowedSpending(fromToken.value.address, UNISWAP_V3_ROUTER2_ADDRESS)
       if (allowed < amount.value) {
-        await approveMaxSpending(fromToken.value.address, V3_SWAP_ROUTER_ADDRESS)
+        await approveMaxSpending(fromToken.value.address, UNISWAP_V3_ROUTER2_ADDRESS)
       }
     }
     const { isCompleted, receipt } = await sendTransaction()
@@ -283,7 +278,6 @@ export default function (
       deadline: Math.floor(Date.now() / 1000 + 1800),
     })
 
-    console.log(route, typeof route?.quote)
     console.log(`Quote Exact In: ${Number(route?.quote.toFixed(6))}`)
     console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`)
     console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`)
@@ -305,11 +299,16 @@ export default function (
 
     quoteResult.txCallData = {
       data: route?.methodParameters?.calldata,
-      to: V3_SWAP_ROUTER_ADDRESS,
+      to: UNISWAP_V3_ROUTER2_ADDRESS,
       value: BigNumber.from(route?.methodParameters?.value),
       from: account.value,
       gasPrice: BigNumber.from(route?.gasPriceWei),
-      // gasLimit: 400000,
+    }
+  }
+
+  function stopAllListeners() {
+    if (walletReady.value) {
+      provider.value.removeAllListeners()
     }
   }
 
@@ -332,16 +331,23 @@ export default function (
     if (!walletReady.value) {
       clearTrade()
     }
+
+    watch(currentBlockNumber, (block: number | null) => {
+      if (block) {
+        console.log('New Block Update', block)
+        let debounceTimeout: any = null
+        clearTimeout(debounceTimeout)
+        debounceTimeout = setTimeout(async () => {
+          console.log('UPDATE QUOTE', block)
+          await getUniswapTrade()
+          debounceTimeout = null
+        }, 5000)
+      }
+    })
   })
 
   onMounted(async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])))
   onUnmounted(() => stopAllListeners())
-
-  function stopAllListeners() {
-    if (walletReady.value) {
-      provider.value.removeAllListeners()
-    }
-  }
 
   return {
     fromTokenBalance,
