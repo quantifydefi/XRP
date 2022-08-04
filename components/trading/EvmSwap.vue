@@ -1,6 +1,10 @@
 <template>
-  <v-card outlined tile width="440" :disabled="!isNetworkSupported">
-    <div v-if="!receipt">
+  <v-card outlined tile :disabled="!isNetworkSupported" :height="height" :width="width">
+    <div
+      v-if="!receipt"
+      :class="height === '100%' ? '' : 'overflow-y-auto'"
+      :style="height === '100%' ? '' : { height: `${height}px` }"
+    >
       <v-card-title class="subtitle-1 font-weight-medium py-3">
         Swap
         <v-spacer />
@@ -124,7 +128,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
 import { TradeType } from '@uniswap/sdk'
 import TokenMenuDialog from '~/components/trading/TokenMenuDialog.vue'
 import TokenInputField from '~/components/trading/TokenInputField.vue'
@@ -139,23 +143,31 @@ const defaultToken: UniswapToken = {
   name: 'USD Coin',
   decimals: 6,
 }
-export default defineComponent({
+
+type Props = {
+  height: string
+  width: string
+  inToken: UniswapToken
+  outToken: UniswapToken
+}
+export default defineComponent<Props>({
   components: { TransactionResult, TokenMenuDialog, TokenInputField },
 
-  setup() {
+  props: {
+    height: { type: String, default: '100%' },
+    width: { type: String, default: '450' },
+    inToken: { type: Object as PropType<UniswapToken>, default: () => defaultToken },
+    outToken: { type: Object as PropType<UniswapToken>, default: () => defaultToken },
+  },
+
+  setup(props) {
     const dialog = ref(false)
     const expand = ref(false)
     const tradeDirection = ref<keyof typeof TradeType>('EXACT_INPUT')
     const tokenDirection = ref<keyof typeof TradeType>('EXACT_INPUT')
     const tokenMenuDialogComponent = ref<any>(null)
-    const fromToken = ref<UniswapToken>({
-      chainId: 1,
-      address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-      symbol: 'AAVE',
-      name: 'Aave',
-      decimals: 18,
-    })
-    const toToken = ref<UniswapToken>(defaultToken)
+    const fromToken = ref(props.inToken)
+    const toToken = ref(props.outToken)
     const amount = ref(0)
 
     const { $f } = useContext()

@@ -1,326 +1,368 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-    query: Query
-    subscription: Subscription
+  query: Query
+  subscription: Subscription
 }
 
 type AaveAddress {
-    aTokenAddress: String!
-    aTokenSymbol: String!
-    address: String!
-    decimals: Int!
-    stableDebtTokenAddress: String!
-    symbol: String!
-    variableDebtTokenAddress: String!
+  aTokenAddress: String!
+  aTokenSymbol: String!
+  address: String!
+  decimals: Int!
+  stableDebtTokenAddress: String!
+  symbol: String!
+  variableDebtTokenAddress: String!
 }
 
 type AavePool {
-    aEmissionPerSecond: Float!
-    addresses: AaveAddress!
-    availableLiquidity: Float!
-    baseLTVasCollateral: Float!
-    borrowingEnabled: Boolean!
-    decimals: Int!
-    id: String!
-    liquidityRate: Float!
-    name: String!
-    portfolioVal: AavePortfolio!
-    price: AavePoolPrice!
-    reserveLiquidationBonus: Float!
-    reserveLiquidationThreshold: Float!
-    sEmissionPerSecond: Float!
-    stableBorrowRate: Float!
-    stableBorrowRateEnabled: Boolean!
-    symbol: String!
-    totalATokenSupply: Float!
-    totalCurrentVariableDebt: Float!
-    totalLiquidity: Float!
-    totalLiquidityAsCollateral: Float!
-    totalPrincipalStableDebt: Float!
-    underlyingAsset: String!
-    usageAsCollateralEnabled: Boolean!
-    utilizationRate: Float!
-    vEmissionPerSecond: Float!
-    variableBorrowRate: Float!
+  aEmissionPerSecond: Float!
+  addresses: AaveAddress!
+  availableLiquidity: Float!
+  baseLTVasCollateral: Float!
+  borrowingEnabled: Boolean!
+  decimals: Int!
+  id: String!
+  liquidityRate: Float!
+  name: String!
+  portfolioVal: AavePortfolio!
+  price: AavePoolPrice!
+  reserveLiquidationBonus: Float!
+  reserveLiquidationThreshold: Float!
+  sEmissionPerSecond: Float!
+  stableBorrowRate: Float!
+  stableBorrowRateEnabled: Boolean!
+  symbol: String!
+  totalATokenSupply: Float!
+  totalCurrentVariableDebt: Float!
+  totalLiquidity: Float!
+  totalLiquidityAsCollateral: Float!
+  totalPrincipalStableDebt: Float!
+  underlyingAsset: String!
+  usageAsCollateralEnabled: Boolean!
+  utilizationRate: Float!
+  vEmissionPerSecond: Float!
+  variableBorrowRate: Float!
 }
 
 type AavePoolPrice {
-    id: String!
-    priceInEth: Float!
-    priceUsd: Float!
+  id: String!
+  priceInEth: Float!
+  priceUsd: Float!
 }
 
 type AavePortfolio {
-    stableBorrow: Float!
-    symbol: String!
-    totalDeposits: Float!
-    variableBorrow: Float!
-    walletBal: Float!
+  stableBorrow: Float!
+  symbol: String!
+  totalDeposits: Float!
+  variableBorrow: Float!
+  walletBal: Float!
 }
 
 type Balance {
-    aavePools: [AavePool!]!
-    address: String!
-    chainId: Float!
-    items: [BalanceItem!]!
-    nextUpdateAt: String!
-    pagination: Pagination
-    quoteCurrency: String!
-    updatedAt: String!
+  aavePools: [AavePool!]!
+  address: String!
+  chainId: Float!
+  items: [BalanceItem!]!
+  nextUpdateAt: String!
+  pagination: Pagination
+  quoteCurrency: String!
+  updatedAt: String!
 }
 
 type BalanceItem {
-    balance: Float!
-    balance24h: Float!
-    contractAddress: String!
-    contractDecimals: Float!
-    contractName: String!
-    contractTickerSymbol: String!
-    lastTransferredAt: String!
-    nftData: Float!
-    quote: Float!
-    quote24h: Float!
-    quoteRate: Float!
-    quoteRate24h: Float!
-    supportsErc: [String!]
-    type: String!
+  balance: Float!
+  balance24h: Float!
+  contractAddress: String!
+  contractDecimals: Float!
+  contractName: String!
+  contractTickerSymbol: String!
+  lastTransferredAt: String!
+  nftData: Float!
+  quote: Float!
+  quote24h: Float!
+  quoteRate: Float!
+  quoteRate24h: Float!
+  supportsErc: [String!]
+  type: String!
+}
+
+type BlockTransactionContractTransfer {
+  blockSignedAt: String!
+  gasPrice: Int!
+  gasQuote: Float!
+  gasSpent: Int!
+  successful: Boolean!
+  transfers: [TokenTransferItem!]!
+  txHash: String!
 }
 
 type Chain {
-    blockExplorerUrl: String!
-    chainId: Int!
-    geckoId: String!
-    isTestNet: Boolean!
-    label: String!
-    logoUrl: String!
-    name: String!
-    rpcUrl: String!
-    symbol: String!
+  blockExplorerUrl: String!
+  chainId: Int!
+  geckoId: String!
+  isTestNet: Boolean!
+  label: String!
+  logoUrl: String!
+  name: String!
+  rpcUrl: String!
+  symbol: String!
 }
 
 type DailyChart {
-    date: Int!
-    priceUsd: Float!
+  date: Int!
+  priceUsd: Float!
 }
 
 type EthGasStatsResult {
-    fastGasPrice: Float!
-    gasUsedRatio: String!
-    lastBlock: Int!
-    proposeGasPrice: Float!
-    safeGasPrice: Float!
-    suggestBaseFee: Float!
+  fastGasPrice: Float!
+  gasUsedRatio: String!
+  lastBlock: Int!
+  proposeGasPrice: Float!
+  safeGasPrice: Float!
+  suggestBaseFee: Float!
 }
 
 type GasStats {
-    blockExplorer: String!
-    gas: EthGasStatsResult!
-    name: String!
-    symbol: String!
+  blockExplorer: String!
+  gas: EthGasStatsResult!
+  name: String!
+  symbol: String!
 }
 
 type GlobalStats {
-    defiDominance: Float!
-    defiMarketCap: Float!
-    defiToEthRatio: Float!
-    ethMarketCap: Float!
-    topCoinDefiDominance: Float!
-    topCoinName: String!
-    tradingVolume24h: Float!
+  defiDominance: Float!
+  defiMarketCap: Float!
+  defiToEthRatio: Float!
+  ethMarketCap: Float!
+  topCoinDefiDominance: Float!
+  topCoinName: String!
+  tradingVolume24h: Float!
 }
 
 type HighAndLow {
-    high: Float!
-    interval: String!
-    low: Float!
-    unixTime: Int!
+  high: Float!
+  interval: String!
+  low: Float!
+  unixTime: Int!
 }
 
 type LogEvent {
-    decoded: LogEventDecoded!
-    logOffset: Int!
-    senderAddress: String!
-    senderContractDecimals: Int!
-    senderContractTickerSymbol: String!
-    senderLogoUrl: String!
-    senderName: String!
-    txHash: String!
+  decoded: LogEventDecoded!
+  logOffset: Int!
+  senderAddress: String!
+  senderContractDecimals: Int!
+  senderContractTickerSymbol: String!
+  senderLogoUrl: String!
+  senderName: String!
+  txHash: String!
 }
 
 type LogEventDecoded {
-    name: String!
-    params: [LogEventParams]!
-    signature: String!
+  name: String!
+  params: [LogEventParams]!
+  signature: String!
 }
 
 type LogEventParams {
-    decoded: Boolean!
-    name: String!
-    type: String!
-    value: String!
+  decoded: Boolean!
+  name: String!
+  type: String!
+  value: String!
 }
 
 type News {
-    currencies: [NewsCurrency!]!
-    id: Int!
-    publishedAt: String!
-    title: String!
-    url: String!
+  currencies: [NewsCurrency!]!
+  id: Int!
+  publishedAt: String!
+  title: String!
+  url: String!
 }
 
 type NewsCurrency {
-    code: String!
-    slug: String!
-    title: String!
-    url: String!
+  code: String!
+  slug: String!
+  title: String!
+  url: String!
 }
 
 type Pagination {
-    hasMore: Boolean
-    pageNumber: Int
-    pageSize: Int
-    totalCount: Int
+  hasMore: Boolean
+  pageNumber: Int
+  pageSize: Int
+  totalCount: Int
 }
 
 type Price {
-    dataSource: String!
-    priceEth: Float!
-    priceUsd: Float!
-    qcKey: String!
-    symbolName: String!
+  dataSource: String!
+  priceEth: Float!
+  priceUsd: Float!
+  qcKey: String!
+  symbolName: String!
 }
 
 type Query {
-    aaveAddresses(chainId: Int!): [AaveAddress!]!
-    aavePools(chainId: Int!): [AavePool!]!
-    balances(address: String!, chainIds: [Int!]!): [Balance!]!
-    chains: [Chain!]!
-    dailyChart(coinGeckoID: String! = ""): [DailyChart!]!
-    fiatPrices(addresses: [String!]!): Map!
-    gas: [GasStats!]!
-    globalStats: GlobalStats!
-    recentPrices: Map!
-    token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
-    transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
-    uniswapTokens(chainId: Int! = 1, pageNumber: Int! = 0, pageSize: Int! = 100, searchString: String! = "", source: [UniswapTokenSource!]!, userWallet: String! = ""): UniswapTokens!
+  aaveAddresses(chainId: Int!): [AaveAddress!]!
+  aavePools(chainId: Int!): [AavePool!]!
+  balances(address: String!, chainIds: [Int!]!): [Balance!]!
+  chains: [Chain!]!
+  dailyChart(coinGeckoID: String! = ""): [DailyChart!]!
+  fiatPrices(addresses: [String!]!): Map!
+  gas: [GasStats!]!
+  globalStats: GlobalStats!
+  recentPrices: Map!
+  token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
+  transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
+  transfers(address: String!, chainId: Int! = 0, contractAddress: String!, pageNumber: Int! = 0, pageSize: Int! = 100): Transfers!
+  uniswapTokens(chainId: Int! = 1, pageNumber: Int! = 0, pageSize: Int! = 100, searchString: String! = "", source: [UniswapTokenSource!]!, userWallet: String! = ""): UniswapTokens!
 }
 
 type Subscription {
-    testSubs: Float
+  testSubs: Float
 }
 
 type Token {
-    ID: ID
-    aavePools: [AavePool!]!
-    aaveSymbol: String!
-    balances: [Balance!]!
-    bitbucketRepos: JSONMap
-    chainId: Int!
-    circulatingSupply: Float!
-    coinDescription: String!
-    coinGeckoID: String!
-    contractAddress: String!
-    decimals: Int!
-    discordChannelId: String!
-    explorerUrls: JSONMap
-    facebookUrl: String!
-    githubRepos: JSONMap
-    interval: TimeInterval!
-    isAaveToken: Boolean!
-    isQCToken: Boolean!
-    marketcap: Float!
-    news: [News!]!
-    price: Price!
-    price24h: Float!
-    qcKey: String!
-    rank: Int!
-    resistance1h: Float!
-    safeScore: Float!
-    subredditUrl: String!
-    support1h: Float!
-    symbolName: String!
-    telegramChannelId: String!
-    tokenInterval: HighAndLow!
-    twitterUrl: String!
-    volume24h: Float!
-    walletAddress: String!
-    websiteUrl: JSONMap
+  ID: ID
+  aavePools: [AavePool!]!
+  aaveSymbol: String!
+  balances: [Balance!]!
+  bitbucketRepos: JSONMap
+  chainId: Int!
+  circulatingSupply: Float!
+  coinDescription: String!
+  coinGeckoID: String!
+  contractAddress: String!
+  decimals: Int!
+  discordChannelId: String!
+  explorerUrls: JSONMap
+  facebookUrl: String!
+  githubRepos: JSONMap
+  interval: TimeInterval!
+  isAaveToken: Boolean!
+  isQCToken: Boolean!
+  marketcap: Float!
+  news: [News!]!
+  price: Price!
+  price24h: Float!
+  qcKey: String!
+  rank: Int!
+  resistance1h: Float!
+  safeScore: Float!
+  subredditUrl: String!
+  support1h: Float!
+  symbolName: String!
+  telegramChannelId: String!
+  tokenInterval: HighAndLow!
+  twitterUrl: String!
+  volume24h: Float!
+  walletAddress: String!
+  websiteUrl: JSONMap
+}
+
+type TokenTransferItem {
+  contractAddress: String!
+  contractDecimals: Int!
+  contractName: String!
+  contractTickerSymbol: String!
+  delta: String!
+  deltaQuote: Float!
+  fromAddress: String!
+  fromAddressIsContract: Boolean!
+  fromAddressLabel: String!
+  fromAddressName: String!
+  fromAddressSymbol: String!
+  logoUrl: String!
+  toAddress: String!
+  toAddressIsContract: Boolean!
+  toAddressLabel: String!
+  toAddressName: String!
+  toAddressSymbol: String!
+  transferType: String!
 }
 
 type Transaction {
-    address: String!
-    chainID: Float!
-    items: [TransactionItem!]!
-    nextUpdateAt: String!
-    pagination: Pagination
-    quoteCurrency: String!
-    updatedAt: String!
+  address: String!
+  chainID: Int!
+  items: [TransactionItem!]!
+  nextUpdateAt: String!
+  pagination: Pagination
+  quoteCurrency: String!
+  updatedAt: String!
 }
 
 type TransactionItem {
-    blockSignedAt: String!
-    fromAddress: String!
-    fromAddressIsContract: Boolean!
-    fromAddressName: String!
-    fromAddressSymbol: String!
-    gasPrice: Float!
-    gasQuote: Float!
-    gasSpent: Float!
-    logEvents: [LogEvent!]
-    successful: Boolean!
-    toAddress: String!
-    toAddressIsContract: Boolean!
-    toAddressName: String!
-    toAddressSymbol: String!
-    txDetails: [TxDetail!]
-    txHash: String!
-    value: String!
-    valueQuote: Float!
+  blockSignedAt: String!
+  fromAddress: String!
+  fromAddressIsContract: Boolean!
+  fromAddressName: String!
+  fromAddressSymbol: String!
+  gasPrice: Float!
+  gasQuote: Float!
+  gasSpent: Float!
+  logEvents: [LogEvent!]
+  successful: Boolean!
+  toAddress: String!
+  toAddressIsContract: Boolean!
+  toAddressName: String!
+  toAddressSymbol: String!
+  txDetails: [TxDetail!]
+  txHash: String!
+  value: String!
+  valueQuote: Float!
+}
+
+type Transfers {
+  address: String!
+  chainId: Int!
+  items: [BlockTransactionContractTransfer!]!
+  nextUpdateAt: String!
+  pagination: Pagination!
+  quoteCurrency: String!
+  updatedAt: String!
 }
 
 type TxDetail {
-    fromAddress: String!
-    method: String!
-    priceUSD: Float!
-    toAddress: String!
-    tokenAddress: String!
-    tokenContractDecimals: Int!
-    tokenContractSymbol: String!
-    tokenLogoUrl: String!
-    tokenSymbolName: String!
-    value: String!
+  fromAddress: String!
+  method: String!
+  priceUSD: Float!
+  toAddress: String!
+  tokenAddress: String!
+  tokenContractDecimals: Int!
+  tokenContractSymbol: String!
+  tokenLogoUrl: String!
+  tokenSymbolName: String!
+  value: String!
 }
 
 type UniswapToken {
-    address: String!
-    chainId: Int!
-    decimals: Int!
-    name: String!
-    symbol: String!
+  address: String!
+  chainId: Int!
+  decimals: Int!
+  name: String!
+  symbol: String!
 }
 
 type UniswapTokens {
-    items: [UniswapToken!]!
-    pagination: Pagination
+  items: [UniswapToken!]!
+  pagination: Pagination
 }
 
 enum TimeInterval {
-    INTERVAL_15MIN
-    INTERVAL_1H
-    INTERVAL_1WEEK
-    INTERVAL_24H
-    INTERVAL_2H
-    INTERVAL_30MIN
-    INTERVAL_4H
-    INTERVAL_5MIN
+  INTERVAL_15MIN
+  INTERVAL_1H
+  INTERVAL_1WEEK
+  INTERVAL_24H
+  INTERVAL_2H
+  INTERVAL_30MIN
+  INTERVAL_4H
+  INTERVAL_5MIN
 }
 
 enum UniswapTokenSource {
-    aave
-    coinGecko
-    uniswap
-    userBalances
+  aave
+  coinGecko
+  uniswap
+  userBalances
 }
 
 scalar JSONMap

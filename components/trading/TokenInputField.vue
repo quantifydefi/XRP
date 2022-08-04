@@ -34,7 +34,7 @@
             <v-skeleton-loader v-if="loading" type="heading" tile height="20" width="250" />
             <span v-else class="mr-0" v-text="`${fiatPrice ? $f(fiatPrice, { pre: '$ ', maxDigits: 2 }) : ''}`" />
           </v-col>
-          <v-col class="text-right text-truncate" style="max-width: 170px">
+          <v-col class="text-right text-truncate" style="max-width: 100%">
             <v-skeleton-loader v-if="loading" type="heading" tile height="20" class="ml-8" width="300" />
             <span v-else>
               <span class="mr-0" v-text="`Balance: ${$f(balance, { maxDigits: 6 })}`" />

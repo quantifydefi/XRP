@@ -13,6 +13,9 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
     symbolName
     rank
     chainId
+    contractAddress
+    decimals
+
     tokenInterval {
       high
       low

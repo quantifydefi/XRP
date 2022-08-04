@@ -71,7 +71,6 @@ export default function (
 
   // STATE
   const loading = ref(false)
-  const currentBlockNumber = ref<number | null>(null)
   const enableDetails = ref(false)
   const errorMessage = ref<string | null>(null)
   const quoteResult = reactive<QuoteResult>(defaultQuoteData)
@@ -191,7 +190,18 @@ export default function (
     txResult.loading = false
   }
 
-  const runBlockListener = () => provider.value.on('block', (block: number) => (currentBlockNumber.value = block))
+  const runBlockListener = () => {
+    provider.value.on('block', (block: number) => {
+      console.log('New Block Update', block)
+      let debounceTimeout: any = null
+      clearTimeout(debounceTimeout)
+      debounceTimeout = setTimeout(async () => {
+        console.log('UPDATE QUOTE', block)
+        await getUniswapTrade()
+        debounceTimeout = null
+      }, 5000)
+    })
+  }
 
   const getQuoteToken = (tokenIn: Token, tokenOut: Token, tradeType: TradeType): Token => {
     return tradeType === TradeType.EXACT_INPUT ? tokenOut : tokenIn
@@ -331,19 +341,6 @@ export default function (
     if (!walletReady.value) {
       clearTrade()
     }
-
-    watch(currentBlockNumber, (block: number | null) => {
-      if (block) {
-        console.log('New Block Update', block)
-        let debounceTimeout: any = null
-        clearTimeout(debounceTimeout)
-        debounceTimeout = setTimeout(async () => {
-          console.log('UPDATE QUOTE', block)
-          await getUniswapTrade()
-          debounceTimeout = null
-        }, 5000)
-      }
-    })
   })
 
   onMounted(async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])))
