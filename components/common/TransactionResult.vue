@@ -15,13 +15,14 @@
         </small>
       </v-col>
     </v-row>
-    <v-virtual-scroll
-      v-if="showLogs"
-      class="grey--text text-left my-4"
-      height="300"
-      item-height="0"
-      v-text="txReceipt"
-    />
+
+    <v-card v-if="showLogs" elevation="0" class="overflow-auto text-left" :height="scrollHeight">
+      <pre
+        class="overflow-y-auto subtitle-2 font-weight-regular grey--text"
+        v-text="JSON.stringify(txReceipt, null, 2)"
+      />
+    </v-card>
+
     <v-btn tile class="text-capitalize" block color="primary" @click="onClose"> OK, Close it </v-btn>
   </div>
 </template>
@@ -39,6 +40,7 @@ type Props = {
 export default defineComponent<Props>({
   props: {
     receipt: { type: [Object, Error] as any, required: true },
+    scrollHeight: { type: String, default: '140' },
     isTxMined: { type: Boolean, default: false, required: true },
     successMessage: { type: String as PropType<string | null>, default: null, required: false },
   },

@@ -10,7 +10,6 @@ import useERC20 from '~/composables/useERC20'
 import { ERC20Balance } from '~/types/global'
 import { useHelpers } from '~/composables/useHelpers'
 import { FiatPricesGQL } from '~/apollo/main/config.query.graphql'
-
 const UNISWAP_V3_ROUTER2_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
 interface QuoteResult {
@@ -307,12 +306,14 @@ export default function (
     quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
     quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
 
+    const gasLimit = route ? BigNumber.from(`${route.estimatedGasUsed.toNumber() * 1.75}`) : 300000
     quoteResult.txCallData = {
       data: route?.methodParameters?.calldata,
       to: UNISWAP_V3_ROUTER2_ADDRESS,
       value: BigNumber.from(route?.methodParameters?.value),
       from: account.value,
       gasPrice: BigNumber.from(route?.gasPriceWei),
+      gasLimit,
     }
   }
 

@@ -6,12 +6,10 @@
       :style="height === '100%' ? '' : { height: `${height}px` }"
     >
       <v-card-title class="subtitle-1 font-weight-medium py-3">
-        Swap
+        <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`uni`)"></v-img></v-avatar>Uniswap
         <v-spacer />
-        <v-btn height="24" width="24" fab>
-          <v-icon size="20">mdi-cog</v-icon>
-        </v-btn>
       </v-card-title>
+      <v-divider class="mb-4" />
       <v-row no-gutters justify="center" class="pa-2">
         <v-col cols="12">
           <v-row no-gutters>
@@ -120,6 +118,7 @@
           :receipt="receipt"
           :is-tx-mined="isTxMined"
           success-message="Success Message"
+          :scroll-height="logScrollHeight"
           @on-result-closed="resetTransaction"
         />
       </v-col>
@@ -156,6 +155,7 @@ export default defineComponent<Props>({
   props: {
     height: { type: String, default: '100%' },
     width: { type: String, default: '450' },
+    logScrollHeight: { type: String, default: '140' },
     inToken: { type: Object as PropType<UniswapToken>, default: () => defaultToken },
     outToken: { type: Object as PropType<UniswapToken>, default: () => defaultToken },
   },
