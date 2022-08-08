@@ -123,24 +123,17 @@ export class AavePoolModel implements AavePool {
 
 export default function () {
   // STATE
-  const loading = ref(true)
-  // COMPOSABLES
   const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
-  const { result, onResult } = useQuery(
+  const { result, loading } = useQuery(
     AavePoolGQL,
     () => ({
-      chainId: chainId.value ?? 1,
+      chainId: chainId.value,
     }),
     { fetchPolicy: 'no-cache', pollInterval: 30000 }
   )
 
   // COMPUTED
   const aavePoolsData = computed(() => plainToClass(AavePoolModel, result.value?.aavePools as AavePoolModel[]) ?? [])
-
-  // EVENTS
-  onResult((queryResult) => {
-    loading.value = queryResult.loading
-  })
   watch(chainId, () => (loading.value = true))
 
   return {
