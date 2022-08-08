@@ -1,9 +1,8 @@
 import { plainToClass } from 'class-transformer'
-import { computed, inject, reactive, Ref, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, inject, reactive, Ref, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { TransfersGQL } from '~/apollo/main/portfolio.query.graphql'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-import { State } from '~/types/state'
 import { BlockTransactionContractTransfer, TokenTransferItem } from '~/types/apollo/main/types'
 
 export class TransactionTransfer implements BlockTransactionContractTransfer {
@@ -74,15 +73,13 @@ export default function () {
   const pagination = reactive({ page: 0, total: 1, perPage: 5, visible: 30 })
 
   // COMPOSABLES
-  const { state } = useStore<State>()
   const route = useRoute()
-  const currentChain = computed(() => state.configs.currentTransactionChain.chainId)
-  const { account } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
   const { result, error, onResult } = useQuery(
     TransfersGQL,
     () => ({
-      chainId: currentChain.value,
+      chainId: chainId.value ?? 1,
       address: account.value ?? '',
       contractAddress: contractAddress.value,
       pageNumber: pagination.page,
@@ -107,7 +104,7 @@ export default function () {
   })
 
   // On chain network or account change, reset currentPage and pagination.total
-  watch([account, currentChain], () => {
+  watch([account, chainId], () => {
     currentPage.value = 1
     pagination.total = 1
   })

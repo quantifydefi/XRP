@@ -28,9 +28,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, PropType, ref, useStore } from '@nuxtjs/composition-api'
 import { State } from '~/types/state'
 import { EmitEvents } from '~/types/events'
+import { Chain } from '~/types/apollo/main/types'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 type Props = {
   receipt: any
   isTxMined: boolean
@@ -45,12 +47,14 @@ export default defineComponent<Props>({
     successMessage: { type: String as PropType<string | null>, default: null, required: false },
   },
   setup(props, { emit }) {
-    const { state } = useStore<State>()
+    const { getters } = useStore<State>()
     const showLogs = ref(false)
+    const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
-    const txHash = computed(
-      () => `${state.configs.currentAaveMarket.blockExplorerUrl}tx/${props.receipt.transactionHash}`
-    )
+    const txHash = computed(() => {
+      const currentChain: Chain = getters['configs/chainInfo'](chainId.value ?? 1)
+      return `${currentChain.blockExplorerUrl}tx/${props.receipt.transactionHash}`
+    })
     const txData = computed(() => {
       let data: { message: string; icon: string; color: string }
       props.isTxMined

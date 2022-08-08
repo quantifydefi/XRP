@@ -3,6 +3,7 @@ import { ComputedRef, inject } from '@nuxtjs/composition-api'
 import erc20Abi from '../constracts/abi/erc20Abi.json'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { AaveAddress, AavePortfolio } from '~/types/apollo/main/types'
+import { useHelpers } from '~/composables/useHelpers'
 
 type Balance = { poolId: string; balance: number }
 export type PortfolioMap = { [poolId: string]: AavePortfolio }
@@ -36,8 +37,8 @@ async function getEthBalance(poolId: string, walletAddress: string, provider: an
 
 export default function (addresses: ComputedRef<{ [id: string]: AaveAddress }>) {
   // COMPOSABLES
-  const { signer, account, provider } = inject(WEB3_PLUGIN_KEY) as Web3
-
+  const { signer, account, provider, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { isNativeToken } = useHelpers()
   // METHODS
   const fetchPortfolio = async (): Promise<PortfolioMap> => {
     const portfolio: PortfolioMap = {}
@@ -50,8 +51,8 @@ export default function (addresses: ComputedRef<{ [id: string]: AaveAddress }>) 
       const aTokenAddress = addresses.value[key].aTokenAddress
       const variableBorrowTokenAddress = addresses.value[key].variableDebtTokenAddress
       const decimals = addresses.value[key].decimals
-
-      const request = ['ETH', 'MATIC'].includes(addresses.value[key].symbol)
+      const isNative = isNativeToken(chainId.value ?? 1, addresses.value[key].symbol)
+      const request = isNative
         ? getEthBalance(key, account.value, provider.value)
         : getERC20Balance(key, tokenAddress, decimals, account.value, signer.value)
       nativeMultCalls.push(request)

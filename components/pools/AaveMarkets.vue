@@ -185,7 +185,7 @@ import { State } from '~/types/state'
 import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
 import { EmitEvents } from '~/types/events'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-
+import { Chain } from '~/types/apollo/main/types'
 type Props = {
   pools: AavePoolModel[]
   loading: boolean
@@ -204,8 +204,8 @@ export default defineComponent<Props>({
   },
   setup(props, { emit }) {
     // COMPOSABLE
-    const { state } = useStore<State>()
-    const { walletReady, importTokenToMetamask } = inject(WEB3_PLUGIN_KEY) as Web3
+    const { state, getters } = useStore<State>()
+    const { walletReady, importTokenToMetamask, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
@@ -330,7 +330,8 @@ export default defineComponent<Props>({
     }
     // METHODS
     function navigateToExplorer(address: string) {
-      const url = `${state.configs.currentAaveMarket.blockExplorerUrl}address/${address}`
+      const currentChain: Chain = getters['configs/chainInfo'](chainId.value ?? 1)
+      const url = `${currentChain.blockExplorerUrl}address/${address}`
       window.open(url)
     }
 

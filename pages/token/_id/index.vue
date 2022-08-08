@@ -50,28 +50,7 @@
             </v-col>
 
             <v-col cols="12" md="6">
-              <aave-actions
-                ref="aaveComponent"
-                :type="`card`"
-                :health-factor="healthFactor"
-                :total-borrowed-usd="totalBorrowedUsd"
-                :total-collateral-usd="totalCollateralUsd"
-                :max-ltv="maxLtv"
-                :pool-data="pool"
-                :pool-action="aaveActionType"
-                @transaction-success="updatePortfolio"
-                @toggle-reserve-details="reserveDetailDialog = !reserveDetailDialog"
-              />
-
-              <v-dialog v-model="reserveDetailDialog" max-width="800">
-                <v-card tile outlined class="pa-4">
-                  <v-card-title class="pa-0">
-                    Reserve Details<v-spacer />
-                    <v-icon @click="reserveDetailDialog = !reserveDetailDialog"> mdi-close </v-icon>
-                  </v-card-title>
-                  <aave-market-details :pool="pool" :show-balance-chart="false"></aave-market-details>
-                </v-card>
-              </v-dialog>
+              <token-aave-assets />
             </v-col>
 
             <v-col cols="12" md="6">
@@ -95,7 +74,7 @@
             :account="tokenTransactions.account.value"
             :contract-name="tokenData.symbolName"
             :transactions-data="tokenTransactions.transfersData.value"
-          ></token-transactions-grid>
+          />
 
           <v-pagination
             v-model="tokenTransactions.currentPage.value"
@@ -142,12 +121,12 @@
           <v-row>
             <v-col cols="6">
               <v-card tile outlined height="492">
-                <v-skeleton-loader type="table-heading,divider,table-tbody@2" height="492" />
+                <v-skeleton-loader type="table-heading,divider,image@3" height="492" />
               </v-card>
             </v-col>
             <v-col cols="6">
               <v-card tile outlined height="492">
-                <v-skeleton-loader type="table-heading,divider,table-tbody@2" height="492" />
+                <v-skeleton-loader type="table-heading,divider,image@3" height="492" />
               </v-card>
             </v-col>
           </v-row>
@@ -164,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
+import { defineComponent, useRoute } from '@nuxtjs/composition-api'
 import useToken from '~/composables/useToken'
 import CoinProfile from '~/components/token-details/CoinProfile.vue'
 import CoinMetrics from '~/components/token-details/CoinMetrics.vue'
@@ -173,20 +152,13 @@ import TokenPricesChart from '~/components/token-details/TokenPricesChart.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
 import TokenTransactionsGrid from '~/components/transactions/TokenTransactionsGrid.vue'
 import useTokenTransactions from '~/composables/useTokenTransactions'
-import AaveActions from '~/components/pools/AaveActions.vue'
-import useAavePools, { AavePoolModel, actionTypes } from '~/composables/useAavePools'
-import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
-import UseAavePoolsStats from '~/composables/useAavePoolsStats'
-import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-import { State } from '~/types/state'
-import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
 import EvmSwap from '~/components/trading/EvmSwap.vue'
+import TokenAaveAssets from '~/components/token-details/TokenAaveAssets.vue'
 
 export default defineComponent({
   components: {
+    TokenAaveAssets,
     EvmSwap,
-    AaveMarketDetails,
-    AaveActions,
     CoinMetrics,
     TokenTransactionsGrid,
     TokenPricesChart,
@@ -195,8 +167,6 @@ export default defineComponent({
     CoinProfile,
   },
   setup() {
-    const { walletReady, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
-    const { state } = useStore<State>()
     const { params, query } = useRoute().value
 
     // Token Data
@@ -205,39 +175,6 @@ export default defineComponent({
     // Token Transactions
     const tokenTransactions = useTokenTransactions()
 
-    // Aave Component
-    const aaveActionType = ref<actionTypes>('deposit')
-    const reserveDetailDialog = ref(false)
-    const aaveComponent = ref<any>(null)
-    const portfolio = ref<PortfolioMap>({})
-    const aavePools = useAavePools()
-    const marketId = computed(() => state.configs.currentAaveMarket.chainId)
-    const addresses = computed(() =>
-      aavePools.aavePoolsData.value.reduce((elem, item) => ({ ...elem, [item.id]: item.addresses }), {})
-    )
-    const { fetchPortfolio } = usePortfolio(addresses)
-    async function updatePortfolio() {
-      portfolio.value = await fetchPortfolio()
-    }
-    const pools = computed(() => {
-      const pools: AavePoolModel[] = []
-      aavePools.aavePoolsData.value.forEach((elem) => {
-        elem.portfolio = portfolio.value[elem.id] || elem.portfolio
-        pools.push(elem)
-      })
-      return pools
-    })
-    const { totalCollateralUsd, totalBorrowedUsd, healthFactor, maxLtv } = UseAavePoolsStats(pools)
-    const pool = computed(() => {
-      const pool = pools.value.find((elem) => elem.symbol === tokenData.value.qcKey)
-      return pool as AavePoolModel
-    })
-
-    // WATCHERS
-    watch([aavePools.loading, walletReady, account, chainId, marketId], async () => {
-      if (!aavePools.loading.value) await updatePortfolio()
-    })
-
     useMetaTags('tokenPage', `/token/${params.id}`, query.name as string, params.id)
 
     return {
@@ -245,17 +182,6 @@ export default defineComponent({
       loading,
       contractAddress,
       tokenTransactions,
-
-      aaveActionType,
-      reserveDetailDialog,
-      aaveComponent,
-      pool,
-      pools,
-      totalCollateralUsd,
-      totalBorrowedUsd,
-      healthFactor,
-      maxLtv,
-      updatePortfolio,
     }
   },
   head: {},

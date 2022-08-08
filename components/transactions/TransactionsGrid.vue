@@ -210,11 +210,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, PropType, ref, useStore } from '@nuxtjs/composition-api'
 import { State } from '~/types/state'
 import LogEvents from '~/components/transactions/LogEvents.vue'
 import TxAddressLabel from '~/components/transactions/TxAddressLabel.vue'
 import { TransactionModel } from '~/composables/useTransactions'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 type inboundFunctionType = (item: TransactionModel) => { color: string; text: string }
 export default defineComponent({
   name: 'TransactionsGrid',
@@ -296,10 +297,11 @@ export default defineComponent({
       },
     ])
 
-    const { state } = useStore<State>()
+    const { getters } = useStore<State>()
+    const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
     // COMPUTED
-    const currentChain = computed(() => state.configs.currentTransactionChain)
+    const currentChain = computed(() => getters['configs/chainInfo'](chainId.value ?? 1))
     const chainSymbol = computed(() => currentChain.value.symbol)
 
     return {

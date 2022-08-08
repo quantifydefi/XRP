@@ -1,7 +1,7 @@
 <template>
   <v-row no-gutters justify="center">
     <v-col cols="12" md="10">
-      <h1 class="text-h4">
+      <h1 class="text-h4 pb-3">
         Web3 Transaction History
         <info-tooltip :text="messages.tooltips.txHeaderDesc" />
       </h1>
@@ -15,10 +15,6 @@
       </template>
 
       <template v-if="walletReady">
-        <v-row justify="end" class="pt-4">
-          <network-selection-menu></network-selection-menu>
-        </v-row>
-
         <v-row justify="center">
           <v-col cols="12">
             <v-card v-if="loading" tile outlined>
@@ -53,24 +49,15 @@ import { useMetaTags } from '~/composables/useMetaTags'
 
 import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import TransactionsGrid from '~/components/transactions/TransactionsGrid.vue'
-import NetworkSelectionMenu from '~/components/common/NetworkMenuSelection.vue'
 import InfoTooltip from '~/components/common/ui/InfoTooltip.vue'
 import { messages } from '~/constants/messages'
 
 export default defineComponent({
-  components: { InfoTooltip, TransactionsGrid, ConnectWalletMemo, NetworkSelectionMenu },
+  components: { InfoTooltip, TransactionsGrid, ConnectWalletMemo },
   setup() {
     // COMPOSABLES
-    const {
-      account,
-      walletReady,
-      loading,
-      currentChain,
-      transactionsData,
-      currentPage,
-      pagination,
-      isInboundRenderer,
-    } = useTransactions()
+    const { account, walletReady, loading, transactionsData, currentPage, pagination, isInboundRenderer } =
+      useTransactions()
 
     // META TAGS
     useMetaTags('transactions', useRoute().value.path)
@@ -79,7 +66,6 @@ export default defineComponent({
       account,
       walletReady,
       loading,
-      currentChain,
       transactionsData,
       currentPage,
       pagination,

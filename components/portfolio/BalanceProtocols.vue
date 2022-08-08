@@ -116,8 +116,7 @@ export default defineComponent<Props>({
   },
 
   setup(props) {
-    const { getters, state } = useStore<State>()
-    // const { $f } = useContext()
+    const { getters } = useStore<State>()
     const columns = [
       {
         text: 'Token',
@@ -170,7 +169,7 @@ export default defineComponent<Props>({
       computed(() =>
         props.balances
           .map((elem) => ({
-            chain: getters['configs/chainInfo'](elem.chainId) ?? state.configs.currentAaveMarket,
+            chain: getters['configs/chainInfo'](elem.chainId),
             pool: plainToClass(AavePoolModel, elem.aavePools as AavePoolModel[]),
             balances: [
               {

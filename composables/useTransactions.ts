@@ -1,10 +1,9 @@
 import { plainToClass } from 'class-transformer'
 import { useQuery } from '@vue/apollo-composable/dist'
-import { computed, inject, reactive, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, inject, reactive, Ref, ref, watch } from '@nuxtjs/composition-api'
 import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-import { State } from '~/types/state'
 import { LogEvent, TransactionItem, TxDetail } from '~/types/apollo/main/types'
 
 export class TransactionModel implements TransactionItem {
@@ -87,14 +86,12 @@ export default function () {
   const pagination = reactive({ page: 0, total: 1, perPage: 15, visible: 30 })
 
   // COMPOSABLES
-  const { state } = useStore<State>()
-  const currentChain = computed(() => state.configs.currentTransactionChain)
+  const { account, walletReady, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
-  const { account, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, error, onResult } = useQuery(
     TransactionsGQL,
     () => ({
-      chainId: currentChain.value.chainId,
+      chainId: chainId.value ?? 1,
       address: account.value ?? '',
       pageNumber: pagination.page,
       pageSize: pagination.perPage,
@@ -118,7 +115,7 @@ export default function () {
   })
 
   // On chain network or account change, reset currentPage and pagination.total
-  watch([currentChain, account], () => {
+  watch([chainId, account], () => {
     loading.value = true
     currentPage.value = 1
     pagination.total = 1
@@ -157,7 +154,6 @@ export default function () {
     error,
     walletReady,
     account,
-    currentChain,
     transactionsData,
     hasMore,
     currentPage,

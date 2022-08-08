@@ -40,19 +40,19 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col class="py-0">
-              <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">
-                <small class="grey--text">
-                  Please Switch To
-                  <span
-                    class="red--text text--lighten-1 mr-4 font-weight-bold"
-                    v-text="isChainAndMarketMismatched.label"
-                  />
-                </small>
-              </a>
-            </v-col>
-          </v-row>
+          <!--          <v-row>-->
+          <!--            <v-col class="py-0">-->
+          <!--              <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">-->
+          <!--                <small class="grey&#45;&#45;text">-->
+          <!--                  Please Switch To-->
+          <!--                  <span-->
+          <!--                    class="red&#45;&#45;text text&#45;&#45;lighten-1 mr-4 font-weight-bold"-->
+          <!--                    v-text="isChainAndMarketMismatched.label"-->
+          <!--                  />-->
+          <!--                </small>-->
+          <!--              </a>-->
+          <!--            </v-col>-->
+          <!--          </v-row>-->
           <aave-action-form
             :amount="amount"
             :price-usd="pool.price.priceUsd"
@@ -115,7 +115,6 @@ import { State } from '~/types/state'
 import useAaveTransactions from '~/composables/useAaveTransactions'
 import TransactionResult from '~/components/common/TransactionResult.vue'
 import { EmitEvents } from '~/types/events'
-import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
 import AaveActionForm from '~/components/pools/AaveActionForm.vue'
 
 type Props = {
@@ -172,7 +171,7 @@ export default defineComponent<Props>({
       pool,
       amount
     )
-    const { isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
+    // const { isChainAndMarketMismatched, changeToRequiredChain } = useMarketSelector()
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
@@ -375,14 +374,12 @@ export default defineComponent<Props>({
       receipt,
       isTxMined,
       aaveActions,
-      isChainAndMarketMismatched,
 
       // METHODS
       init,
       onFormValueChanged,
       deposit,
       borrow,
-      changeToRequiredChain,
     }
   },
 })

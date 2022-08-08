@@ -11,7 +11,6 @@ export default function () {
   // COMPOSABLES
   const { state } = useStore<State>()
   const { account } = inject(WEB3_PLUGIN_KEY) as Web3
-  // const account = ref('0xF705b9ba1908cA505537F309B08E6949C1b8f31F')
   const { result, error, onResult } = useQuery(
     BalancesGQL,
     () => ({ chainIds: state.configs.balancesChains, address: account.value }),

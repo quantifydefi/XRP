@@ -15,6 +15,7 @@ interface MarketConfig {
   AAVE_WETH_GATEWAY_ADDRESS: string
   AWETH_ADDRESS: string
   WETH_VARIABLE_BORROW: string
+  WRAPPED_ETH: string
 }
 const configs: { [key: number]: MarketConfig } = {
   1: {
@@ -23,20 +24,25 @@ const configs: { [key: number]: MarketConfig } = {
     AAVE_WETH_GATEWAY_ADDRESS: '0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04',
     AWETH_ADDRESS: '0x030bA81f1c18d280636F32af80b9AAd02Cf0854e',
     WETH_VARIABLE_BORROW: '0xF63B34710400CAd3e044cFfDcAb00a0f32E33eCf',
+    WRAPPED_ETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   },
 
   137: {
     name: 'Polygon (Matic) ',
     AAVE_LENDING_POOL_ADDRESS: '0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf',
     AAVE_WETH_GATEWAY_ADDRESS: '0xbEadf48d62aCC944a06EEaE0A9054A90E5A7dc97',
-    AWETH_ADDRESS: '',
-    WETH_VARIABLE_BORROW: '',
+    AWETH_ADDRESS: '0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4',
+    WETH_VARIABLE_BORROW: '0x59e8E9100cbfCBCBAdf86b9279fa61526bBB8765',
+    WRAPPED_ETH: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   },
 
   // 1337: {
   //   name: 'Polygon (Matic) ',
   //   AAVE_LENDING_POOL_ADDRESS: '0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf',
   //   AAVE_WETH_GATEWAY_ADDRESS: '0xbEadf48d62aCC944a06EEaE0A9054A90E5A7dc97',
+  //   AWETH_ADDRESS: '0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4',
+  //   WETH_VARIABLE_BORROW: '0x59e8E9100cbfCBCBAdf86b9279fa61526bBB8765',
+  //   WRAPPED_ETH: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   // },
 
   1337: {
@@ -45,6 +51,7 @@ const configs: { [key: number]: MarketConfig } = {
     AAVE_WETH_GATEWAY_ADDRESS: '0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04',
     AWETH_ADDRESS: '0x030bA81f1c18d280636F32af80b9AAd02Cf0854e',
     WETH_VARIABLE_BORROW: '0xF63B34710400CAd3e044cFfDcAb00a0f32E33eCf',
+    WRAPPED_ETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   },
 }
 
@@ -79,6 +86,11 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
   const AWETH_ADDRESS = computed(() =>
     chainId.value && chainId.value in configs ? configs[chainId.value].AWETH_ADDRESS : ''
   )
+
+  const WRAPPED_ETH = computed(() =>
+    chainId.value && chainId.value in configs ? configs[chainId.value].WRAPPED_ETH : ''
+  )
+
   // const WETH_VARIABLE_BORROW = computed(() =>
   //   chainId.value && chainId.value in configs ? configs[chainId.value].WETH_VARIABLE_BORROW : ''
   // )
@@ -111,6 +123,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
       return { isCompleted: false, receipt: error }
     }
   }
+
   async function withdrawETHWeb3Call(): Promise<{ isCompleted: boolean; receipt: any }> {
     try {
       const contract = new ethers.Contract(
@@ -135,7 +148,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveWethPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const call = await contract.repayETH(AAVE_LENDING_POOL_ADDRESS.value, amount, 2, account.value)
+      const call = await contract.repayETH(AAVE_LENDING_POOL_ADDRESS.value, amount, 2, account.value, { value: amount })
       const resp = await call.wait()
       return { isCompleted: true, receipt: resp }
     } catch (error) {
@@ -225,9 +238,27 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
 
   async function borrow() {
     txData.loading = true
-    const { isCompleted, receipt } = await borrowERC20Web3Call()
-    txData.isCompleted = isCompleted
-    txData.receipt = receipt
+    const isNative = isNativeToken(chainId.value ?? 1, pool.value.symbol)
+
+    if (!isNative) {
+      const allowed = await allowedSpending(pool.value.underlyingAsset, AAVE_LENDING_POOL_ADDRESS.value)
+      if (allowed < amountInTokens.value) {
+        await approveMaxSpending(pool.value.underlyingAsset, AAVE_LENDING_POOL_ADDRESS.value)
+      }
+    } else {
+      // const allowed = await allowedSpending(AWETH_ADDRESS.value, AAVE_WETH_GATEWAY_ADDRESS.value)
+      // console.log(allowed, amountInTokens.value, allowed < amountInTokens.value)
+      // if (allowed < amountInTokens.value) {
+      //   console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA')
+      //   await approveMaxSpending(AWETH_ADDRESS.value, AAVE_WETH_GATEWAY_ADDRESS.value)
+      // }
+    }
+
+    // let result: { isCompleted: boolean; receipt: any }
+    // isNative ? (result = await borrowETHWeb3Call()) : (result = await borrowERC20Web3Call())
+    const result = await borrowERC20Web3Call()
+    txData.isCompleted = result.isCompleted
+    txData.receipt = result.receipt
     txData.loading = false
   }
 
@@ -240,9 +271,9 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         await approveMaxSpending(pool.value.underlyingAsset, AAVE_LENDING_POOL_ADDRESS.value)
       }
     } else {
-      const allowed = await allowedSpending(AWETH_ADDRESS.value, AAVE_WETH_GATEWAY_ADDRESS.value)
+      const allowed = await allowedSpending(WRAPPED_ETH.value, AAVE_WETH_GATEWAY_ADDRESS.value)
       if (allowed < amountInTokens.value) {
-        await approveMaxSpending(AWETH_ADDRESS.value, AAVE_WETH_GATEWAY_ADDRESS.value)
+        await approveMaxSpending(WRAPPED_ETH.value, AAVE_WETH_GATEWAY_ADDRESS.value)
       }
     }
     let result: { isCompleted: boolean; receipt: any }

@@ -17,9 +17,7 @@
       <v-spacer />
 
       <div class="pr-3">
-        <v-card tile color="grey darken-4">
-          <network-menu-selection></network-menu-selection>
-        </v-card>
+        <v-card tile color="grey darken-4"> </v-card>
       </div>
 
       <wallet-connector />
@@ -37,12 +35,11 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import WalletConnector from '~/components/common/WalletConnector.vue'
-import NetworkMenuSelection from '~/components/common/NetworkMenuSelection.vue'
 import useInitTheme from '~/composables/useInitTheme'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
 
 export default defineComponent({
-  components: { WalletSelectDialog, NetworkMenuSelection, WalletConnector },
+  components: { WalletSelectDialog, WalletConnector },
   setup() {
     // COMPOSABLE
     useInitTheme()

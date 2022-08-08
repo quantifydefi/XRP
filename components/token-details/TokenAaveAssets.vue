@@ -1,73 +1,70 @@
 <template>
-  <div class="mt-4">
-    <v-row align="center">
-      <v-col class="align-center d-flex">
-        <v-avatar size="30" class="mr-2">
-          <v-img :src="$imageUrlBySymbol('aave')" :lazy-src="$imageUrlBySymbol('aave')" @error="$setAltImageUrl" />
-        </v-avatar>
-        <nuxt-link to="/markets/aave" class="text-h5 font-weight-medium ml-2 white--text text-hover-primary">
-          AAVE V2
-        </nuxt-link>
-      </v-col>
-      <v-col class="text-right">
-        <a v-if="isChainAndMarketMismatched" href="#" class="text-decoration-none" @click="changeToRequiredChain">
-          <small class="grey--text">
-            Please Switch To
-            <span class="red--text text--lighten-1 mr-4 font-weight-bold" v-text="isChainAndMarketMismatched.label" />
-          </small>
-        </a>
-        <network-selection />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <aave-markets :loading="loading" :pools="poolsToDisplay" expand-first-row @init-action="initAction" />
-      </v-col>
-      <aave-action-dialog
-        ref="actionDialog"
-        :health-factor="healthFactor"
-        :total-borrowed-usd="totalBorrowedUsd"
-        :total-collateral-usd="totalCollateralUsd"
-        :max-ltv="maxLtv"
-        @transaction-success="updatePortfolio"
-      />
-    </v-row>
+  <div>
+    <aave-actions
+      v-if="pool"
+      ref="aaveComponent"
+      :type="`card`"
+      :health-factor="healthFactor"
+      :total-borrowed-usd="totalBorrowedUsd"
+      :total-collateral-usd="totalCollateralUsd"
+      :max-ltv="maxLtv"
+      :pool-data="pool"
+      :pool-action="aaveActionType"
+      @transaction-success="updatePortfolio()"
+      @toggle-reserve-details="reserveDetailDialog = !reserveDetailDialog"
+    />
+
+    <v-col v-else>
+      <v-card disabled tile outlined height="456">
+        <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
+          <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
+        </v-card-title>
+        <v-divider />
+        <v-card-text>This token is not supported by AAVE</v-card-text>
+      </v-card>
+    </v-col>
+
+    <v-dialog v-model="reserveDetailDialog" max-width="800">
+      <v-card tile outlined class="pa-4">
+        <v-card-title class="pa-0">
+          Reserve Details<v-spacer />
+          <v-icon @click="reserveDetailDialog = !reserveDetailDialog"> mdi-close </v-icon>
+        </v-card-title>
+        <aave-market-details :pool="pool" :show-balance-chart="false"></aave-market-details>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
-import useAavePools, { AavePoolModel, actionTypes } from '~/composables/useAavePools'
+import { computed, defineComponent, inject, ref, useRoute, watch } from '@nuxtjs/composition-api'
+import AaveMarketDetails from '~/components/pools/AaveMarketDetails.vue'
+import AaveActions from '~/components/pools/AaveActions.vue'
 import usePortfolio, { PortfolioMap } from '~/composables/usePortfolio'
-import AaveMarkets from '~/components/pools/AaveMarkets.vue'
-import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-import NetworkSelection from '~/components/common/NetworkSelection.vue'
-import { State } from '~/types/state'
-import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
-import AaveActionDialog from '~/components/pools/AaveActionDialog.vue'
+import useAavePools, { AavePoolModel, actionTypes } from '~/composables/useAavePools'
 import UseAavePoolsStats from '~/composables/useAavePoolsStats'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 export default defineComponent({
-  components: { NetworkSelection, AaveMarkets, AaveActionDialog },
-  props: {
-    tokenKey: { type: String, required: true },
+  components: {
+    AaveMarketDetails,
+    AaveActions,
   },
 
-  setup(props) {
-    // COMPOSABELS
-    const portfolio = ref<PortfolioMap>({})
-    const actionDialog = ref<any>(null)
+  setup() {
+    const route = useRoute()
     const { walletReady, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
-    const { state } = useStore<State>()
-    const { isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
+    const portfolio = ref<PortfolioMap>({})
+    const aaveActionType = ref<actionTypes>('deposit')
+    const reserveDetailDialog = ref(false)
 
-    // COMPUTED
-    const { loading, aavePoolsData } = useAavePools()
+    const { aavePoolsData, loading } = useAavePools()
+
     const addresses = computed(() =>
       aavePoolsData.value.reduce((elem, item) => ({ ...elem, [item.id]: item.addresses }), {})
     )
-    const marketId = computed(() => state.configs.currentAaveMarket.chainId)
     const { fetchPortfolio } = usePortfolio(addresses)
+    const updatePortfolio = async () => (portfolio.value = await fetchPortfolio())
     const pools = computed(() => {
       const pools: AavePoolModel[] = []
       aavePoolsData.value.forEach((elem) => {
@@ -77,35 +74,24 @@ export default defineComponent({
       return pools
     })
 
-    const poolsToDisplay = computed(() => pools.value.filter((elem) => elem.symbol === props.tokenKey))
-
     const { totalCollateralUsd, totalBorrowedUsd, healthFactor, maxLtv } = UseAavePoolsStats(pools)
-
-    // METHODS
-    async function updatePortfolio() {
-      portfolio.value = await fetchPortfolio()
-    }
-    function initAction({ action, pool }: { action: actionTypes; pool: AavePoolModel }) {
-      actionDialog.value.init(action, pool)
-    }
+    const pool = computed(() => pools.value.find((elem) => elem.symbol === route.value.params?.id ?? ''))
 
     // WATCHERS
-    watch([loading, walletReady, account, chainId, marketId, isChainAndMarketMismatched], async () => {
-      // Refresh portfolio of loading of aave pools query is set to false
+    watch([aavePoolsData, walletReady, account, chainId], async () => {
       if (!loading.value) await updatePortfolio()
     })
 
     return {
-      actionDialog,
-      poolsToDisplay,
-      loading,
-      isChainAndMarketMismatched,
+      pool,
+      pools,
+      totalCollateralUsd,
+      totalBorrowedUsd,
       healthFactor,
       maxLtv,
-      totalBorrowedUsd,
-      totalCollateralUsd,
-      initAction,
-      changeToRequiredChain,
+      aaveActionType,
+      reserveDetailDialog,
+
       updatePortfolio,
     }
   },

@@ -1,12 +1,11 @@
 <template>
   <v-menu v-if="currentChain" :close-on-content-click="false" nudge-bottom="13" offset-y>
     <template #activator="{ on, attrs }">
-      <v-btn elevation="0" class="px-2" color="transparent" tile v-bind="attrs" v-on="on">
-        <v-avatar size="26" class="mr-2" tile>
+      <v-btn elevation="0" class="px-2" color="transparent" tile v-bind="attrs" :disabled="!walletReady" v-on="on">
+        <v-avatar size="26" tile>
           <v-img :src="$imageUrlBySymbol(currentChain.symbol)" :lazy-src="$imageUrlBySymbol(currentChain.symbol)" />
         </v-avatar>
-        <span class="text-capitalize" v-text="currentChain.label" />
-        <v-icon class="ml-1">mdi-chevron-down</v-icon>
+        <v-icon class="ml-1" size="16">mdi-chevron-down</v-icon>
       </v-btn>
     </template>
 
@@ -14,9 +13,8 @@
       <v-row no-gutters>
         <v-col>
           <v-list dense>
-            <v-subheader>V2 Markets</v-subheader>
-            <v-list-item-group v-model="selectedChainId" mandatory color="primary">
-              <v-list-item v-for="item in chains" :key="item.chainId" :value="item.chainId">
+            <v-list-item-group>
+              <v-list-item v-for="item in chains" :key="item.chainId" no-action :value="item" @change="onSelect(item)">
                 <v-list-item-avatar size="24">
                   <v-img :src="$imageUrlBySymbol(item.symbol)" :lazy-src="$imageUrlBySymbol(item.symbol)" />
                 </v-list-item-avatar>
@@ -32,17 +30,18 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
+import useMarketSelector from '~/composables/useMarketSelector'
 
 export default defineComponent({
   setup() {
-    const { selectedChainId, chains, currentChain, walletReady } = useAaveMarketSelector()
+    const { chains, currentChain, walletReady, chainId, onSelect } = useMarketSelector()
 
     return {
-      selectedChainId,
       chains,
       currentChain,
       walletReady,
+      chainId,
+      onSelect,
     }
   },
 })

@@ -1,10 +1,10 @@
 import { useQuery } from '@vue/apollo-composable/dist'
-import { computed, ref, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, inject, ref, watch } from '@nuxtjs/composition-api'
 import { plainToClass } from 'class-transformer'
 import { AavePoolGQL } from '~/apollo/main/pools.query.graphql'
 import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio } from '@/types/apollo/main/types'
-import { State } from '~/types/state'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 export type actionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
 export const aaveActions = ref<Array<actionTypes>>(['deposit', 'borrow', 'withdraw', 'repay'])
@@ -124,26 +124,24 @@ export class AavePoolModel implements AavePool {
 export default function () {
   // STATE
   const loading = ref(true)
-
   // COMPOSABLES
-  const { state } = useStore<State>()
+  const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, onResult } = useQuery(
     AavePoolGQL,
     () => ({
-      chainId: state.configs.currentAaveMarket.chainId,
+      chainId: chainId.value ?? 1,
     }),
     { fetchPolicy: 'no-cache', pollInterval: 30000 }
   )
 
   // COMPUTED
   const aavePoolsData = computed(() => plainToClass(AavePoolModel, result.value?.aavePools as AavePoolModel[]) ?? [])
-  const marketId = computed(() => state.configs.currentAaveMarket.chainId)
 
   // EVENTS
   onResult((queryResult) => {
     loading.value = queryResult.loading
   })
-  watch(marketId, () => (loading.value = true))
+  watch(chainId, () => (loading.value = true))
 
   return {
     loading,

@@ -34,6 +34,7 @@
       <v-spacer />
       <client-only>
         <gas-info class="hidden-xs-and-down" />
+        <network-selection />
       </client-only>
       <wallet-connector class="hidden-sm-and-down" />
     </v-app-bar>
@@ -69,9 +70,11 @@ import useInitTheme from '~/composables/useInitTheme'
 import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
 import { State } from '~/types/state'
 import MainFooter from '~/components/common/ui/footers/MainFooter.vue'
+import NetworkSelection from '~/components/common/NetworkSelection.vue'
 
 export default defineComponent({
   components: {
+    NetworkSelection,
     MainFooter,
     WalletSelectDialog,
     WalletConnector,

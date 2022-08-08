@@ -1,6 +1,6 @@
 <template>
   <v-card tile outlined>
-    <h2 class="subtitle-1 font-weight-bold px-3 py-2">{{ contractName }} Transfer History</h2>
+    <h2 class="subtitle-1 font-weight-bold px-3 py-2">{{ contractName }} Transaction History</h2>
     <v-divider />
     <v-data-table mobile-breakpoint="0" hide-default-footer :headers="cols" :items="transactionsData">
       <template #[`item.blockSignedAt`]="{ item }">
@@ -128,10 +128,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, PropType, ref, useStore } from '@nuxtjs/composition-api'
 import { TransactionTransfer } from '~/composables/useTokenTransactions'
 import { State } from '~/types/state'
 import TxAddressLabel from '~/components/transactions/TxAddressLabel.vue'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 export default defineComponent({
   components: { TxAddressLabel },
@@ -206,10 +207,11 @@ export default defineComponent({
         width: '100px',
       },
     ])
-    const { state } = useStore<State>()
+    const { getters } = useStore<State>()
+    const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
 
     // COMPUTED
-    const currentChain = computed(() => state.configs.currentTransactionChain)
+    const currentChain = computed(() => getters['configs/chainInfo'](chainId.value ?? 1))
     const chainSymbol = computed(() => currentChain.value.symbol)
 
     return { cols, chainSymbol, currentChain }

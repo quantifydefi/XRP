@@ -1,170 +1,139 @@
 <template>
   <v-row no-gutters>
     <v-col v-if="pool">
-      <v-card
-        tile
-        outlined
-        :min-height="type === 'dialog' ? '100%' : '468'"
-        :max-width="type === 'card' ? '100%' : '400'"
-      >
-        <v-row v-if="type === 'card'" no-gutters>
-          <v-col>
-            <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
-              <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
+      <v-card tile outlined :height="type === 'dialog' ? '100%' : '468'">
+        <div class="overflow-y-auto" :style="type === 'dialog' ? { height: '100%' } : { height: '468px' }">
+          <v-row v-if="type === 'card'" no-gutters>
+            <v-col>
+              <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
+                <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
 
-              <v-spacer />
-              <v-btn x-small icon @click="$emit('toggle-reserve-details')">
-                <v-icon>mdi-information-outline</v-icon>
-              </v-btn>
-            </v-card-title>
+                <v-spacer />
+                <v-btn x-small icon @click="$emit('toggle-reserve-details')">
+                  <v-icon>mdi-information-outline</v-icon>
+                </v-btn>
+              </v-card-title>
 
-            <v-divider />
-          </v-col>
-        </v-row>
-
-        <v-card-title v-if="type === 'dialog'" class="py-3">
-          <h6 class="text-h6"><span class="text-capitalize" v-text="action" /> {{ pool.symbol }}</h6>
-          <v-spacer />
-          <v-icon @click="toggleDialog">mdi-close</v-icon>
-        </v-card-title>
-
-        <div class="px-4 pb-4 pt-2">
-          <v-row v-if="receipt">
-            <v-col cols="12">
-              <transaction-result
-                :receipt="receipt"
-                :is-tx-mined="isTxMined"
-                :success-message="txOptions.successMessage"
-                @on-result-closed="resetToDefault"
-              />
+              <v-divider />
             </v-col>
           </v-row>
 
-          <div v-else>
-            <v-row no-gutters>
-              <v-col cols="12" class="text-center pb-2 mt-0">
-                <v-btn-toggle v-model="action" v color="primary" mandatory group>
-                  <v-btn
-                    v-for="elem in aaveActions"
-                    :key="elem"
-                    small
-                    class="ma-0"
-                    height="32"
-                    :value="elem"
-                    depressed
-                    outlined
-                  >
-                    {{ elem }}
-                  </v-btn>
-                </v-btn-toggle>
-              </v-col>
+          <v-card-title v-if="type === 'dialog'" class="py-3">
+            <h6 class="text-h6"><span class="text-capitalize" v-text="action" /> {{ pool.symbol }}</h6>
+            <v-spacer />
+            <v-icon @click="toggleDialog">mdi-close</v-icon>
+          </v-card-title>
 
-              <v-col v-if="type === 'card'" cols="12">
-                <v-row no-gutters>
-                  <v-col cols="12">
-                    <v-divider />
-                  </v-col>
-
-                  <v-col v-for="(item, i) in walletSummary" :key="i" cols="4" class="pa-3 grey--text text-center">
-                    <v-row>
-                      <v-col cols="12" style="min-height: 118px">
-                        <div class="caption font-weight-medium text-no-wrap" v-text="item.text" />
-                        <div class="subtitle-1 white--text text-no-wrap" v-text="item.value" />
-                        <div class="subtitle-2 font-weight-regular text-no-wrap text-truncate" v-text="item.priceUsd" />
-
-                        <v-chip v-if="item.apy" pill outlined class="pa-2" text-color="white" label x-small>
-                          <span v-if="item.apy === -1">--.--</span>
-                          <span v-else v-text="`${$f(item.apy * 100, { maxDigits: 2, after: ' %' })} APY`" />
-                        </v-chip>
-                      </v-col>
-
-                      <v-divider v-if="i < walletSummary.length - 1" style="" vertical />
-                    </v-row>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-divider />
-                  </v-col>
-                </v-row>
+          <div class="px-4 pb-4 pt-2">
+            <v-row v-if="receipt">
+              <v-col cols="12">
+                <transaction-result
+                  :receipt="receipt"
+                  :is-tx-mined="isTxMined"
+                  :success-message="txOptions.successMessage"
+                  @on-result-closed="resetToDefault"
+                />
               </v-col>
             </v-row>
 
-            <v-row class="mt-1">
-              <v-col class="py-0">
-                <a
-                  v-if="isChainAndMarketMismatched"
-                  href="#"
-                  class="text-decoration-none"
-                  @click="changeToRequiredChain"
-                >
-                  <small class="grey--text">
-                    Please Switch To
-                    <span
-                      class="red--text text--lighten-1 ml-1 mr-4 font-weight-bold"
-                      v-text="isChainAndMarketMismatched.label"
-                    />
-                  </small>
-                </a>
-              </v-col>
-            </v-row>
+            <div v-else>
+              <v-row no-gutters>
+                <v-col cols="12" class="text-center pb-2 mt-0">
+                  <v-btn-toggle v-model="action" v color="primary" mandatory group>
+                    <v-btn
+                      v-for="elem in aaveActions"
+                      :key="elem"
+                      small
+                      class="ma-0"
+                      height="32"
+                      :value="elem"
+                      depressed
+                      outlined
+                    >
+                      {{ elem }}
+                    </v-btn>
+                  </v-btn-toggle>
+                </v-col>
 
-            <aave-action-form
-              :amount="amount"
-              :price-usd="pool.price.priceUsd"
-              :symbol="pool.symbol"
-              :logo="pool.logoUrl"
-              :allowance="txOptions.allowance"
-              :rules="txOptions.rules"
-              :disabled="!walletReady"
-              @on-value-changed="onFormValueChanged"
-            />
+                <v-col v-if="type === 'card'" cols="12">
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-divider />
+                    </v-col>
 
-            <v-row no-gutters>
-              <v-col>
-                <small v-if="type === 'dialog'">Transaction overview</small>
-                <v-card tile outlined>
-                  <v-simple-table>
-                    <template #default>
-                      <tbody>
-                        <tr
-                          v-for="(item, i) in type === 'card'
-                            ? txOptions.overview.filter((option) => option.isVisible)
-                            : txOptions.overview"
-                          :key="i"
-                        >
-                          <td :class="[textClass]" v-text="item.text" />
-                          <td :class="[item.class]" v-text="item.value" />
-                        </tr>
-                      </tbody>
-                    </template>
-                  </v-simple-table>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-btn
-              tile
-              :disabled="isActionButtonDisabled"
-              class="text-capitalize mt-4"
-              block
-              color="primary"
-              :loading="txLoading"
-              @click="txOptions.txMethod"
-            >
-              {{ action }}
-            </v-btn>
+                    <v-col v-for="(item, i) in walletSummary" :key="i" cols="4" class="pa-3 grey--text text-center">
+                      <v-row>
+                        <v-col cols="12" style="min-height: 118px">
+                          <div class="caption font-weight-medium text-no-wrap" v-text="item.text" />
+                          <div class="subtitle-1 white--text text-no-wrap" v-text="item.value" />
+                          <div
+                            class="subtitle-2 font-weight-regular text-no-wrap text-truncate"
+                            v-text="item.priceUsd"
+                          />
+
+                          <v-chip v-if="item.apy" pill outlined class="pa-2" text-color="white" label x-small>
+                            <span v-if="item.apy === -1">--.--</span>
+                            <span v-else v-text="`${$f(item.apy * 100, { maxDigits: 2, after: ' %' })} APY`" />
+                          </v-chip>
+                        </v-col>
+
+                        <v-divider v-if="i < walletSummary.length - 1" style="" vertical />
+                      </v-row>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-divider />
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+
+              <aave-action-form
+                :amount="amount"
+                :price-usd="pool.price.priceUsd"
+                :symbol="pool.symbol"
+                :logo="pool.logoUrl"
+                :allowance="txOptions.allowance"
+                :rules="txOptions.rules"
+                :disabled="!walletReady"
+                @on-value-changed="onFormValueChanged"
+              />
+
+              <v-row no-gutters>
+                <v-col>
+                  <small v-if="type === 'dialog'">Transaction overview</small>
+                  <v-card tile outlined>
+                    <v-simple-table>
+                      <template #default>
+                        <tbody>
+                          <tr
+                            v-for="(item, i) in type === 'card'
+                              ? txOptions.overview.filter((option) => option.isVisible)
+                              : txOptions.overview"
+                            :key="i"
+                          >
+                            <td :class="[textClass]" v-text="item.text" />
+                            <td :class="[item.class]" v-text="item.value" />
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-btn
+                tile
+                :disabled="isActionButtonDisabled"
+                class="text-capitalize mt-4"
+                block
+                color="primary"
+                :loading="txLoading"
+                @click="txOptions.txMethod"
+              >
+                {{ action }}
+              </v-btn>
+            </div>
           </div>
         </div>
-      </v-card>
-    </v-col>
-
-    <v-col v-else>
-      <v-card disabled tile outlined min-height="468" :max-width="type === 'card' ? '100%' : '400'">
-        <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
-          <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
-        </v-card-title>
-        <v-divider />
-        <v-card height="300" class="d-flex text-center align-center" elevation="0">
-          <v-card-text>This token is not supported by AAVE</v-card-text>
-        </v-card>
       </v-card>
     </v-col>
   </v-row>
@@ -175,6 +144,7 @@ import {
   computed,
   ComputedRef,
   defineComponent,
+  inject,
   onMounted,
   PropType,
   reactive,
@@ -191,7 +161,7 @@ import AaveActionForm from '~/components/pools/AaveActionForm.vue'
 import useAaveTransactions from '~/composables/useAaveTransactions'
 import TransactionResult from '~/components/common/TransactionResult.vue'
 import { DefiEvents, EmitEvents } from '~/types/events'
-import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 type Props = {
   // eslint-disable-next-line no-use-before-define
@@ -252,13 +222,13 @@ export default defineComponent<Props>({
     })
 
     // COMPOSABLES
+    const { walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
     const { $f } = useContext()
     const { state } = useStore<State>()
     const { txLoading, receipt, isTxMined, deposit, borrow, repay, withdraw, resetToDefault } = useAaveTransactions(
       pool,
       amount
     )
-    const { walletReady, isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
@@ -493,6 +463,10 @@ export default defineComponent<Props>({
 
     watch(action, (newVal: actionTypes) => (newVal ? emit(EmitEvents.onValueChanged, newVal) : null))
     watch(isTxMined, (newVal: boolean) => (newVal ? emit(EmitEvents.transactionSuccess, newVal) : null))
+    watch(
+      () => props.poolData,
+      (newVal: AavePoolModel) => (pool.value = newVal)
+    )
 
     onMounted(() => {
       action.value = props.poolAction
@@ -515,7 +489,6 @@ export default defineComponent<Props>({
       receipt,
       isTxMined,
       aaveActions,
-      isChainAndMarketMismatched,
       walletSummary,
       walletReady,
 
@@ -523,7 +496,6 @@ export default defineComponent<Props>({
       onFormValueChanged,
       deposit,
       borrow,
-      changeToRequiredChain,
       resetToDefault,
       toggleDialog,
     }

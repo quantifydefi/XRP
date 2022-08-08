@@ -1,9 +1,8 @@
-import { computed, ref, useContext, inject, useStore, Ref, watch } from '@nuxtjs/composition-api'
+import { computed, ref, useContext, inject, Ref, watch } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { UniswapToken, UniswapTokenSource } from '@/types/apollo/main/types'
 import { UniswapTokensGQL } from '~/apollo/main/config.query.graphql'
 import { WEB3_PLUGIN_KEY, Web3 } from '~/plugins/web3/web3'
-import { State } from '~/types/state'
 
 interface SwapTokenInterface {
   name: string
@@ -14,7 +13,6 @@ interface SwapTokenInterface {
 
 export default function () {
   const { $imageUrlBySymbol } = useContext()
-  const { state } = useStore<State>()
   const { account } = inject(WEB3_PLUGIN_KEY) as Web3
 
   // STATE
@@ -51,11 +49,10 @@ export default function () {
 
   // COMPOSABLES
   const source = computed(() => sources.value.filter((elem) => elem.active === true).map(({ source }) => source))
-  const currentChain = computed(() => state.configs.currentTransactionChain)
   const { result, onResult } = useQuery(
     UniswapTokensGQL,
     () => ({
-      chainId: currentChain.value.chainId,
+      chainId: 1,
       userWallet: account.value ?? '',
       searchString: searchString.value ?? '',
       source: source.value,

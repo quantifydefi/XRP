@@ -55,10 +55,6 @@
         <v-col cols="3" class="hidden-sm-and-down">
           <v-text-field v-model="searchString" append-icon="mdi-magnify" color="primary" outlined dense hide-details />
         </v-col>
-        <v-col class="text-right">
-          <switch-network-dialog ref="switchNetworkDialog"></switch-network-dialog>
-          <network-selection />
-        </v-col>
       </v-row>
       <v-row>
         <v-col class="py-0">
@@ -69,6 +65,7 @@
       <v-dialog v-model="dialog" width="400">
         <aave-actions
           v-if="dialog"
+          ref="aaveActionComponent"
           :type="`dialog`"
           :health-factor="healthFactor"
           :total-borrowed-usd="totalBorrowedUsd"
@@ -95,17 +92,12 @@ import UseAavePoolsStats from '~/composables/useAavePoolsStats'
 import AaveCompositionChart from '~/components/pools/AaveCompositionChart.vue'
 import AaveMarketStats from '~/components/pools/AaveMarketStats.vue'
 import { State } from '~/types/state'
-import NetworkSelection from '~/components/common/NetworkSelection.vue'
-import useAaveMarketSelector from '~/composables/useAaveMarketSelector'
-import SwitchNetworkDialog from '~/components/common/SwitchNetworkDialog.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
 import AaveActions from '~/components/pools/AaveActions.vue'
 
 export default defineComponent({
   components: {
     AaveActions,
-    SwitchNetworkDialog,
-    NetworkSelection,
     AaveMarketStats,
     AaveCompositionChart,
     AaveMarkets,
@@ -129,7 +121,7 @@ export default defineComponent({
     const portfolio = ref<PortfolioMap>({})
     const selectedPool = ref() as Ref<AavePoolModel>
     const poolAction = ref('deposit') as Ref<actionTypes>
-    const actionDialog = ref<any>(null)
+    const aaveActionComponent = ref<any>(null)
     const searchString = ref('')
     const switchNetworkDialog = ref<any>(null)
 
@@ -137,14 +129,12 @@ export default defineComponent({
     const { walletReady, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
     const { loading, aavePoolsData } = useAavePools()
     const { state } = useStore<State>()
-    const { isChainAndMarketMismatched, changeToRequiredChain } = useAaveMarketSelector()
 
     // COMPUTED
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
     const addresses = computed(() =>
       aavePoolsData.value.reduce((elem, item) => ({ ...elem, [item.id]: item.addresses }), {})
     )
-    const marketId = computed(() => state.configs.currentAaveMarket.chainId)
 
     const { fetchPortfolio } = usePortfolio(addresses)
 
@@ -170,13 +160,9 @@ export default defineComponent({
     } = UseAavePoolsStats(pools)
 
     // WATCHERS
-    watch([loading, walletReady, account, chainId, marketId, isChainAndMarketMismatched], async () => {
+    watch([loading, walletReady, account, chainId], async () => {
       // Refresh portfolio of loading of aave pools query is set to false
       if (!loading.value) await updatePortfolio()
-
-      if (isChainAndMarketMismatched.value && isChainAndMarketMismatched.value.chainId !== chainId.value) {
-        switchNetworkDialog.value.toggleDialog(true)
-      }
     })
 
     // METHODS
@@ -185,7 +171,6 @@ export default defineComponent({
     }
 
     function initAction({ action, pool }: { action: actionTypes; pool: AavePoolModel }) {
-      // actionDialog.value.init(action, pool)
       poolAction.value = action
       selectedPool.value = pool
       dialog.value = true
@@ -210,7 +195,7 @@ export default defineComponent({
       liquidationThreshold,
       borrowingPowerUsed,
       poolAction,
-      actionDialog,
+      aaveActionComponent,
       portfolioComposition,
       textClass,
       totalDepositsUsd,
@@ -220,7 +205,6 @@ export default defineComponent({
       // METHODS
       initAction,
       updatePortfolio,
-      changeToRequiredChain,
     }
   },
   head: {},
