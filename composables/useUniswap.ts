@@ -192,16 +192,16 @@ export default function (
   }
 
   const runBlockListener = () => {
-    provider.value.on('block', (block: number) => {
-      console.log('New Block Update', block)
-      let debounceTimeout: any = null
-      clearTimeout(debounceTimeout)
-      debounceTimeout = setTimeout(async () => {
-        console.log('UPDATE QUOTE', block)
-        await getUniswapTrade()
-        debounceTimeout = null
-      }, 5000)
-    })
+    // provider.value.on('block', (block: number) => {
+    //   console.log('New Block Update', block)
+    //   let debounceTimeout: any = null
+    //   clearTimeout(debounceTimeout)
+    //   debounceTimeout = setTimeout(async () => {
+    //     console.log('UPDATE QUOTE', block)
+    //     await getUniswapTrade()
+    //     debounceTimeout = null
+    //   }, 5000)
+    // })
   }
 
   const getQuoteToken = (tokenIn: Token, tokenOut: Token, tradeType: TradeType): Token => {
@@ -242,6 +242,7 @@ export default function (
     const isTokenInNative = isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
     if (!isTokenInNative) {
       const allowed = await allowedSpending(fromToken.value.address, UNISWAP_V3_ROUTER2_ADDRESS)
+      console.log(allowed)
       if (allowed < amount.value) {
         await approveMaxSpending(fromToken.value.address, UNISWAP_V3_ROUTER2_ADDRESS)
       }
@@ -307,17 +308,23 @@ export default function (
     quoteResult.gasAdjustedQuote = Number(route?.quoteGasAdjusted.toFixed(6))
     quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
     quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
+    const numberOfHoops = <number>route?.route.map((elem) => elem.tokenPath.length)[0]
 
-    const gasLimit = BigNumber.from(route?.estimatedGasUsed).add(BigNumber.from('100000'))
-    const feeData = await provider.value.getFeeData()
+    console.log(route, 'MAX HOOPS', numberOfHoops)
+
+    // const gasLimit = BigNumber.from(route?.estimatedGasUsed).add(BigNumber.from(`${100000}`))
+    const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`15`)).div(BigNumber.from('10'))
+    // const gasLimit = 400000
+    // const feeData = await provider.value.getFeeData()
     quoteResult.txCallData = {
       data: route?.methodParameters?.calldata,
       to: UNISWAP_V3_ROUTER2_ADDRESS,
       value: BigNumber.from(route?.methodParameters?.value),
       from: account.value,
+      // gasPrice: route?.gasPriceWei,
       gasLimit,
-      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
-      maxFeePerGas: feeData.maxFeePerGas,
+      // maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+      // maxFeePerGas: feeData.maxFeePerGas,
     }
   }
 
