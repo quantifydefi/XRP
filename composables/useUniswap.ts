@@ -192,16 +192,16 @@ export default function (
   }
 
   const runBlockListener = () => {
-    // provider.value.on('block', (block: number) => {
-    //   console.log('New Block Update', block)
-    //   let debounceTimeout: any = null
-    //   clearTimeout(debounceTimeout)
-    //   debounceTimeout = setTimeout(async () => {
-    //     console.log('UPDATE QUOTE', block)
-    //     await getUniswapTrade()
-    //     debounceTimeout = null
-    //   }, 5000)
-    // })
+    provider.value.on('block', (block: number) => {
+      console.log('New Block Update', block)
+      let debounceTimeout: any = null
+      clearTimeout(debounceTimeout)
+      debounceTimeout = setTimeout(async () => {
+        console.log('UPDATE QUOTE', block)
+        await getUniswapTrade()
+        debounceTimeout = null
+      }, 5000)
+    })
   }
 
   const getQuoteToken = (tokenIn: Token, tokenOut: Token, tradeType: TradeType): Token => {
