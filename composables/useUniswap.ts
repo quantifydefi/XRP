@@ -313,7 +313,7 @@ export default function (
     console.log(route, 'MAX HOOPS', numberOfHoops)
 
     // const gasLimit = BigNumber.from(route?.estimatedGasUsed).add(BigNumber.from(`${100000}`))
-    const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`15`)).div(BigNumber.from('10'))
+    const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`2`))
     // const gasLimit = 400000
     // const feeData = await provider.value.getFeeData()
     quoteResult.txCallData = {
