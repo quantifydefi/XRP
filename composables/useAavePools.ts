@@ -1,5 +1,5 @@
 import { useQuery } from '@vue/apollo-composable/dist'
-import { computed, inject, ref, watch } from '@nuxtjs/composition-api'
+import { computed, inject, ref } from '@nuxtjs/composition-api'
 import { plainToClass } from 'class-transformer'
 import { AavePoolGQL } from '~/apollo/main/pools.query.graphql'
 import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio } from '@/types/apollo/main/types'
@@ -122,19 +122,18 @@ export class AavePoolModel implements AavePool {
 }
 
 export default function () {
-  // STATE
+  // COMPOSABLES
   const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, loading } = useQuery(
     AavePoolGQL,
     () => ({
-      chainId: chainId.value,
+      chainId: chainId.value ?? 1,
     }),
     { fetchPolicy: 'no-cache', pollInterval: 30000 }
   )
 
   // COMPUTED
   const aavePoolsData = computed(() => plainToClass(AavePoolModel, result.value?.aavePools as AavePoolModel[]) ?? [])
-  watch(chainId, () => (loading.value = true))
 
   return {
     loading,

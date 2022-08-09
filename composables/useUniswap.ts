@@ -24,8 +24,10 @@ interface QuoteResult {
     to: string
     value: BigNumber | undefined
     from: string
-    gasPrice: BigNumber | undefined
+    gasPrice?: BigNumber | undefined
     gasLimit?: any
+    maxPriorityFeePerGas?: any
+    maxFeePerGas?: any
   }
 }
 interface FiatCurrency {
@@ -306,14 +308,16 @@ export default function (
     quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
     quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
 
-    const gasLimit = route ? BigNumber.from(`${route.estimatedGasUsed.toNumber() * 1.75}`) : 300000
+    const gasLimit = BigNumber.from(route?.estimatedGasUsed).add(BigNumber.from('100000'))
+    const feeData = await provider.value.getFeeData()
     quoteResult.txCallData = {
       data: route?.methodParameters?.calldata,
       to: UNISWAP_V3_ROUTER2_ADDRESS,
       value: BigNumber.from(route?.methodParameters?.value),
       from: account.value,
-      gasPrice: BigNumber.from(route?.gasPriceWei),
       gasLimit,
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+      maxFeePerGas: feeData.maxFeePerGas,
     }
   }
 

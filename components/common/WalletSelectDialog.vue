@@ -79,9 +79,7 @@ export default defineComponent({
     /** Display Error alert if wev3 error field is true */
     watch(walletReady, (val: boolean) => {
       if (val) {
-        setTimeout(() => {
-          dialog.value = false
-        }, 2000)
+        setTimeout(() => (dialog.value = false), 2000)
       }
     })
 
