@@ -1,10 +1,4 @@
-import {
-  ContractTransaction,
-  ContractInterface,
-  BytesLike as Arrayish,
-  BigNumber,
-  BigNumberish,
-} from 'ethers'
+import { ContractTransaction, ContractInterface, BytesLike as Arrayish, BigNumber, BigNumberish } from 'ethers'
 import { EthersContractContextV5 } from 'ethereum-abi-types-generator'
 
 export type ContractContext = EthersContractContextV5<
@@ -236,6 +230,7 @@ export interface UserconfigurationmapResponse {
   0: BigNumber
 }
 export interface AaveLendingPoolContract {
+  populateTransaction: any
   /**
    * Payable: false
    * Constant: true
@@ -263,9 +258,7 @@ export interface AaveLendingPoolContract {
    * StateMutability: view
    * Type: function
    */
-  MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
-    overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  MAX_STABLE_RATE_BORROW_SIZE_PERCENT(overrides?: ContractCallOverrides): Promise<BigNumber>
   /**
    * Payable: false
    * Constant: false
@@ -360,10 +353,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param asset Type: address, Indexed: false
    */
-  getConfiguration(
-    asset: string,
-    overrides?: ContractCallOverrides
-  ): Promise<ReserveconfigurationmapResponse>
+  getConfiguration(asset: string, overrides?: ContractCallOverrides): Promise<ReserveconfigurationmapResponse>
   /**
    * Payable: false
    * Constant: true
@@ -371,10 +361,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param asset Type: address, Indexed: false
    */
-  getReserveData(
-    asset: string,
-    overrides?: ContractCallOverrides
-  ): Promise<ReservedataResponse>
+  getReserveData(asset: string, overrides?: ContractCallOverrides): Promise<ReservedataResponse>
   /**
    * Payable: false
    * Constant: true
@@ -382,10 +369,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param asset Type: address, Indexed: false
    */
-  getReserveNormalizedIncome(
-    asset: string,
-    overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  getReserveNormalizedIncome(asset: string, overrides?: ContractCallOverrides): Promise<BigNumber>
   /**
    * Payable: false
    * Constant: true
@@ -393,10 +377,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param asset Type: address, Indexed: false
    */
-  getReserveNormalizedVariableDebt(
-    asset: string,
-    overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  getReserveNormalizedVariableDebt(asset: string, overrides?: ContractCallOverrides): Promise<BigNumber>
   /**
    * Payable: false
    * Constant: true
@@ -411,10 +392,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param user Type: address, Indexed: false
    */
-  getUserAccountData(
-    user: string,
-    overrides?: ContractCallOverrides
-  ): Promise<GetUserAccountDataResponse>
+  getUserAccountData(user: string, overrides?: ContractCallOverrides): Promise<GetUserAccountDataResponse>
   /**
    * Payable: false
    * Constant: true
@@ -422,10 +400,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param user Type: address, Indexed: false
    */
-  getUserConfiguration(
-    user: string,
-    overrides?: ContractCallOverrides
-  ): Promise<UserconfigurationmapResponse>
+  getUserConfiguration(user: string, overrides?: ContractCallOverrides): Promise<UserconfigurationmapResponse>
   /**
    * Payable: false
    * Constant: false
@@ -452,10 +427,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param provider Type: address, Indexed: false
    */
-  initialize(
-    provider: string,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  initialize(provider: string, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
   /**
    * Payable: false
    * Constant: false
@@ -532,10 +504,7 @@ export interface AaveLendingPoolContract {
    * Type: function
    * @param val Type: bool, Indexed: false
    */
-  setPause(
-    val: boolean,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  setPause(val: boolean, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
   /**
    * Payable: false
    * Constant: false

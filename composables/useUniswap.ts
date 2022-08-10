@@ -10,7 +10,6 @@ import useERC20 from '~/composables/useERC20'
 import { ERC20Balance } from '~/types/global'
 import { useHelpers } from '~/composables/useHelpers'
 import { FiatPricesGQL } from '~/apollo/main/config.query.graphql'
-const UNISWAP_V3_ROUTER2_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
 interface QuoteResult {
   expectedConvertQuote: number
@@ -43,6 +42,9 @@ const defaultQuoteData: QuoteResult = {
   routePath: '',
   txCallData: { data: undefined, from: '', gasLimit: undefined, gasPrice: undefined, to: '', value: undefined },
 }
+
+const UNISWAP_V3_ROUTER2_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+const GAS_LIMIT_MULTIPLIER = 2
 
 export default function (
   fromToken: Ref<UniswapToken>,
@@ -308,23 +310,14 @@ export default function (
     quoteResult.gasAdjustedQuote = Number(route?.quoteGasAdjusted.toFixed(6))
     quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
     quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
-    const numberOfHoops = <number>route?.route.map((elem) => elem.tokenPath.length)[0]
 
-    console.log(route, 'MAX HOOPS', numberOfHoops)
-
-    // const gasLimit = BigNumber.from(route?.estimatedGasUsed).add(BigNumber.from(`${100000}`))
-    const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`2`))
-    // const gasLimit = 400000
-    // const feeData = await provider.value.getFeeData()
+    const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`${GAS_LIMIT_MULTIPLIER}`))
     quoteResult.txCallData = {
       data: route?.methodParameters?.calldata,
       to: UNISWAP_V3_ROUTER2_ADDRESS,
       value: BigNumber.from(route?.methodParameters?.value),
       from: account.value,
-      // gasPrice: route?.gasPriceWei,
       gasLimit,
-      // maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
-      // maxFeePerGas: feeData.maxFeePerGas,
     }
   }
 
@@ -337,7 +330,6 @@ export default function (
   watch(
     [fromToken, toToken, amount, account, chainId],
     async () => {
-      console.log('CHANGE', fromToken.value.symbol, '>', toToken.value.symbol, tradeDirection.value)
       tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])
       if (amount.value <= 0 || isSameTokenSelected.value) {
         stopAllListeners()

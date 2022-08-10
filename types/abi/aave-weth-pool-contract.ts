@@ -1,10 +1,4 @@
-import {
-  ContractTransaction,
-  ContractInterface,
-  BytesLike as Arrayish,
-  BigNumber,
-  BigNumberish,
-} from 'ethers'
+import { ContractTransaction, ContractInterface, BytesLike as Arrayish, BigNumber, BigNumberish } from 'ethers'
 import { EthersContractContextV5 } from 'ethereum-abi-types-generator'
 
 export type ContractContext = EthersContractContextV5<
@@ -76,6 +70,7 @@ export interface OwnershipTransferredEventEmittedResponse {
   newOwner: string
 }
 export interface AaveWethPoolContract {
+  populateTransaction: any
   /**
    * Payable: false
    * Constant: false
@@ -83,10 +78,7 @@ export interface AaveWethPoolContract {
    * Type: constructor
    * @param weth Type: address, Indexed: false
    */
-  'new'(
-    weth: string,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  'new'(weth: string, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
   /**
    * Payable: false
    * Constant: false
@@ -94,10 +86,7 @@ export interface AaveWethPoolContract {
    * Type: function
    * @param lendingPool Type: address, Indexed: false
    */
-  authorizeLendingPool(
-    lendingPool: string,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  authorizeLendingPool(lendingPool: string, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
   /**
    * Payable: false
    * Constant: false
@@ -178,9 +167,7 @@ export interface AaveWethPoolContract {
    * StateMutability: nonpayable
    * Type: function
    */
-  renounceOwnership(
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  renounceOwnership(overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
   /**
    * Payable: true
    * Constant: false
@@ -205,10 +192,7 @@ export interface AaveWethPoolContract {
    * Type: function
    * @param newOwner Type: address, Indexed: false
    */
-  transferOwnership(
-    newOwner: string,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  transferOwnership(newOwner: string, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
   /**
    * Payable: false
    * Constant: false

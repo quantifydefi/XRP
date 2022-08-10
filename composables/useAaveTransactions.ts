@@ -1,5 +1,6 @@
 import { computed, inject, reactive, Ref } from '@nuxtjs/composition-api'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
+import type { ContractTransaction } from 'ethers'
 import type { AavePoolModel } from '~/composables/useAavePools'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import wethGatewayAbi from '~/constracts/abi/aave/wethGatewayAbi.json'
@@ -63,7 +64,7 @@ interface Transaction {
 
 export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTokens: Ref<number>) {
   // COMPUTED
-  const { signer, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { signer, account, chainId, provider } = inject(WEB3_PLUGIN_KEY) as Web3
   const { allowedSpending, approveMaxSpending } = useERC20()
   const { isNativeToken } = useHelpers()
 
@@ -91,13 +92,13 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
     chainId.value && chainId.value in configs ? configs[chainId.value].WRAPPED_ETH : ''
   )
 
-  // const WETH_VARIABLE_BORROW = computed(() =>
-  //   chainId.value && chainId.value in configs ? configs[chainId.value].WETH_VARIABLE_BORROW : ''
-  // )
-
   const txLoading = computed(() => txData.loading)
   const receipt = computed(() => txData.receipt)
   const isTxMined = computed(() => !!(txData.receipt && txData.receipt.transactionHash && txData.receipt.blockNumber))
+
+  const ERC20_GAS_LIMIT = (estimatedGas: BigNumber): number => estimatedGas.mul(`125`).div('100').toNumber()
+  const NATIVE_ETH_GAS_LIMIT = (estimatedGas: BigNumber): number => estimatedGas.mul(`175`).div('100').toNumber()
+  const ESTIMATED_GAS_FEE = async (tx: ContractTransaction): Promise<BigNumber> => await provider.value.estimateGas(tx)
 
   // METHODS
   function resetToDefault() {
@@ -113,9 +114,21 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         wethGatewayAbi,
         signer.value
       ) as unknown as AaveWethPoolContract
+
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
+      const populatedTx = await contract.populateTransaction.depositETH(
+        AAVE_LENDING_POOL_ADDRESS.value,
+        account.value,
+        0,
+        {
+          value: amount,
+        }
+      )
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = NATIVE_ETH_GAS_LIMIT(estimatedGas)
       const depositCall = await contract.depositETH(AAVE_LENDING_POOL_ADDRESS.value, account.value, 0, {
         value: amount,
+        gasLimit,
       })
       const resp = await depositCall.wait()
       return { isCompleted: true, receipt: resp }
@@ -132,7 +145,14 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveWethPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const call = await contract.withdrawETH(AAVE_LENDING_POOL_ADDRESS.value, amount, account.value)
+      const populatedTx = await contract.populateTransaction.withdrawETH(
+        AAVE_LENDING_POOL_ADDRESS.value,
+        amount,
+        account.value
+      )
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = NATIVE_ETH_GAS_LIMIT(estimatedGas)
+      const call = await contract.withdrawETH(AAVE_LENDING_POOL_ADDRESS.value, amount, account.value, { gasLimit })
       const resp = await call.wait()
       return { isCompleted: true, receipt: resp }
     } catch (error) {
@@ -148,7 +168,19 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveWethPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const call = await contract.repayETH(AAVE_LENDING_POOL_ADDRESS.value, amount, 2, account.value, { value: amount })
+      const populatedTx = await contract.populateTransaction.repayETH(
+        AAVE_LENDING_POOL_ADDRESS.value,
+        amount,
+        2,
+        account.value,
+        { value: amount }
+      )
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = NATIVE_ETH_GAS_LIMIT(estimatedGas)
+      const call = await contract.repayETH(AAVE_LENDING_POOL_ADDRESS.value, amount, 2, account.value, {
+        value: amount,
+        gasLimit,
+      })
       const resp = await call.wait()
       return { isCompleted: true, receipt: resp }
     } catch (error) {
@@ -164,7 +196,15 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveLendingPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const depositCall = await contract.deposit(pool.value.underlyingAsset, amount, account.value, 0)
+      const populatedTx = await contract.populateTransaction.deposit(
+        pool.value.underlyingAsset,
+        amount,
+        account.value,
+        0
+      )
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = ERC20_GAS_LIMIT(estimatedGas)
+      const depositCall = await contract.deposit(pool.value.underlyingAsset, amount, account.value, 0, { gasLimit })
       const resp = await depositCall.wait()
       return { isCompleted: true, receipt: resp }
     } catch (error) {
@@ -180,7 +220,16 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveLendingPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const borrowCall = await contract.borrow(pool.value.underlyingAsset, amount, 2, 0, account.value)
+      const populatedTx = await contract.populateTransaction.borrow(
+        pool.value.underlyingAsset,
+        amount,
+        2,
+        0,
+        account.value
+      )
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = ERC20_GAS_LIMIT(estimatedGas)
+      const borrowCall = await contract.borrow(pool.value.underlyingAsset, amount, 2, 0, account.value, { gasLimit })
       const resp = await borrowCall.wait()
       return { isCompleted: true, receipt: resp }
     } catch (err) {
@@ -196,7 +245,10 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveLendingPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const withdrawCall = await contract.withdraw(pool.value.underlyingAsset, amount, account.value)
+      const populatedTx = await contract.populateTransaction.withdraw(pool.value.underlyingAsset, amount, account.value)
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = ERC20_GAS_LIMIT(estimatedGas)
+      const withdrawCall = await contract.withdraw(pool.value.underlyingAsset, amount, account.value, { gasLimit })
       const resp = await withdrawCall.wait()
       return { isCompleted: true, receipt: resp }
     } catch (err) {
@@ -212,7 +264,10 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
         signer.value
       ) as unknown as AaveLendingPoolContract
       const amount = ethers.utils.parseUnits(`${amountInTokens.value}`, pool.value.decimals)
-      const repayCall = await contract.repay(pool.value.underlyingAsset, amount, 2, account.value)
+      const populatedTx = await contract.populateTransaction.repay(pool.value.underlyingAsset, amount, 2, account.value)
+      const estimatedGas: BigNumber = await ESTIMATED_GAS_FEE(populatedTx)
+      const gasLimit = ERC20_GAS_LIMIT(estimatedGas)
+      const repayCall = await contract.repay(pool.value.underlyingAsset, amount, 2, account.value, { gasLimit })
       const resp = await repayCall.wait()
       return { isCompleted: true, receipt: resp }
     } catch (err) {
@@ -245,17 +300,7 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
       if (allowed < amountInTokens.value) {
         await approveMaxSpending(pool.value.underlyingAsset, AAVE_LENDING_POOL_ADDRESS.value)
       }
-    } else {
-      // const allowed = await allowedSpending(AWETH_ADDRESS.value, AAVE_WETH_GATEWAY_ADDRESS.value)
-      // console.log(allowed, amountInTokens.value, allowed < amountInTokens.value)
-      // if (allowed < amountInTokens.value) {
-      //   console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA')
-      //   await approveMaxSpending(AWETH_ADDRESS.value, AAVE_WETH_GATEWAY_ADDRESS.value)
-      // }
     }
-
-    // let result: { isCompleted: boolean; receipt: any }
-    // isNative ? (result = await borrowETHWeb3Call()) : (result = await borrowERC20Web3Call())
     const result = await borrowERC20Web3Call()
     txData.isCompleted = result.isCompleted
     txData.receipt = result.receipt
