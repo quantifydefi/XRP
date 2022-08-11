@@ -49,6 +49,7 @@ export default {
         },
       },
     ],
+    '@nuxtjs/sitemap',
   ],
 
   // Apollo client setup
@@ -65,6 +66,11 @@ export default {
     baseURL: process.env.BASE_URL,
     withCredentials: true,
     debug: false,
+  },
+
+  sitemap: {
+    hostname: process.env.BASE_URL ?? '',
+    gzip: true,
   },
 
   webfontloader: {

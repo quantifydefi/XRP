@@ -21,6 +21,7 @@
     "@nuxtjs/apollo": "^4.0.1-rc.5",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/composition-api": "^0.32.0",
+    "@nuxtjs/sitemap": "^2.4.0",
     "@types/web3": "^1.2.2",
     "@uniswap/sdk": "^3.0.3",
     "@uniswap/smart-order-router": "^ 2.8.1",
