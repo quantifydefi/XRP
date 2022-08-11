@@ -25,6 +25,8 @@ export class TransactionModel implements TransactionItem {
   readonly txHash!: string
   readonly value!: string
   readonly valueQuote!: number
+  readonly callFunction!: string
+  readonly decodedFunctionID!: string
 
   get txDate(): string {
     return new Date(this.blockSignedAt).toLocaleString()
@@ -37,21 +39,24 @@ export class TransactionModel implements TransactionItem {
   }
 
   get methodTextRenderer(): string {
+    const split: string[] = this.callFunction.split('(')
+    if (split.length > 1) {
+      const callName = split[0][0].toUpperCase() + split[0].slice(1)
+      if (callName === 'Multicall') {
+        return 'Swap'
+      }
+      return callName
+    }
+
     if (this.logEvents.length === 0) {
       return 'Transfer'
     }
 
     if (this.logEvents.length > 2) {
-      return 'Multicall'
+      return 'Swap'
     }
 
-    // returns array of log events function names
-    // i.e. ['Transfer', 'Approval']
-    const logs = this.logEvents
-      .map((event: any) => event.decoded?.name.replace(/([A-Z])/g, ' $1').trim())
-      .filter(Boolean)
-
-    return logs.length === 0 ? 'Transfer' : logs.join(', ')
+    return 'Unknown'
   }
 
   get txnValue(): { amount: number; priceUsd: number } {

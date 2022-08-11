@@ -69,6 +69,7 @@ query TransactionsGQL($chainId: Int!, $address: String!, $pageNumber: Int!, $pag
       gasQuote
       gasPrice
       gasSpent
+      callFunction
       txDetails{
         fromAddress
         toAddress

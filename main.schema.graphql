@@ -292,6 +292,8 @@ type Transaction {
 
 type TransactionItem {
   blockSignedAt: String!
+  callFunction: String!
+  decodedFunctionID: String!
   fromAddress: String!
   fromAddressIsContract: Boolean!
   fromAddressName: String!

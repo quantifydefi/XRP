@@ -22,5 +22,6 @@ declare module 'vue/types/vue' {
     $setAltImageUrl(event: any): string
     $imageUrlBySymbol(symbol: string | null): string
     $truncateAddress(address: string, zeroIndexTo: number, endIndexMinus: number): string
+    $navigateToExplorer(address: string, type?: 'tx' | 'address', blockExplorerUrl?: string): string
   }
 }
