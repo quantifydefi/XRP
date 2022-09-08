@@ -80,11 +80,7 @@ export default defineComponent({
     const communityLinks = [
       { icon: 'mdi-twitter', url: 'https://twitter.com/EVMX_IO' },
       { icon: 'mdi-linkedin', url: 'https://www.linkedin.com/company/quantifycrypto' },
-      {
-        icon: '/img/telegram.svg',
-        style: { filter: 'invert(56%) sepia(95%) saturate(0%) hue-rotate(185deg) brightness(93%) contrast(98%)' },
-        url: 'https://discord.gg/J8ChDJGh',
-      },
+      { icon: '/img/discord.svg', url: 'https://discord.gg/NZCtdZPCag' },
       {
         icon: '/img/telegram.svg',
         url: 'https://t.me/Quantify_Crypto',
