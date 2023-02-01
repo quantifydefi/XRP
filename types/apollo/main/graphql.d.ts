@@ -38,7 +38,7 @@ declare module '*/token.query.graphql' {
   const defaultDocument: DocumentNode;
   export const TokenQueryGQL: DocumentNode;
 export const DailyChartGQL: DocumentNode;
-export const PriceUpdateGQL: DocumentNode;
+export const TimeGQL: DocumentNode;
 
   export default defaultDocument;
 }

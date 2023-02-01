@@ -76,11 +76,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, useRoute, watch } from '@nuxtjs/composition-api'
+// import { useQuery } from '@vue/apollo-composable/dist'
+import {
+  // useQuery,
+  useSubscription,
+} from '@vue/apollo-composable/dist'
+// import { useSubscription } from '@vue/apollo-composable'
 import { useMetaTags } from '~/composables/useMetaTags'
+import { TimeGQL } from '~/apollo/main/token.query.graphql'
+
 export default defineComponent({
   setup() {
     useMetaTags('about', useRoute().value.path)
+    // const { result } = useQuery(GasGQL, null, { fetchPolicy: 'no-cache' })
+
+    // onResult((data: any) => {
+    //   console.log('DDDDDDD', data, result)
+    // })
+    // onResult((queryResult) {
+    //   (console.log(queryResult), 'RRRRRRRRRRRRRRRRRRR')
+    //   return q
+    // })
+
+    const { result: subsResult, onResult } = useSubscription(TimeGQL, null, {
+      fetchPolicy: 'no-cache',
+    })
+
+    watch(
+      subsResult,
+      (data) => {
+        console.log('New message received:', data)
+      },
+      {
+        immediate: false,
+      }
+    )
+
+    onResult((data: any) => {
+      console.log('RESULT', data)
+    })
   },
   head: {},
 })

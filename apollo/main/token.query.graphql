@@ -73,6 +73,8 @@ query DailyChartGQL($coinGeckoID:String!){
   }
 }
 
-subscription PriceUpdateGQL{
-  testSubs
+subscription TimeGQL{
+  currentTime {
+    timeStamp, unixTime
+  }
 }

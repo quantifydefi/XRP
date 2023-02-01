@@ -3,12 +3,12 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}],
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: ''},
+      {name: 'format-detection', content: 'telephone=no'},
     ],
   },
 
@@ -34,7 +34,7 @@ export default {
       '@nuxtjs/google-analytics',
       {
         ua: process.env.GA_ID,
-        debug: { sendHitTask: true },
+        debug: {sendHitTask: true},
       },
     ],
     '@nuxtjs/apollo',
@@ -57,6 +57,8 @@ export default {
     clientConfigs: {
       default: {
         httpEndpoint: process.env.BASE_GRAPHQL_SERVER_URL,
+        wsEndpoint: process.env.BASE_GRAPHQL_WEBSOCKET_URL,
+        websocketsOnly: false,
       },
     },
   },
@@ -114,7 +116,7 @@ export default {
     analyze: false,
     build: {},
     filenames: {
-      chunk: ({ isDev }) => (isDev ? '[name].js' : '[id].[contenthash].js'),
+      chunk: ({isDev}) => (isDev ? '[name].js' : '[id].[contenthash].js'),
     },
 
     extractCSS: false,
@@ -126,7 +128,7 @@ export default {
           test: /\.(js|vue|ts)$/,
           loader: 'eslint-loader',
           exclude: /(node_modules)/,
-          options: { fix: true },
+          options: {fix: true},
         })
       }
     },
@@ -138,5 +140,5 @@ export default {
     baseURL: process.env.BASE_URL,
   },
 
-  server: { port: 3000, host: process.env.SERVER_HOST },
+  server: {port: 3000, host: process.env.SERVER_HOST},
 }

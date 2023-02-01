@@ -218,7 +218,13 @@ type Query {
 }
 
 type Subscription {
+  currentTime: Time!
   testSubs: Float
+}
+
+type Time {
+  timeStamp: String!
+  unixTime: Int!
 }
 
 type Token {

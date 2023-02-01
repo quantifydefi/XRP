@@ -17,6 +17,12 @@
           <v-row>
             <v-col lg="4" cols="12">
               <v-card class="py-2 px-4" height="240" tile outlined>
+                <v-dialog v-model="loading" width="450">
+                  <v-card tile outlined class="text-center pa-6">
+                    <v-progress-circular color="pink" indeterminate size="64" />
+                    <span class="ml-6 grey--text">Fetching balances might take few minutes</span>
+                  </v-card>
+                </v-dialog>
                 <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="230" />
                 <div v-else>
                   <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Wallet Balance</h4>
@@ -78,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, useRoute, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref, useRoute, useStore } from '@nuxtjs/composition-api'
 import usePortfolioBalances from '~/composables/usePortfolioBalances'
 import PortfolioBalanceGrid from '~/components/portfolio/PortfolioBalanceGrid.vue'
 import { State } from '~/types/state'
@@ -110,8 +116,8 @@ export default defineComponent({
 
     // META TAGS
     useMetaTags('balances', useRoute().value.path)
-
-    return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch, messages }
+    const dialog = ref(true)
+    return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch, messages, dialog }
   },
   head: {},
 })

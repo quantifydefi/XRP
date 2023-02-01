@@ -312,7 +312,14 @@ export type QueryUniswapTokensArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  currentTime: Time;
   testSubs?: Maybe<Scalars['Float']>;
+};
+
+export type Time = {
+  __typename?: 'Time';
+  timeStamp: Scalars['String'];
+  unixTime: Scalars['Int'];
 };
 
 export enum TimeInterval {
@@ -563,7 +570,7 @@ export type DailyChartGqlQueryVariables = Exact<{
 
 export type DailyChartGqlQuery = { __typename?: 'Query', dailyChart: Array<{ __typename?: 'DailyChart', date: number, priceUsd: number }> };
 
-export type PriceUpdateGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type TimeGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PriceUpdateGqlSubscription = { __typename?: 'Subscription', testSubs?: number | null };
+export type TimeGqlSubscription = { __typename?: 'Subscription', currentTime: { __typename?: 'Time', timeStamp: string, unixTime: number } };
