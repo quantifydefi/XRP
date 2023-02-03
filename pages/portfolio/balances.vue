@@ -18,9 +18,17 @@
             <v-col lg="4" cols="12">
               <v-card class="py-2 px-4" height="240" tile outlined>
                 <v-dialog v-model="loading" width="450">
-                  <v-card tile outlined class="text-center pa-6">
-                    <v-progress-circular color="pink" indeterminate size="64" />
-                    <span class="ml-6 grey--text">Fetching balances might take few minutes</span>
+                  <v-card tile outlined class="pa-6">
+                    <v-row no-gutters>
+                      <v-col cols="3">
+                        <v-progress-circular color="pink" indeterminate size="64" />
+                      </v-col>
+                      <v-col class="text-left">
+                        <div>Hang Tight!</div>
+                        <div class="grey--text">Scouring the Blockchain for your Riches.</div>
+                        <div class="grey--text">It may take a minute.</div>
+                      </v-col>
+                    </v-row>
                   </v-card>
                 </v-dialog>
                 <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="230" />
