@@ -57,7 +57,7 @@
     </v-navigation-drawer>
 
     <client-only>
-      <main-footer></main-footer>
+      <main-footer />
     </client-only>
   </v-app>
 </template>
