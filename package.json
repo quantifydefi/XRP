@@ -13,7 +13,8 @@
     "generate-types": "graphql-codegen --require dotenv/config  --config codegen/codegen.yml",
     "generate-erc20-abi": "abi-types-generator './constracts/abi/erc20Abi.json' --output='./types/abi' --name=erc20-contract --provider=ethers_v5",
     "generate-aave-lending-pool-abi": "abi-types-generator './constracts/abi/aave/lendingPoolAbi.json' --output='./types/abi' --name=aave-lending-pool-contract --provider=ethers_v5",
-    "generate-aave-weth-pool-abi": "abi-types-generator './constracts/abi/aave/wethGatewayAbi.json' --output='./types/abi' --name=aave-weth-pool-contract --provider=ethers_v5"
+    "generate-aave-weth-pool-abi": "abi-types-generator './constracts/abi/aave/wethGatewayAbi.json' --output='./types/abi' --name=aave-weth-pool-contract --provider=ethers_v5",
+    "generate-uniswap-router-v2": "abi-types-generator './constracts/abi/uniswapRouterV2Abi.json' --output='./types/abi' --name=uniswap-router-v2-contract --provider=ethers_v5"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.25",

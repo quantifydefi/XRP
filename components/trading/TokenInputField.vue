@@ -75,10 +75,7 @@ type Props = {
 
 export default defineComponent<Props>({
   props: {
-    token: {
-      type: Object as PropType<UniswapToken | null>,
-      required: true,
-    },
+    token: { type: Object as PropType<UniswapToken | null>, required: true },
     formTradeDirection: { type: String as PropType<keyof typeof TradeType>, required: true },
     tradeDirection: { type: String as PropType<keyof typeof TradeType>, required: true },
     balance: { type: Number, default: 0 },

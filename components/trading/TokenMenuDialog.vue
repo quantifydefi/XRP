@@ -9,7 +9,7 @@
         </v-btn>
       </v-card-title>
 
-      <v-row justify="center" no-gutters>
+      <v-row v-if="!isSimpleList" justify="center" no-gutters>
         <v-col cols="11">
           <v-text-field
             dense
@@ -29,7 +29,6 @@
       <div v-if="loading" style="height: 500px">
         <v-skeleton-loader v-for="i in 7" :key="i" type="list-item-avatar-two-line" />
       </div>
-
       <v-list v-show="!loading" class="text-left overflow-y-auto" height="500" dense>
         <v-list-item-group v-model="selectedAddress" color="primary">
           <v-list-item v-for="(item, i) in tokenList" :key="i" :value="item">
@@ -59,7 +58,7 @@
         </div>
       </v-list>
       <v-divider />
-      <div class="text-center py-2" @click="sourcesToggle = !sourcesToggle">
+      <div v-if="!isSimpleList" class="text-center py-2" @click="sourcesToggle = !sourcesToggle">
         <nuxt-link to="#">Manage Token List</nuxt-link>
       </div>
     </v-card>
@@ -96,20 +95,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api'
 import useSwapTokensList from '~/composables/useSwapTokensList'
 import { UniswapToken } from '~/types/apollo/main/types'
 import { EmitEvents } from '~/types/events'
 
 type importTokenToMetamaskFunction = (params: any) => void
+type tokenListType = 'uniswap' | 'verse'
 
 type Props = {
   importTokenToMetamask: importTokenToMetamaskFunction
+  tokenListType: tokenListType
 }
 
 export default defineComponent<Props>({
   props: {
     importTokenToMetamask: { type: Function as PropType<importTokenToMetamaskFunction>, required: true },
+    tokenListType: { type: String as PropType<tokenListType>, default: 'uniswap' },
   },
 
   setup(props, { emit }) {
@@ -118,8 +120,12 @@ export default defineComponent<Props>({
     const sourcesToggle = ref(false)
     const dialog = ref(false)
     const selectedAddress = ref<UniswapToken | null>(null)
-    const { sources, tokenList, hasMoreElements, loading, onSearchChange, nextPage } = useSwapTokensList()
+    const { sources, tokenList, hasMoreElements, loading, onSearchChange, nextPage } = useSwapTokensList(
+      ref(props.tokenListType)
+    )
     const { $imageUrlBySymbol } = useContext()
+
+    const isSimpleList = computed(() => props.tokenListType === 'verse')
 
     async function importToMetaMask(token: UniswapToken) {
       await props.importTokenToMetamask({
@@ -139,6 +145,7 @@ export default defineComponent<Props>({
     })
 
     return {
+      isSimpleList,
       dialog,
       loading,
       tokenList,
