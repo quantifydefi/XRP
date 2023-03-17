@@ -9,16 +9,36 @@ export function useHelpers() {
     return !!chain
   }
 
-  const debounce = <F extends (...args: any) => any>(func: F, waitFor: number) => {
-    const timeout: number = 0
+  // function debounce(callback: any, delay = 300) {
+  //   let timeout: any = null
+  //   return (...args: any) => {
+  //     clearTimeout(timeout)
+  //     timeout = setTimeout(() => callback.apply(args), delay)
+  //   }
+  // }
 
-    const debounced = (...args: any) => {
-      clearTimeout(timeout)
-      setTimeout(() => func(...args), waitFor)
+  function debounceAsync<T, Callback extends (...args: any[]) => Promise<T>>(
+    callback: Callback,
+    wait: number
+  ): (...args: Parameters<Callback>) => Promise<T> {
+    let timeoutId: number | null = null
+
+    return (...args: any[]) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+
+      return new Promise<T>((resolve) => {
+        const timeoutPromise = new Promise<void>((resolve) => {
+          timeoutId = setTimeout(resolve, wait)
+        })
+        timeoutPromise.then(async () => {
+          // eslint-disable-next-line node/no-callback-literal
+          resolve(await callback(...args))
+        })
+      })
     }
-
-    return debounced as (...args: Parameters<F>) => ReturnType<F>
   }
 
-  return { isNativeToken, debounce }
+  return { isNativeToken, debounceAsync }
 }

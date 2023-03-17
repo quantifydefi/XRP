@@ -16,10 +16,10 @@
               <token-input-field
                 form-trade-direction="EXACT_INPUT"
                 :trade-direction="tradeDirection"
-                :fiat-price="0"
+                :fiat-price="fromTokenFiatPrice"
                 :token="fromToken"
                 :balance="fromTokenBalance"
-                :expected-convert-quote="0"
+                :expected-convert-quote="expectedConvertQuote"
                 :loading="false"
                 @on-value-changed="onAmountChange"
                 @on-uniswap-token-menu-open="onToggleTokenMenu('EXACT_INPUT')"
@@ -40,8 +40,8 @@
                 :trade-direction="tradeDirection"
                 :token="toToken"
                 :balance="toTokenBalance"
-                :fiat-price="0"
-                :expected-convert-quote="0"
+                :fiat-price="toTokenFiatPrice"
+                :expected-convert-quote="expectedConvertQuote"
                 :loading="false"
                 @on-value-changed="onAmountChange"
                 @on-uniswap-token-menu-open="onToggleTokenMenu('EXACT_OUTPUT')"
@@ -50,46 +50,43 @@
           </v-row>
         </v-col>
 
-        <!--        <v-col v-if="errorMessage" cols="12">-->
-        <!--          <v-alert text type="error" dismissible class="ma-2">{{ errorMessage }}</v-alert>-->
-        <!--        </v-col>-->
+        <v-col v-if="errorMessage" cols="12">
+          <v-alert text type="error" dismissible class="ma-2">{{ errorMessage }}</v-alert>
+        </v-col>
 
-        <!--        <v-col v-else cols="12">-->
-        <!--          <v-row class="pa-3 caption font-weight-medium">-->
-        <!--            <v-col cols="12">-->
-        <!--              <v-card v-if="enableDetails" tile outlined class="mt-2">-->
-        <!--                <div v-if="loading" class="d-flex pa-2" style="height: 36px">-->
-        <!--                  <span class="grey&#45;&#45;text">-->
-        <!--                    <v-progress-circular size="20" indeterminate color="pink" class="mr-1" /> Fetching Latest Prices-->
-        <!--                  </span>-->
-        <!--                </div>-->
+        <v-col v-else cols="12">
+          <v-row v-if="quoteByTokensDesc" class="pa-3 caption font-weight-medium">
+            <v-col cols="12">
+              <v-card tile outlined class="mt-2">
+                <div v-if="loading" class="d-flex pa-2" style="height: 36px">
+                  <span class="grey--text">
+                    <v-progress-circular size="20" indeterminate color="pink" class="mr-1" /> Fetching Latest Prices
+                  </span>
+                </div>
 
-        <!--                <div v-else class="d-flex pa-2" style="height: 36px">-->
-        <!--                  <span v-text="quote"><span class="ml-2 grey&#45;&#45;text">($ 1.0000)</span></span>-->
-        <!--                  <v-spacer />-->
-        <!--                  <div v-if="!expand" class="pr-2">-->
-        <!--                    <v-icon color="grey lighten-1" size="17">mdi-gas-station</v-icon>-->
-        <!--                    <span class="grey&#45;&#45;text text&#45;&#45;lighten-1" v-text="$f(gasFeeUSD, { maxDigits: 2, pre: '$' })" />-->
-        <!--                  </div>-->
-        <!--                  <v-btn color="grey lighten-1" height="22" width="22" icon @click="expand = !expand">-->
-        <!--                    <v-icon size="22">mdi-chevron-{{ expand ? 'up' : 'down' }}</v-icon>-->
-        <!--                  </v-btn>-->
-        <!--                </div>-->
+                <div v-else class="d-flex pa-2" style="height: 36px">
+                  <span v-text="quoteByTokensDesc"><span class="ml-2 grey--text">($ 1.0000)</span></span>
+                  <v-spacer />
+                  <div v-if="!expand" class="pr-2"></div>
+                  <v-btn color="grey lighten-1" height="22" width="22" icon @click="expand = !expand">
+                    <v-icon size="22">mdi-chevron-{{ expand ? 'up' : 'down' }}</v-icon>
+                  </v-btn>
+                </div>
 
-        <!--                <v-simple-table v-if="expand && !loading" dense>-->
-        <!--                  <template #default>-->
-        <!--                    <tbody>-->
-        <!--                      <tr v-for="(item, i) in details" :key="i">-->
-        <!--                        <td class="caption grey&#45;&#45;text text&#45;&#45;lighten-1" v-text="item.text" />-->
-        <!--                        <td class="caption text-right" v-text="item.value" />-->
-        <!--                      </tr>-->
-        <!--                    </tbody>-->
-        <!--                  </template>-->
-        <!--                </v-simple-table>-->
-        <!--              </v-card>-->
-        <!--            </v-col>-->
-        <!--          </v-row>-->
-        <!--        </v-col>-->
+                <v-simple-table v-if="expand && !loading" dense>
+                  <template #default>
+                    <tbody>
+                      <tr v-for="(item, i) in details" :key="i">
+                        <td class="caption grey--text text--lighten-1" v-text="item.text" />
+                        <td class="caption text-right" v-text="item.value" />
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
 
         <v-col cols="12" class="pa-3 pt-2">
           <v-btn
@@ -127,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, PropType, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, PropType, ref } from '@nuxtjs/composition-api'
 import { TradeType } from '@uniswap/sdk'
 import TokenMenuDialog from '~/components/trading/TokenMenuDialog.vue'
 import TokenInputField from '~/components/trading/TokenInputField.vue'
@@ -176,43 +173,29 @@ export default defineComponent<Props>({
     const toToken = ref(props.outToken)
     const amount = ref(0)
 
-    // const { $f } = useContext()
     const {
       fromTokenBalance,
       toTokenBalance,
-      // fromTokenFiatPrice,
-      // toTokenFiatPrice,
-      // expectedConvertQuote,
-      // loading,
-      // enableDetails,
-      // quote,
-      // routePath,
-      // gasAdjustedQuote,
-      // gasFeeUSD,
+      fromTokenFiatPrice,
+      toTokenFiatPrice,
+      expectedConvertQuote,
+      loading,
+      enableDetails,
+      quoteByTokensDesc,
       actionButton,
-      // SLIPPAGE,
-      // isNetworkSupported,
-      // minAmountConvertQuote,
-      // errorMessage,
+      minAmountConvertQuote,
+      errorMessage,
       txLoading,
       receipt,
       isTxMined,
       swap,
       resetTransaction,
-      // importTokenToMetamask,
-      // clearTrade,
     } = useVerse(fromToken, toToken, amount, tradeDirection)
-    //
-    // const details = computed(() => [
-    //   { text: 'Expected Output', value: `${expectedConvertQuote.value} ${toToken.value.symbol}` },
-    //   {
-    //     text: `Minimum Received (${SLIPPAGE.toFixed(2)} %)`,
-    //     value: `${minAmountConvertQuote.value} ${toToken.value.symbol}`,
-    //   },
-    //   { text: 'Gas Adjusted Output', value: `${gasAdjustedQuote.value} ${toToken.value.symbol}` },
-    //   { text: 'Network Fee', value: $f(gasFeeUSD.value, { pre: '~$ ' }) },
-    //   { text: 'Route Path', value: routePath.value },
-    // ])
+
+    const details = computed(() => [
+      { text: 'Expected Output', value: `${expectedConvertQuote.value} ${toToken.value.symbol}` },
+      { text: `Minimum Received (5.00 %)`, value: `${minAmountConvertQuote.value}` },
+    ])
 
     const onToggleTokenMenu = (type: keyof typeof TradeType): void => {
       tokenDirection.value = type
@@ -246,20 +229,18 @@ export default defineComponent<Props>({
       // From composition
       fromTokenBalance,
       toTokenBalance,
-      // fromTokenFiatPrice,
-      // toTokenFiatPrice,
-      // expectedConvertQuote,
-      // loading,
-      // enableDetails,
-      // quote,
+      fromTokenFiatPrice,
+      toTokenFiatPrice,
+      expectedConvertQuote,
+      loading,
+      enableDetails,
+      quoteByTokensDesc,
       actionButton,
-      // details,
-      // errorMessage,
+      details,
+      errorMessage,
       txLoading,
       receipt,
       isTxMined,
-      // gasFeeUSD,
-      // isNetworkSupported,
 
       onToggleTokenMenu,
       onTokenSelect,

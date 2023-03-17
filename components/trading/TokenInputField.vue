@@ -114,11 +114,11 @@ export default defineComponent<Props>({
     }
 
     function onInput() {
-      const searchTimeout: any = null
-      clearTimeout(searchTimeout)
-      setTimeout(() => {
-        emit(EmitEvents.onValueChanged, { direction: props.formTradeDirection, value: amountVal.value })
-      }, 1500)
+      // const searchTimeout: any = null
+      // clearTimeout(searchTimeout)
+      // setTimeout(() => {
+      emit(EmitEvents.onValueChanged, { direction: props.formTradeDirection, value: amountVal.value })
+      // }, 1500)
     }
 
     function setMax() {

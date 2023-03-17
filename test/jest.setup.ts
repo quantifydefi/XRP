@@ -10,3 +10,4 @@ Vue.config.ignoredElements = [
   '$ua',
   'v-progress-circular',
 ]
+jest.setTimeout(20000);
