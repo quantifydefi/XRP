@@ -141,6 +141,14 @@ const defaultToken: UniswapToken = {
   decimals: 6,
 }
 
+const verseToken: UniswapToken = {
+  chainId: 1,
+  address: '0x249ca82617ec3dfb2589c4c17ab7ec9765350a18',
+  name: 'Verse',
+  symbol: 'VERSE',
+  decimals: 18,
+}
+
 type Props = {
   height: string
   width: string
@@ -158,7 +166,7 @@ export default defineComponent<Props>({
     height: { type: String, default: '100%' },
     width: { type: String, default: '450' },
     logScrollHeight: { type: String, default: '140' },
-    inToken: { type: Object as PropType<UniswapToken>, default: () => defaultToken },
+    inToken: { type: Object as PropType<UniswapToken>, default: () => verseToken },
     outToken: { type: Object as PropType<UniswapToken>, default: () => defaultToken },
   },
 

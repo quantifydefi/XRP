@@ -10,7 +10,15 @@ import useERC20 from '~/composables/useERC20'
 import { ERC20Balance } from '~/types/global'
 import { useHelpers } from '~/composables/useHelpers'
 import { FiatPricesGQL } from '~/apollo/main/config.query.graphql'
-import { TradeContext, TradePath, Transaction, UniswapV2, WETH, VERSE_ROUTER_ADDRESS } from '~/lib/uniswap-v2/uniswapV2'
+import {
+  TradeContext,
+  TradePath,
+  Transaction,
+  UniswapV2,
+  SUPPORTED_CHAINS,
+  WETH,
+  ROUTER,
+} from '~/lib/uniswap-v2/uniswapV2'
 
 interface FiatCurrency {
   [key: string]: { usd: number }
@@ -27,7 +35,7 @@ export default function (
   const { balanceMulticall, allowedSpending, approveMaxSpending } = useERC20()
   const { isNativeToken, debounceAsync } = useHelpers()
 
-  const NETWORK_ID = computed(() => (chainId.value === 1337 ? 1 : chainId.value) || 1)
+  const NETWORK_ID = computed(() => (chainId.value === 1337 ? 10000 : chainId.value) || 1) as Ref<SUPPORTED_CHAINS>
 
   const fromTokenAddressOverride = computed(() =>
     isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
@@ -56,7 +64,7 @@ export default function (
     receipt: null,
   })
 
-  const SUPPORTED_NETWORKS = [1, 1337]
+  const SUPPORTED_NETWORKS = [1, 10000, 1337]
   const isNetworkSupported = computed<boolean>(() =>
     walletReady.value ? SUPPORTED_NETWORKS.includes(chainId.value ?? 1) : false
   )
@@ -87,7 +95,7 @@ export default function (
   )
   const minAmountConvertQuote = computed(() =>
     tradeContext.value?.minAmountConvertQuote
-      ? `${tradeContext.value.minAmountConvertQuote} ${toToken.value.symbol}`
+      ? `${parseFloat(tradeContext.value.minAmountConvertQuote).toFixed(6)} ${toToken.value.symbol}`
       : '-'
   )
 
@@ -166,7 +174,7 @@ export default function (
   }
 
   const onChange = debounceAsync(async () => {
-    console.log('ON CHANGE', amount.value, tradeDirection.value, tradePath.value)
+    console.log('ON CHANGE', amount.value, tradeDirection.value, tradePath.value, NETWORK_ID.value)
 
     errorMessage.value = null
 
@@ -175,7 +183,14 @@ export default function (
     }
     try {
       loading.value = true
-      const uniswap = new UniswapV2(fromToken.value, toToken.value, tradePath.value, account.value, provider.value)
+      const uniswap = new UniswapV2(
+        fromToken.value,
+        toToken.value,
+        tradePath.value,
+        account.value,
+        provider.value,
+        NETWORK_ID.value
+      )
       tradeContext.value = await uniswap.trade(`${amount.value}`, tradeDirection.value)
     } catch (e) {
       console.log('ERROR', e)
@@ -216,9 +231,9 @@ export default function (
       txResult.isCompleted = isCompleted
       txResult.receipt = receipt
     } else {
-      const allowed = await allowedSpending(fromToken.value.address, VERSE_ROUTER_ADDRESS)
+      const allowed = await allowedSpending(fromToken.value.address, ROUTER(NETWORK_ID.value))
       if (allowed < amount.value) {
-        await approveMaxSpending(fromToken.value.address, VERSE_ROUTER_ADDRESS)
+        await approveMaxSpending(fromToken.value.address, ROUTER(NETWORK_ID.value))
       }
 
       const { isCompleted, receipt } = await sendTransaction(tradeContext.value.transaction)
@@ -230,13 +245,15 @@ export default function (
     [fromToken, toToken, amount, account, chainId],
     async () => {
       tradeContext.value = null
-      tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])
+      tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value], NETWORK_ID.value)
       await onChange()
     },
     { immediate: false }
   )
 
-  onMounted(async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])))
+  onMounted(
+    async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value], NETWORK_ID.value))
+  )
 
   return {
     fromTokenBalance,

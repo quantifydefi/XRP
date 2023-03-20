@@ -10,7 +10,7 @@ import { ERC20Balance } from '~/types/global'
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
 export default function useERC20() {
-  const { provider, account, signer, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { provider, account, signer } = inject(WEB3_PLUGIN_KEY) as Web3
   const { isNativeToken } = useHelpers()
 
   const allowedSpending = async (tokenAddress: string, routerToApproveAddress: string): Promise<number> => {
@@ -66,10 +66,10 @@ export default function useERC20() {
     }
   }
 
-  async function balanceMulticall(tokens: UniswapToken[]): Promise<ERC20Balance[]> {
+  async function balanceMulticall(tokens: UniswapToken[], chainId: number = 1): Promise<ERC20Balance[]> {
     const multCalls: Promise<ERC20Balance>[] = []
     tokens.forEach((token) => {
-      const isNative = isNativeToken(chainId.value ?? 1, token.symbol)
+      const isNative = isNativeToken(chainId, token.symbol)
       const request = isNative
         ? nativeNetworkBalance(token.address, `NATIVE_${token.symbol}`)
         : ERC20Balance(token.address, token.decimals)

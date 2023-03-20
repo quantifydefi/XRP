@@ -42,8 +42,7 @@ export enum TradePath {
   erc20ToErc20 = 'erc20ToErc20',
 }
 
-export const VERSE_ROUTER_ADDRESS = '0xB4B0ea46Fe0E9e8EAB4aFb765b527739F2718671'
-const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+export type SUPPORTED_CHAINS = 1 | 10000
 
 /**
  * Convert a string value to wei
@@ -72,14 +71,30 @@ export function formatEther(wei: any): BigNumber {
 export function toEthersBigNumber(value: BigNumber): EthersBigNumber {
   return EthersBigNumber.from(value.toFixed())
 }
-export const WETH = (chainId: number) => {
-  const tokens: { [key: number]: UniswapToken } = {
+
+export const ROUTER = (chainId: SUPPORTED_CHAINS) => {
+  const routers: { [key in SUPPORTED_CHAINS]: string } = {
+    1: '0xB4B0ea46Fe0E9e8EAB4aFb765b527739F2718671',
+    10000: '0xF13541FaD443a4Bf4160B5c0F46aC5c735a908d3',
+  }
+  return routers[chainId]
+}
+
+export const WETH = (chainId: SUPPORTED_CHAINS) => {
+  const tokens: { [key in SUPPORTED_CHAINS]: UniswapToken } = {
     1: {
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       chainId: 1,
       decimals: 18,
       name: 'Wrapped Ether',
       symbol: 'WETH',
+    },
+    10000: {
+      address: '0x3743eC0673453E5009310C727Ba4eaF7b3a1cc04',
+      chainId: 10000,
+      decimals: 18,
+      name: 'Wrapped Bitcoin Cash',
+      symbol: 'WBCH',
     },
   }
   return tokens[chainId]
@@ -94,31 +109,34 @@ export class UniswapV2 {
   readonly _provider!: any
   readonly _slippage = 0.0005
   readonly _deadlineMinutes = 20
+  readonly _chainId: SUPPORTED_CHAINS = 1
 
   constructor(
     fromToken: UniswapToken,
     toToken: UniswapToken,
     tradePath: TradePath = TradePath.erc20ToErc20,
     userWallet: string,
-    ethersProvider: any
+    ethersProvider: any,
+    chainId: SUPPORTED_CHAINS = 1
   ) {
     this._fromToken = fromToken
     this._toToken = toToken
     this._tradePath = tradePath
     this._userWallet = userWallet
     this._provider = ethersProvider
+    this._chainId = chainId
     this.routePath()
   }
 
   private routePath() {
     if (this._tradePath === TradePath.ethToErc20) {
-      this._routePath = [WETH_ADDRESS, this._toToken.address]
+      this._routePath = [WETH(this._chainId).address, this._toToken.address]
     }
     if (this._tradePath === TradePath.erc20ToErc20) {
       this._routePath = [this._fromToken.address, this._toToken.address]
     }
     if (this._tradePath === TradePath.erc20ToEth) {
-      this._routePath = [this._fromToken.address, WETH_ADDRESS]
+      this._routePath = [this._fromToken.address, WETH(this._chainId).address]
     }
     return []
   }
@@ -182,7 +200,7 @@ export class UniswapV2 {
   ): Promise<string> {
     // uniswap adds extra digits on even if the token is say 8 digits long
     const amountIn = tokenAmount.shiftedBy(this._fromToken.decimals).decimalPlaces(0)
-    const contract = new ethers.Contract(VERSE_ROUTER_ADDRESS, uniswapRouterV2Abi)
+    const contract = new ethers.Contract(ROUTER(this._chainId), uniswapRouterV2Abi)
     const tx = await contract.populateTransaction.swapExactTokensForETH(
       hexlify(amountIn),
       hexlify(parseEther(ethAmountOutMin)),
@@ -208,7 +226,7 @@ export class UniswapV2 {
   ): Promise<string> {
     // uniswap adds extra digits on even if the token is say 8 digits long
     const amountInMax = tokenAmountInMax.shiftedBy(this._fromToken.decimals).decimalPlaces(0)
-    const contract = new ethers.Contract(VERSE_ROUTER_ADDRESS, uniswapRouterV2Abi)
+    const contract = new ethers.Contract(ROUTER(this._chainId), uniswapRouterV2Abi)
     const tx = await contract.populateTransaction.swapTokensForExactETH(
       hexlify(parseEther(ethAmountOut)),
       hexlify(amountInMax),
@@ -232,7 +250,7 @@ export class UniswapV2 {
   ): Promise<string> {
     // uniswap adds extra digits on even if the token is say 8 digits long
     const convertedMinTokens = tokenAmount.shiftedBy(this._toToken.decimals).decimalPlaces(0)
-    const contract = new ethers.Contract(VERSE_ROUTER_ADDRESS, uniswapRouterV2Abi)
+    const contract = new ethers.Contract(ROUTER(this._chainId), uniswapRouterV2Abi)
     const tx = await contract.populateTransaction.swapExactETHForTokens(
       hexlify(convertedMinTokens),
       path,
@@ -254,7 +272,7 @@ export class UniswapV2 {
     deadline: string
   ): Promise<string> {
     const amountOut = tokenAmountOut.shiftedBy(this._toToken.decimals).decimalPlaces(0)
-    const contract = new ethers.Contract(VERSE_ROUTER_ADDRESS, uniswapRouterV2Abi)
+    const contract = new ethers.Contract(ROUTER(this._chainId), uniswapRouterV2Abi)
     const tx = await contract.populateTransaction.swapETHForExactTokens(
       hexlify(amountOut),
       path,
@@ -281,7 +299,7 @@ export class UniswapV2 {
     const amountIn = tokenAmount.shiftedBy(this._fromToken.decimals).decimalPlaces(0)
     const amountMin = tokenAmountMin.shiftedBy(this._toToken.decimals).decimalPlaces(0)
     // console.log(amountIn, amountMin, 'MMMMMM')
-    const contract = new ethers.Contract(VERSE_ROUTER_ADDRESS, uniswapRouterV2Abi)
+    const contract = new ethers.Contract(ROUTER(this._chainId), uniswapRouterV2Abi)
     const tx = await contract.populateTransaction.swapExactTokensForTokens(
       hexlify(amountIn),
       hexlify(amountMin),
@@ -308,7 +326,7 @@ export class UniswapV2 {
     // uniswap adds extra digits on even if the token is say 8 digits long
     const amountInMax = tokenAmountInMax.shiftedBy(this._fromToken.decimals).decimalPlaces(0)
     const amountOut = tokenAmountOut.shiftedBy(this._toToken.decimals).decimalPlaces(0)
-    const contract = new ethers.Contract(VERSE_ROUTER_ADDRESS, uniswapRouterV2Abi)
+    const contract = new ethers.Contract(ROUTER(this._chainId), uniswapRouterV2Abi)
     const tx = await contract.populateTransaction.swapTokensForExactTokens(
       hexlify(amountOut),
       hexlify(amountInMax),
@@ -327,7 +345,7 @@ export class UniswapV2 {
 
   async _getAmounts(amount: BigNumber, direction: TradeDirection): Promise<ethers.BigNumber[]> {
     const contract = new ethers.Contract(
-      VERSE_ROUTER_ADDRESS,
+      ROUTER(this._chainId),
       uniswapRouterV2Abi,
       this._provider
     ) as unknown as UniswapRouterV2Contract
@@ -340,7 +358,7 @@ export class UniswapV2 {
     } catch (e) {
       // adding WRTH to path
       if (this._tradePath === TradePath.erc20ToErc20) {
-        this._routePath = [this._fromToken.address, WETH_ADDRESS, this._toToken.address]
+        this._routePath = [this._fromToken.address, WETH(this._chainId).address, this._toToken.address]
         return direction === 'EXACT_INPUT'
           ? await contract.getAmountsOut(amountToTrade, this._routePath)
           : await contract.getAmountsIn(amountToTrade, this._routePath)
@@ -379,7 +397,7 @@ export class UniswapV2 {
       tradeExpires,
       routePath: this._routePath,
       transaction: {
-        to: VERSE_ROUTER_ADDRESS,
+        to: ROUTER(this._chainId),
         from: this._userWallet,
         data,
         value: toEthersBigNumber(
@@ -430,7 +448,7 @@ export class UniswapV2 {
       tradeExpires,
       routePath: this._routePath,
       transaction: {
-        to: VERSE_ROUTER_ADDRESS,
+        to: ROUTER(this._chainId),
         from: this._userWallet,
         data,
         value: Constants.EMPTY_HEX_STRING,
@@ -479,7 +497,7 @@ export class UniswapV2 {
       tradeExpires,
       routePath: this._routePath,
       transaction: {
-        to: VERSE_ROUTER_ADDRESS,
+        to: ROUTER(this._chainId),
         from: this._userWallet,
         data,
         value: Constants.EMPTY_HEX_STRING,

@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
-import { TradePath, UniswapV2, VERSE_ROUTER_ADDRESS } from '~/lib/uniswap-v2/uniswapV2'
+import { TradePath, UniswapV2, ROUTER } from '~/lib/uniswap-v2/uniswapV2'
 import erc20Abi from '~/constracts/abi/erc20Abi.json'
 import { Erc20Contract } from '~/types/abi/erc20-contract'
 
-describe('Uniswap V2 Test', () => {
+describe('Verse uniswap-v2 MainNet Test', () => {
   const usdcToken = {
     chainId: 1,
     address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -77,10 +77,7 @@ describe('Uniswap V2 Test', () => {
     txData.transaction.gasPrice = await provider.getGasPrice()
     txData.transaction.gasLimit = 250000
     const contract = new ethers.Contract(wethToken.address, erc20Abi, signer) as unknown as Erc20Contract
-    await contract.approve(
-      VERSE_ROUTER_ADDRESS,
-      '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-    )
+    await contract.approve(ROUTER(1), '115792089237316195423570985008687907853269984665640564039457584007913129639935')
     const tx = await signer.sendTransaction(txData.transaction)
     const resp = await tx.wait()
     console.log(resp)
@@ -96,10 +93,7 @@ describe('Uniswap V2 Test', () => {
     txData.transaction.gasPrice = await provider.getGasPrice()
     txData.transaction.gasLimit = 250000
     const contract = new ethers.Contract(daiToken.address, erc20Abi, signer) as unknown as Erc20Contract
-    await contract.approve(
-      VERSE_ROUTER_ADDRESS,
-      '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-    )
+    await contract.approve(ROUTER(1), '115792089237316195423570985008687907853269984665640564039457584007913129639935')
     const tx = await signer.sendTransaction(txData.transaction)
     const resp = await tx.wait()
     console.log(resp)
@@ -114,10 +108,7 @@ describe('Uniswap V2 Test', () => {
     txData.transaction.gasLimit = 250000
     console.log(txData)
     const contract = new ethers.Contract(usdcToken.address, erc20Abi, signer) as unknown as Erc20Contract
-    await contract.approve(
-      VERSE_ROUTER_ADDRESS,
-      '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-    )
+    await contract.approve(ROUTER(1), '115792089237316195423570985008687907853269984665640564039457584007913129639935')
     const tx = await signer.sendTransaction(txData.transaction)
     const resp = await tx.wait()
     console.log(resp)
@@ -132,10 +123,7 @@ describe('Uniswap V2 Test', () => {
     txData.transaction.gasLimit = 250000
     console.log(txData)
     const contract = new ethers.Contract(usdcToken.address, erc20Abi, signer) as unknown as Erc20Contract
-    await contract.approve(
-      VERSE_ROUTER_ADDRESS,
-      '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-    )
+    await contract.approve(ROUTER(1), '115792089237316195423570985008687907853269984665640564039457584007913129639935')
     const tx = await signer.sendTransaction(txData.transaction)
     const resp = await tx.wait()
     console.log(resp)
