@@ -79,12 +79,13 @@ type BalanceItem {
   contractTickerSymbol: String!
   disableQuoteRate: Boolean!
   lastTransferredAt: String!
+  nativeToken: Boolean!
   nftData: Float!
   quote: Float!
   quote24h: Float!
   quoteRate: Float!
   quoteRate24h: Float!
-  supportsErc: [String!]
+  supportsErc: [String!]!
   type: String!
 }
 
@@ -208,7 +209,7 @@ type Query {
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
   chains: [Chain!]!
   dailyChart(coinGeckoID: String! = ""): [DailyChart!]!
-  fiatPrices(addresses: [String!]!): Map!
+  fiatPrices(addresses: [String!]!, platform: String! = "ethereum"): Map!
   gas: [GasStats!]!
   globalStats: GlobalStats!
   recentPrices: Map!

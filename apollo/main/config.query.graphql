@@ -53,6 +53,6 @@ query RecentPricesGQL{
   recentPrices
 }
 
-query FiatPricesGQL($addresses:[String!]!){
-  fiatPrices(addresses: $addresses )
+query FiatPricesGQL($addresses:[String!]!, $platform:String!){
+  fiatPrices(addresses: $addresses, platform: $platform )
 }

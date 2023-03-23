@@ -68,6 +68,7 @@ export default function (
     FiatPricesGQL,
     () => ({
       addresses: [fromTokenAddressOverride.value, toTokenAddressOverride.value],
+      platform: 'ethereum',
     }),
     { fetchPolicy: 'no-cache', pollInterval: 10000 }
   )

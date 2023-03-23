@@ -94,12 +94,13 @@ export type BalanceItem = {
   contractTickerSymbol: Scalars['String'];
   disableQuoteRate: Scalars['Boolean'];
   lastTransferredAt: Scalars['String'];
+  nativeToken: Scalars['Boolean'];
   nftData: Scalars['Float'];
   quote: Scalars['Float'];
   quote24h: Scalars['Float'];
   quoteRate: Scalars['Float'];
   quoteRate24h: Scalars['Float'];
-  supportsErc?: Maybe<Array<Scalars['String']>>;
+  supportsErc: Array<Scalars['String']>;
   type: Scalars['String'];
 };
 
@@ -272,6 +273,7 @@ export type QueryDailyChartArgs = {
 
 export type QueryFiatPricesArgs = {
   addresses: Array<Scalars['String']>;
+  platform?: Scalars['String'];
 };
 
 
@@ -511,6 +513,7 @@ export type RecentPricesGqlQuery = { __typename?: 'Query', recentPrices: any };
 
 export type FiatPricesGqlQueryVariables = Exact<{
   addresses: Array<Scalars['String']> | Scalars['String'];
+  platform: Scalars['String'];
 }>;
 
 
@@ -529,7 +532,7 @@ export type BalancesGqlQueryVariables = Exact<{
 }>;
 
 
-export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc?: Array<string> | null, lastTransferredAt: string, type: string, balance: number, balance24h: number, quoteRate: number, quoteRate24h: number, quote: number, disableQuoteRate: boolean, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', address: string, decimals: number } }> }> };
+export type BalancesGqlQuery = { __typename?: 'Query', balances: Array<{ __typename?: 'Balance', address: string, updatedAt: string, nextUpdateAt: string, quoteCurrency: string, chainId: number, pagination?: { __typename?: 'Pagination', hasMore?: boolean | null } | null, items: Array<{ __typename?: 'BalanceItem', contractDecimals: number, contractName: string, contractTickerSymbol: string, contractAddress: string, supportsErc: Array<string>, lastTransferredAt: string, type: string, balance: number, balance24h: number, quoteRate: number, quoteRate24h: number, quote: number, disableQuoteRate: boolean, quote24h: number, nftData: number }>, aavePools: Array<{ __typename?: 'AavePool', symbol: string, id: string, name: string, liquidityRate: number, borrowingEnabled: boolean, stableBorrowRateEnabled: boolean, stableBorrowRate: number, variableBorrowRate: number, portfolioVal: { __typename?: 'AavePortfolio', totalDeposits: number, walletBal: number, stableBorrow: number, variableBorrow: number }, price: { __typename?: 'AavePoolPrice', id: string, priceInEth: number, priceUsd: number }, addresses: { __typename?: 'AaveAddress', address: string, decimals: number } }> }> };
 
 export type TransactionsGqlQueryVariables = Exact<{
   chainId: Scalars['Int'];

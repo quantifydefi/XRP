@@ -45,9 +45,14 @@ export default function (
     isNativeToken(toToken.value.chainId, toToken.value.symbol) ? WETH(NETWORK_ID.value).address : toToken.value.address
   )
 
+  const platform = computed(() => {
+    const configs = { 1: 'ethereum', 10000: 'smartbch' }
+    return NETWORK_ID.value in configs ? configs[NETWORK_ID.value] : configs[1]
+  })
+
   const { result } = useQuery(
     FiatPricesGQL,
-    () => ({ addresses: [fromTokenAddressOverride.value, toTokenAddressOverride.value] }),
+    () => ({ addresses: [fromTokenAddressOverride.value, toTokenAddressOverride.value], platform: platform.value }),
     { fetchPolicy: 'no-cache', pollInterval: 10000 }
   )
 
