@@ -1,12 +1,19 @@
 <template>
-  <v-card outlined tile :height="height" :width="width">
+  <v-card outlined tile :height="height" :width="width" :disabled="!isNetworkSupported">
     <div
       v-if="!receipt"
       :class="height === '100%' ? '' : 'overflow-y-auto'"
       :style="height === '100%' ? '' : { height: `${height}px` }"
     >
       <v-card-title class="subtitle-1 font-weight-medium py-3">
-        <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`verse`)"></v-img></v-avatar>Verse <v-spacer />
+        <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`verse`)"></v-img></v-avatar>
+        <nuxt-link
+          to="/token/VERSE?contract=0x249ca82617ec3dfb2589c4c17ab7ec9765350a18&decimals=18"
+          class="text-decoration-none white--text"
+        >
+          Verse
+        </nuxt-link>
+        <v-spacer />
       </v-card-title>
       <v-divider class="mb-4" />
       <v-row no-gutters justify="center" class="pa-2">
@@ -196,6 +203,7 @@ export default defineComponent<Props>({
       txLoading,
       receipt,
       isTxMined,
+      isNetworkSupported,
       swap,
       resetTransaction,
     } = useVerse(fromToken, toToken, amount, tradeDirection)
@@ -249,6 +257,7 @@ export default defineComponent<Props>({
       txLoading,
       receipt,
       isTxMined,
+      isNetworkSupported,
 
       onToggleTokenMenu,
       onTokenSelect,

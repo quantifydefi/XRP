@@ -1,4 +1,4 @@
-import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { computed, inject, onBeforeUnmount, onMounted, reactive, ref, Ref, watch } from '@nuxtjs/composition-api'
 import { Token, Ether } from '@uniswap/sdk-core'
 import { AlphaRouter, parseAmount } from '@uniswap/smart-order-router'
 import { BigNumber } from 'ethers'
@@ -55,7 +55,7 @@ export default function (
   // COMPUTED
   const { account, provider, signer, chainId, walletReady, importTokenToMetamask } = inject(WEB3_PLUGIN_KEY) as Web3
   const { balanceMulticall, allowedSpending, approveMaxSpending } = useERC20()
-  const { isNativeToken } = useHelpers()
+  const { isNativeToken, debounceAsync } = useHelpers()
 
   const fromTokenAddressOverride = computed(() =>
     isNativeToken(fromToken.value.chainId, fromToken.value.symbol) ? WETH[1].address : fromToken.value.address
@@ -194,15 +194,12 @@ export default function (
   }
 
   const runBlockListener = () => {
-    provider.value.on('block', (block: number) => {
+    const f = debounceAsync(async () => {
+      await getUniswapTrade()
+    }, 1000)
+    provider.value.on('block', async (block: number) => {
       console.log('New Block Update', block)
-      let debounceTimeout: any = null
-      clearTimeout(debounceTimeout)
-      debounceTimeout = setTimeout(async () => {
-        console.log('UPDATE QUOTE', block)
-        await getUniswapTrade()
-        debounceTimeout = null
-      }, 5000)
+      await f()
     })
   }
 
@@ -210,23 +207,21 @@ export default function (
     return tradeType === TradeType.EXACT_INPUT ? tokenOut : tokenIn
   }
 
-  const onInputChanged = async () => {
+  const onInputChanged = debounceAsync(async () => {
     if (walletReady.value) {
-      try {
-        loading.value = true
-        enableDetails.value = true
-        errorMessage.value = null
-        stopAllListeners()
-        await getUniswapTrade()
+      loading.value = true
+      enableDetails.value = true
+      errorMessage.value = null
+      stopAllListeners()
+      const { isCompleted } = await getUniswapTrade()
+      if (isCompleted) {
         runBlockListener()
-      } catch (e: any) {
-        console.log(e)
+      } else {
         errorMessage.value = 'Something Went Wrong'
-      } finally {
-        loading.value = false
       }
+      loading.value = false
     }
-  }
+  }, 1000)
 
   const sendTransaction = async (): Promise<{ isCompleted: boolean; receipt: any }> => {
     try {
@@ -255,7 +250,7 @@ export default function (
     txResult.loading = false
   }
 
-  const getUniswapTrade = async (): Promise<void> => {
+  const getUniswapTrade = async (): Promise<{ isCompleted: boolean; receipt: any }> => {
     const isTokenInNative = isNativeToken(fromToken.value.chainId, fromToken.value.symbol)
     const isTokenOutNative = isNativeToken(toToken.value.chainId, toToken.value.symbol)
 
@@ -285,39 +280,45 @@ export default function (
         : parseAmount(`${amount.value}`, tokenOut)
 
     const router = new AlphaRouter({ chainId: NETWORK_ID.value, provider: provider.value })
-    const route = await router.route(amountValue, getQuoteToken(tokenIn, tokenOut, tradeType.value), tradeType.value, {
-      inputTokenPermit: undefined,
-      slippageTolerance: SLIPPAGE,
-      recipient: account.value,
-      deadline: Math.floor(Date.now() / 1000 + 1800),
-    })
+    let route
+    try {
+      route = await router.route(amountValue, getQuoteToken(tokenIn, tokenOut, tradeType.value), tradeType.value, {
+        inputTokenPermit: undefined,
+        slippageTolerance: SLIPPAGE,
+        recipient: account.value,
+        deadline: Math.floor(Date.now() / 1000 + 1800),
+      })
 
-    console.log(`Quote Exact In: ${Number(route?.quote.toFixed(6))}`)
-    console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`)
-    console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`)
+      console.log(`Quote Exact In: ${Number(route?.quote.toFixed(6))}`)
+      console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`)
+      console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`)
 
-    quoteResult.expectedConvertQuote = Number(route?.quote.toFixed(6))
-    quoteResult.minAmountConvertQuote = quoteResult.expectedConvertQuote - quoteResult.expectedConvertQuote * 0.05
-    quoteResult.quote = computed(() => {
-      const quote = quoteResult.expectedConvertQuote / amount.value ?? 0
-      return quote === 0
-        ? null
-        : tradeDirection.value === 'EXACT_INPUT'
-        ? `1 ${fromToken.value.symbol} = ${quote} ${toToken.value.symbol}`
-        : `1 ${toToken.value.symbol} = ${quote} ${fromToken.value.symbol}`
-    }).value
+      quoteResult.expectedConvertQuote = Number(route?.quote.toFixed(6))
+      quoteResult.minAmountConvertQuote = quoteResult.expectedConvertQuote - quoteResult.expectedConvertQuote * 0.05
+      quoteResult.quote = computed(() => {
+        const quote = quoteResult.expectedConvertQuote / amount.value ?? 0
+        return quote === 0
+          ? null
+          : tradeDirection.value === 'EXACT_INPUT'
+          ? `1 ${fromToken.value.symbol} = ${quote} ${toToken.value.symbol}`
+          : `1 ${toToken.value.symbol} = ${quote} ${fromToken.value.symbol}`
+      }).value
 
-    quoteResult.gasAdjustedQuote = Number(route?.quoteGasAdjusted.toFixed(6))
-    quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
-    quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
+      quoteResult.gasAdjustedQuote = Number(route?.quoteGasAdjusted.toFixed(6))
+      quoteResult.gasFeeUSD = Number(route?.estimatedGasUsedUSD.toFixed(6))
+      quoteResult.routePath = <string>route?.trade.routes.map((elem) => elem.path.map((p) => p.symbol).join(' > '))[0]
 
-    const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`${GAS_LIMIT_MULTIPLIER}`))
-    quoteResult.txCallData = {
-      data: route?.methodParameters?.calldata,
-      to: UNISWAP_V3_ROUTER2_ADDRESS,
-      value: BigNumber.from(route?.methodParameters?.value),
-      from: account.value,
-      gasLimit,
+      const gasLimit = BigNumber.from(route?.estimatedGasUsed).mul(BigNumber.from(`${GAS_LIMIT_MULTIPLIER}`))
+      quoteResult.txCallData = {
+        data: route?.methodParameters?.calldata,
+        to: UNISWAP_V3_ROUTER2_ADDRESS,
+        value: BigNumber.from(route?.methodParameters?.value),
+        from: account.value,
+        gasLimit,
+      }
+      return { isCompleted: true, receipt: quote }
+    } catch (e) {
+      return { isCompleted: false, receipt: e }
     }
   }
 
@@ -348,7 +349,11 @@ export default function (
   })
 
   onMounted(async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])))
-  onUnmounted(() => stopAllListeners())
+
+  onBeforeUnmount(() => {
+    stopAllListeners()
+    clearTrade()
+  })
 
   return {
     fromTokenBalance,

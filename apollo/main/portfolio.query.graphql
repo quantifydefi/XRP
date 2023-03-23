@@ -21,6 +21,7 @@ query BalancesGQL($chainIds: [Int!]!, $address: String! ) {
       quoteRate
       quoteRate24h
       quote
+      disableQuoteRate
       quote24h
       nftData
     }

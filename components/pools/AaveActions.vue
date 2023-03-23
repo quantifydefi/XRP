@@ -1,8 +1,8 @@
 <template>
   <v-row no-gutters>
     <v-col v-if="pool">
-      <v-card tile outlined :height="type === 'dialog' ? '100%' : '468'">
-        <div class="overflow-y-auto" :style="type === 'dialog' ? { height: '100%' } : { height: '468px' }">
+      <v-card tile outlined :height="type === 'dialog' ? '100%' : '500'">
+        <div class="overflow-y-auto" :style="type === 'dialog' ? { height: '100%' } : { height: '500px' }">
           <v-row v-if="type === 'card'" no-gutters>
             <v-col>
               <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">

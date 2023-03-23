@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { computed, inject, onMounted, reactive, ref, Ref, watch } from '@nuxtjs/composition-api'
-import { Token } from '@uniswap/sdk-core'
 import { TradeType } from '@uniswap/sdk'
 import { useQuery } from '@vue/apollo-composable/dist'
 import { BigNumber as ethersBigNumber } from 'ethers'
@@ -161,10 +160,6 @@ export default function (
 
     return { status: true, message: 'Swap' }
   })
-
-  const getQuoteToken = (tokenIn: Token, tokenOut: Token, tradeType: TradeType): Token => {
-    return tradeType === TradeType.EXACT_INPUT ? tokenOut : tokenIn
-  }
 
   function resetTransaction() {
     amount.value = 0

@@ -1,5 +1,5 @@
 <template>
-  <div ref="chartDiv" :style="{ width: '100%', height: `${chartHeight}px` }"></div>
+  <div ref="chartDiv" class="mt-4" :style="{ width: '100%', height: `${chartHeight}px` }"></div>
 </template>
 
 <script lang="ts">

@@ -101,7 +101,7 @@ export default function () {
       pageNumber: pagination.page,
       pageSize: pagination.perPage,
     }),
-    { fetchPolicy: 'no-cache', pollInterval: 60000 }
+    { fetchPolicy: 'no-cache' }
   )
 
   // COMPUTED

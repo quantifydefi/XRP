@@ -14,8 +14,8 @@
       @toggle-reserve-details="reserveDetailDialog = !reserveDetailDialog"
     />
 
-    <v-col v-else>
-      <v-card disabled tile outlined height="456">
+    <v-col v-else class="pa-0">
+      <v-card disabled tile outlined height="500">
         <v-card-title class="font-weight-bold subtitle-1 py-3 text-capitalize">
           <v-avatar size="26" class="mr-2"><v-img :src="$imageUrlBySymbol(`aave`)"></v-img></v-avatar>AAVE V2
         </v-card-title>

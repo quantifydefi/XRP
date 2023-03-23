@@ -14,7 +14,7 @@ export default function () {
   const { result, error, onResult } = useQuery(
     BalancesGQL,
     () => ({ chainIds: state.configs.balancesChains, address: account.value }),
-    { fetchPolicy: 'no-cache', pollInterval: 60000 }
+    { fetchPolicy: 'no-cache' }
   )
 
   // COMPUtED

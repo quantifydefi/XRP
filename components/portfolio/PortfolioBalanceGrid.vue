@@ -45,23 +45,29 @@
       <template #[`item.balance`]="{ item }">
         <span
           :class="textClass"
-          v-text="$f(item.balance / Math.pow(10, item.contractDecimals), { minDigits: 2, maxDigits: 6 })"
+          v-text="$f(item.balance / Math.pow(10, item.contractDecimals), { minDigits: 2, maxDigits: 4 })"
         />
       </template>
 
       <template #[`item.quoteRate`]="{ item }">
-        <span :class="textClass" v-text="$f(item.quoteRate, { pre: '$ ', minDigits: 2 })" />
+        <span
+          :class="textClass"
+          v-text="item.disableQuoteRate ? '-' : $f(item.quoteRate, { pre: '$ ', minDigits: 2, maxDigits: 6 })"
+        />
       </template>
 
       <template #[`item.quote`]="{ item }">
-        <span :class="textClass" v-text="$f(item.quote, { pre: '$ ', minDigits: 2 })" />
+        <span
+          :class="textClass"
+          v-text="item.disableQuoteRate ? '-' : $f(item.quote, { pre: '$ ', minDigits: 2, maxDigits: 4 })"
+        />
       </template>
     </v-data-table>
     <v-divider />
   </v-card>
 </template>
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, Ref, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, Ref, useStore } from '@nuxtjs/composition-api'
 import { BalanceItem, Balance, Chain } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
 
@@ -118,7 +124,7 @@ export default defineComponent<Props>({
 
     // COMPUTED
     const totalBalance = computed(() => props.data.items.reduce((n, { quote }) => n + quote, 0))
-    const balanceItems: ComputedRef<BalanceItem[]> = computed(() => props.data.items.filter((elem) => elem.quote > 0))
+    const balanceItems = computed<BalanceItem[]>(() => props.data.items.filter((elem) => elem.quote > 0))
     const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
     const chainData: Ref<Chain> = computed(() => getters['configs/chainInfo'](props.data.chainId))
 

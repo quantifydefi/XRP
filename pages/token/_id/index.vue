@@ -54,7 +54,9 @@
             </v-col>
 
             <v-col cols="12" md="6">
-              <evm-swap
+              <evm-verse-swap
+                v-if="isVerse"
+                height="500"
                 :in-token="{
                   symbol: tokenData.qcKey,
                   name: tokenData.symbolName,
@@ -62,7 +64,18 @@
                   address: tokenData.contractAddress,
                   decimals: tokenData.decimals,
                 }"
-                height="468"
+                width="100%"
+              />
+              <evm-swap
+                v-else
+                :in-token="{
+                  symbol: tokenData.qcKey,
+                  name: tokenData.symbolName,
+                  chainId: tokenData.chainId,
+                  address: tokenData.contractAddress,
+                  decimals: tokenData.decimals,
+                }"
+                height="500"
                 width="100%"
               />
             </v-col>
@@ -143,7 +156,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api'
 import useToken from '~/composables/useToken'
 import CoinProfile from '~/components/token-details/CoinProfile.vue'
 import CoinMetrics from '~/components/token-details/CoinMetrics.vue'
@@ -154,9 +167,11 @@ import TokenTransactionsGrid from '~/components/transactions/TokenTransactionsGr
 import useTokenTransactions from '~/composables/useTokenTransactions'
 import EvmSwap from '~/components/trading/EvmSwap.vue'
 import TokenAaveAssets from '~/components/token-details/TokenAaveAssets.vue'
+import EvmVerseSwap from '~/components/trading/EvmVerseSwap.vue'
 
 export default defineComponent({
   components: {
+    EvmVerseSwap,
     TokenAaveAssets,
     EvmSwap,
     CoinMetrics,
@@ -168,6 +183,7 @@ export default defineComponent({
   },
   setup() {
     const { params, query } = useRoute().value
+    const isVerse = computed(() => params.id === 'VERSE')
 
     // Token Data
     const { tokenData, loading, contractAddress } = useToken()
@@ -178,6 +194,7 @@ export default defineComponent({
     useMetaTags('tokenPage', `/token/${params.id}`, query.name as string, params.id)
 
     return {
+      isVerse,
       tokenData,
       loading,
       contractAddress,

@@ -16,7 +16,7 @@
         <v-col>
           <v-row>
             <v-col lg="4" cols="12">
-              <v-card class="py-2 px-4" height="240" tile outlined>
+              <v-card class="py-2 px-4" height="270" tile outlined>
                 <v-dialog v-model="loading" width="450">
                   <v-card tile outlined class="pa-6">
                     <v-row no-gutters>
@@ -31,7 +31,7 @@
                     </v-row>
                   </v-card>
                 </v-dialog>
-                <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="230" />
+                <v-skeleton-loader v-if="loading" type="heading,table-tbody,table-tbody" height="240" />
                 <div v-else>
                   <h4 :class="['text-subtitle-1 text-truncate pink--text font-weight-medium']">Wallet Balance</h4>
                   <div

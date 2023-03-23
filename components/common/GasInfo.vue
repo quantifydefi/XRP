@@ -48,9 +48,15 @@
                   </small>
                 </div>
               </td>
-              <td class="green--text">{{ $f(elem.gas.safeGasPrice, { minDigits: 0 }) }} gwei</td>
-              <td class="primary--text text--lighten-1">{{ $f(elem.gas.proposeGasPrice, { minDigits: 0 }) }} gwei</td>
-              <td class="red--text">{{ $f(elem.gas.fastGasPrice, { minDigits: 0 }) }} gwei</td>
+              <td class="green--text">
+                {{ elem.gas.safeGasPrice === 0 ? '--' : `${$f(elem.gas.safeGasPrice, { minDigits: 0 })} gwei` }}
+              </td>
+              <td class="primary--text text--lighten-1">
+                {{ elem.gas.proposeGasPrice === 0 ? '--' : `${$f(elem.gas.proposeGasPrice, { minDigits: 0 })} gwei` }}
+              </td>
+              <td class="red--text">
+                {{ elem.gas.fastGasPrice === 0 ? '--' : `${$f(elem.gas.fastGasPrice, { minDigits: 0 })} gwei` }}
+              </td>
             </tr>
           </tbody>
         </template>
@@ -67,7 +73,7 @@ import { GasStats } from '~/types/apollo/main/types'
 export default defineComponent({
   setup() {
     // COMPOSABLE
-    const { result } = useQuery(GasGQL, null, { fetchPolicy: 'no-cache', pollInterval: 10000 })
+    const { result } = useQuery(GasGQL, null, { fetchPolicy: 'no-cache', pollInterval: 30000 })
     const gasData = computed(() => result.value?.gas ?? []) as Ref<GasStats[]>
     const ethMainNetInfo = computed(() => gasData.value.find((elem) => elem.symbol === 'ETH'))
 
