@@ -5,13 +5,10 @@ import { SupportedChainsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
 
 const defaultChain: Chain = {
-  chainId: 1,
-  name: 'Ethereum',
-  geckoId: 'ethereum',
+  id: 'ethereum',
+  chainIdentifier: 1,
+  name: 'Ethereum Mainnet',
   symbol: 'ETH',
-  label: 'Ethereum Mainnet',
-  logoUrl: 'https://www.covalenthq.com/static/images/icons/display-icons/ethereum-eth-logo.png',
-  isTestNet: false,
   rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
   blockExplorerUrl: 'https://etherscan.io/',
   __typename: 'Chain',
@@ -46,5 +43,5 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
 }
 export const getters: GetterTree<ConfigState, ConfigState> = {
   chainInfo: (state: ConfigState) => (chainId: number) =>
-    state.chains.find((elem: Chain) => elem.chainId === chainId) ?? defaultChain,
+    state.chains.find((elem: Chain) => elem.chainIdentifier === chainId) ?? defaultChain,
 } as any

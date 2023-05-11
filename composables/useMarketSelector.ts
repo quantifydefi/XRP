@@ -22,7 +22,9 @@ export default function useMarketSelector() {
 
   // COMPUTED
   const chains = computed(() => state.configs.chains)
-  const currentChain = computed(() => chains.value.find((elem) => elem.chainId === chainId.value) ?? defaultChain)
+  const currentChain = computed(
+    () => chains.value.find((elem) => elem.chainIdentifier === chainId.value) ?? defaultChain
+  )
 
   function onSelect(chain: Chain) {
     changeChain(chain)

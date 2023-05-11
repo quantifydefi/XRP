@@ -28,6 +28,10 @@
           "value": "$BASE_GRAPHQL_SERVER_URL"
         },
         {
+          "name": "BASE_GRAPHQL_WEBSOCKET_URL",
+          "value": "$BASE_GRAPHQL_WEBSOCKET_URL"
+        },
+        {
           "name": "BASE_URL",
           "value": "$BASE_URL"
         },

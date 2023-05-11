@@ -101,11 +101,8 @@ type BlockTransactionContractTransfer {
 
 type Chain {
   blockExplorerUrl: String!
-  chainId: Int!
-  geckoId: String!
-  isTestNet: Boolean!
-  label: String!
-  logoUrl: String!
+  chainIdentifier: Int!
+  id: String!
   name: String!
   rpcUrl: String!
   symbol: String!
@@ -195,12 +192,45 @@ type Pagination {
   totalCount: Int
 }
 
+type Pool {
+  address: String!
+  change1h: Float!
+  change24h: Float!
+  change5Min: Float!
+  dex: String!
+  id: Int!
+  network: String!
+  quoteExactIn: Float!
+  reserveRatio: Float!
+  token0Address: String!
+  token0Decimals: Int!
+  token0Name: String!
+  token0PriceUSD: Float!
+  token0Symbol: String!
+  token1Address: String!
+  token1Decimals: Int!
+  token1Name: String!
+  token1PriceUSD: Float!
+  token1Symbol: String!
+}
+
 type Price {
   dataSource: String!
   priceEth: Float!
   priceUsd: Float!
   qcKey: String!
   symbolName: String!
+}
+
+type PriceStream {
+  dex: String!
+  id: Int!
+  network: String!
+  pairAddress: String!
+  quoteExactIn: Float!
+  reserveRatio: Float!
+  token0PriceUSD: Float!
+  token1PriceUSD: Float!
 }
 
 type Query {
@@ -212,6 +242,7 @@ type Query {
   fiatPrices(addresses: [String!]!, platform: String! = "ethereum"): Map!
   gas: [GasStats!]!
   globalStats: GlobalStats!
+  poolScreener(dex: String!, network: String!, pageNumber: Int! = 0, sort: String!, sortBy: String!): [Pool!]!
   recentPrices: Map!
   token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
   transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
@@ -219,9 +250,29 @@ type Query {
   uniswapTokens(chainId: Int! = 1, pageNumber: Int! = 0, pageSize: Int! = 100, searchString: String! = "", source: [UniswapTokenSource!]!, userWallet: String! = ""): UniswapTokens!
 }
 
+type ScreenerItem {
+  PriceUSD: Float!
+  address: String!
+  change1h: Float!
+  change24h: Float!
+  change5Min: Float!
+  decimals: Int!
+  name: String!
+  platform: String!
+  symbol: String!
+  token0Address: String!
+  token0Decimals: Int!
+  token0Name: String!
+  token0Symbol: String!
+  token1Address: String!
+  token1Decimals: Int!
+  token1Name: String!
+  token1Symbol: String!
+}
+
 type Subscription {
   currentTime: Time!
-  testSubs: Float
+  priceStream(address: [String!], dex: String!, network: String!): [PriceStream!]!
 }
 
 type Time {

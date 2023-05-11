@@ -118,11 +118,8 @@ export type BlockTransactionContractTransfer = {
 export type Chain = {
   __typename?: 'Chain';
   blockExplorerUrl: Scalars['String'];
-  chainId: Scalars['Int'];
-  geckoId: Scalars['String'];
-  isTestNet: Scalars['Boolean'];
-  label: Scalars['String'];
-  logoUrl: Scalars['String'];
+  chainIdentifier: Scalars['Int'];
+  id: Scalars['String'];
   name: Scalars['String'];
   rpcUrl: Scalars['String'];
   symbol: Scalars['String'];
@@ -223,6 +220,29 @@ export type Pagination = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type Pool = {
+  __typename?: 'Pool';
+  address: Scalars['String'];
+  change1h: Scalars['Float'];
+  change5Min: Scalars['Float'];
+  change24h: Scalars['Float'];
+  dex: Scalars['String'];
+  id: Scalars['Int'];
+  network: Scalars['String'];
+  quoteExactIn: Scalars['Float'];
+  reserveRatio: Scalars['Float'];
+  token0Address: Scalars['String'];
+  token0Decimals: Scalars['Int'];
+  token0Name: Scalars['String'];
+  token0PriceUSD: Scalars['Float'];
+  token0Symbol: Scalars['String'];
+  token1Address: Scalars['String'];
+  token1Decimals: Scalars['Int'];
+  token1Name: Scalars['String'];
+  token1PriceUSD: Scalars['Float'];
+  token1Symbol: Scalars['String'];
+};
+
 export type Price = {
   __typename?: 'Price';
   dataSource: Scalars['String'];
@@ -230,6 +250,18 @@ export type Price = {
   priceUsd: Scalars['Float'];
   qcKey: Scalars['String'];
   symbolName: Scalars['String'];
+};
+
+export type PriceStream = {
+  __typename?: 'PriceStream';
+  dex: Scalars['String'];
+  id: Scalars['Int'];
+  network: Scalars['String'];
+  pairAddress: Scalars['String'];
+  quoteExactIn: Scalars['Float'];
+  reserveRatio: Scalars['Float'];
+  token0PriceUSD: Scalars['Float'];
+  token1PriceUSD: Scalars['Float'];
 };
 
 export type Query = {
@@ -242,6 +274,7 @@ export type Query = {
   fiatPrices: Scalars['Map'];
   gas: Array<GasStats>;
   globalStats: GlobalStats;
+  poolScreener: Array<Pool>;
   recentPrices: Scalars['Map'];
   token: Token;
   transactions: Transaction;
@@ -274,6 +307,15 @@ export type QueryDailyChartArgs = {
 export type QueryFiatPricesArgs = {
   addresses: Array<Scalars['String']>;
   platform?: Scalars['String'];
+};
+
+
+export type QueryPoolScreenerArgs = {
+  dex: Scalars['String'];
+  network: Scalars['String'];
+  pageNumber?: Scalars['Int'];
+  sort: Scalars['String'];
+  sortBy: Scalars['String'];
 };
 
 
@@ -313,10 +355,38 @@ export type QueryUniswapTokensArgs = {
   userWallet?: Scalars['String'];
 };
 
+export type ScreenerItem = {
+  __typename?: 'ScreenerItem';
+  PriceUSD: Scalars['Float'];
+  address: Scalars['String'];
+  change1h: Scalars['Float'];
+  change5Min: Scalars['Float'];
+  change24h: Scalars['Float'];
+  decimals: Scalars['Int'];
+  name: Scalars['String'];
+  platform: Scalars['String'];
+  symbol: Scalars['String'];
+  token0Address: Scalars['String'];
+  token0Decimals: Scalars['Int'];
+  token0Name: Scalars['String'];
+  token0Symbol: Scalars['String'];
+  token1Address: Scalars['String'];
+  token1Decimals: Scalars['Int'];
+  token1Name: Scalars['String'];
+  token1Symbol: Scalars['String'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   currentTime: Time;
-  testSubs?: Maybe<Scalars['Float']>;
+  priceStream: Array<PriceStream>;
+};
+
+
+export type SubscriptionPriceStreamArgs = {
+  address?: InputMaybe<Array<Scalars['String']>>;
+  dex: Scalars['String'];
+  network: Scalars['String'];
 };
 
 export type Time = {
@@ -482,7 +552,7 @@ export type UniswapTokens = {
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl: string }> };
+export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainIdentifier: number, name: string, symbol: string, rpcUrl: string, blockExplorerUrl: string }> };
 
 export type GasGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -574,7 +644,27 @@ export type DailyChartGqlQueryVariables = Exact<{
 
 export type DailyChartGqlQuery = { __typename?: 'Query', dailyChart: Array<{ __typename?: 'DailyChart', date: number, priceUsd: number }> };
 
+export type ScreenerGqlQueryVariables = Exact<{
+  network: Scalars['String'];
+  dex: Scalars['String'];
+  sortBy: Scalars['String'];
+  sort: Scalars['String'];
+  pageNumber: Scalars['Int'];
+}>;
+
+
+export type ScreenerGqlQuery = { __typename?: 'Query', poolScreener: Array<{ __typename?: 'Pool', network: string, dex: string, address: string, token0Symbol: string, token1Symbol: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number, change5Min: number, change1h: number, change24h: number }> };
+
 export type TimeGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type TimeGqlSubscription = { __typename?: 'Subscription', currentTime: { __typename?: 'Time', timeStamp: string, unixTime: number } };
+
+export type PriceStreamGqlSubscriptionVariables = Exact<{
+  network: Scalars['String'];
+  dex: Scalars['String'];
+  address: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type PriceStreamGqlSubscription = { __typename?: 'Subscription', priceStream: Array<{ __typename?: 'PriceStream', network: string, dex: string, pairAddress: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number }> };

@@ -118,17 +118,17 @@ export class MetamaskConnector implements ConnectorInterface {
   }
 
   async handleChanChange(chain: Chain) {
-    let chainId: string | number = chain.chainId
+    let chainId: string | number = chain.chainIdentifier
     if (chainId === 1) {
-      chainId = '0x' + chain.chainId
+      chainId = '0x' + chain.chainIdentifier
     } else if (chainId === 1337) {
       chainId = '0x539'
     } else {
-      chainId = ethers.utils.hexlify(chain.chainId)
+      chainId = ethers.utils.hexlify(chain.chainIdentifier)
     }
     const params: ChainChangeParamInterface = {
       chainId,
-      chainName: chain.label,
+      chainName: chain.name,
       nativeCurrency: {
         name: chain.name,
         symbol: chain.symbol, // 2-6 characters long

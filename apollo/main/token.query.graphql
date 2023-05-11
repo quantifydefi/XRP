@@ -66,15 +66,56 @@ query TokenQueryGQL($qcKey: String!, $walletAddress: String!, $interval: TimeInt
   }
 }
 
+
+
+
 query DailyChartGQL($coinGeckoID:String!){
   dailyChart(coinGeckoID: $coinGeckoID){
     date
     priceUsd
   }
 }
+query ScreenerGQL($network: String!, $dex:String!, $sortBy: String!, $sort:String!,  $pageNumber:Int!){
+  poolScreener(network: $network, dex: $dex, sortBy:$sortBy, sort:$sort,  pageNumber: $pageNumber){
+    network
+    dex
+    address
+
+    token0Symbol
+    token0Address
+    token0Name
+
+    token1Symbol
+    token1Name
+
+    token0PriceUSD
+    token1PriceUSD
+    quoteExactIn
+    reserveRatio
+
+    change5Min
+    change1h
+    change24h
+  }
+}
+
+
 
 subscription TimeGQL{
   currentTime {
     timeStamp, unixTime
+  }
+}
+
+
+subscription PriceStreamGQL($network:String!, $dex:String!, $address: [String!]!){
+  priceStream(network:$network,dex: $dex, address:$address){
+    network
+    dex
+    pairAddress
+    token0PriceUSD
+    token1PriceUSD
+    quoteExactIn
+    reserveRatio
   }
 }
