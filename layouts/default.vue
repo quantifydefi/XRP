@@ -90,6 +90,7 @@ export default defineComponent({
       { name: 'Verse', to: '/verse' },
       { name: 'Balances', to: '/portfolio/balances' },
       { name: 'Transactions', to: '/portfolio/transactions' },
+      { name: 'Screener', to: '/screener' },
       { name: 'About', to: '/about' },
     ])
 

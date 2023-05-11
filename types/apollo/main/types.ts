@@ -118,11 +118,8 @@ export type BlockTransactionContractTransfer = {
 export type Chain = {
   __typename?: 'Chain';
   blockExplorerUrl: Scalars['String'];
-  chainId: Scalars['Int'];
-  geckoId: Scalars['String'];
-  isTestNet: Scalars['Boolean'];
-  label: Scalars['String'];
-  logoUrl: Scalars['String'];
+  chainIdentifier: Scalars['Int'];
+  id: Scalars['String'];
   name: Scalars['String'];
   rpcUrl: Scalars['String'];
   symbol: Scalars['String'];
@@ -243,6 +240,7 @@ export type Query = {
   gas: Array<GasStats>;
   globalStats: GlobalStats;
   recentPrices: Scalars['Map'];
+  screener: Array<ScreenerItem>;
   token: Token;
   transactions: Transaction;
   transfers: Transfers;
@@ -274,6 +272,12 @@ export type QueryDailyChartArgs = {
 export type QueryFiatPricesArgs = {
   addresses: Array<Scalars['String']>;
   platform?: Scalars['String'];
+};
+
+
+export type QueryScreenerArgs = {
+  network?: Scalars['String'];
+  pageNumber?: Scalars['Int'];
 };
 
 
@@ -311,6 +315,27 @@ export type QueryUniswapTokensArgs = {
   searchString?: Scalars['String'];
   source: Array<UniswapTokenSource>;
   userWallet?: Scalars['String'];
+};
+
+export type ScreenerItem = {
+  __typename?: 'ScreenerItem';
+  PriceUSD: Scalars['Float'];
+  address: Scalars['String'];
+  change1h: Scalars['Float'];
+  change5Min: Scalars['Float'];
+  change24h: Scalars['Float'];
+  decimals: Scalars['Int'];
+  name: Scalars['String'];
+  platform: Scalars['String'];
+  symbol: Scalars['String'];
+  token0Address: Scalars['String'];
+  token0Decimals: Scalars['Int'];
+  token0Name: Scalars['String'];
+  token0Symbol: Scalars['String'];
+  token1Address: Scalars['String'];
+  token1Decimals: Scalars['Int'];
+  token1Name: Scalars['String'];
+  token1Symbol: Scalars['String'];
 };
 
 export type Subscription = {
@@ -482,7 +507,7 @@ export type UniswapTokens = {
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainId: number, name: string, geckoId: string, symbol: string, label: string, logoUrl: string, isTestNet: boolean, rpcUrl: string, blockExplorerUrl: string }> };
+export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainIdentifier: number, name: string, symbol: string, rpcUrl: string, blockExplorerUrl: string }> };
 
 export type GasGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -573,6 +598,14 @@ export type DailyChartGqlQueryVariables = Exact<{
 
 
 export type DailyChartGqlQuery = { __typename?: 'Query', dailyChart: Array<{ __typename?: 'DailyChart', date: number, priceUsd: number }> };
+
+export type ScreenerGqlQueryVariables = Exact<{
+  network: Scalars['String'];
+  pageNumber: Scalars['Int'];
+}>;
+
+
+export type ScreenerGqlQuery = { __typename?: 'Query', screener: Array<{ __typename?: 'ScreenerItem', address: string, name: string, symbol: string, token0Symbol: string, token1Symbol: string, change5Min: number, change1h: number, change24h: number, PriceUSD: number }> };
 
 export type TimeGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
 

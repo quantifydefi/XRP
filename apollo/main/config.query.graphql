@@ -1,12 +1,8 @@
 query SupportedChainsGQL {
   chains {
-    chainId,
+    chainIdentifier,
     name,
-    geckoId,
     symbol,
-    label,
-    logoUrl,
-    isTestNet,
     rpcUrl,
     blockExplorerUrl,
   }
