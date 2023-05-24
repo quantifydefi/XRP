@@ -244,6 +244,7 @@ type Query {
   globalStats: GlobalStats!
   poolScreener(dex: String!, network: String!, pageNumber: Int! = 0, sort: String!, sortBy: String!): [Pool!]!
   recentPrices: Map!
+  screener(network: String! = "ethereum", pageNumber: Int! = 0): [ScreenerItem!]!
   token(chainId: Int! = 1, contractAddress: String! = "", decimals: Int! = 18, interval: TimeInterval! = INTERVAL_1H, qcKey: String!, walletAddress: String! = ""): Token!
   transactions(address: String!, chainId: Int! = 0, pageNumber: Int! = 0, pageSize: Int! = 100): Transaction!
   transfers(address: String!, chainId: Int! = 0, contractAddress: String!, pageNumber: Int! = 0, pageSize: Int! = 100): Transfers!
