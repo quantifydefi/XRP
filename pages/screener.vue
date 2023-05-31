@@ -10,6 +10,9 @@
         <v-col class="py-0">
           <screener-grid :search="searchString" />
         </v-col>
+        <v-col cols="3">
+          <alert-stream />
+        </v-col>
       </v-row>
     </v-col>
   </v-row>

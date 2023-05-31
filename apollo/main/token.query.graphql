@@ -119,3 +119,13 @@ subscription PriceStreamGQL($network:String!, $dex:String!, $address: [String!]!
     reserveRatio
   }
 }
+
+subscription DexEventsStreamGQL($network:String!){
+  dexEvents(network:$network){
+    network,
+    dex,
+    name,
+    address,
+    signature,
+  }
+}

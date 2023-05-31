@@ -41,6 +41,7 @@ export const DailyChartGQL: DocumentNode;
 export const ScreenerGQL: DocumentNode;
 export const TimeGQL: DocumentNode;
 export const PriceStreamGQL: DocumentNode;
+export const DexEventsStreamGQL: DocumentNode;
 
   export default defaultDocument;
 }

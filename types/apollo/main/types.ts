@@ -131,6 +131,16 @@ export type DailyChart = {
   priceUsd: Scalars['Float'];
 };
 
+export type DexEvent = {
+  __typename?: 'DexEvent';
+  address: Scalars['String'];
+  dex: Scalars['String'];
+  name: Scalars['String'];
+  network: Scalars['String'];
+  outputDataMap?: Maybe<Scalars['JSONMap']>;
+  signature: Scalars['String'];
+};
+
 export type EthGasStatsResult = {
   __typename?: 'EthGasStatsResult';
   fastGasPrice: Scalars['Float'];
@@ -379,7 +389,13 @@ export type ScreenerItem = {
 export type Subscription = {
   __typename?: 'Subscription';
   currentTime: Time;
+  dexEvents: Array<DexEvent>;
   priceStream: Array<PriceStream>;
+};
+
+
+export type SubscriptionDexEventsArgs = {
+  network: Scalars['String'];
 };
 
 
@@ -653,7 +669,7 @@ export type ScreenerGqlQueryVariables = Exact<{
 }>;
 
 
-export type ScreenerGqlQuery = { __typename?: 'Query', poolScreener: Array<{ __typename?: 'Pool', network: string, dex: string, address: string, token0Symbol: string, token1Symbol: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number, change5Min: number, change1h: number, change24h: number }> };
+export type ScreenerGqlQuery = { __typename?: 'Query', poolScreener: Array<{ __typename?: 'Pool', network: string, dex: string, address: string, token0Symbol: string, token0Address: string, token0Name: string, token1Symbol: string, token1Name: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number, change5Min: number, change1h: number, change24h: number }> };
 
 export type TimeGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -668,3 +684,10 @@ export type PriceStreamGqlSubscriptionVariables = Exact<{
 
 
 export type PriceStreamGqlSubscription = { __typename?: 'Subscription', priceStream: Array<{ __typename?: 'PriceStream', network: string, dex: string, pairAddress: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number }> };
+
+export type DexEventsStreamGqlSubscriptionVariables = Exact<{
+  network: Scalars['String'];
+}>;
+
+
+export type DexEventsStreamGqlSubscription = { __typename?: 'Subscription', dexEvents: Array<{ __typename?: 'DexEvent', network: string, dex: string, name: string, address: string, signature: string }> };
