@@ -104,6 +104,35 @@ export type BalanceItem = {
   type: Scalars['String'];
 };
 
+export type Block = {
+  __typename?: 'Block';
+  blockNumber: Scalars['Int'];
+  burnCount: Scalars['Int'];
+  events: TransactionEvents;
+  metrics: BlockMetrics;
+  minedAt: Scalars['Int'];
+  mintCount: Scalars['Int'];
+  network: Scalars['String'];
+  pairCreatedCount: Scalars['Int'];
+  swapCount: Scalars['Int'];
+  txCount: Scalars['Int'];
+};
+
+export type BlockMetric = {
+  __typename?: 'BlockMetric';
+  address: Scalars['String'];
+  change1H: Scalars['Float'];
+  contract: Scalars['String'];
+  token0Symbol: Scalars['String'];
+  token1Symbol: Scalars['String'];
+  totalLiquidity: Scalars['Float'];
+};
+
+export type BlockMetrics = {
+  __typename?: 'BlockMetrics';
+  items: Array<BlockMetric>;
+};
+
 export type BlockTransactionContractTransfer = {
   __typename?: 'BlockTransactionContractTransfer';
   blockSignedAt: Scalars['String'];
@@ -129,16 +158,6 @@ export type DailyChart = {
   __typename?: 'DailyChart';
   date: Scalars['Int'];
   priceUsd: Scalars['Float'];
-};
-
-export type DexEvent = {
-  __typename?: 'DexEvent';
-  address: Scalars['String'];
-  dex: Scalars['String'];
-  name: Scalars['String'];
-  network: Scalars['String'];
-  outputDataMap?: Maybe<Scalars['JSONMap']>;
-  signature: Scalars['String'];
 };
 
 export type EthGasStatsResult = {
@@ -279,6 +298,7 @@ export type Query = {
   aaveAddresses: Array<AaveAddress>;
   aavePools: Array<AavePool>;
   balances: Array<Balance>;
+  blocks: Array<Block>;
   chains: Array<Chain>;
   dailyChart: Array<DailyChart>;
   fiatPrices: Scalars['Map'];
@@ -306,6 +326,11 @@ export type QueryAavePoolsArgs = {
 export type QueryBalancesArgs = {
   address: Scalars['String'];
   chainIds: Array<Scalars['Int']>;
+};
+
+
+export type QueryBlocksArgs = {
+  network: Scalars['String'];
 };
 
 
@@ -388,13 +413,13 @@ export type ScreenerItem = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  block: Array<Block>;
   currentTime: Time;
-  dexEvents: Array<DexEvent>;
   priceStream: Array<PriceStream>;
 };
 
 
-export type SubscriptionDexEventsArgs = {
+export type SubscriptionBlockArgs = {
   network: Scalars['String'];
 };
 
@@ -492,6 +517,25 @@ export type Transaction = {
   pagination?: Maybe<Pagination>;
   quoteCurrency: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type TransactionEvent = {
+  __typename?: 'TransactionEvent';
+  address: Scalars['String'];
+  allFunctionParams?: Maybe<Scalars['JSONMap']>;
+  contract: Scalars['String'];
+  indexedParams?: Maybe<Scalars['JSONMap']>;
+  name: Scalars['String'];
+  network: Scalars['String'];
+  outputDataMap?: Maybe<Scalars['JSONMap']>;
+  outputDataMapHex: Scalars['String'];
+  signature: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+export type TransactionEvents = {
+  __typename?: 'TransactionEvents';
+  items: Array<TransactionEvent>;
 };
 
 export type TransactionItem = {
@@ -685,9 +729,16 @@ export type PriceStreamGqlSubscriptionVariables = Exact<{
 
 export type PriceStreamGqlSubscription = { __typename?: 'Subscription', priceStream: Array<{ __typename?: 'PriceStream', network: string, dex: string, pairAddress: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number }> };
 
-export type DexEventsStreamGqlSubscriptionVariables = Exact<{
+export type BlocksGqlQueryVariables = Exact<{
   network: Scalars['String'];
 }>;
 
 
-export type DexEventsStreamGqlSubscription = { __typename?: 'Subscription', dexEvents: Array<{ __typename?: 'DexEvent', network: string, dex: string, name: string, address: string, signature: string }> };
+export type BlocksGqlQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, swapCount: number, pairCreatedCount: number, mintCount: number, metrics: { __typename?: 'BlockMetrics', items: Array<{ __typename?: 'BlockMetric', totalLiquidity: number, change1H: number, token0Symbol: string, token1Symbol: string }> } }> };
+
+export type BlocksStreamGqlSubscriptionVariables = Exact<{
+  network: Scalars['String'];
+}>;
+
+
+export type BlocksStreamGqlSubscription = { __typename?: 'Subscription', block: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, swapCount: number, pairCreatedCount: number, mintCount: number, metrics: { __typename?: 'BlockMetrics', items: Array<{ __typename?: 'BlockMetric', totalLiquidity: number, change1H: number, token0Symbol: string, token1Symbol: string }> } }> };

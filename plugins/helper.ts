@@ -58,10 +58,25 @@ const navigateToExplorer = (
   window.open(url)
 }
 
+const applyPtcChange = (val: number): { value: string; color: string; icon: string | null } => {
+  const rounded = parseFloat((val * 100).toFixed(2))
+  if (rounded === 0) {
+    return { value: '0,00%', color: 'grey', icon: null }
+  }
+  if (rounded > 0) {
+    return { value: `${rounded}%`, color: 'green', icon: 'mdi-arrow-up' }
+  }
+  if (rounded < 0) {
+    return { value: `${rounded}%`, color: 'red', icon: 'mdi-arrow-down' }
+  }
+  return { value: '-', color: 'grey', icon: null }
+}
+
 export default defineNuxtPlugin((context: Context) => {
   context.$f = numberFormatter
   context.$copyAddressToClipboard = copyAddressToClipboard
   context.$imageUrlBySymbol = imageUrlBySymbol
+  context.$applyPtcChange = applyPtcChange
 
   Vue.prototype.$f = numberFormatter
   Vue.prototype.$copyAddressToClipboard = copyAddressToClipboard
@@ -69,4 +84,5 @@ export default defineNuxtPlugin((context: Context) => {
   Vue.prototype.$imageUrlBySymbol = imageUrlBySymbol
   Vue.prototype.$truncateAddress = truncateAddress
   Vue.prototype.$navigateToExplorer = navigateToExplorer
+  Vue.prototype.$applyPtcChange = applyPtcChange
 })

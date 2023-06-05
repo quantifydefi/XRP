@@ -13,6 +13,7 @@ declare module '@nuxt/types' {
     $copyAddressToClipboard(value: string): Promise<void>
     $truncateAddress(address: string, zeroIndexTo: number, endIndexMinus: number): string
     $imageUrlBySymbol(symbol: string | null): string
+    $applyPtcChange(val: number): { value: string; color: string; icon: string | null }
   }
 }
 declare module 'vue/types/vue' {
@@ -23,5 +24,6 @@ declare module 'vue/types/vue' {
     $imageUrlBySymbol(symbol: string | null): string
     $truncateAddress(address: string, zeroIndexTo: number, endIndexMinus: number): string
     $navigateToExplorer(address: string, type?: 'tx' | 'address', blockExplorerUrl?: string): string
+    $applyPtcChange(val: number): { value: string; color: string; icon: string | null }
   }
 }

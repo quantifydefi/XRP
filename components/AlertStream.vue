@@ -1,89 +1,149 @@
 <template>
   <v-card tile outlined height="100%">
-    <!--    <v-btn @click="addNewRecords">Update</v-btn>-->
-    <v-simple-table>
-      <template #default>
-        <!--        <thead>-->
-        <!--          <tr>-->
-        <!--            <th class="text-left">Name</th>-->
-        <!--            <th class="text-left">Calories</th>-->
-        <!--          </tr>-->
-        <!--        </thead>-->
-        <tbody>
-          <tr v-for="(item, i) in data" :key="i">
-            <td class="py-1" :style="{ 'background-color': item.updateOption ? item.updateOption.color : '' }">
-              <v-row no-gutters align="center">
-                <v-col cols="2">
-                  <v-avatar size="24">
-                    <img :src="$imageUrlBySymbol(item.dexSymbol)" alt="" @error="$setAltImageUrl" />
-                  </v-avatar>
-                </v-col>
-                <v-col cols="10">
-                  <v-row no-gutters>
-                    <v-col>
-                      <span class="text-capitalize font-weight-bold" v-text="item.name" />
-                      <span class="grey--text text-caption ml-4" v-text="item.dexName" />
-                    </v-col>
-                  </v-row>
-                  <v-row no-gutters>
-                    <v-col>
-                      <span
-                        class="grey--text text-caption d-inline-block text-truncate"
-                        style="max-width: 100%"
-                        v-text="item.address"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+    <client-only>
+      <div
+        v-for="(item, i) in blocksFormatted"
+        :key="i"
+        :style="{ 'background-color': item.updateOption ? item.updateOption.color : '' }"
+      >
+        <v-list dense two-line class="py-0">
+          <v-list-item-group color="primary">
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <span class="grey--text text-caption">Block #</span>
+                  <span class="primary--text">{{ item.blockNumber }}</span>
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  <span class="grey--text text-caption">Mined:</span>{{ item.minedAt }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon size="18" color="primary">mdi-open-in-new</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+        <v-row no-gutters>
+          <v-col v-for="(stat, statIndex) in item.stats" :key="statIndex" cols="3" class="pa-3 text-center">
+            <v-row>
+              <v-col cols="12">
+                <div>
+                  <span class="text-h4">{{ stat.value }}</span>
+                </div>
+                <div class="caption font-weight-medium grey--text">{{ stat.text }}</div>
+              </v-col>
+              <v-divider v-if="i < 3" style="" vertical />
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-carousel height="160" hide-delimiter-background :show-arrows="false">
+              <v-carousel-item v-for="(slide, slideIndex) in item.sliced" :key="slideIndex">
+                <v-simple-table>
+                  <template #default>
+                    <tbody>
+                      <tr v-for="(token, tokenIndex) in slide" :key="tokenIndex">
+                        <td class="py-1">
+                          <v-avatar size="20">
+                            <img :src="$imageUrlBySymbol(token.token0Symbol)" alt="" @error="$setAltImageUrl" />
+                          </v-avatar>
+                          <v-avatar size="20">
+                            <img :src="$imageUrlBySymbol(token.token1Symbol)" alt="" @error="$setAltImageUrl" />
+                          </v-avatar>
+                          <span class="ml-3">
+                            {{ token.token0Symbol }}<span class="grey--text">/{{ token.token1Symbol }}</span></span
+                          >
+                        </td>
+                        <td>
+                          <span :class="`${token.changeApplied.color}--text`">
+                            {{ token.changeApplied.value }}
+                            <v-icon v-if="token.changeApplied.icon" :color="token.changeApplied.color" size="14"
+                              >{{ token.changeApplied.icon }}
+                            </v-icon>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-carousel-item>
+            </v-carousel>
+          </v-col>
+        </v-row>
+        <v-divider />
+      </div>
+    </client-only>
   </v-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api'
-import { useSubscription } from '@vue/apollo-composable/dist'
-import { DexEventsStreamGQL } from '~/apollo/main/token.query.graphql'
-import { DexEvent } from '~/types/apollo/main/types'
+import { computed, defineComponent, ref, useContext, watch } from '@nuxtjs/composition-api'
+import { useQuery, useSubscription } from '@vue/apollo-composable/dist'
+import { BlocksGQL, BlocksStreamGQL } from '~/apollo/main/token.query.graphql'
+import { Block, BlockMetric } from '~/types/apollo/main/types'
 
-type DexEventObserver = DexEvent & {
+type BlockObserver = Block & {
+  stats: { text: string; value: number }[]
+  sliced: BlockMetric[][]
   updateOption?: { status: boolean; color: string | null }
 }
 export default defineComponent({
   setup() {
-    const { result: liveData } = useSubscription(DexEventsStreamGQL, () => ({
-      network: 'ethereum',
-    }))
-
+    const { $applyPtcChange } = useContext()
+    const blocks = ref<BlockObserver[]>([])
     let updateTimeout: any = null
-    const rowData = ref<DexEventObserver[]>([])
 
-    const data = computed(() =>
-      rowData.value.map((elem) => ({
+    const { onResult } = useQuery(BlocksGQL, () => ({ network: 'ethereum' }), { fetchPolicy: 'no-cache' })
+    const { result: liveBlock } = useSubscription(BlocksStreamGQL, () => ({ network: 'ethereum' }), {
+      fetchPolicy: 'no-cache',
+    })
+
+    onResult(({ data }) => {
+      blocks.value = data?.blocks ?? []
+    })
+
+    const blocksFormatted = computed<BlockObserver[]>(() => {
+      if (blocks.value.length === 0) {
+        return []
+      }
+
+      blocks.value.forEach((elem) => elem.metrics.items.sort((a, b) => b.totalLiquidity - a.totalLiquidity))
+
+      return blocks.value.map((elem) => ({
         ...elem,
-        dexName: elem.dex === 'uniswap_v2' ? 'UNISWAP V2' : 'UNISWAP V3',
-        dexSymbol: 'UNI',
+        stats: [
+          { text: 'All trans.', value: elem.txCount },
+          { text: 'Swaps', value: elem.swapCount },
+          { text: 'New Pairs', value: elem.pairCreatedCount },
+          { text: 'Minted', value: elem.mintCount },
+        ],
+        sliced: elem.metrics.items.reduce((result: any, object: any, index) => {
+          const arrayIndex = Math.floor(index / 4)
+          if (!result[arrayIndex]) {
+            result[arrayIndex] = []
+          }
+          object.changeApplied = $applyPtcChange(object.change1H)
+          result[arrayIndex].push(object)
+          return result
+        }, []),
       }))
-    )
+    })
 
-    function addNewRecords(newRecords: DexEventObserver[]) {
+    function addNewRecords(newRecords: BlockObserver[]) {
       clearTimeout(updateTimeout)
-
       newRecords = newRecords.map((elem) => ({
         ...elem,
         updateOption: { status: true, color: '#4caf5026' },
       }))
-      rowData.value = [...newRecords, ...rowData.value]
-      if (rowData.value.length > 50) {
-        rowData.value.splice(-newRecords.length)
+      blocks.value = [...newRecords, ...blocks.value]
+      if (blocks.value.length > 5) {
+        blocks.value.splice(-newRecords.length)
       }
 
       updateTimeout = setTimeout(() => {
-        rowData.value.forEach((elem) => {
+        blocks.value.forEach((elem) => {
           if (elem.updateOption) {
             elem.updateOption = { status: false, color: null }
           }
@@ -91,12 +151,35 @@ export default defineComponent({
       }, 1000)
     }
 
-    watch(liveData, (val: any) => {
-      const newData: DexEvent[] = val?.dexEvents ?? []
+    watch(liveBlock, (val: any) => {
+      const newData: BlockObserver[] = val?.block ?? []
       addNewRecords(newData)
     })
 
-    return { data, addNewRecords }
+    return {
+      blocks,
+      blocksFormatted,
+    }
   },
 })
 </script>
+<style>
+.v-carousel__controls__item.v-btn.v-btn--icon {
+  background-color: #ebece9; /* Background color of non-active ones */
+  height: 8px; /* Height you want */
+  width: 8px; /* Width you want */
+  border-radius: 100%; /* Remove default border radius */
+}
+
+.v-carousel__controls__item.v-btn.v-btn--icon.v-btn--active {
+  background-color: #e91e63; /* Colour for active one */
+}
+
+.v-carousel__controls__item.v-btn.v-btn--icon:hover {
+  background-color: #e91e63; /* You might also want to customise the hover effect */
+}
+
+.v-btn__content .v-icon {
+  display: none; /* Removes the default icon */
+}
+</style>

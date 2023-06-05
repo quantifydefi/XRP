@@ -161,7 +161,7 @@ export default defineComponent<Props>({
     // COMPOSABLE
     const { state, getters } = useStore<State>()
     const { walletReady, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
-    const { $copyAddressToClipboard, $f } = useContext()
+    const { $copyAddressToClipboard, $f, $applyPtcChange } = useContext()
     let priceUpdateTimeout: any = null
 
     // COMPUTED
@@ -191,9 +191,9 @@ export default defineComponent<Props>({
       screenerDataObserver.value.map((elem) => ({
         ...elem,
         price: $f(elem.token0PriceUSD, { pre: '$ ', minDigits: 2, maxDigits: 6 }),
-        change5min: applyChange(elem.change5Min),
-        change1h: applyChange(elem.change1h),
-        change24h: applyChange(elem.change24h),
+        change5min: $applyPtcChange(elem.change5Min),
+        change1h: $applyPtcChange(elem.change1h),
+        change24h: $applyPtcChange(elem.change24h),
       }))
     )
 
@@ -236,7 +236,7 @@ export default defineComponent<Props>({
       order.value = opt.order
     }
 
-    const applyChange = (val: number) => {
+    /*    const applyChange = (val: number) => {
       const rounded = parseFloat((val * 100).toFixed(2))
       if (rounded === 0) {
         return { value: '0,00%', color: 'grey', icon: null }
@@ -248,7 +248,7 @@ export default defineComponent<Props>({
         return { value: `${rounded}%`, color: 'red', icon: 'mdi-arrow-down' }
       }
       return { value: '-', color: 'grey', icon: null }
-    }
+    } */
 
     emitter.on('priceStream', (val: any) => {
       const prices: PriceStream[] = val.priceStream ?? []

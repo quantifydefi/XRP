@@ -89,6 +89,32 @@ type BalanceItem {
   type: String!
 }
 
+type Block {
+  blockNumber: Int!
+  burnCount: Int!
+  events: TransactionEvents!
+  metrics: BlockMetrics!
+  minedAt: Int!
+  mintCount: Int!
+  network: String!
+  pairCreatedCount: Int!
+  swapCount: Int!
+  txCount: Int!
+}
+
+type BlockMetric {
+  address: String!
+  change1H: Float!
+  contract: String!
+  token0Symbol: String!
+  token1Symbol: String!
+  totalLiquidity: Float!
+}
+
+type BlockMetrics {
+  items: [BlockMetric!]!
+}
+
 type BlockTransactionContractTransfer {
   blockSignedAt: String!
   gasPrice: Int!
@@ -111,15 +137,6 @@ type Chain {
 type DailyChart {
   date: Int!
   priceUsd: Float!
-}
-
-type DexEvent {
-  address: String!
-  dex: String!
-  name: String!
-  network: String!
-  outputDataMap: JSONMap
-  signature: String!
 }
 
 type EthGasStatsResult {
@@ -246,6 +263,7 @@ type Query {
   aaveAddresses(chainId: Int!): [AaveAddress!]!
   aavePools(chainId: Int!): [AavePool!]!
   balances(address: String!, chainIds: [Int!]!): [Balance!]!
+  blocks(network: String!): [Block!]!
   chains: [Chain!]!
   dailyChart(coinGeckoID: String! = ""): [DailyChart!]!
   fiatPrices(addresses: [String!]!, platform: String! = "ethereum"): Map!
@@ -280,8 +298,8 @@ type ScreenerItem {
 }
 
 type Subscription {
+  block(network: String!): [Block!]!
   currentTime: Time!
-  dexEvents(network: String!): [DexEvent!]!
   priceStream(address: [String!], dex: String!, network: String!): [PriceStream!]!
 }
 
@@ -357,6 +375,23 @@ type Transaction {
   pagination: Pagination
   quoteCurrency: String!
   updatedAt: String!
+}
+
+type TransactionEvent {
+  address: String!
+  allFunctionParams: JSONMap
+  contract: String!
+  indexedParams: JSONMap
+  name: String!
+  network: String!
+  outputDataMap: JSONMap
+  outputDataMapHex: String!
+  signature: String!
+  topic: String!
+}
+
+type TransactionEvents {
+  items: [TransactionEvent!]!
 }
 
 type TransactionItem {
