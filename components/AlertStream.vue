@@ -1,5 +1,5 @@
 <template>
-  <v-card tile outlined height="100%">
+  <v-card tile outlined height="1400" class="overflow-y-auto">
     <client-only>
       <div
         v-for="(item, i) in blocksFormatted"
@@ -39,7 +39,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-carousel height="160" hide-delimiter-background :show-arrows="false">
+            <v-carousel height="160" hide-delimiter-background :show-arrows="false" delimiter-icon="mdi-dot">
               <v-carousel-item v-for="(slide, slideIndex) in item.sliced" :key="slideIndex">
                 <v-simple-table>
                   <template #default>
@@ -79,24 +79,35 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, toRefs, useContext, watch } from '@nuxtjs/composition-api'
 import { useQuery, useSubscription } from '@vue/apollo-composable/dist'
 import { BlocksGQL, BlocksStreamGQL } from '~/apollo/main/token.query.graphql'
 import { Block, BlockMetric } from '~/types/apollo/main/types'
 
+type BlockMetricObserver = BlockMetric & {
+  changeApplied: { value: string; color: string; icon: string | null }
+}
+
 type BlockObserver = Block & {
   stats: { text: string; value: number }[]
-  sliced: BlockMetric[][]
+  sliced: BlockMetricObserver[][]
   updateOption?: { status: boolean; color: string | null }
 }
-export default defineComponent({
-  setup() {
+type Props = {
+  networkId: string
+}
+export default defineComponent<Props>({
+  props: {
+    networkId: { type: String as PropType<string>, default: 'ethereum' },
+  },
+  setup(props) {
     const { $applyPtcChange } = useContext()
     const blocks = ref<BlockObserver[]>([])
     let updateTimeout: any = null
+    const network = toRefs(props).networkId
 
-    const { onResult } = useQuery(BlocksGQL, () => ({ network: 'ethereum' }), { fetchPolicy: 'no-cache' })
-    const { result: liveBlock } = useSubscription(BlocksStreamGQL, () => ({ network: 'ethereum' }), {
+    const { onResult } = useQuery(BlocksGQL, () => ({ network: network.value }), { fetchPolicy: 'no-cache' })
+    const { result: liveBlock } = useSubscription(BlocksStreamGQL, () => ({ network: network.value }), {
       fetchPolicy: 'no-cache',
     })
 
@@ -138,7 +149,7 @@ export default defineComponent({
         updateOption: { status: true, color: '#4caf5026' },
       }))
       blocks.value = [...newRecords, ...blocks.value]
-      if (blocks.value.length > 5) {
+      if (blocks.value.length > 4) {
         blocks.value.splice(-newRecords.length)
       }
 
@@ -178,8 +189,7 @@ export default defineComponent({
 .v-carousel__controls__item.v-btn.v-btn--icon:hover {
   background-color: #e91e63; /* You might also want to customise the hover effect */
 }
-
-.v-btn__content .v-icon {
-  display: none; /* Removes the default icon */
-}
+/*.v-btn__content .v-icon {
+  display: none; !* Removes the default icon *!
+}*/
 </style>

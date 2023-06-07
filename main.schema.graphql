@@ -128,6 +128,7 @@ type BlockTransactionContractTransfer {
 type Chain {
   blockExplorerUrl: String!
   chainIdentifier: Int!
+  dex: [Dex!]!
   id: String!
   name: String!
   rpcUrl: String!
@@ -137,6 +138,12 @@ type Chain {
 type DailyChart {
   date: Int!
   priceUsd: Float!
+}
+
+type Dex {
+  name: String!
+  symbol: String!
+  value: String!
 }
 
 type EthGasStatsResult {

@@ -1,10 +1,14 @@
 query SupportedChainsGQL {
   chains {
+    id
     chainIdentifier,
     name,
     symbol,
     rpcUrl,
     blockExplorerUrl,
+    dex {
+      name, value, symbol
+    }
   }
 }
 

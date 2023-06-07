@@ -148,6 +148,7 @@ export type Chain = {
   __typename?: 'Chain';
   blockExplorerUrl: Scalars['String'];
   chainIdentifier: Scalars['Int'];
+  dex: Array<Dex>;
   id: Scalars['String'];
   name: Scalars['String'];
   rpcUrl: Scalars['String'];
@@ -158,6 +159,13 @@ export type DailyChart = {
   __typename?: 'DailyChart';
   date: Scalars['Int'];
   priceUsd: Scalars['Float'];
+};
+
+export type Dex = {
+  __typename?: 'Dex';
+  name: Scalars['String'];
+  symbol: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type EthGasStatsResult = {
@@ -612,7 +620,7 @@ export type UniswapTokens = {
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', chainIdentifier: number, name: string, symbol: string, rpcUrl: string, blockExplorerUrl: string }> };
+export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', id: string, chainIdentifier: number, name: string, symbol: string, rpcUrl: string, blockExplorerUrl: string, dex: Array<{ __typename?: 'Dex', name: string, value: string, symbol: string }> }> };
 
 export type GasGqlQueryVariables = Exact<{ [key: string]: never; }>;
 

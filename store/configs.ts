@@ -5,13 +5,16 @@ import { SupportedChainsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
 
 const defaultChain: Chain = {
+  dex: [
+    { value: 'uniswap_v2', name: 'Uniswap V2', symbol: 'UNI' },
+    { value: 'uniswap_v3', name: 'Uniswap V3', symbol: 'UNI' },
+  ],
   id: 'ethereum',
-  chainIdentifier: 1,
-  name: 'Ethereum Mainnet',
-  symbol: 'ETH',
-  rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
   blockExplorerUrl: 'https://etherscan.io/',
-  __typename: 'Chain',
+  chainIdentifier: 1,
+  name: 'Ethereum Main Net',
+  rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161/',
+  symbol: 'ETH',
 }
 
 export const state = () =>

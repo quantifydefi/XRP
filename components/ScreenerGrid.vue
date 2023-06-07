@@ -1,23 +1,6 @@
 <template>
   <div>
-    <v-btn-toggle v-model="dex" dark mandatory tile color="primary" class="mt-4 mb-2">
-      <v-btn
-        v-for="(item, index) in supportedDexes"
-        :key="index"
-        :value="item.value"
-        tile
-        depressed
-        height="36"
-        color="transparent"
-      >
-        <v-avatar size="24" class="mr-2">
-          <img :src="$imageUrlBySymbol(item.symbol)" alt="" @error="$setAltImageUrl" />
-        </v-avatar>
-        <span class="text-body-2 text-capitalize">{{ item.name }}</span>
-      </v-btn>
-    </v-btn-toggle>
-
-    <v-card tile outlined>
+    <v-card tile outlined height="1400">
       <v-skeleton-loader v-if="loading" type="table-tbody,table-tbody,table-tbody" />
 
       <client-only>
@@ -27,7 +10,7 @@
           hide-default-footer
           :headers="cols"
           :items="screenerDataFormatted"
-          :items-per-page="50"
+          :items-per-page="25"
           class="elevation-0"
           :single-expand="false"
           item-key="address"
@@ -123,9 +106,9 @@
             </span>
           </template>
         </v-data-table>
+        <v-pagination v-model="currentPage" :length="currentPage + 1" class="mt-4" />
       </client-only>
     </v-card>
-    <v-pagination v-model="currentPage" :length="currentPage + 1" class="mt-4" />
   </div>
 </template>
 
@@ -137,6 +120,7 @@ import {
   inject,
   PropType,
   ref,
+  toRefs,
   useContext,
   useStore,
   watchEffect,
@@ -152,32 +136,31 @@ type ScreenerItemObserver = Pool & {
 }
 type Props = {
   search: string | null
+  networkId: string
+  dexId: string
 }
 export default defineComponent<Props>({
   props: {
     search: { type: String as PropType<string | null>, default: null, required: false },
+    networkId: { type: String as PropType<string>, default: 'ethereum' },
+    dexId: { type: String as PropType<string>, default: 'uniswap_v3' },
   },
-  setup() {
+  setup(props) {
     // COMPOSABLE
     const { state, getters } = useStore<State>()
     const { walletReady, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
     const { $copyAddressToClipboard, $f, $applyPtcChange } = useContext()
     let priceUpdateTimeout: any = null
 
-    // COMPUTED
-    // const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
-
     // STATE
     const screenerDataObserver = ref<ScreenerItemObserver[]>([])
     const sortBy = ref<string>('rank')
     const order = ref<string>('asc')
-    const dex = ref('uniswap_v2')
-    const supportedDexes = ref([
-      { name: 'Uniswap V3', value: 'uniswap_v3', symbol: 'UNI' },
-      { name: 'Uniswap V2', value: 'uniswap_v2', symbol: 'UNI' },
-    ])
 
-    const { screenerData, currentPage, loading } = useTokenScreener(dex, sortBy, order)
+    const dex = toRefs(props).dexId
+    const network = toRefs(props).networkId
+
+    const { screenerData, currentPage, loading } = useTokenScreener(network, dex, sortBy, order)
 
     watchEffect(
       () =>
@@ -235,20 +218,6 @@ export default defineComponent<Props>({
       sortBy.value = opt.sortBy
       order.value = opt.order
     }
-
-    /*    const applyChange = (val: number) => {
-      const rounded = parseFloat((val * 100).toFixed(2))
-      if (rounded === 0) {
-        return { value: '0,00%', color: 'grey', icon: null }
-      }
-      if (rounded > 0) {
-        return { value: `${rounded}%`, color: 'green', icon: 'mdi-arrow-up' }
-      }
-      if (rounded < 0) {
-        return { value: `${rounded}%`, color: 'red', icon: 'mdi-arrow-down' }
-      }
-      return { value: '-', color: 'grey', icon: null }
-    } */
 
     emitter.on('priceStream', (val: any) => {
       const prices: PriceStream[] = val.priceStream ?? []
@@ -351,14 +320,12 @@ export default defineComponent<Props>({
     // watch(aavePools, () => expendSingleRow())
 
     return {
-      // DATA
       screenerData,
       screenerDataFormatted,
       cols,
       walletReady,
       currentPage,
       loading,
-      supportedDexes,
       dex,
       loadPage,
       updateData,
