@@ -4,7 +4,6 @@ import { Pool, UniswapToken } from '@/types/apollo/main/types'
 import { ScreenerGQL, PriceStreamGQL } from '~/apollo/main/token.query.graphql'
 import emitter from '~/types/emitter'
 import useERC20 from '~/composables/useERC20'
-// import useERC20 from '~/composables/useERC20'
 import { ERC20Balance } from '~/types/global'
 export default function (
   networkId: Ref<string>,
