@@ -79,6 +79,11 @@
             </span>
           </template>
 
+          <template #item.balance="{ item }">
+            <div v-text="item.balance" />
+            <div class="grey--text" v-text="item.balanceValue" />
+          </template>
+
           <template #item.change_5min="{ item }">
             <span :class="`${item.change5min.color}--text`">
               {{ item.change5min.value }}
@@ -160,7 +165,14 @@ export default defineComponent<Props>({
     const dex = toRefs(props).dexId
     const network = toRefs(props).networkId
 
-    const { screenerData, currentPage, loading } = useTokenScreener(network, dex, sortBy, order)
+    const { screenerData, currentPage, balanceMap, loading } = useTokenScreener(
+      network,
+      dex,
+      sortBy,
+      order,
+      chainId,
+      walletReady
+    )
 
     watchEffect(
       () =>
@@ -170,10 +182,29 @@ export default defineComponent<Props>({
         })))
     )
 
+    // <!--            <div v-text="$f(item.portfolio.walletBal, { minDigits: 2, maxDigits: 6 })" />-->
+    //  <!--            <div-->
+    //  <!--              :class="textClass"-->
+    //  <!--              v-text="$f(item.portfolio.walletBal * item.price.priceUsd, { minDigits: 2, pre: '$ ' })"-->
+    //  <!--            />-->
+    //
+
     const screenerDataFormatted = computed(() =>
       screenerDataObserver.value.map((elem) => ({
         ...elem,
         price: $f(elem.token0PriceUSD, { pre: '$ ', minDigits: 2, maxDigits: 6 }),
+        balance: $f(
+          Object.prototype.hasOwnProperty.call(balanceMap.value, elem.token0Address)
+            ? balanceMap.value[elem.token0Address].balance
+            : 0,
+          { minDigits: 2, maxDigits: 6 }
+        ),
+        balanceValue: $f(
+          Object.prototype.hasOwnProperty.call(balanceMap.value, elem.token0Address)
+            ? balanceMap.value[elem.token0Address].balance * elem.token0PriceUSD
+            : 0,
+          { minDigits: 2, pre: '$ ' }
+        ),
         change5min: $applyPtcChange(elem.change5Min),
         change1h: $applyPtcChange(elem.change1h),
         change24h: $applyPtcChange(elem.change24h),
@@ -201,7 +232,7 @@ export default defineComponent<Props>({
             currentGridRaw.priceUpdateOptions = { status: false, color: null, icon: null }
           }
         })
-      }, 3000)
+      }, 2000)
     }
 
     const loadPage = (options: any) => {
@@ -240,11 +271,22 @@ export default defineComponent<Props>({
           text: 'Price',
           align: 'left',
           value: 'token_0_price_usd',
-          width: '200',
           class: ['px-2', 'text-truncate'],
           cellClass: ['px-2', 'text-truncate'],
+          width: '200',
           sortable: true,
         },
+
+        {
+          text: 'Your Balance',
+          align: 'left',
+          value: 'balance',
+          width: '200',
+          sortable: true,
+          class: ['px-2', 'text-truncate'],
+          cellClass: ['px-2', 'text-truncate'],
+        },
+
         {
           text: '',
           align: 'left',
@@ -323,7 +365,6 @@ export default defineComponent<Props>({
       screenerData,
       screenerDataFormatted,
       cols,
-      walletReady,
       currentPage,
       loading,
       dex,

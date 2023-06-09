@@ -72,7 +72,7 @@ export default function useERC20() {
       const isNative = isNativeToken(chainId, token.symbol)
       const request = isNative
         ? nativeNetworkBalance(token.address, `NATIVE_${token.symbol}`)
-        : ERC20Balance(token.address, token.decimals)
+        : ERC20Balance(token.address, token.decimals, token.symbol)
       multCalls.push(request)
     })
     return await Promise.all(multCalls)

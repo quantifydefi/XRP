@@ -85,7 +85,7 @@ export default defineComponent({
     const notificationComponent = ref<Notification>()
     const drawer = ref(false)
     const links = ref([
-      { name: 'Aave Markets', to: '/markets/aave' },
+      { name: 'Aave', to: '/markets/aave' },
       { name: 'Trade', to: '/swap' },
       { name: 'Verse', to: '/verse' },
       { name: 'Balances', to: '/portfolio/balances' },

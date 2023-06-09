@@ -84,6 +84,7 @@ query ScreenerGQL($network: String!, $dex:String!, $sortBy: String!, $sort:Strin
     token0Symbol
     token0Address
     token0Name
+    token0Decimals
 
     token1Symbol
     token1Name
