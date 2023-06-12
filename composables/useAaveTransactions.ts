@@ -98,7 +98,8 @@ export default function useAaveTransactions(pool: Ref<AavePoolModel>, amountInTo
 
   const ERC20_GAS_LIMIT = (estimatedGas: BigNumber): number => estimatedGas.mul(`125`).div('100').toNumber()
   const NATIVE_ETH_GAS_LIMIT = (estimatedGas: BigNumber): number => estimatedGas.mul(`175`).div('100').toNumber()
-  const ESTIMATED_GAS_FEE = async (tx: ContractTransaction): Promise<BigNumber> => await provider.value.estimateGas(tx)
+  const ESTIMATED_GAS_FEE = async (tx: ContractTransaction): Promise<BigNumber> =>
+    (await provider.value?.estimateGas(<any>tx)) ?? BigNumber.from('0')
 
   // METHODS
   function resetToDefault() {

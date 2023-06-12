@@ -198,7 +198,7 @@ export default function (
     const f = debounceAsync(async () => {
       await getUniswapTrade()
     }, 1000)
-    provider.value.on('block', async (block: number) => {
+    provider.value?.on('block', async (block: number) => {
       console.log('New Block Update', block)
       await f()
     })
@@ -280,13 +280,13 @@ export default function (
         ? parseAmount(`${amount.value}`, tokenIn)
         : parseAmount(`${amount.value}`, tokenOut)
 
-    const router = new AlphaRouter({ chainId: NETWORK_ID.value, provider: provider.value })
+    const router = new AlphaRouter({ chainId: NETWORK_ID.value, provider: <any>provider.value })
     let route
     try {
       route = await router.route(amountValue, getQuoteToken(tokenIn, tokenOut, tradeType.value), tradeType.value, {
         inputTokenPermit: undefined,
         slippageTolerance: SLIPPAGE,
-        recipient: account.value,
+        recipient: account.value ?? '',
         deadline: Math.floor(Date.now() / 1000 + 1800),
       })
 
@@ -314,7 +314,7 @@ export default function (
         data: route?.methodParameters?.calldata,
         to: UNISWAP_V3_ROUTER2_ADDRESS,
         value: BigNumber.from(route?.methodParameters?.value),
-        from: account.value,
+        from: account.value ?? '',
         gasLimit,
       }
       return { isCompleted: true, receipt: quote }
@@ -325,14 +325,14 @@ export default function (
 
   function stopAllListeners() {
     if (walletReady.value) {
-      provider.value.removeAllListeners()
+      provider.value?.removeAllListeners()
     }
   }
 
   watch(
     [fromToken, toToken, amount, account, chainId],
     async () => {
-      tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])
+      tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value], account.value, provider.value)
       if (amount.value <= 0 || isSameTokenSelected.value) {
         stopAllListeners()
         quoteResult.expectedConvertQuote = amount.value
@@ -349,7 +349,10 @@ export default function (
     }
   })
 
-  onMounted(async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value])))
+  onMounted(
+    async () =>
+      (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value], account.value, provider.value))
+  )
 
   onBeforeUnmount(() => {
     stopAllListeners()

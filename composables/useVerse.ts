@@ -187,7 +187,7 @@ export default function (
         fromToken.value,
         toToken.value,
         tradePath.value,
-        account.value,
+        account.value ?? '',
         provider.value,
         NETWORK_ID.value
       )
@@ -219,7 +219,8 @@ export default function (
 
     let estimatedGasLimit: ethersBigNumber
     try {
-      estimatedGasLimit = await provider.value.estimateGas(tradeContext.value.transaction)
+      estimatedGasLimit =
+        (await provider.value?.estimateGas(tradeContext.value.transaction)) ?? ethersBigNumber.from('150000')
     } catch (error) {
       estimatedGasLimit = ethersBigNumber.from('150000')
     }
@@ -245,14 +246,25 @@ export default function (
     [fromToken, toToken, amount, account, chainId],
     async () => {
       tradeContext.value = null
-      tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value], NETWORK_ID.value)
+      tokenBalances.value = await balanceMulticall(
+        [fromToken.value, toToken.value],
+        account.value,
+        provider.value,
+        NETWORK_ID.value
+      )
       await onChange()
     },
     { immediate: false }
   )
 
   onMounted(
-    async () => (tokenBalances.value = await balanceMulticall([fromToken.value, toToken.value], NETWORK_ID.value))
+    async () =>
+      (tokenBalances.value = await balanceMulticall(
+        [fromToken.value, toToken.value],
+        account.value,
+        provider.value,
+        NETWORK_ID.value
+      ))
   )
 
   return {

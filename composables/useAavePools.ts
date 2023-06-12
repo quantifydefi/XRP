@@ -1,10 +1,9 @@
 import { useQuery } from '@vue/apollo-composable/dist'
-import { computed, inject, ref } from '@nuxtjs/composition-api'
+import { computed, Ref, ref } from '@nuxtjs/composition-api'
 import { plainToClass } from 'class-transformer'
 import { AavePoolGQL } from '~/apollo/main/pools.query.graphql'
 import { AaveAddress, AavePool, AavePoolPrice, AavePortfolio } from '@/types/apollo/main/types'
 import { RAY_UNITS, SECONDS_PER_YEAR } from '~/constants/utils'
-import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 export type actionTypes = 'deposit' | 'borrow' | 'repay' | 'withdraw'
 export const aaveActions = ref<Array<actionTypes>>(['deposit', 'borrow', 'withdraw', 'repay'])
@@ -121,9 +120,9 @@ export class AavePoolModel implements AavePool {
   }
 }
 
-export default function () {
+export default function (chainId: Ref<number | null>) {
   // COMPOSABLES
-  const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
+  // const { chainId } = inject(WEB3_PLUGIN_KEY) as Web3
   const { result, loading } = useQuery(AavePoolGQL, () => ({ chainId: chainId.value ?? 1 }), {
     fetchPolicy: 'no-cache',
     pollInterval: 30000,

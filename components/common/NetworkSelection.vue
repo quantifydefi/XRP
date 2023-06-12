@@ -35,12 +35,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
-import useMarketSelector from '~/composables/useMarketSelector'
+import { defineComponent, inject } from '@nuxtjs/composition-api'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 export default defineComponent({
   setup() {
-    const { allChains, currentChain, walletReady, chainId, onSelect } = useMarketSelector()
+    const {
+      allNetworks: allChains,
+      currentChain,
+      changeChain: onSelect,
+      chainId,
+      walletReady,
+    } = inject(WEB3_PLUGIN_KEY) as Web3
 
     return {
       allChains,

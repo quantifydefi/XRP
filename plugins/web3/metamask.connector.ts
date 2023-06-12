@@ -6,7 +6,7 @@ declare const window: any
 // TODO: Add network  change
 export class MetamaskConnector implements ConnectorInterface {
   private idVal: string = 'MetamaskInjector'
-  private providerVal: any = null
+  private providerVal: ethers.providers.Web3Provider | null = null
   private accountVal: string | null = null
   private chainIdVal: number | null = null
   private activeVal: boolean = false
@@ -104,7 +104,7 @@ export class MetamaskConnector implements ConnectorInterface {
   handleDisconnect() {
     // reset everything
     if (window.ethereum?.removeAllListeners) window.ethereum.removeAllListeners()
-    this.providerVal.removeAllListeners()
+    this.providerVal?.removeAllListeners()
     this.providerVal = null
     this.accountVal = null
     this.chainIdVal = null

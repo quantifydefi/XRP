@@ -10,7 +10,7 @@ import { ERC20Balance } from '~/types/global'
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
 export default function useERC20() {
-  const { provider, account, signer } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { account, signer } = inject(WEB3_PLUGIN_KEY) as Web3
   const { isNativeToken } = useHelpers()
 
   const allowedSpending = async (tokenAddress: string, routerToApproveAddress: string): Promise<number> => {
@@ -39,6 +39,24 @@ export default function useERC20() {
   async function ERC20Balance(
     tokenAddress: string,
     decimals: number,
+    uniqueKeyOrSymbol: string,
+    account: string,
+    provider: any
+  ): Promise<ERC20Balance> {
+    try {
+      const contract = new ethers.Contract(tokenAddress, erc20Abi, provider) as unknown as Erc20Contract
+      const bal = await contract.balanceOf(account)
+      const balance = parseFloat(bal.toString()) / 10 ** decimals
+      return { address: tokenAddress, balance, isNative: false, uniqueKeyOrSymbol }
+    } catch (error) {
+      return { address: tokenAddress, balance: 0, isNative: false, uniqueKeyOrSymbol }
+    }
+  }
+
+  /*
+  async function ERC20Balance(
+    tokenAddress: string,
+    decimals: number,
     uniqueKeyOrSymbol?: string
   ): Promise<ERC20Balance> {
     try {
@@ -50,10 +68,15 @@ export default function useERC20() {
       return { address: tokenAddress, balance: 0, isNative: false, uniqueKeyOrSymbol }
     }
   }
+  */
 
-  async function nativeNetworkBalance(address: string, uniqueKeyOrSymbol: string): Promise<ERC20Balance> {
+  async function nativeNetworkBalance(
+    address: string,
+    uniqueKeyOrSymbol: string,
+    provider: any
+  ): Promise<ERC20Balance> {
     try {
-      const balanceInWei = await provider.value.getBalance(account.value)
+      const balanceInWei = await provider.getBalance(account.value)
       const balanceInEth = ethers.utils.formatUnits(balanceInWei)
       return {
         address,
@@ -66,13 +89,33 @@ export default function useERC20() {
     }
   }
 
-  async function balanceMulticall(tokens: UniswapToken[], chainId: number = 1): Promise<ERC20Balance[]> {
+  /*  async function nativeNetworkBalance(address: string, uniqueKeyOrSymbol: string): Promise<ERC20Balance> {
+    try {
+      const balanceInWei = (await provider.value?.getBalance(account.value)) ?? BigNumber.from('0')
+      const balanceInEth = ethers.utils.formatUnits(balanceInWei)
+      return {
+        address,
+        balance: parseFloat(balanceInEth),
+        isNative: true,
+        uniqueKeyOrSymbol,
+      }
+    } catch (error) {
+      return { address: account.value, balance: 0, isNative: true, uniqueKeyOrSymbol }
+    }
+  } */
+
+  async function balanceMulticall(
+    tokens: UniswapToken[],
+    account: string,
+    provider: any,
+    chainId: number = 1
+  ): Promise<ERC20Balance[]> {
     const multCalls: Promise<ERC20Balance>[] = []
     tokens.forEach((token) => {
       const isNative = isNativeToken(chainId, token.symbol)
       const request = isNative
-        ? nativeNetworkBalance(token.address, `NATIVE_${token.symbol}`)
-        : ERC20Balance(token.address, token.decimals, token.symbol)
+        ? nativeNetworkBalance(token.address, `NATIVE_${token.symbol}`, provider)
+        : ERC20Balance(token.address, token.decimals, token.symbol, account, provider)
       multCalls.push(request)
     })
     return await Promise.all(multCalls)

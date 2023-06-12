@@ -127,7 +127,7 @@ export default defineComponent({
 
     // COMPOSABLE
     const { walletReady, account, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
-    const { loading, aavePoolsData } = useAavePools()
+    const { loading, aavePoolsData } = useAavePools(chainId)
     const { state } = useStore<State>()
 
     // COMPUTED

@@ -58,7 +58,7 @@ export default defineComponent({
     const aaveActionType = ref<actionTypes>('deposit')
     const reserveDetailDialog = ref(false)
 
-    const { aavePoolsData, loading } = useAavePools()
+    const { aavePoolsData, loading } = useAavePools(chainId)
 
     const addresses = computed(() =>
       aavePoolsData.value.reduce((elem, item) => ({ ...elem, [item.id]: item.addresses }), {})

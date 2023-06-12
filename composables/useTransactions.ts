@@ -137,7 +137,7 @@ export default function () {
     if (item.logEvents && item.logEvents.length > 0) {
       if (item.methodTextRenderer === 'Transfer') {
         const param = Object.values(item.logEvents[0].decoded.params).filter((el: any) => el.name === 'to')[0]
-        if (param && param.value === account.value.toLowerCase()) {
+        if (param && param.value === account.value?.toLowerCase()) {
           return { color: 'green', text: 'IN' }
         }
       }
@@ -147,7 +147,7 @@ export default function () {
       return { color: 'grey', text: 'SELF' }
     }
 
-    if (item.toAddress.toLowerCase() === account.value.toLowerCase()) {
+    if (item.toAddress.toLowerCase() === account.value?.toLowerCase()) {
       return { color: 'green', text: 'IN' }
     }
 
