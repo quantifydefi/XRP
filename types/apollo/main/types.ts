@@ -153,6 +153,7 @@ export type Chain = {
   name: Scalars['String'];
   rpcUrl: Scalars['String'];
   symbol: Scalars['String'];
+  weth: UniswapToken;
 };
 
 export type DailyChart = {
@@ -620,7 +621,7 @@ export type UniswapTokens = {
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', id: string, chainIdentifier: number, name: string, symbol: string, rpcUrl: string, blockExplorerUrl: string, dex: Array<{ __typename?: 'Dex', name: string, value: string, symbol: string }> }> };
+export type SupportedChainsGqlQuery = { __typename?: 'Query', chains: Array<{ __typename?: 'Chain', id: string, chainIdentifier: number, name: string, symbol: string, rpcUrl: string, blockExplorerUrl: string, dex: Array<{ __typename?: 'Dex', name: string, value: string, symbol: string }>, weth: { __typename?: 'UniswapToken', chainId: number, address: string, symbol: string } }> };
 
 export type GasGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -721,7 +722,7 @@ export type ScreenerGqlQueryVariables = Exact<{
 }>;
 
 
-export type ScreenerGqlQuery = { __typename?: 'Query', poolScreener: Array<{ __typename?: 'Pool', network: string, dex: string, address: string, token0Symbol: string, token0Address: string, token0Name: string, token1Symbol: string, token1Name: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number, change5Min: number, change1h: number, change24h: number }> };
+export type ScreenerGqlQuery = { __typename?: 'Query', poolScreener: Array<{ __typename?: 'Pool', network: string, dex: string, address: string, token0Symbol: string, token0Address: string, token0Name: string, token0Decimals: number, token1Symbol: string, token1Name: string, token0PriceUSD: number, token1PriceUSD: number, quoteExactIn: number, reserveRatio: number, change5Min: number, change1h: number, change24h: number }> };
 
 export type TimeGqlSubscriptionVariables = Exact<{ [key: string]: never; }>;
 

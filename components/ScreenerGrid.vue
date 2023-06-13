@@ -79,9 +79,48 @@
             </span>
           </template>
 
-          <template #item.balance="{ item }">
+          <!--          <template #item.balance="{ item }">
             <div v-text="item.balance" />
-            <div class="grey--text" v-text="item.balanceValue" />
+            <div class="grey&#45;&#45;text" v-text="item.balanceValue" />
+            <div class="grey&#45;&#45;text" v-text="item.balanceValue." />
+          </template>
+          -->
+          <template #item.balanceNew="{ item }">
+            <div v-if="item.balanceNew">
+              <div v-if="!item.balanceNew.isWrapped">
+                <div v-text="item.balanceNew.balance" />
+                <div
+                  class="grey--text"
+                  v-text="$f(item.balanceNew.balance * item.token0PriceUSD, { minDigits: 2, pre: '$ ' })"
+                />
+              </div>
+
+              <div v-if="item.balanceNew.isWrapped">
+                <v-row no-gutters>
+                  <v-col>
+                    <span class="grey--text" style="display: inline-block; width: 50px">
+                      {{ item.balanceNew.nativeSymbol }}
+                    </span>
+                    <span class="mx-3">{{ $f(item.balanceNew.nativeBalance, { minDigits: 6 }) }}</span>
+                    <span class="grey--text">
+                      {{ $f(item.balanceNew.nativeBalance * item.token0PriceUSD, { minDigits: 4, pre: '$ ' }) }}
+                    </span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span class="grey--text" style="display: inline-block; width: 50px">
+                      {{ item.balanceNew.uniqueKeyOrSymbol }}
+                    </span>
+                    <span class="mx-3">{{ $f(item.balanceNew.balance, { minDigits: 6 }) }}</span>
+                    <span class="grey--text">
+                      {{ $f(item.balanceNew.balance * item.token0PriceUSD, { minDigits: 4, pre: '$ ' }) }}
+                    </span>
+                  </v-col>
+                </v-row>
+              </div>
+            </div>
+            <div v-else>--</div>
           </template>
 
           <template #item.change_5min="{ item }">
@@ -197,22 +236,12 @@ export default defineComponent<Props>({
       screenerDataObserver.value.map((elem) => ({
         ...elem,
         price: $f(elem.token0PriceUSD, { pre: '$ ', minDigits: 2, maxDigits: 6 }),
-        balance: $f(
-          Object.prototype.hasOwnProperty.call(balanceMap.value, elem.token0Address)
-            ? balanceMap.value[elem.token0Address].balance
-            : 0,
-          { minDigits: 2, maxDigits: 6 }
-        ),
-        balanceValue: $f(
-          Object.prototype.hasOwnProperty.call(balanceMap.value, elem.token0Address)
-            ? balanceMap.value[elem.token0Address].balance * elem.token0PriceUSD
-            : 0,
-          { minDigits: 2, pre: '$ ' }
-        ),
+        balanceNew: Object.prototype.hasOwnProperty.call(balanceMap.value, elem.token0Address)
+          ? balanceMap.value[elem.token0Address]
+          : null,
         aavePool: Object.prototype.hasOwnProperty.call(props.aavePools, elem.token0Address.toLowerCase())
           ? props.aavePools[elem.token0Address]
           : null,
-
         change5min: $applyPtcChange(elem.change5Min),
         change1h: $applyPtcChange(elem.change1h),
         change24h: $applyPtcChange(elem.change24h),
@@ -282,15 +311,15 @@ export default defineComponent<Props>({
           class: ['px-2', 'text-truncate'],
           cellClass: ['px-2', 'text-truncate'],
           width: '200',
-          sortable: false,
+          sortable: true,
         },
 
         {
           text: 'Your Balance',
           align: 'left',
-          value: 'balance',
+          value: 'balanceNew',
           width: '200',
-          sortable: true,
+          sortable: false,
           class: ['px-2', 'text-truncate'],
           cellClass: ['px-2', 'text-truncate'],
         },

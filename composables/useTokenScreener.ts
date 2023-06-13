@@ -25,7 +25,10 @@ export default function (networkId: Ref<string>, dex: Ref<string>, sortBy: Ref<s
     }),
     { fetchPolicy: 'no-cache', pollInterval: 60000 }
   )
-  const { balanceMulticall } = useERC20()
+  const {
+    // balanceMulticall,
+    poolBalanceMulticall,
+  } = useERC20()
 
   const screenerData = computed<Pool[]>(() => result.value?.poolScreener ?? [])
   const addresses = computed<string[]>(() => screenerData.value.map((a) => a.address))
@@ -49,7 +52,7 @@ export default function (networkId: Ref<string>, dex: Ref<string>, sortBy: Ref<s
         symbol: a.token0Symbol,
         decimals: a.token0Decimals,
       }))
-      const balances = await balanceMulticall(tokens, account.value, provider)
+      const balances = await poolBalanceMulticall(tokens, network, account.value, provider)
       balanceMap.value = balances.reduce((obj, item) => ({ ...obj, [item.address.toLowerCase()]: item }), {})
     }
   }

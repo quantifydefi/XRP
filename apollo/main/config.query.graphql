@@ -9,6 +9,7 @@ query SupportedChainsGQL {
     dex {
       name, value, symbol
     }
+    weth{chainId, address, symbol}
   }
 }
 

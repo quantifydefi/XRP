@@ -5,6 +5,13 @@ import { SupportedChainsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
 
 const defaultChain: Chain = {
+  weth: {
+    chainId: 1,
+    symbol: 'WETH',
+    decimals: 18,
+    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    name: 'Wrapped Ether',
+  },
   dex: [
     { value: 'uniswap_v2', name: 'Uniswap V2', symbol: 'UNI' },
     { value: 'uniswap_v3', name: 'Uniswap V3', symbol: 'UNI' },

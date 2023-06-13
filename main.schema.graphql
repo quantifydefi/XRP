@@ -133,6 +133,7 @@ type Chain {
   name: String!
   rpcUrl: String!
   symbol: String!
+  weth: UniswapToken!
 }
 
 type DailyChart {
