@@ -6,14 +6,29 @@ import emitter from '~/types/emitter'
 import useERC20 from '~/composables/useERC20'
 import { ERC20Balance } from '~/types/global'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-export default function (networkId: Ref<string>, dex: Ref<string>, sortBy: Ref<string>, sort: Ref<string>) {
+export default function (
+  networkId: Ref<string>,
+  dex: Ref<string>,
+  sortBy: Ref<string>,
+  sort: Ref<string>,
+  customWalletAddress: Ref<string | null>
+) {
   // STATE
   const loading = ref<boolean>(true)
   const pageNumber = ref<number>(0)
   const balanceMap = ref<{ [a: string]: ERC20Balance }>({})
 
   // COMPOSABLES
-  const { account, getCustomProviderByNetworkId, getNetworkById } = inject(WEB3_PLUGIN_KEY) as Web3
+  const {
+    account: metamaskWalletAddress,
+    getCustomProviderByNetworkId,
+    getNetworkById,
+  } = inject(WEB3_PLUGIN_KEY) as Web3
+
+  const account = computed(() =>
+    customWalletAddress.value?.trim().length ? customWalletAddress.value?.trim() : metamaskWalletAddress.value
+  )
+
   const { result, onResult } = useQuery(
     ScreenerGQL,
     () => ({

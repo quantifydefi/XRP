@@ -38,6 +38,19 @@
           </v-btn>
         </v-btn-toggle>
       </v-col>
+      <v-col cols="3" class="pb-0 my-0">
+        <v-text-field
+          v-model="customWalletAddress"
+          solo
+          autofocus
+          dense
+          hide-details
+          clearable
+          single-line
+          placeholder="Wallet Address"
+          prepend-inner-icon="mdi-magnify"
+        />
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -46,6 +59,7 @@
           :dex-id="selectedDexId"
           :network-id="selectedChainId"
           :aave-pools="aavePoolsMap"
+          :custom-wallet-address="customWalletAddress"
         />
       </v-col>
       <v-col cols="3">
@@ -73,6 +87,7 @@ export default defineComponent({
     const searchString = ref('')
     const selectedChainId = ref('ethereum')
     const selectedDexId = ref('uniswap_v3')
+    const customWalletAddress = ref<string | null>(null)
     const selectedNetwork = computed<Chain | null>(
       () => allNetworks.value.find((elem) => elem.id === selectedChainId.value) ?? null
     )
@@ -86,6 +101,7 @@ export default defineComponent({
       allNetworks,
       selectedDexId,
       searchString,
+      customWalletAddress,
       selectedChainId,
       selectedNetwork,
       aavePoolsMap,
