@@ -38,18 +38,11 @@
           </v-btn>
         </v-btn-toggle>
       </v-col>
-      <v-col cols="3" class="pb-0 my-0">
-        <v-text-field
-          v-model="customWalletAddress"
-          solo
-          autofocus
-          dense
-          hide-details
-          clearable
-          single-line
-          placeholder="Wallet Address"
-          prepend-inner-icon="mdi-magnify"
-        />
+
+      <v-col cols="3" class="pt-2">
+        <div class="text-right">
+          <custom-wallet-indicator selected-chain-id="ethereum" />
+        </div>
       </v-col>
     </v-row>
     <v-row>
@@ -59,7 +52,6 @@
           :dex-id="selectedDexId"
           :network-id="selectedChainId"
           :aave-pools="aavePoolsMap"
-          :custom-wallet-address="customWalletAddress"
         />
       </v-col>
       <v-col cols="3">
@@ -72,14 +64,16 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { computed, defineComponent, inject, ref, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref } from '@nuxtjs/composition-api'
 import ScreenerGrid from '~/components/ScreenerGrid.vue'
 import { Chain } from '~/types/apollo/main/types'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import useAavePools, { AavePoolModel } from '~/composables/useAavePools'
+import CustomWalletIndicator from '~/components/common/CustomWalletIndicator.vue'
 
 export default defineComponent({
   components: {
+    CustomWalletIndicator,
     ScreenerGrid,
   },
   setup() {
@@ -87,7 +81,6 @@ export default defineComponent({
     const searchString = ref('')
     const selectedChainId = ref('ethereum')
     const selectedDexId = ref('uniswap_v3')
-    const customWalletAddress = ref<string | null>(null)
     const selectedNetwork = computed<Chain | null>(
       () => allNetworks.value.find((elem) => elem.id === selectedChainId.value) ?? null
     )
@@ -101,7 +94,6 @@ export default defineComponent({
       allNetworks,
       selectedDexId,
       searchString,
-      customWalletAddress,
       selectedChainId,
       selectedNetwork,
       aavePoolsMap,

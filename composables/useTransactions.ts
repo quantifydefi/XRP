@@ -1,10 +1,11 @@
 import { plainToClass } from 'class-transformer'
 import { useQuery } from '@vue/apollo-composable/dist'
-import { computed, inject, reactive, Ref, ref, watch } from '@nuxtjs/composition-api'
+import { computed, inject, reactive, Ref, ref, useStore, watch } from '@nuxtjs/composition-api'
 import { TransactionsGQL } from '~/apollo/main/portfolio.query.graphql'
 
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { LogEvent, TransactionItem, TxDetail } from '~/types/apollo/main/types'
+import { State } from '~/types/state'
 
 export class TransactionModel implements TransactionItem {
   readonly blockSignedAt!: string
@@ -83,15 +84,26 @@ export class TransactionModel implements TransactionItem {
   }
 }
 
-export default function () {
+export default function (chainId: Ref<number>) {
   // STATE
+  const { state } = useStore<State>()
   const loading = ref(true)
   const currentPage = ref(1)
   const hasMore = ref(false)
   const pagination = reactive({ page: 0, total: 1, perPage: 15, visible: 30 })
 
   // COMPOSABLES
-  const { account, walletReady, chainId } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { account: metamaskWalletAddress, walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
+
+  const customWalletAddress = computed(
+    () =>
+      state.configs.globalSearchResult.find((elem) => elem.network.chainIdentifier === chainId.value)?.searchString ??
+      null
+  )
+
+  const account = computed(() =>
+    customWalletAddress.value?.trim().length ? customWalletAddress.value?.trim() : metamaskWalletAddress.value
+  )
 
   const { result, error, onResult } = useQuery(
     TransactionsGQL,

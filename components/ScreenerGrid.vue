@@ -198,7 +198,6 @@ type ScreenerItemObserver = Pool & {
 }
 type Props = {
   search: string | null
-  customWalletAddress: string | null
   networkId: string
   dexId: string
   aavePools: { [a: string]: AavePoolModel }
@@ -209,7 +208,6 @@ export default defineComponent<Props>({
     search: { type: String as PropType<string | null>, default: null, required: false },
     networkId: { type: String as PropType<string>, default: 'ethereum' },
     dexId: { type: String as PropType<string>, default: 'uniswap_v3' },
-    customWalletAddress: { type: String as PropType<string | null>, default: null },
     aavePools: { type: Object as PropType<{ [a: string]: AavePoolModel }>, default: () => ({}) },
   },
 
@@ -224,14 +222,7 @@ export default defineComponent<Props>({
     const order = ref<string>('asc')
     const dex = toRefs(props).dexId
     const network = toRefs(props).networkId
-    const customWalletAddressRef = toRefs(props).customWalletAddress
-    const { screenerData, currentPage, balanceMap, loading } = useTokenScreener(
-      network,
-      dex,
-      sortBy,
-      order,
-      customWalletAddressRef
-    )
+    const { screenerData, currentPage, balanceMap, loading } = useTokenScreener(network, dex, sortBy, order)
 
     watchEffect(
       () =>

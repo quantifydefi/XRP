@@ -3,6 +3,7 @@ import { Context } from '@nuxt/types'
 import { Chain } from '~/types/apollo/main/types'
 import { SupportedChainsGQL } from '~/apollo/main/config.query.graphql'
 import { ConfigState } from '~/types/state'
+import { SearchResult } from '~/types/global'
 
 const defaultChain: Chain = {
   weth: {
@@ -32,12 +33,12 @@ export const state = () =>
     chains: [],
     protocols: [],
     balancesChains: [1, 56, 137, 250, 10000],
+    globalSearchResult: [],
   } as ConfigState)
 
 export const mutations: MutationTree<ConfigState> = {
-  SET_CONFIG: (state, { chains }) => {
-    state.chains = chains
-  },
+  SET_CONFIG: (state, { chains }) => (state.chains = chains),
+  SET_SEARCH_RESULT: (state, { searchResult }) => (state.globalSearchResult = searchResult),
 }
 
 export const actions: ActionTree<ConfigState, ConfigState> = {
@@ -49,6 +50,10 @@ export const actions: ActionTree<ConfigState, ConfigState> = {
         commit('SET_CONFIG', query.data)
       }
     } catch {}
+  },
+
+  async searchResult({ commit }, searchResult: SearchResult) {
+    await commit('SET_SEARCH_RESULT', { searchResult })
   },
 }
 export const getters: GetterTree<ConfigState, ConfigState> = {

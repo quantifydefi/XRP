@@ -32,7 +32,23 @@
       </client-only>
 
       <v-spacer />
+
       <client-only>
+        <div>
+          <v-text-field
+            solo
+            rounded
+            dense
+            hide-details
+            single-line
+            placeholder="Search"
+            prepend-inner-icon="mdi-magnify"
+            @click="onInitSearch"
+          />
+        </div>
+        <!--        <v-btn text tile @click="searchOverlay = !searchOverlay">
+          <v-icon size="20" @click="onInitSearch">mdi-magnify</v-icon>
+        </v-btn>-->
         <gas-info class="hidden-xs-and-down" />
         <network-selection />
       </client-only>
@@ -45,6 +61,8 @@
       </v-container>
     </v-main>
     <wallet-select-dialog />
+
+    <global-search ref="globalSearchComponentRef" />
 
     <v-navigation-drawer v-model="drawer" fixed temporary>
       <v-list elevation="0">
@@ -71,9 +89,11 @@ import WalletSelectDialog from '~/components/common/WalletSelectDialog.vue'
 import { State } from '~/types/state'
 import MainFooter from '~/components/common/ui/footers/MainFooter.vue'
 import NetworkSelection from '~/components/common/NetworkSelection.vue'
+import GlobalSearch from '~/components/common/GlobalSearch.vue'
 
 export default defineComponent({
   components: {
+    GlobalSearch,
     NetworkSelection,
     MainFooter,
     WalletSelectDialog,
@@ -82,7 +102,9 @@ export default defineComponent({
   },
   setup() {
     // STATE
+    const searchOverlay = ref(true)
     const notificationComponent = ref<Notification>()
+    const globalSearchComponentRef = ref<any>(null)
     const drawer = ref(false)
     const links = ref([
       { name: 'Aave', to: '/markets/aave' },
@@ -98,10 +120,25 @@ export default defineComponent({
     const { state } = useStore<State>()
     useInitTheme()
 
+    const onInitSearch = () => {
+      try {
+        globalSearchComponentRef.value.openDialog()
+      } catch (e) {}
+    }
+
     // COMPUTED
     const imageUrl = computed(() => `/img/logo/evmfinance-logo.svg`)
 
-    return { title: state.configs.title, links, notificationComponent, imageUrl, drawer }
+    return {
+      title: state.configs.title,
+      links,
+      notificationComponent,
+      imageUrl,
+      drawer,
+      searchOverlay,
+      globalSearchComponentRef,
+      onInitSearch,
+    }
   },
 })
 </script>

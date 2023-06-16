@@ -1,4 +1,4 @@
-import { ref, Ref, computed, watch, inject } from '@nuxtjs/composition-api'
+import { ref, Ref, computed, watch, inject, useStore } from '@nuxtjs/composition-api'
 import { useQuery, useSubscription } from '@vue/apollo-composable/dist'
 import { Pool } from '@/types/apollo/main/types'
 import { ScreenerGQL, PriceStreamGQL } from '~/apollo/main/token.query.graphql'
@@ -6,14 +6,10 @@ import emitter from '~/types/emitter'
 import useERC20 from '~/composables/useERC20'
 import { ERC20Balance } from '~/types/global'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
-export default function (
-  networkId: Ref<string>,
-  dex: Ref<string>,
-  sortBy: Ref<string>,
-  sort: Ref<string>,
-  customWalletAddress: Ref<string | null>
-) {
+import { State } from '~/types/state'
+export default function (networkId: Ref<string>, dex: Ref<string>, sortBy: Ref<string>, sort: Ref<string>) {
   // STATE
+  const { state } = useStore<State>()
   const loading = ref<boolean>(true)
   const pageNumber = ref<number>(0)
   const balanceMap = ref<{ [a: string]: ERC20Balance }>({})
@@ -24,6 +20,10 @@ export default function (
     getCustomProviderByNetworkId,
     getNetworkById,
   } = inject(WEB3_PLUGIN_KEY) as Web3
+
+  const customWalletAddress = computed(
+    () => state.configs.globalSearchResult.find((elem) => elem.network.id === networkId.value)?.searchString ?? null
+  )
 
   const account = computed(() =>
     customWalletAddress.value?.trim().length ? customWalletAddress.value?.trim() : metamaskWalletAddress.value
@@ -90,5 +90,5 @@ export default function (
     }
   })
 
-  return { screenerData, currentPage, loading, balanceMap, nextPage }
+  return { screenerData, currentPage, loading, balanceMap, customWalletAddress, nextPage }
 }

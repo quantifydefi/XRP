@@ -3,9 +3,9 @@
     <v-card-title v-if="chainData" class="pa-0 ma-0">
       <v-col class="d-flex">
         <v-avatar size="24px">
-          <v-img :src="chainData.logoUrl" :lazy-src="chainData.logoUrl"></v-img>
+          <v-img :src="$imageUrlBySymbol(chainData.symbol)" @error="$setAltImageUrl"></v-img>
         </v-avatar>
-        <h4 class="text-subtitle-1 pl-3 text-truncate" v-text="chainData.label" />
+        <h4 class="text-subtitle-1 pl-3 text-truncate" v-text="chainData.name" />
       </v-col>
       <v-col cols="4" class="text-right">
         <h4

@@ -1,4 +1,5 @@
 import { Chain, GasStats } from './apollo/main/types'
+import { SearchResult } from '~/types/global'
 
 export type ThemeOptions = 'dark' | 'light'
 
@@ -8,6 +9,7 @@ export interface ConfigState {
   chains: Chain[]
   balancesChains: number[]
   protocols: { name: string; symbol: string; id: string }[]
+  globalSearchResult: SearchResult[]
 }
 
 export interface UiState {
