@@ -15,7 +15,10 @@
             <v-row class="pa-2">
               <v-col class="d-flex" lg="3">
                 <v-avatar size="24px">
-                  <v-img :src="poolElem.chain.logoUrl" :lazy-src="poolElem.chain.logoUrl"></v-img>
+                  <v-img
+                    :src="$imageUrlBySymbol(poolElem.chain.symbol)"
+                    :lazy-src="$imageUrlBySymbol(poolElem.chain.symbol)"
+                  />
                 </v-avatar>
                 <h4 class="text-subtitle-1 pl-3 text-truncate">{{ poolElem.chain.name }}</h4>
               </v-col>

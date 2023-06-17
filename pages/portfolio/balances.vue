@@ -1,22 +1,32 @@
 <template>
   <v-row no-gutters justify="center">
     <v-col cols="12" md="10">
-      <h1 class="text-h4">
-        DeFi Balances
-        <info-tooltip :text="messages.tooltips.balanceHeaderDesc" />
-      </h1>
+      <v-row no-gutters>
+        <v-col>
+          <h1 class="text-h4">
+            DeFi Balances
+            <info-tooltip :text="messages.tooltips.balanceHeaderDesc" />
+          </h1>
+        </v-col>
 
-      <v-row v-if="!walletReady" justify="center" no-gutters class="pt-3">
+        <v-col cols="3" class="pt-2">
+          <div class="text-right">
+            <custom-wallet-indicator selected-chain-id="ethereum" />
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="!isWalletReady" justify="center" no-gutters class="pt-3">
         <v-col cols="12" sm="10" lg="6">
           <connect-wallet-memo />
         </v-col>
       </v-row>
 
-      <v-row v-else justify="center" class="pt-3">
+      <v-row v-else justify="center">
         <v-col>
           <v-row>
             <v-col lg="4" cols="12">
-              <v-card class="py-2 px-4" height="270" tile outlined>
+              <v-card class="py-2 px-4" height="300" tile outlined>
                 <v-dialog v-model="loading" width="450">
                   <v-card tile outlined class="pa-6">
                     <v-row no-gutters>
@@ -53,7 +63,7 @@
                               {{ elem.name }}
                             </div>
                           </td>
-                          <td :class="textClass" v-text="$f(elem.total, { pre: '$ ', minDigits: 2 })" />
+                          <td class="grey--text" v-text="$f(elem.total, { pre: '$ ', minDigits: 2 })" />
                         </tr>
                       </tbody>
                     </template>
@@ -92,10 +102,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useRoute, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref, useRoute } from '@nuxtjs/composition-api'
 import usePortfolioBalances from '~/composables/usePortfolioBalances'
 import PortfolioBalanceGrid from '~/components/portfolio/PortfolioBalanceGrid.vue'
-import { State } from '~/types/state'
 import BalancesChart from '~/components/portfolio/BalancesChart.vue'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import BalanceProtocols from '~/components/portfolio/BalanceProtocols.vue'
@@ -103,21 +112,27 @@ import ConnectWalletMemo from '~/components/common/ConnectWalletMemo.vue'
 import { useMetaTags } from '~/composables/useMetaTags'
 import InfoTooltip from '~/components/common/ui/InfoTooltip.vue'
 import { messages } from '~/constants/messages'
+import CustomWalletIndicator from '~/components/common/CustomWalletIndicator.vue'
 
 export default defineComponent({
-  components: { InfoTooltip, ConnectWalletMemo, BalanceProtocols, BalancesChart, PortfolioBalanceGrid },
+  components: {
+    CustomWalletIndicator,
+    InfoTooltip,
+    ConnectWalletMemo,
+    BalanceProtocols,
+    BalancesChart,
+    PortfolioBalanceGrid,
+  },
   setup() {
     // COMPOSABLES
-    const { walletReady } = inject(WEB3_PLUGIN_KEY) as Web3
-    const { getters, state, dispatch } = useStore<State>()
-    const { loading, balanceData, error, totalBalance } = usePortfolioBalances()
+    const { getNetworkByChainNumber } = inject(WEB3_PLUGIN_KEY) as Web3
+    const { loading, balanceData, error, totalBalance, isWalletReady } = usePortfolioBalances()
 
     // COMPUtED
-    const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
     const stats = computed(() =>
       balanceData.value.map((item) => ({
-        name: getters['configs/chainInfo'](item.chainId)?.label ?? '',
-        symbol: getters['configs/chainInfo'](item.chainId)?.symbol ?? '',
+        name: getNetworkByChainNumber(item.chainId)?.name ?? '',
+        symbol: getNetworkByChainNumber(item.chainId)?.symbol ?? '',
         total: item.items.reduce((n, { quote }) => n + quote, 0),
       }))
     )
@@ -125,7 +140,7 @@ export default defineComponent({
     // META TAGS
     useMetaTags('balances', useRoute().value.path)
     const dialog = ref(true)
-    return { loading, balanceData, error, stats, textClass, totalBalance, walletReady, dispatch, messages, dialog }
+    return { loading, balanceData, error, stats, totalBalance, isWalletReady, messages, dialog }
   },
   head: {},
 })

@@ -10,7 +10,16 @@ export default function () {
 
   // COMPOSABLES
   const { state } = useStore<State>()
-  const { account } = inject(WEB3_PLUGIN_KEY) as Web3
+  const { account: metamaskWalletAddress } = inject(WEB3_PLUGIN_KEY) as Web3
+
+  const customWalletAddress = computed(
+    () => state.configs.globalSearchResult.find((elem) => elem.network.chainIdentifier === 1)?.searchString ?? null
+  )
+  const account = computed(() =>
+    customWalletAddress.value?.trim().length ? customWalletAddress.value?.trim() : metamaskWalletAddress.value
+  )
+  const isWalletReady = computed(() => account.value.length)
+
   const { result, error, onResult } = useQuery(
     BalancesGQL,
     () => ({ chainIds: state.configs.balancesChains, address: account.value }),
@@ -34,6 +43,7 @@ export default function () {
   return {
     balanceData,
     totalBalance,
+    isWalletReady,
     error,
     loading,
   }

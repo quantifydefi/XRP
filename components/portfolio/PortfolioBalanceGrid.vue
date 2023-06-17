@@ -44,32 +44,29 @@
 
       <template #[`item.balance`]="{ item }">
         <span
-          :class="textClass"
+          class="grey--text"
           v-text="$f(item.balance / Math.pow(10, item.contractDecimals), { minDigits: 2, maxDigits: 4 })"
         />
       </template>
 
       <template #[`item.quoteRate`]="{ item }">
         <span
-          :class="textClass"
+          class="grey--text"
           v-text="item.disableQuoteRate ? '-' : $f(item.quoteRate, { pre: '$ ', minDigits: 2, maxDigits: 6 })"
         />
       </template>
 
       <template #[`item.quote`]="{ item }">
-        <span
-          :class="textClass"
-          v-text="item.disableQuoteRate ? '-' : $f(item.quote, { pre: '$ ', minDigits: 2, maxDigits: 4 })"
-        />
+        <span v-text="item.disableQuoteRate ? '-' : $f(item.quote, { pre: '$ ', minDigits: 2, maxDigits: 4 })" />
       </template>
     </v-data-table>
     <v-divider />
   </v-card>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, useStore } from '@nuxtjs/composition-api'
-import { BalanceItem, Balance, Chain } from '~/types/apollo/main/types'
-import { State } from '~/types/state'
+import { computed, defineComponent, inject, PropType } from '@nuxtjs/composition-api'
+import { BalanceItem, Balance } from '~/types/apollo/main/types'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 
 type Props = {
   data: Balance
@@ -77,16 +74,12 @@ type Props = {
 
 export default defineComponent<Props>({
   props: {
-    data: {
-      type: Object as PropType<Balance>,
-      default: () => {},
-    },
+    data: { type: Object as PropType<Balance>, default: () => ({}) },
   },
 
   setup(props) {
     // COMPOSABLES
-    const { state, getters } = useStore<State>()
-
+    const { getNetworkByChainNumber } = inject(WEB3_PLUGIN_KEY) as Web3
     // DATA
     const columns = [
       {
@@ -125,10 +118,8 @@ export default defineComponent<Props>({
     // COMPUTED
     const totalBalance = computed(() => props.data.items.reduce((n, { quote }) => n + quote, 0))
     const balanceItems = computed<BalanceItem[]>(() => props.data.items.filter((elem) => elem.quote > 0))
-    const textClass = computed(() => state.ui[state.ui.theme].innerCardLighten)
-    const chainData: Ref<Chain> = computed(() => getters['configs/chainInfo'](props.data.chainId))
-
-    return { columns, textClass, balanceItems, height, chainData, totalBalance }
+    const chainData = computed(() => getNetworkByChainNumber(props.data.chainId))
+    return { columns, balanceItems, height, chainData, totalBalance }
   },
 })
 </script>

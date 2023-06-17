@@ -29,6 +29,7 @@ export type Web3 = {
   currentChain: Ref<Chain | null>
   getCustomProviderByNetworkId: (networkId: string) => ethers.providers.JsonRpcProvider | null
   getNetworkById: (networkId: string) => Chain | null
+  getNetworkByChainNumber: (chainIdentifier: number) => Chain | null
 }
 
 type PluginState = {
@@ -108,6 +109,14 @@ export default (context: Context): void => {
       return null
     }
 
+    const getNetworkByChainNumber = (chainIdentifier: number): Chain | null => {
+      const network = allNetworks.value.find((elem) => elem.chainIdentifier === chainIdentifier)
+      if (network) {
+        return network
+      }
+      return null
+    }
+
     const disconnectWallet = () => {
       if (!pluginState.connector) {
         throw new Error('Cannot disconnect a wallet. No wallet currently connected.')
@@ -151,6 +160,7 @@ export default (context: Context): void => {
       resetErrors,
       getCustomProviderByNetworkId,
       getNetworkById,
+      getNetworkByChainNumber,
       ...toRefs(pluginState),
       account,
       chainId,

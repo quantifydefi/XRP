@@ -101,6 +101,8 @@ export default function (chainId: Ref<number>) {
       null
   )
 
+  const isWalletReady = computed(() => walletReady.value || customWalletAddress.value?.length)
+
   const account = computed(() =>
     customWalletAddress.value?.trim().length ? customWalletAddress.value?.trim() : metamaskWalletAddress.value
   )
@@ -175,6 +177,7 @@ export default function (chainId: Ref<number>) {
     hasMore,
     currentPage,
     pagination,
+    isWalletReady,
 
     isInboundRenderer,
   }

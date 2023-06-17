@@ -32,7 +32,7 @@ export const state = () =>
     gasStats: null,
     chains: [],
     protocols: [],
-    balancesChains: [1, 56, 137, 250, 10000],
+    balancesChains: [1, 56, 137, 250, 43114, 10000],
     globalSearchResult: [],
   } as ConfigState)
 

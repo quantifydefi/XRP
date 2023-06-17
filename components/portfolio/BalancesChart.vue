@@ -6,6 +6,7 @@
 import {
   computed,
   defineComponent,
+  inject,
   onBeforeUnmount,
   onMounted,
   PropType,
@@ -16,6 +17,7 @@ import {
 } from '@nuxtjs/composition-api'
 import { Balance } from '~/types/apollo/main/types'
 import { State } from '~/types/state'
+import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 let am4core: any = null
 let am4charts: any = null
 let am4themesAnimated: any = null
@@ -32,15 +34,13 @@ type Props = {
 
 export default defineComponent<Props>({
   props: {
-    balances: {
-      type: Array as PropType<Balance[]>,
-      default: () => [],
-    },
+    balances: { type: Array as PropType<Balance[]>, default: () => [] },
   },
 
   setup(props) {
     const { env } = useContext()
-    const { state, getters } = useStore<State>()
+    const { state } = useStore<State>()
+    const { getNetworkByChainNumber } = inject(WEB3_PLUGIN_KEY) as Web3
     const chartHeight = ref(240)
     const chartDiv = ref(null)
 
@@ -59,7 +59,7 @@ export default defineComponent<Props>({
             breakDown.push({ category: `${bal.contractTickerSymbol.slice(0, 16)}`, value: val })
           }
         })
-        const info = getters['configs/chainInfo'](elem.chainId)
+        const info = getNetworkByChainNumber(elem.chainId)
         if (info) {
           chartData.push({
             category: info.name,
@@ -103,7 +103,7 @@ export default defineComponent<Props>({
       pieChart = chart.createChild(am4charts.PieChart)
       pieChart.data = data.value
       pieChart.innerRadius = am4core.percent(65)
-
+      pieChart.width = 500
       // Add and configure Series
       pieSeries = pieChart.series.push(new am4charts.PieSeries())
       pieSeries.dataFields.value = 'value'

@@ -4,7 +4,7 @@
       <v-col>
         <v-btn-toggle v-model="selectedChainId" dark mandatory tile color="primary">
           <v-btn
-            v-for="(item, index) in allNetworks"
+            v-for="(item, index) in supportedNetworks"
             :key="index"
             :value="item.id"
             tile
@@ -46,7 +46,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col lg="9" md="6">
         <screener-grid
           :search="searchString"
           :dex-id="selectedDexId"
@@ -54,7 +54,7 @@
           :aave-pools="aavePoolsMap"
         />
       </v-col>
-      <v-col cols="3">
+      <v-col v-if="$vuetify.breakpoint.mdAndUp" lg="3" md="6">
         <alert-stream :network-id="selectedChainId" />
       </v-col>
     </v-row>
@@ -78,6 +78,9 @@ export default defineComponent({
   },
   setup() {
     const { allNetworks } = inject(WEB3_PLUGIN_KEY) as Web3
+    const supportedNetworks = computed(() =>
+      allNetworks.value.filter((elem) => ['ethereum', 'polygon-pos', 'binance-smart-chain'].includes(elem.id))
+    )
     const searchString = ref('')
     const selectedChainId = ref('ethereum')
     const selectedDexId = ref('uniswap_v3')
@@ -97,6 +100,7 @@ export default defineComponent({
       selectedChainId,
       selectedNetwork,
       aavePoolsMap,
+      supportedNetworks,
     }
   },
   head: {},

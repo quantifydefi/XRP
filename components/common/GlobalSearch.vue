@@ -13,7 +13,15 @@
       </div>
       <v-row class="px-4">
         <v-col>
-          <v-text-field v-model="search" solo dense clearable hide-details placeholder="Search for wallet">
+          <v-text-field
+            v-model="search"
+            solo
+            dense
+            clearable
+            hide-details
+            placeholder="Search for wallet"
+            @keydown.enter.prevent="onSearch"
+          >
             <template #append-outer>
               <v-btn depressed style="top: -6px" @click="onSearch">
                 <v-icon size="20"> mdi-magnify</v-icon>
@@ -65,18 +73,17 @@
   </v-dialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref, useStore } from '@nuxtjs/composition-api'
 import { ethers } from 'ethers'
 import { Web3, WEB3_PLUGIN_KEY } from '~/plugins/web3/web3'
 import { Chain } from '~/types/apollo/main/types'
 import { SearchResult } from '~/types/global'
 import { State } from '~/types/state'
-
+import emitter from '~/types/emitter'
 export default defineComponent({
   setup() {
     const { state, dispatch } = useStore<State>()
     const { allNetworks, getCustomProviderByNetworkId } = inject(WEB3_PLUGIN_KEY) as Web3
-
     const searchResult = computed({
       get: () => state.configs.globalSearchResult,
       set: (value: any) => dispatch('configs/searchResult', value),
@@ -146,8 +153,7 @@ export default defineComponent({
     function useSearch() {
       dialog.value = false
     }
-
-    watch(search, () => onSearch())
+    emitter.on('onInitGlobalSearch', () => openDialog())
 
     return {
       loading,
