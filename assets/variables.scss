@@ -203,6 +203,12 @@ input:focus {
   border-radius: 7px;
 }
 
+.v-data-table.row-height-50 td
+{
+  height: 50px !important;
+}
+
+
 // Scroller
 * {
   ::-webkit-scrollbar {

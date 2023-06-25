@@ -106,6 +106,7 @@ export type BalanceItem = {
 
 export type Block = {
   __typename?: 'Block';
+  XRPLedger: XrpLedger;
   blockNumber: Scalars['Int'];
   burnCount: Scalars['Int'];
   events: TransactionEvents;
@@ -618,6 +619,35 @@ export type UniswapTokens = {
   pagination?: Maybe<Pagination>;
 };
 
+export type XrpLedger = {
+  __typename?: 'XRPLedger';
+  eventsCount?: Maybe<Scalars['JSONMap']>;
+  ledger: XrpLedgerData;
+  ledgerHash: Scalars['String'];
+  ledgerIndex: Scalars['Int'];
+  validated: Scalars['Boolean'];
+};
+
+export type XrpLedgerData = {
+  __typename?: 'XRPLedgerData';
+  accepted: Scalars['Boolean'];
+  accountHash: Scalars['String'];
+  closeFlags: Scalars['Int'];
+  closeTime: Scalars['Int'];
+  closeTimeHuman: Scalars['String'];
+  closeTimeResolution: Scalars['Int'];
+  closed: Scalars['Boolean'];
+  hash: Scalars['String'];
+  ledgerHash: Scalars['String'];
+  ledgerIndex: Scalars['String'];
+  parentCloseTime: Scalars['Int'];
+  parentHash: Scalars['String'];
+  seqNum: Scalars['String'];
+  totalCoins: Scalars['String'];
+  totalCoins1: Scalars['String'];
+  transactionHash: Scalars['String'];
+};
+
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -744,6 +774,13 @@ export type BlocksGqlQueryVariables = Exact<{
 
 
 export type BlocksGqlQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, swapCount: number, pairCreatedCount: number, mintCount: number, metrics: { __typename?: 'BlockMetrics', items: Array<{ __typename?: 'BlockMetric', totalLiquidity: number, change1H: number, token0Symbol: string, token1Symbol: string }> } }> };
+
+export type BlocksXrpGqlQueryVariables = Exact<{
+  network: Scalars['String'];
+}>;
+
+
+export type BlocksXrpGqlQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, XRPLedger: { __typename?: 'XRPLedger', ledgerHash: string, eventsCount?: any | null } }> };
 
 export type BlocksStreamGqlSubscriptionVariables = Exact<{
   network: Scalars['String'];

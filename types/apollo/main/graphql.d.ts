@@ -42,6 +42,7 @@ export const ScreenerGQL: DocumentNode;
 export const TimeGQL: DocumentNode;
 export const PriceStreamGQL: DocumentNode;
 export const BlocksGQL: DocumentNode;
+export const BlocksXrpGQL: DocumentNode;
 export const BlocksStreamGQL: DocumentNode;
 
   export default defaultDocument;

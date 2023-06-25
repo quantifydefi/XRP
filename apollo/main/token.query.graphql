@@ -143,6 +143,21 @@ query BlocksGQL($network:String!){
 }
 
 
+query BlocksXrpGQL($network:String!){
+  blocks(network:$network){
+    network
+    blockNumber
+    minedAt
+    txCount
+    XRPLedger {
+      ledgerHash
+      eventsCount
+    }
+  }
+}
+
+
+
 subscription BlocksStreamGQL($network:String!){
   block(network:$network){
     network
@@ -160,6 +175,10 @@ subscription BlocksStreamGQL($network:String!){
         token0Symbol
         token1Symbol
       }
+    }
+    XRPLedger {
+      ledgerHash
+      eventsCount
     }
   }
 }
