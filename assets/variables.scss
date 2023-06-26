@@ -203,10 +203,10 @@ input:focus {
   border-radius: 7px;
 }
 
-.v-data-table.row-height-50 td
-{
-  height: 50px !important;
-}
+//.v-data-table.row-height-50 td
+//{
+//  height: 50px !important;
+//}
 
 
 // Scroller
@@ -246,10 +246,6 @@ tbody {
 .theme--dark.v-data-table {
   background-color: transparent;
   color: #ffffff;
-}
-
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-  height: 32px;
 }
 
 .v-data-table > .v-data-table__wrapper tbody tr.v-data-table__expanded__content {

@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Any: any;
   JSONMap: any;
   Map: any;
 };
@@ -107,6 +108,7 @@ export type BalanceItem = {
 export type Block = {
   __typename?: 'Block';
   XRPLedger: XrpLedger;
+  XRPTransactions: XrpTransactions;
   blockNumber: Scalars['Int'];
   burnCount: Scalars['Int'];
   events: TransactionEvents;
@@ -308,6 +310,7 @@ export type Query = {
   aaveAddresses: Array<AaveAddress>;
   aavePools: Array<AavePool>;
   balances: Array<Balance>;
+  block: Block;
   blocks: Array<Block>;
   chains: Array<Chain>;
   dailyChart: Array<DailyChart>;
@@ -336,6 +339,12 @@ export type QueryAavePoolsArgs = {
 export type QueryBalancesArgs = {
   address: Scalars['String'];
   chainIds: Array<Scalars['Int']>;
+};
+
+
+export type QueryBlockArgs = {
+  blockNumber: Scalars['Int'];
+  network: Scalars['String'];
 };
 
 
@@ -621,7 +630,7 @@ export type UniswapTokens = {
 
 export type XrpLedger = {
   __typename?: 'XRPLedger';
-  eventsCount?: Maybe<Scalars['JSONMap']>;
+  eventsCount?: Maybe<Scalars['Map']>;
   ledger: XrpLedgerData;
   ledgerHash: Scalars['String'];
   ledgerIndex: Scalars['Int'];
@@ -646,6 +655,37 @@ export type XrpLedgerData = {
   totalCoins: Scalars['String'];
   totalCoins1: Scalars['String'];
   transactionHash: Scalars['String'];
+};
+
+export type XrpTransaction = {
+  __typename?: 'XRPTransaction';
+  account: Scalars['String'];
+  amount?: Maybe<Scalars['Any']>;
+  date: Scalars['Int'];
+  destination: Scalars['String'];
+  fee: Scalars['String'];
+  flags: Scalars['Int'];
+  hash: Scalars['String'];
+  inLedger: Scalars['Int'];
+  lastLedgerSequence: Scalars['Int'];
+  ledgerIndex: Scalars['Int'];
+  memos: Array<Maybe<Scalars['Any']>>;
+  meta?: Maybe<Scalars['Any']>;
+  metadata?: Maybe<Scalars['Any']>;
+  offerSequence: Scalars['Int'];
+  sequence: Scalars['Int'];
+  signingPubKey: Scalars['String'];
+  takerGets?: Maybe<Scalars['Any']>;
+  takerPays?: Maybe<Scalars['Any']>;
+  transactionType: Scalars['String'];
+  txnSignature: Scalars['String'];
+  validated?: Maybe<Scalars['Boolean']>;
+  warnings: Array<Maybe<Scalars['Any']>>;
+};
+
+export type XrpTransactions = {
+  __typename?: 'XRPTransactions';
+  items: Array<XrpTransaction>;
 };
 
 export type SupportedChainsGqlQueryVariables = Exact<{ [key: string]: never; }>;
@@ -782,9 +822,17 @@ export type BlocksXrpGqlQueryVariables = Exact<{
 
 export type BlocksXrpGqlQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, XRPLedger: { __typename?: 'XRPLedger', ledgerHash: string, eventsCount?: any | null } }> };
 
+export type BlockGqlQueryVariables = Exact<{
+  network: Scalars['String'];
+  blockNumber: Scalars['Int'];
+}>;
+
+
+export type BlockGqlQuery = { __typename?: 'Query', block: { __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, XRPLedger: { __typename?: 'XRPLedger', ledgerHash: string, eventsCount?: any | null, ledger: { __typename?: 'XRPLedgerData', ledgerHash: string, parentHash: string, transactionHash: string, closeTimeHuman: string, totalCoins: string } }, XRPTransactions: { __typename?: 'XRPTransactions', items: Array<{ __typename?: 'XRPTransaction', hash: string, account: string, amount?: any | null, fee: string, metadata?: any | null }> } } };
+
 export type BlocksStreamGqlSubscriptionVariables = Exact<{
   network: Scalars['String'];
 }>;
 
 
-export type BlocksStreamGqlSubscription = { __typename?: 'Subscription', block: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, swapCount: number, pairCreatedCount: number, mintCount: number, metrics: { __typename?: 'BlockMetrics', items: Array<{ __typename?: 'BlockMetric', totalLiquidity: number, change1H: number, token0Symbol: string, token1Symbol: string }> } }> };
+export type BlocksStreamGqlSubscription = { __typename?: 'Subscription', block: Array<{ __typename?: 'Block', network: string, blockNumber: number, minedAt: number, txCount: number, swapCount: number, pairCreatedCount: number, mintCount: number, metrics: { __typename?: 'BlockMetrics', items: Array<{ __typename?: 'BlockMetric', totalLiquidity: number, change1H: number, token0Symbol: string, token1Symbol: string }> }, XRPLedger: { __typename?: 'XRPLedger', ledgerHash: string, eventsCount?: any | null } }> };

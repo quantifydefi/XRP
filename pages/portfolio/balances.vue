@@ -145,3 +145,8 @@ export default defineComponent({
   head: {},
 })
 </script>
+<style scoped>
+>>> .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+  height: 32px;
+}
+</style>

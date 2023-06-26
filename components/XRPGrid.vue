@@ -15,9 +15,9 @@
         >
           <template #item.blockNumber="{ item }">
             <div>
-              <div class="pink--text">
+              <nuxt-link class="pink--text" :to="`/xrp-explorer/ledger/${item.blockNumber}`">
                 {{ item.blockNumber }}
-              </div>
+              </nuxt-link>
               <div class="grey--text text-caption">
                 {{ item.hashShort }}
               </div>
@@ -30,7 +30,6 @@
             </span>
           </template>
         </v-data-table>
-        <!--        <v-pagination v-model="currentPage" :length="currentPage + 1" class="mt-4" />-->
       </client-only>
     </v-card>
   </div>

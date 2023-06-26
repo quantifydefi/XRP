@@ -156,6 +156,40 @@ query BlocksXrpGQL($network:String!){
   }
 }
 
+query BlockGQL($network:String!, $blockNumber:Int!){
+  block(network:$network, blockNumber: $blockNumber){
+    network
+    blockNumber
+    minedAt
+    txCount
+    XRPLedger {
+      ledgerHash
+      eventsCount
+      ledger {
+        ledgerHash
+        parentHash,
+        transactionHash,
+        closeTimeHuman,
+        totalCoins
+        totalCoins1
+
+      }
+    }
+    XRPTransactions {
+      items {
+        hash
+        account
+        destination
+        transactionType
+        amount
+        fee
+        metadata
+      }
+    }
+  }
+}
+
+
 
 
 subscription BlocksStreamGQL($network:String!){
