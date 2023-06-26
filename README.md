@@ -13,11 +13,11 @@ Here are the key components of a EVM-FINANCE-UI  project:
 
 These components work together to provide a structured and efficient development experience in EVM-FINANCE-UI. By leveraging its conventions and built-in features, you can quickly build powerful Vue.js applications with server-side rendering and static generation capabilities.
 
-## XRP Components Functionality and Description
+## XRP Components functionality and description
 
 **XRP Explorer** component located at ```pages/xrp-explorer/index.vue``` its a very simple Vue component that has a child component **XRPGrid**  ```/components/XRPGrid.vue```
 
-**XRPGrid** Component renders grid and includes logic for all data manipulation. It uses composable ```composables/useXrpScrerener.ts```  that responsible  for fetching live data from  ``` https://staging-graph.evmx.io``` graphQL server.
+**XRPGrid** component renders grid and includes logic for all data manipulation. It uses composable ```composables/useXrpScrerener.ts```  that responsible  for fetching live data from  ``` https://staging-graph.evmx.io``` graphQL server.
 It Starts by fetching data from GraphQL server using ```useQuery``` composable from ``` nuxt/applollo``` module for graphQL
 
 ``` javascript
@@ -31,7 +31,6 @@ It Starts by fetching data from GraphQL server using ```useQuery``` composable f
     loading.value = queryResult.loading
     currentTime.value = new Date().getTime() / 1000
   })
-
 ```
 Also Listening to a new XRP ledgers using websocket and updating ledgers (blocks)
 
@@ -44,7 +43,17 @@ watch(liveBlock, (val: any) => {
   const newData: BlockObserver[] = val?.block ?? []
   addNewRecords(newData)
 })
+```
 
+**XRP Ledger Summary** component located at ```pages/xrp-explorer/ledger/_id.vue```. It displays basic ledger and each transaction  information 
+This component starts with fetching Ledger data for single ledger from back end server
+
+```javascript
+const route = useRoute()
+const ledgerIndex = computed(() => route.value.params?.id ?? 0)
+const {result} = useQuery(BlockGQL, () => ({network: 'ripple', blockNumber: ledgerIndex.value}), {
+    fetchPolicy: 'no-cache',
+})
 ```
 
 ## Build Setup
