@@ -4,7 +4,7 @@
       <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = true"></v-app-bar-nav-icon>
 
       <v-avatar size="32" class="rounded-0">
-        <v-img :src="imageUrl" :lazy-src="imageUrl"/>
+        <v-img src="/img/logo/evmfinance-logo.svg" lazy-src="/img/logo/evmfinance-logo.svg"/>
       </v-avatar>
 
       <nuxt-link to="/" class="text-decoration-none mr-10" style="color: inherit">
@@ -46,40 +46,23 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
+
+       <client-only>
+      <main-footer/>
+    </client-only>
   </v-app>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, ref} from '@nuxtjs/composition-api'
-
+import { defineComponent, ref} from '@nuxtjs/composition-api'
+import MainFooter from "~/composables/ui/MainFooter.vue";
 export default defineComponent({
-  components: {},
+  components: {MainFooter},
   setup() {
-    // STATE
-    const searchOverlay = ref(true)
-    const globalSearchComponentRef = ref<any>(null)
+
     const drawer = ref(false)
-    const links = ref([
-      {name: 'Aave', to: '/markets/aave'},
-      {name: 'Trade', to: '/swap'},
-      {name: 'Verse', to: '/verse'},
-      {name: 'Balances', to: '/portfolio/balances'},
-      {name: 'Transactions', to: '/portfolio/transactions'},
-      {name: 'Screener', to: '/screener'},
-      {name: 'XRP-Explorer', to: '/xrp-explorer'},
-      {name: 'About', to: '/about'},
-    ])
-
-    // COMPUTED
-    const imageUrl = computed(() => `/img/logo/evmfinance-logo.svg`)
-
-    return {
-      links,
-      imageUrl,
-      drawer,
-      searchOverlay,
-      globalSearchComponentRef,
-    }
+    const links = ref([{name: 'XRP-Explorer', to: '/xrp-explorer'}])
+    return {links, drawer}
   },
 })
 </script>

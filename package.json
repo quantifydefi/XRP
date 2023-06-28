@@ -16,14 +16,15 @@
     "@amcharts/amcharts4": "^4.10.25",
     "@nuxtjs/apollo": "^4.0.1-rc.5",
     "@nuxtjs/composition-api": "^0.33.1",
+    "@vue/apollo-composable": "^4.0.0-alpha.19",
     "core-js": "^3.25.3",
+    "graphql-tag": "^2.12.5",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
-    "vuetify": "^2.6.10",
-    "@vue/apollo-composable": "^4.0.0-alpha.19",
-    "graphql-tag": "^2.12.5"
+    "vue-typer": "^1.2.0",
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",

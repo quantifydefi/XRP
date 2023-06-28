@@ -1,48 +1,11 @@
 import {ref, computed, watch} from '@nuxtjs/composition-api'
 import { useQuery, useSubscription } from '@vue/apollo-composable/dist'
 import { gql } from 'graphql-tag'
-import { Block } from '@/types/apollo/main/types'
+import {Block} from "~/types/graph";
 
 type BlockObserver = Block & {
   updateOption?: { status: boolean; color: string | null }
 }
-
-/*
-const query = gql`
-  query BlockGQL($network: String!, $blockNumber: Int!) {
-    block(network: $network, blockNumber: $blockNumber) {
-      network
-      blockNumber
-      minedAt
-      txCount
-      XRPLedger {
-        ledgerHash
-        eventsCount
-        ledger {
-          ledgerHash
-          parentHash
-          transactionHash
-          closeTimeHuman
-          totalCoins
-          totalCoins1
-        }
-      }
-      XRPTransactions {
-        items {
-          hash
-          account
-          destination
-          transactionType
-          amount
-          fee
-          metadata
-        }
-      }
-    }
-  }
-`
-*/
-
 
 const query = gql`
     query BlocksXrpGQL($network:String!){

@@ -105,15 +105,49 @@
 <script lang="ts">
 import { computed, defineComponent, useRoute, useRouter } from '@nuxtjs/composition-api'
 import { useQuery } from '@vue/apollo-composable/dist'
-import { BlockGQL } from '~/apollo/main/token.query.graphql'
-import { Block } from '~/types/apollo/main/types'
+import {gql} from 'graphql-tag';
+import {Block} from "~/types/graph";
+
+const query = gql`
+  query BlockGQL($network: String!, $blockNumber: Int!) {
+    block(network: $network, blockNumber: $blockNumber) {
+      network
+      blockNumber
+      minedAt
+      txCount
+      XRPLedger {
+        ledgerHash
+        eventsCount
+        ledger {
+          ledgerHash
+          parentHash
+          transactionHash
+          closeTimeHuman
+          totalCoins
+          totalCoins1
+        }
+      }
+      XRPTransactions {
+        items {
+          hash
+          account
+          destination
+          transactionType
+          amount
+          fee
+          metadata
+        }
+      }
+    }
+  }
+`
 export default defineComponent({
   components: {},
   setup() {
     const route = useRoute()
     const router = useRouter()
     const ledgerIndex = computed(() => route.value.params?.id ?? 0)
-    const { result } = useQuery(BlockGQL, () => ({ network: 'ripple', blockNumber: ledgerIndex.value }), {
+    const { result } = useQuery(query, () => ({ network: 'ripple', blockNumber: ledgerIndex.value }), {
       fetchPolicy: 'no-cache',
     })
     const ledger = computed<Block | null>(() => result.value?.block ?? null)

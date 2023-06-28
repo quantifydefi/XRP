@@ -17,10 +17,8 @@ export default {
   ssr: true,
   plugins: [
     '~/plugins/helper.ts',
-
     '~/plugins/apolloClient.ts',
-
-    // '~/plugins/typer.client.ts',
+    '~/plugins/typer.client.ts'
   ],
 
   components: true,
