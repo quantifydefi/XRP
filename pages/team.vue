@@ -108,8 +108,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
-import { useMetaTags } from '~/composables/useMetaTags'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 import TeamMemberProfileDialog from '~/components/team/TeamMemberProfileDialog.vue'
 import { TeamMember } from '~/types/team'
 
@@ -281,9 +280,6 @@ export default defineComponent({
         member.bioIsVisible = bioIsVisible
       }
     }
-
-    // META TAGS
-    useMetaTags('teams', useRoute().value.path)
 
     return { team, advisors, toggleBio }
   },

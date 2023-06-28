@@ -1,11 +1,45 @@
-import { ref, computed, watch } from '@nuxtjs/composition-api'
-import { useQuery, useSubscription } from '@vue/apollo-composable/dist'
+import { ref, computed } from '@nuxtjs/composition-api'
+import { useQuery } from '@vue/apollo-composable/dist'
+import { gql } from 'graphql-tag'
 import { Block } from '@/types/apollo/main/types'
-import { BlocksXrpGQL, BlocksStreamGQL } from '~/apollo/main/token.query.graphql'
 
 type BlockObserver = Block & {
   updateOption?: { status: boolean; color: string | null }
 }
+
+const query = gql`
+  query BlockGQL($network: String!, $blockNumber: Int!) {
+    block(network: $network, blockNumber: $blockNumber) {
+      network
+      blockNumber
+      minedAt
+      txCount
+      XRPLedger {
+        ledgerHash
+        eventsCount
+        ledger {
+          ledgerHash
+          parentHash
+          transactionHash
+          closeTimeHuman
+          totalCoins
+          totalCoins1
+        }
+      }
+      XRPTransactions {
+        items {
+          hash
+          account
+          destination
+          transactionType
+          amount
+          fee
+          metadata
+        }
+      }
+    }
+  }
+`
 
 export default function () {
   // STATE
@@ -15,14 +49,14 @@ export default function () {
   const blocks = ref<Block[]>([])
   const currentTime = ref<number>(new Date().getTime() / 1000)
 
-  const { onResult } = useQuery(BlocksXrpGQL, () => ({ network: 'ripple' }), {
+  const { onResult } = useQuery(query, () => ({ network: 'ripple' }), {
     fetchPolicy: 'no-cache',
     pollInterval: 60000,
   })
 
-  const { result: liveBlock } = useSubscription(BlocksStreamGQL, () => ({ network: 'ripple' }), {
-    fetchPolicy: 'no-cache',
-  })
+  // const { result: liveBlock } = useSubscription(BlocksStreamGQL, () => ({ network: 'ripple' }), {
+  //   fetchPolicy: 'no-cache',
+  // })
 
   const nextPage = () => pageNumber.value++
 
@@ -38,10 +72,10 @@ export default function () {
     currentTime.value = new Date().getTime() / 1000
   })
 
-  watch(liveBlock, (val: any) => {
+  /*  watch(liveBlock, (val: any) => {
     const newData: BlockObserver[] = val?.block ?? []
     addNewRecords(newData)
-  })
+  }) */
 
   function addNewRecords(newRecords: BlockObserver[]) {
     clearTimeout(updateTimeout)
@@ -66,3 +100,45 @@ export default function () {
 
   return { blocks, currentPage, loading, currentTime, nextPage, testUpdate: addNewRecords }
 }
+
+// query BlocksXrpGQL($network:String!){
+//   blocks(network:$network){
+//     network
+//     blockNumber
+//     minedAt
+//     txCount
+//     XRPLedger {
+//       ledgerHash
+//       eventsCount
+//     }
+//   }
+// }
+//
+
+//
+//
+//
+// subscription BlocksStreamGQL($network:String!){
+//   block(network:$network){
+//     network
+//     blockNumber
+//     minedAt
+//     txCount
+//     swapCount
+//     pairCreatedCount
+//     mintCount
+//     metrics{
+//       items
+//       {
+//         totalLiquidity
+//         change1H
+//         token0Symbol
+//         token1Symbol
+//       }
+//     }
+//     XRPLedger {
+//       ledgerHash
+//       eventsCount
+//     }
+//   }
+// }

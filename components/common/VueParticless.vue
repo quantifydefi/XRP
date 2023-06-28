@@ -1,3 +1,4 @@
+<!--
 <template>
   <client-only>
     <Particles id="tsparticles" :particles-init="particlesInit" :options="options" />
@@ -10,16 +11,12 @@ import { loadFull } from 'tsparticles'
 import { defineComponent } from '@nuxtjs/composition-api'
 import { Engine } from 'tsparticles-engine'
 import Vue from 'vue'
-
 Vue.use(Particles)
-
 export default defineComponent({
-  name: 'VueParticles',
   setup() {
     const particlesInit = async (engine: Engine) => {
       await loadFull(engine)
     }
-
     const particleImages = [
       { src: '/img/logo/evmfinance-logo.svg' },
       { src: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/wbtc.png' },
@@ -28,7 +25,6 @@ export default defineComponent({
       { src: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/ftm.png' },
       { src: 'https://quantifycrypto.s3-us-west-2.amazonaws.com/pictures/crypto-img/32/icon/matic.png' },
     ]
-
     const options = {
       autoPlay: true,
       background: {
@@ -113,13 +109,11 @@ export default defineComponent({
             },
           },
         },
-
         move: {
           angle: {
             offset: 0,
             value: 10,
           },
-
           center: {
             x: 50,
             y: 50,
@@ -175,7 +169,6 @@ export default defineComponent({
           },
           width: 1,
         },
-
         roll: {
           darken: {
             enable: false,
@@ -290,8 +283,8 @@ export default defineComponent({
         },
       },
     }
-
     return { particlesInit, options }
   },
 })
 </script>
+-->

@@ -148,15 +148,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api'
-import { useMetaTags } from '~/composables/useMetaTags'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   name: 'TermsAndConditions',
-  setup() {
-    // META TAGS
-    useMetaTags('termsAndConditions', useRoute().value.path)
-  },
+  setup() {},
   head: {},
 })
 </script>

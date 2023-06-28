@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-
 export default defineComponent({
   name: 'OutlineGlow',
   props: {
@@ -34,7 +33,6 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 }
-
 .outer-glow span {
   position: absolute;
   top: 50%;
@@ -44,19 +42,16 @@ export default defineComponent({
   background: inherit;
   transform: translate(-50%, -50%);
 }
-
 .outer-glow:hover span:nth-child(2) {
   filter: blur(7px);
 }
 .outer-glow:hover span:nth-child(3) {
   filter: blur(14px);
 }
-
 .outer-glow:hover {
   background: linear-gradient(#48a5be, #807bae, #a25fa4);
   animation: rotate 1.5s linear infinite;
 }
-
 @keyframes rotate {
   0% {
     filter: hue-rotate(0deg);

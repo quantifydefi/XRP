@@ -58,19 +58,21 @@ export default defineComponent<Props>({
       }))
     )
 
-    const eventColor = (event: any): string => {
-      const colors: { [key: string]: string } = {
-        OfferCreate: 'green',
-        TicketCreate: 'green',
-        Payment: 'green',
-        NFTokenCreateOffer: 'green',
-        NFTokenCancelOffer: 'red',
-        NFTokenMint: 'primary',
-        OfferCancel: 'red',
-        TrustSet: 'orange',
-      }
+    // const eventColor = (event: any): string => {
+    const eventColor = (): string => {
+      // const colors: { [key: string]: string } = {
+      //   OfferCreate: 'green',
+      //   TicketCreate: 'green',
+      //   Payment: 'green',
+      //   NFTokenCreateOffer: 'green',
+      //   NFTokenCancelOffer: 'red',
+      //   NFTokenMint: 'primary',
+      //   OfferCancel: 'red',
+      //   TrustSet: 'orange',
+      // }
 
-      return Object.hasOwn(colors, event) ? colors[event] : 'grey'
+      // return Object.hasOwn(colors, event) ? colors[event] : 'grey'
+      return 'grey'
     }
 
     const rowClass = (item: any) => {

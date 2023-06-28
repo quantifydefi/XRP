@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters justify="center">
-    <vue-particles />
+    <!--    <vue-particless />-->
 
     <v-col cols="12" style="z-index: 1">
       <v-row justify="center" class="text-center">
@@ -61,16 +61,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 
-import { State } from '~/types/state'
-import { useMetaTags } from '~/composables/useMetaTags'
-import OutlineGlow from '~/components/common/ui/custom/OutlineGlow.vue'
+import OutlineGlow from '~/components/common/OutlineGlow.vue'
 import DefiNodeTree from '~/components/common/DefiNodeTree.vue'
-import VueParticles from '~/components/common/ui/custom/VueParticless.vue'
-
+// import VueParticless from '~/components/common/VueParticless.vue'
 export default defineComponent({
-  components: { VueParticles, DefiNodeTree, OutlineGlow },
+  components: {
+    // VueParticless,
+    DefiNodeTree,
+    OutlineGlow,
+  },
   setup() {
     // STATE
     const items = ref([
@@ -123,17 +124,7 @@ export default defineComponent({
       'Strategic Investments',
     ])
 
-    // COMPOSABLE
-    const store = useStore<State>()
-
-    // COMPUTED
-    const ui = computed(() => store.state.ui)
-    const theme = computed(() => store.state.ui.theme)
-
-    // META TAGS
-    useMetaTags('homepage')
-
-    return { items, animatedFeatures, ui, theme }
+    return { items, animatedFeatures }
   },
   head: {},
 })

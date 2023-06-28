@@ -104,12 +104,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api'
-import { useMetaTags } from '~/composables/useMetaTags'
+import { defineComponent } from '@nuxtjs/composition-api'
 export default defineComponent({
-  setup() {
-    useMetaTags('faq', useRoute().value.path)
-  },
+  setup() {},
   head: {},
 })
 </script>
