@@ -1,12 +1,54 @@
-import { ref, computed, watch } from '@nuxtjs/composition-api'
+import {ref, computed, watch} from '@nuxtjs/composition-api'
 import { useQuery, useSubscription } from '@vue/apollo-composable/dist'
-import { Block } from '@/types/apollo/main/types'
-import { BlocksXrpGQL, BlocksStreamGQL } from '~/apollo/main/token.query.graphql'
+import { gql } from 'graphql-tag'
+import {Block} from "~/types/graph";
 
 type BlockObserver = Block & {
   updateOption?: { status: boolean; color: string | null }
 }
 
+const query = gql`
+    query BlocksXrpGQL($network:String!){
+        blocks(network:$network){
+            network
+            blockNumber
+            minedAt
+            txCount
+            XRPLedger {
+                ledgerHash
+                eventsCount
+            }
+        }
+    }
+`
+
+const subscription = gql`
+    subscription BlocksStreamGQL($network:String!){
+  block(network:$network){
+    network
+    blockNumber
+    minedAt
+    txCount
+    swapCount
+    pairCreatedCount
+    mintCount
+    metrics{
+      items
+      {
+        totalLiquidity
+        change1H
+        token0Symbol
+        token1Symbol
+      }
+    }
+    XRPLedger {
+      ledgerHash
+      eventsCount
+    }
+  }
+}
+
+`
 export default function () {
   // STATE
   const loading = ref<boolean>(true)
@@ -15,12 +57,12 @@ export default function () {
   const blocks = ref<Block[]>([])
   const currentTime = ref<number>(new Date().getTime() / 1000)
 
-  const { onResult } = useQuery(BlocksXrpGQL, () => ({ network: 'ripple' }), {
+  const { onResult } = useQuery(query, () => ({ network: 'ripple' }), {
     fetchPolicy: 'no-cache',
     pollInterval: 60000,
   })
 
-  const { result: liveBlock } = useSubscription(BlocksStreamGQL, () => ({ network: 'ripple' }), {
+  const { result: liveBlock } = useSubscription(subscription, () => ({ network: 'ripple' }), {
     fetchPolicy: 'no-cache',
   })
 
@@ -32,7 +74,7 @@ export default function () {
   })
 
   // EVENTS
-  onResult((queryResult) => {
+  onResult((queryResult):void => {
     blocks.value = queryResult.data?.blocks ?? []
     loading.value = queryResult.loading
     currentTime.value = new Date().getTime() / 1000

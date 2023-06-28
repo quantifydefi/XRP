@@ -13,8 +13,7 @@
                         :to="link.url"
                         active-class="underline-glow-active"
                         class="white--text text-uppercase caption underline-glow-hover ml-3 mr-3 font-weight-medium pb-1"
-                        v-text="link.title"
-                      />
+                      >{{link.title}}</nuxt-link>
                     </div>
                   </v-col>
                 </v-row>
@@ -62,19 +61,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useStore, computed } from '@nuxtjs/composition-api'
-import { State } from '~/types/state'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  name: 'MainFooter',
   setup() {
-    const { state } = useStore<State>()
-    const headerTextClass = computed(() => state.ui[state.ui.theme].headerTextClass)
 
     const footerLinks = [
       { title: 'Terms and Conditions', url: '/terms-and-conditions' },
       { title: 'Meet Our Team', url: '/team' },
-      { title: 'FAQ', url: '/faq' },
     ]
 
     const communityLinks = [
@@ -89,7 +83,7 @@ export default defineComponent({
       { icon: '/img/lenster.svg', url: 'https://lenster.xyz/u/evmfi.lens' },
     ]
 
-    return { footerLinks, communityLinks, headerTextClass }
+    return { footerLinks, communityLinks }
   },
 })
 </script>

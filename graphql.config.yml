@@ -2,4 +2,4 @@ schema: main.schema.graphql
 extensions:
   endpoints:
     One:
-      url: http://localhost:8080/query
+      url:  https://staging-graph.evmx.io/query

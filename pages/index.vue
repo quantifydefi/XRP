@@ -1,6 +1,5 @@
 <template>
   <v-row no-gutters justify="center">
-    <vue-particles />
 
     <v-col cols="12" style="z-index: 1">
       <v-row justify="center" class="text-center">
@@ -32,19 +31,12 @@
       </v-row>
     </v-col>
 
-    <v-col cols="12" style="z-index: 1">
-      <defi-node-tree />
-    </v-col>
-
     <v-col cols="11" xl="7" lg="10" class="text-center mt-16 pt-16" style="z-index: 1">
       <v-row>
-        <v-col cols="12">
-          <h2 class="text-h4 text-left">Roadmap</h2>
-        </v-col>
         <v-col cols="12" class="justify-center">
           <v-row justify="center">
             <v-col v-for="item in items" :key="item.header" cols="12" sm="6" md="4">
-              <outline-glow color="black">
+              <outline-glow>
                 <v-avatar size="40" class="mt-5">
                   <v-icon size="30" color="primary">{{ item.icon }}</v-icon>
                 </v-avatar>
@@ -61,79 +53,41 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
+import {  defineComponent, ref } from '@nuxtjs/composition-api'
 
-import { State } from '~/types/state'
-import { useMetaTags } from '~/composables/useMetaTags'
-import OutlineGlow from '~/components/common/ui/custom/OutlineGlow.vue'
-import DefiNodeTree from '~/components/common/DefiNodeTree.vue'
-import VueParticles from '~/components/common/ui/custom/VueParticless.vue'
+import OutlineGlow from "~/components/ui/OutlineGlow.vue";
+// import DefiNodeTree from '~/components/common/DefiNodeTree.vue'
 
 export default defineComponent({
-  components: { VueParticles, DefiNodeTree, OutlineGlow },
+  components: {OutlineGlow },
+
   setup() {
     // STATE
     const items = ref([
       {
         color: 'primary lighten-2',
         icon: 'mdi-tablet-dashboard',
-        header: 'Aave Professional Trader',
-        desc: 'Easier Interface using Aave smart contracts',
+        header: 'XRP Ledger Explorer',
+        desc: '',
       },
       {
         color: 'red lighten-2',
         icon: 'mdi-wallet-outline',
-        header: 'Asset Management',
-        desc: 'Full Wallet Balance, Chain Balances, Token Balance',
+        header: 'XRP Ledger Details',
+        desc: '',
       },
 
-      {
-        color: 'orange lighten-2',
-        icon: 'mdi-desktop-mac-dashboard',
-        header: 'Token Pages',
-        desc: 'Balances, investment options, and metrics on a single screen',
-      },
-      {
-        color: 'red lighten-2',
-        icon: 'mdi-history',
-        header: 'Transaction History',
-        desc: 'Best in class transaction displays',
-      },
-      {
-        color: 'primary lighten-2',
-        icon: 'mdi-transit-connection-variant',
-        header: 'Self Custody',
-        desc: 'Support for Ethereum Mainnet, Binance Smart Chain, Matic, Fantom Opera, Avalanche networks and more',
-      },
-      {
-        color: 'red lighten-2',
-        icon: 'mdi-rocket-launch-outline',
-        header: 'NFT Launch',
-        desc: 'Check this site for future updates',
-      },
     ])
     const animatedFeatures = ref([
       'Token Pages',
-      'Aave Professional Interface',
       'Multi Chain Balances Advanced Analytics',
-      'Transaction History',
-      'Easier Aave Transaction',
       'Self-Custody',
       'Portfolio Management',
       'Strategic Investments',
     ])
 
-    // COMPOSABLE
-    const store = useStore<State>()
 
-    // COMPUTED
-    const ui = computed(() => store.state.ui)
-    const theme = computed(() => store.state.ui.theme)
-
-    // META TAGS
-    useMetaTags('homepage')
-
-    return { items, animatedFeatures, ui, theme }
+    return { items, animatedFeatures }
   },
   head: {},
 })

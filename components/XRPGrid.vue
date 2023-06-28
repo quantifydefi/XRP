@@ -59,6 +59,7 @@ export default defineComponent<Props>({
     )
 
     const eventColor = (event: any): string => {
+
       const colors: { [key: string]: string } = {
         OfferCreate: 'green',
         TicketCreate: 'green',
@@ -69,8 +70,9 @@ export default defineComponent<Props>({
         OfferCancel: 'red',
         TrustSet: 'orange',
       }
-
+      // @ts-ignore
       return Object.hasOwn(colors, event) ? colors[event] : 'grey'
+
     }
 
     const rowClass = (item: any) => {
