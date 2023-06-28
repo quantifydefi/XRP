@@ -62,9 +62,6 @@ const {result} = useQuery(BlockGQL, () => ({network: 'ripple', blockNumber: ledg
 # install dependencies
 $ yarn install
 
-# Generate types from graphql server
-$ yarn generate-types
-
 # serve with hot reload at localhost:3000
 $ yarn run dev
 
