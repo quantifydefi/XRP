@@ -55,7 +55,7 @@
 <script lang="ts">
 import {  defineComponent, ref } from '@nuxtjs/composition-api'
 
-import OutlineGlow from "~/composables/ui/OutlineGlow.vue";
+import OutlineGlow from "~/components/ui/OutlineGlow.vue";
 // import DefiNodeTree from '~/components/common/DefiNodeTree.vue'
 
 export default defineComponent({

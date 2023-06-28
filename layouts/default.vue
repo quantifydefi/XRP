@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { defineComponent, ref} from '@nuxtjs/composition-api'
-import MainFooter from "~/composables/ui/MainFooter.vue";
+import MainFooter from "~/components/ui/MainFooter.vue";
 export default defineComponent({
   components: {MainFooter},
   setup() {

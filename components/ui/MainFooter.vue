@@ -69,7 +69,6 @@ export default defineComponent({
     const footerLinks = [
       { title: 'Terms and Conditions', url: '/terms-and-conditions' },
       { title: 'Meet Our Team', url: '/team' },
-      { title: 'FAQ', url: '/faq' },
     ]
 
     const communityLinks = [

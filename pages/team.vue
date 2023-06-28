@@ -109,7 +109,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@nuxtjs/composition-api'
-import TeamMemberProfileDialog from "~/composables/ui/TeamMemberProfileDialog.vue";
+import TeamMemberProfileDialog from "~/components/ui/TeamMemberProfileDialog.vue";
 import { TeamMember } from '~/types/team'
 
 export default defineComponent({
