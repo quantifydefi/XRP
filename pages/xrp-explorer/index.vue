@@ -1,7 +1,11 @@
 <template>
   <div>
     <v-row justify="center">
-      <v-col md="12" lg="9"><x-r-p-grid /> </v-col>
+      <v-col md="12" lg="9">
+      <client-only>
+        <x-r-p-grid />
+      </client-only>
+      </v-col>
     </v-row>
   </div>
 </template>

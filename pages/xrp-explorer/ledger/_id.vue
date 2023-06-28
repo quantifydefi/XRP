@@ -103,26 +103,20 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  // useRoute,
-  useRouter,
-} from '@nuxtjs/composition-api'
-// import { useQuery } from '@vue/apollo-composable/dist'
-// import { BlockGQL } from '~/apollo/main/token.query.graphql'
+import { computed, defineComponent, useRoute, useRouter } from '@nuxtjs/composition-api'
+import { useQuery } from '@vue/apollo-composable/dist'
+import { BlockGQL } from '~/apollo/main/token.query.graphql'
 import { Block } from '~/types/apollo/main/types'
 export default defineComponent({
   components: {},
   setup() {
-    // const route = useRoute()
+    const route = useRoute()
     const router = useRouter()
-    // const ledgerIndex = computed(() => route.value.params?.id ?? 0)
-    // const { result } = useQuery(BlockGQL, () => ({ network: 'ripple', blockNumber: ledgerIndex.value }), {
-    //   fetchPolicy: 'no-cache',
-    // })
-    // const ledger = computed<Block | null>(() => result.value?.block ?? null)
-    const ledger = computed<Block | null>(() => null)
+    const ledgerIndex = computed(() => route.value.params?.id ?? 0)
+    const { result } = useQuery(BlockGQL, () => ({ network: 'ripple', blockNumber: ledgerIndex.value }), {
+      fetchPolicy: 'no-cache',
+    })
+    const ledger = computed<Block | null>(() => result.value?.block ?? null)
     const navigateToLedger = (ledger: number) => router.push(`/xrp-explorer/ledger/${ledger}`)
     const cols = computed(() => {
       return [

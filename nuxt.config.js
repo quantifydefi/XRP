@@ -14,13 +14,13 @@ export default {
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
-  ssr: false,
+  ssr: true,
   plugins: [
     '~/plugins/helper.ts',
 
-    // '~/plugins/apolloClient.ts',
+    '~/plugins/apolloClient.ts',
 
-    '~/plugins/typer.client.ts',
+    // '~/plugins/typer.client.ts',
   ],
 
   components: true,
@@ -51,7 +51,7 @@ export default {
     customVariables: ['~/assets/variables.scss'],
     treeShake: true,
     theme: {
-      // dark: true,
+      dark: true,
       themes: {
         dark: {
           primary: '#536af6',
@@ -83,19 +83,7 @@ export default {
     filenames: { chunk: ({ isDev }) => (isDev ? '[name].js' : '[id].[contenthash].js') },
 
     extractCSS: false,
-    extend(config, ctx) {
-      // Run ESLint on save
-      if (ctx.isDev && ctx.isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue|ts)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/,
-          options: { fix: true },
-        })
-      }
-    },
-    transpile: ['@vue/apollo-composable'],
+    transpile: ['tslib', '@apollo/client', '@apollo/client/core', '@vue/apollo-composable', '@vue/apollo-option', 'ts-invariant'],
   },
 
   env: {
